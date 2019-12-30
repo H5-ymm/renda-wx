@@ -1,0 +1,89 @@
+<style lang="less">
+@import '../style/base/variable/color';
+.page {
+  height: 100%;
+  .home-view {
+    position: relative;
+    height: 96%;
+  }
+  .home-view-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .home-view-box {
+    height: 100%;
+    width: 80%;
+    margin: 0 auto;
+  }
+  .weui-cell {
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+  }
+}
+</style>
+
+<template>
+  <view class="page page_botttom">
+    <view class="home-view">
+      <view class="home-view-box">
+        <view class="weui-cell weui-flex between page_card">
+          <picker
+            mode="date"
+            value="{{date}}"
+            start="2015-09-01"
+            end="2017-09-01"
+            bindchange="bindDateChange"
+          >
+            <view class="picker">
+              当前选择: {{date}}
+            </view>
+          </picker>
+        </view>
+        <view class="weui-cell weui-flex between page_card">
+          <view class="page_card_col1">
+            <view>薛冰冰</view>
+            <view>谁送给我：</view>
+            <view>谁送给我：</view>
+          </view>
+          <view class="page_card_col2">
+            <view>谁送给我</view>
+            <view>
+              <image
+                mode="scaleToFill"
+                src="../../images/right.png"
+                class="page_card_icon"
+              />
+            </view>
+            <view>谁送给我</view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</template>
+<script>
+import wepy from 'wepy';
+
+//通过继承自wepy.page的类创建页面逻辑
+export default class home extends wepy.page {
+  //可用于页面模板绑定的数据
+  data = {
+    motto: 'Hello World',
+    userInfo: {},
+    date: ''
+  };
+
+  //事件处理函数(集中保存在methods对象中)
+  methods = {
+
+  };
+
+  //页面的生命周期函数
+  onLoad () {
+    console.log('onLoad');
+  };
+}
+</script>

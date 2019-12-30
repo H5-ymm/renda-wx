@@ -1,0 +1,117 @@
+<style lang="less">
+@import './style/weui.less';
+page {
+  background-color: @weuiBgColorDefault;
+  font-size: 16px;
+  height: 100%;
+  font-family: -apple-system-font, Helvetica Neue, Helvetica, sans-serif;
+}
+.page {
+  margin: 48rpx;
+}
+.login_page {
+  background-color: @weuiBgColorWhite;
+}
+.page__hd {
+  padding: 40px;
+}
+.page__bd {
+  padding-bottom: 40px;
+}
+.page__bd_spacing {
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.page__ft {
+  padding-bottom: 10px;
+  text-align: center;
+}
+
+.page__title {
+  text-align: left;
+  font-size: 20px;
+  font-weight: 400;
+}
+
+.page__desc {
+  margin-top: 5px;
+  color: @weuiTextColorDesc;
+  text-align: left;
+  font-size: 14px;
+}
+.page_botttom {
+  border-bottom: 1px solid @weuiLineColorLight;
+}
+.page_card {
+  box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  padding: 24rpx;
+  margin-bottom: 20rpx;
+  line-height: 60rpx;
+  background-color: @weuiBgColorWhite;
+  font-size: 22rpx;
+  .page_card_col2 {
+    text-align: right;
+  }
+  .page_card_icon {
+    width: 24rpx;
+    height: 24rpx;
+  }
+}
+</style>
+
+<script>
+
+import wepy from 'wepy';
+import 'wepy-async-function';
+
+export default class extends wepy.app {
+
+  config = {
+    'pages': [
+      'pages/login',
+      'pages/home/index'
+    ],
+    'window': {
+      'navigationBarTextStyle': 'white',
+      'navigationBarTitleText': '人事达',
+      'navigationBarBackgroundColor': '#1890FF',
+      'backgroundColor': '#1890FF'
+    },
+    "tabBar": {
+      'color': '#999999',
+      'selectedColor': '#1890FF',
+      'borderStyle': 'white',
+      "list": [
+        {
+          "pagePath": "pages/login",
+          "text": "添加简历",
+
+          'iconPath': './images/add.png',
+          'selectedIconPath': './images/add-active.png'
+        },
+        {
+          "pagePath": 'pages/home/index',
+          "text": "我的",
+          'iconPath': './images/my.png',
+          'selectedIconPath': './images/my-active.png'
+
+        }
+      ]
+    },
+    'networkTimeout': {
+      'request': 10000,
+      'connectSocket': 10000,
+      'uploadFile': 10000,
+      'downloadFile': 10000
+    }
+  };
+
+  constructor() {
+    super();
+    this.use('promisify');
+    this.use('requestfix');
+  }
+}
+</script>
