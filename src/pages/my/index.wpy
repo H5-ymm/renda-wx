@@ -1,0 +1,129 @@
+<style lang="less">
+  .page {
+    .my-view-header {
+      width: 100%;
+      position: relative;
+      .my-view-header-bg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 256rpx;
+        width: 100%;
+      }
+      .my-view-userInfo {
+        position: relative;
+        z-index: 22;
+        width: 100%;
+        margin: 0 auto;
+        text-align: center;
+        color: #fff;
+        line-height: 40rpx;
+        .my-avatar {
+          width: 120rpx;
+          height: 120rpx;
+          border-radius: 50%;
+        }
+        .my-user-name {
+          font-size:30rpx;
+        }
+        .my-user-mobile {
+          font-size: 22rpx;
+        }
+      }
+    }
+    .my-view  {
+      margin:80rpx 48rpx 0;
+      .my-icon {
+        width: 44rpx;
+        height: 44rpx;
+        margin-right: 20rpx;
+      }
+      .page_card_row {
+        padding-bottom: 24rpx;
+        border-bottom: 1px solid #eee;
+        &:nth-last-child(1) {
+          padding-top: 24rpx;
+          border-bottom:none;
+          padding-bottom:0;
+        }
+        .my-text {
+          color: #333;
+          font-size: 24rpx;
+          height: 24rpx;
+          line-height: 24rpx;
+        }
+      }
+    } 
+  }
+</style>
+
+<template>
+  <view class="page_botttom page">
+    <view class="my-view-header">
+      <image src="../../images/bg.png" class="my-view-header-bg" mode="scaleToFill" alt="">
+      <view class="my-view-userInfo">
+        <image src="../../images/img1.png" alt="" class="my-avatar">
+        <view class="my-user-name">杨萌萌</view>
+        <view class="my-user-mobile">18337806536</view>
+      </view>
+    </view>
+    <view class="page_margin my-view">
+      <view class="my-view-box">
+        <view class="page_card">
+          <view class="page_card_row">
+            <view class="weui-flex between">
+               <view class="weui-flex start">
+                 <image src="../../images/icon1.png" alt="" class="my-icon">
+                 <view class="my-text">账户信息</view>
+               </view>
+               <view>
+                  <image
+                mode="scaleToFill"
+                src="../../images/right.png"
+                class="page_card_icon"
+              /></view>
+            </view>
+          </view>
+          <view class="page_card_row">
+            <view class="weui-flex between">
+               <view class="weui-flex start">
+                 <image src="../../images/icon2.png" alt="" class="my-icon">
+                 <view class="my-text">账户绑定</view>
+               </view>
+               <view>
+                  <image
+                mode="scaleToFill"
+                src="../../images/right.png"
+                class="page_card_icon"
+              /></view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</template>
+<script>
+import wepy from 'wepy';
+
+//通过继承自wepy.page的类创建页面逻辑
+export default class my extends wepy.page {
+  //可用于页面模板绑定的数据
+  data = {
+    motto: 'Hello World',
+    userInfo: {},
+    dateStart: '2019-10-20',
+    dateEnd: '2019-10-20'
+  };
+
+  //事件处理函数(集中保存在methods对象中)
+  methods = {
+
+  };
+
+  //页面的生命周期函数
+  onLoad () {
+    console.log('onLoad');
+  };
+}
+</script>

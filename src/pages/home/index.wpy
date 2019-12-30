@@ -1,33 +1,75 @@
 <style lang="less">
-@import '../style/base/variable/color';
-.page {
-  height: 100%;
   .home-view {
-    position: relative;
-    height: 96%;
+    .home-view-header {
+      background: #1890FF;
+      height: 70rpx;
+      width: 100%;
+    }
+    .page {
+      .picker-box {
+        width: 100%;
+      }
+      
+      .home-view-box {
+      }
+      .dateIcon {
+        width: 24rpx;
+        height: 24rpx;
+        line-height: 30rpx;
+        color: #000;
+      }
+      .line {
+        margin: 0 40rpx;
+      }
+      .page_count-card-item {
+        margin-right: 30rpx;
+        &:nth-last-child(1) {
+          margin-right: 0;
+        }
+        &:nth-of-type(2) {
+          .page_count-card-col1 {
+            background:linear-gradient(90deg,rgba(69,149,34,1),rgba(175,232,78,1));
+            box-shadow:2px 3px 10px 0px rgba(70,150,35,0.3)
+          }
+        }
+        &:nth-of-type(3) {
+          .page_count-card-col1 {
+           background:linear-gradient(90deg,rgba(219,20,69,1),rgba(251,164,139,1));
+           box-shadow:2px 3px 10px 0px rgba(222,31,75,0.3);
+          }
+        }
+      }
+      .page_count-card-col1 {
+        width: 42rpx;
+        height: 42rpx;
+        background:linear-gradient(90deg,rgba(3,124,220,1),rgba(36,186,247,1));
+        box-shadow:2px 3px 10px 0px rgba(76,110,194,0.3);
+        border-radius:5rpx;
+        text-align: center;
+        margin-right:10rpx;
+        line-height: 52rpx;
+      }
+      .page_count-card-col2 {
+        line-height: 26rpx;
+        view {
+          &:nth-of-type(1) {
+            color: #6A6A6A;
+            font-size: 18rpx;
+          }
+          &:nth-of-type(2) {
+            color: #333;
+            font-size:30rpx;
+          }
+        }
+      }
   }
-  .home-view-bg {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-  }
-  .home-view-box {
-    height: 100%;
-    width: 80%;
-    margin: 0 auto;
-  }
-  .weui-cell {
-    margin-bottom: 20px;
-    padding-bottom: 20px;
-  }
-}
+ }
 </style>
 
 <template>
-  <view class="page page_botttom">
-    <view class="home-view">
+  <view class="home-view page_botttom">
+    <view class="home-view-header"></view>
+    <view class="page page_margin">
       <view class="home-view-box">
         <view class="weui-cell weui-flex between page_card">
           <picker
@@ -36,28 +78,78 @@
             start="2015-09-01"
             end="2017-09-01"
             bindchange="bindDateChange"
+            class="picker-box"
           >
-            <view class="picker">
-              当前选择: {{date}}
+            <view class="picker weui-flex between">
+            <view class="weui-flex between weui-flex__item">
+              <view>{{dateStart}}</view>
+               <image src="../../images/dateIcon.png" class="dateIcon"/>
+            </view>
+            <text class="line">-</text>
+             <view class="weui-flex between weui-flex__item">
+                <view>{{dateEnd}}</view>
+                <image src="../../images/dateIcon.png" class="dateIcon"/>
+             </view>
             </view>
           </picker>
         </view>
-        <view class="weui-cell weui-flex between page_card">
-          <view class="page_card_col1">
-            <view>薛冰冰</view>
-            <view>谁送给我：</view>
-            <view>谁送给我：</view>
+         <view class="page_count-card weui-flex between">
+            <view class="weui-flex start weui-flex__item page_card page_count-card-item">
+               <view class="page_count-card-col1">
+                  <image
+                mode="scaleToFill"
+                src="../../images/homeIcon.png"
+                class="page_card_icon"
+              /></view>
+               <view class="page_count-card-col2">
+                 <view>录入简历</view>
+                 <view>200</view>
+               </view>
+            </view>
+            <view class="weui-flex start weui-flex__item page_card page_count-card-item">  
+              <view class="page_count-card-col1">
+               <image
+                mode="scaleToFill"
+                src="../../images/homeIcon.png"
+                class="page_card_icon"
+              /></view>
+              <view class="page_count-card-col2">
+                <view>录入简历</view>
+                <view>200</view>
+              </view>
+            </view>
+            <view class="weui-flex start weui-flex__item page_card page_count-card-item">
+              <view class="page_count-card-col1">
+                  <image
+                mode="scaleToFill"
+                src="../../images/homeIcon.png"
+                class="page_card_icon"
+              /></view>
+              <view class="page_count-card-col2">
+                <view>录入简历</view>
+                <view>200</view>
+              </view>
           </view>
-          <view class="page_card_col2">
-            <view>谁送给我</view>
-            <view>
-              <image
+        </view>
+        <view class="page_card">
+          <view class="page_card_row">
+            <view class="weui-flex between">
+               <view>薛冰冰</view>
+               <view>薛冰冰</view>
+            </view>
+            <view class="weui-flex between">
+               <view>薛冰冰</view>
+               <view>
+                  <image
                 mode="scaleToFill"
                 src="../../images/right.png"
                 class="page_card_icon"
-              />
+              /></view>
             </view>
-            <view>谁送给我</view>
+            <view class="weui-flex between">
+               <view>薛冰冰</view>
+               <view>薛冰冰</view>
+            </view>
           </view>
         </view>
       </view>
@@ -73,7 +165,8 @@ export default class home extends wepy.page {
   data = {
     motto: 'Hello World',
     userInfo: {},
-    date: ''
+    dateStart: '2019-10-20',
+    dateEnd: '2019-10-20'
   };
 
   //事件处理函数(集中保存在methods对象中)

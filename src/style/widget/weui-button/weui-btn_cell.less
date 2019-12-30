@@ -30,12 +30,12 @@
     color: @weuiBtnFontColor;
     line-height: @weuiBtnCellLineHeight;
     padding:@weuiBtnCellGap;
+    &::after {
+      border: none;
+    }
     .setTapColor();
     overflow: hidden;
     border-radius: 50rpx;
-    & + &{
-      margin-top:@weuiBtnDefaultGap;
-    }
     &:active{
       background-color:@weuiBgColorActive;
     }
@@ -55,6 +55,9 @@
 }
 .weui-btn_cell-warn{
   color:@weuiColorWarn;
+}
+.weui-btn_cell-gradient {
+  background:linear-gradient(90deg,rgba(24,144,255,1),rgba(99,185,255,1))
 }
 
 
