@@ -1,0 +1,81 @@
+<style lang="less">
+@import '../../style/user.less';
+</style>
+<template>
+  <view class="page_botttom page page_margin">
+    <view class="my-view">
+      <view class="my-view-box">
+        <view class="page_card">
+          <view class="page_card_row">
+            <view class="weui-flex between">
+              <view class="my-text">头像</view>
+              <view class="weui-flex between">
+                <image
+                  src="../../images/img1.png"
+                  alt=""
+                  class="my-head"
+                >
+                  <image
+                    mode="scaleToFill"
+                    src="../../images/right.png"
+                    class="page_card_right-icon"
+                  />
+              </view>
+            </view>
+          </view>
+          <view class="page_card_row">
+            <view class="weui-flex between">
+              <view class="my-text">姓名</view>
+              <view class="my-text-right"> 杨萌萌</view>
+            </view>
+          </view>
+          <view class="page_card_row">
+            <view class="weui-flex between">
+              <view class="my-text">手机号码</view>
+              <view class="my-text-right">18124678953</view>
+            </view>
+          </view>
+          <view class="page_card_row">
+            <view class="weui-flex between">
+              <view class="my-text">邮箱</view>
+              <view class="my-text-right weui-flex__item">1257868594@qq.com</view>
+            </view>
+          </view>
+          <view class="page_card_row">
+            <view class="weui-flex between">
+              <view class="my-text">住址</view>
+              <view class="my-text-right weui-flex__item">上海 上海市浦东新区金海路2588号 金桥科技园1幢A栋310室</view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</template>
+<script>
+import wepy from 'wepy';
+
+//通过继承自wepy.page的类创建页面逻辑
+export default class my extends wepy.page {
+  config = {
+    navigationBarTitleText: '账户信息'
+  }
+  //可用于页面模板绑定的数据
+  data = {
+    motto: 'Hello World',
+    userInfo: {},
+    dateStart: '2019-10-20',
+    dateEnd: '2019-10-20'
+  };
+
+  //事件处理函数(集中保存在methods对象中)
+  methods = {
+
+  };
+
+  //页面的生命周期函数
+  onLoad () {
+    console.log('onLoad');
+  };
+}
+</script>

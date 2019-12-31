@@ -1,0 +1,60 @@
+<style lang="less">
+@import '../../style/home.less';
+</style>
+<template>
+  <view class="page page_botttom">
+    <view class="page_margin">
+      <view class="home-view-box">
+        <repeat
+          wx:for="{{list}}"
+          wx:key="index"
+        >
+          <view class="page_card {{activeIndex==index? 'page_card_active': ''}}">
+            <view class="page_card_row">
+              <view class="weui-flex between">
+                <view class="page_card_name">{{item.name}}</view>
+                <view class="page_card_num">需求人数：{{item.num}}人</view>
+              </view>
+              <view class="weui-flex between">
+                <view class="text-line weui-flex start">
+                  <view class="page_card_col1">{{item.companyName}}</view>
+                </view>
+              </view>
+            </view>
+          </view>
+        </repeat>
+      </view>
+    </view>
+  </view>
+</template>
+<script>
+import wepy from 'wepy';
+
+//通过继承自wepy.page的类创建页面逻辑
+export default class list extends wepy.page {
+  //可用于页面模板绑定的数据
+  data = {
+    motto: 'Hello World',
+    userInfo: {},
+    dateStart: '2019-10-20',
+    dateEnd: '2019-10-20',
+    list: [
+      { name: '杨萌萌', companyName: '仁达网络科技（上海）有限公司', num: 40 },
+      { name: '杨萌萌', companyName: '仁达网络科技（上海）有限公司', num: 100 }
+    ],
+    activeIndex: 0
+  };
+  config = {
+    navigationBarTitleText: '内部发单'
+  }
+  //事件处理函数(集中保存在methods对象中)
+  methods = {
+
+  };
+
+  //页面的生命周期函数
+  onLoad () {
+    console.log('onLoad');
+  };
+}
+</script>

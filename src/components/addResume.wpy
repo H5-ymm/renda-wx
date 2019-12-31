@@ -1,0 +1,150 @@
+<style lang="less">
+@import '../style/home.less';
+@height: 40;
+.weui-input {
+  text-align: right;
+}
+.add-view {
+  height: 76%;
+}
+</style>
+
+<template>
+  <view class="add-view">
+    <view class="home-view-box">
+      <view class="page_card">
+        <view class="page_card_row">
+          <view
+            class="weui-flex between"
+            @tap="viewList"
+          >
+            <view class="my-text  weui-flex__item"> 姓名：</view>
+            <input
+              class="weui-input"
+              auto-focus
+              placeholder="请输入姓名"
+            />
+          </view>
+        </view>
+        <view class="page_card_row">
+          <view class="weui-flex between">
+            <view class="my-text  weui-flex__item">身份证号码：</view>
+            <input
+              class="weui-input"
+              auto-focus
+              placeholder="请输入身份证号码"
+            />
+          </view>
+        </view>
+        <view class="page_card_row">
+          <view class="weui-flex between ">
+            <view class="my-text weui-flex__item"> 手机号码：</view>
+            <input
+              class="weui-input"
+              auto-focus
+              placeholder="请输入手机号码"
+            />
+          </view>
+        </view>
+        <view class="page_card_row">
+          <view class="weui-flex between">
+            <view class="my-text weui-flex__item">性别：</view>
+            <picker
+              @change="bindPickerChange"
+              value="{{index}}"
+              range="{{array}}"
+            >
+              <view class="my-text-right">
+                {{array[index]?array[index]:'请选择'}}
+              </view>
+            </picker>
+          </view>
+        </view>
+
+        <view class="page_card_row">
+          <view class="weui-flex between ">
+            <view class="my-text weui-flex__item">住址：</view>
+            <view class="my-text-right">仁达网络科技（上海）有限公司</view>
+          </view>
+        </view>
+        <view class="page_card_row">
+          <view class="weui-flex between">
+            <view class="my-text weui-flex__item">学历：</view>
+            <picker
+              @change="eduPickerChange"
+              value="{{index}}"
+              range="{{eduList}}"
+            >
+              <view class="my-text-right">
+                {{eduList[eduIndex]?eduList[eduIndex]:'请选择'}}
+              </view>
+            </picker>
+          </view>
+        </view>
+      </view>
+      <view class="page_card_row">
+        <view class="weui-flex between">
+          <view class="my-text  weui-flex__item">年龄：</view>
+          <input
+            class="weui-input"
+            auto-focus
+            placeholder="请输入年龄"
+          />
+        </view>
+      </view>
+    </view>
+    <view class="weui-cell_btn weui-flex center">
+      <button class="weui-btn_cell .weui-btn_primary">下一步</button>
+    </view>
+  </view>
+</template>
+
+<script>
+import wepy from 'wepy';
+import modal from './modal'
+//通过继承自wepy.page的类创建页面逻辑
+export default class addResume extends wepy.component {
+  //可用于页面模板绑定的数据
+  components = {
+    modal: modal
+  }
+  data = {
+    userInfo: {},
+    array: ['男', '女', '男女不限'],
+    eduList: ['高中', '本科', '硕士'],
+    isScaleModal: false,
+    index: 0,
+    eduIndex: 0
+  };
+  //事件处理函数(集中保存在methods对象中)
+  methods = {
+    selectType () {
+      this.isScaleModal = true
+      console.log(this.isScaleModal)
+
+      //   wx.showActionSheet({
+      //     itemList: ['简历管理', '团队接单', '内部发单'],
+      //     itemColor: '#333333',
+      //     success (res) {
+      //       console.log(res.tapIndex)
+      //     },
+      //     fail (res) {
+      //       console.log(res.errMsg)
+      //     }
+      //   })
+      // }
+    },
+    bindPickerChange (e) {
+      this.index = e.detail.value
+    },
+    eduPickerChange (e) {
+      this.eduIndex = e.detail.value
+    }
+  };
+
+  //页面的生命周期函数
+  onLoad () {
+    console.log('onLoad');
+  };
+}
+</script>

@@ -1,0 +1,73 @@
+<style lang="less">
+.g_transition3s {
+  -webkit-transition: all 0.3s;
+  transition: all 0.3s;
+  -webkit-transform: translateY(-50%);
+  transform: translateY(-50%);
+}
+.g_scale1 {
+  -webkit-transform: translateY(0);
+  transform: translateY(0);
+}
+
+.modal_mask {
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.modal_scale {
+  position: fixed;
+  z-index: 1001;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  min-height: 36%;
+  margin: auto;
+  overflow: hidden;
+  background: #fff;
+  border-radius: 10rpx 10rpx 0px 0px;
+}
+</style>
+
+<template>
+
+  <view
+    class='modal_mask'
+    hidden='{{isScaleModal}}'
+  >
+    <view
+      class="modal_scale  g_transition3s {{isShow ? 'g_scale1' : ''}}"
+      style="height:{{height}}"
+    >
+      <slot></slot>
+    </view>
+  </view>
+
+</template>
+<script>
+import wepy from 'wepy'
+
+export default class actionSheet extends wepy.page {
+  props = {
+    isScaleModal: Boolean,
+    height: String
+  };
+  data = {
+    isShow: true
+  };
+  methods = {
+
+  }
+  //  声明
+  events = {
+
+  };
+  // Other properties
+}
+</script>

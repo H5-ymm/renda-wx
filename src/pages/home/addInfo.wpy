@@ -1,0 +1,143 @@
+<style lang="less">
+@import '../../style/home.less';
+@height: 40;
+.weui-cell-steps {
+  width: 70%;
+  flex: auto;
+}
+.weui-cell-switch {
+  margin-left: 24rpx;
+  width: 112rpx;
+  line-height: 52rpx;
+  padding: 10rpx 0;
+  .step-text {
+    color: #999999;
+    font-size: 23rpx;
+  }
+  .step-icon {
+    width: 52rpx;
+    height: 52rpx;
+  }
+}
+.steps {
+  position: relative;
+  counter-reset: step;
+  background: #fff;
+  padding: 24rpx 0;
+  overflow: hidden;
+  .step-item {
+    font-size: 24rpx;
+    text-align: center;
+    position: relative;
+    padding: 40rpx 0 0;
+    margin-bottom: 10rpx;
+    &::before {
+      display: block;
+      content: counter(step); /* 设定计数器内容 */
+      counter-increment: step; /* 计数器值递增 */
+      width: 22rpx;
+      height: 22rpx;
+      background-color: #eeeeee;
+      line-height: 22rpx;
+      border-radius: 22rpx;
+      font-size: 0;
+      color: #fff;
+      text-align: center;
+      font-weight: 600;
+      margin: 0 auto 18rpx auto;
+      position: absolute;
+      top: 19%;
+      left: 48%;
+      z-index: 22;
+    }
+    &.active {
+      color: #1890ff;
+      &::before {
+        background-color: #1890ff;
+      }
+      &::after {
+        background-color: #1890ff;
+      }
+    }
+  }
+}
+/* 连接线 */
+.steps .step-item ~ .step-item:after {
+  content: '';
+  width: 100%;
+  height: 4rpx;
+  background-color: #eeeeee;
+  position: absolute;
+  left: -45%;
+  top: 32%;
+  z-index: 0;
+}
+.steps .step-item.active ~ .active.step-item:after {
+  background-color: #1890ff;
+}
+</style>
+<template>
+  <view class="home-view page_botttom">
+    <view class="home-view-header"></view>
+    <view class="page page_margin">
+      <view class="weui-flex between">
+        <view class="weui-cell weui-cell-steps page_card">
+          <view class="steps weui-flex between">
+            <view class="active step-item weui-flex__item">1.填写基本信息</view>
+            <view class="active step-item weui-flex__item">2.扫描身份证</view>
+            <view class="step-item weui-flex__item">3.确认信息</view>
+          </view>
+        </view>
+        <view class="weui-cell weui-cell-switch page_card weui-flex wrap center">
+          <image
+            src="../../images/change.png"
+            class="step-icon"
+          />
+          <view class="step-text">更换方式</view>
+        </view>
+      </view>
+      <addBaseInfo></addBaseInfo>
+      <!-- <addResume></addResume> -->
+      <!-- <scanIdCard></scanIdCard> -->
+    </view>
+  </view>
+</template>
+<script>
+import wepy from 'wepy';
+import addBaseInfo from '../../components/addBaseInfo'
+import addResume from '../../components/addResume'
+import scanIdCard from '../../components/scanIdCard'
+
+//通过继承自wepy.page的类创建页面逻辑
+export default class home extends wepy.page {
+  //可用于页面模板绑定的数据
+  components = {
+    addBaseInfo: addBaseInfo,
+    addResume: addResume,
+    scanIdCard: scanIdCard
+  }
+  data = {
+    userInfo: {},
+    isScaleModal: false,
+    comName: "addBaseInfo"
+  };
+  //事件处理函数(集中保存在methods对象中)
+  methods = {
+    selectType () {
+      this.isScaleModal = true
+      console.log(this.isScaleModal)
+    },
+    viewList () {
+      console.log(1)
+      wx.navigateTo({
+        url: '/pages/home/list'　　// 页面 A
+      })
+    },
+  };
+
+  //页面的生命周期函数
+  onLoad () {
+    console.log('onLoad');
+  };
+}
+</script>

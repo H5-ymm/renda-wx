@@ -1,0 +1,86 @@
+<style lang="less">
+@import '../style/home.less';
+@height: 40;
+.weui-input {
+  text-align: right;
+}
+.add-view {
+  height: 78%;
+  .page_card_row {
+    .card-text {
+      width: 100%;
+      margin: 20rpx auto 0;
+      text-align: center;
+      color: #6a6a6a;
+    }
+  }
+  .idCard-bg {
+    width: 241rpx;
+    height: 182rpx;
+    margin: 64rpx 0;
+  }
+}
+</style>
+
+<template>
+  <view class="add-view">
+    <view class="home-view-box">
+      <view class="page_card">
+        <view class="page_card_row">
+          <view
+            class="weui-flex center wrap"
+            @tap="viewList"
+          >
+            <view class="card-text"> 点击开始识别正面（照片面）</view>
+            <image
+              src="../images/cardIcon.png"
+              class="idCard-bg"
+              mode="scaleToFill"
+            >
+          </view>
+        </view>
+      </view>
+      <view class="page_card">
+        <view class="page_card_row">
+          <view class="weui-flex center wrap">
+            <view class="card-text">点击开始识别反面（国徽面）</view>
+            <image
+              src="../images/cardIcon2.png"
+              class="idCard-bg"
+              mode="scaleToFill"
+            >
+          </view>
+        </view>
+      </view>
+    </view>
+    <view class="weui-cell_btn weui-flex center">
+      <button class="weui-btn_cell .weui-btn_primary">下一步</button>
+    </view>
+  </view>
+</template>
+
+<script>
+import wepy from 'wepy';
+import modal from './modal'
+//通过继承自wepy.page的类创建页面逻辑
+export default class scanIdCard extends wepy.component {
+  //可用于页面模板绑定的数据
+  components = {
+    modal: modal
+  }
+  data = {
+    userInfo: {},
+    array: ['美国', '中国', '巴西', '日本'],
+    isScaleModal: false
+  };
+  //事件处理函数(集中保存在methods对象中)
+  methods = {
+
+  };
+
+  //页面的生命周期函数
+  onLoad () {
+    console.log('onLoad');
+  };
+}
+</script>
