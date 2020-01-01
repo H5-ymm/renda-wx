@@ -1,15 +1,13 @@
 <style lang="less">
 .g_transition3s {
-  -webkit-transition: all 0.3s;
-  transition: all 0.3s;
-  -webkit-transform: translateY(-50%);
-  transform: translateY(-50%);
+  transition: 0.3s;
+  -webkit-transform: translateY(220px);
+  transform: translateY(220px);
+  &.g_scale1 {
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+  }
 }
-.g_scale1 {
-  -webkit-transform: translateY(0);
-  transform: translateY(0);
-}
-
 .modal_mask {
   position: fixed;
   z-index: 1000;
@@ -18,9 +16,10 @@
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.5);
+  transition: 0.2s;
 }
 
-.modal_scale {
+.modal_transform {
   position: fixed;
   z-index: 1001;
   right: 0;
@@ -33,41 +32,56 @@
   background: #fff;
   border-radius: 10rpx 10rpx 0px 0px;
 }
+
 </style>
 
 <template>
-
-  <view
-    class='modal_mask'
-    hidden='{{isScaleModal}}'
-  >
+  <view hidden='{{isScaleModal}}' >
+    <view @tap="handleClose" class="modal_mask"></view>
     <view
-      class="modal_scale  g_transition3s {{isShow ? 'g_scale1' : ''}}"
-      style="height:{{height}}"
+      class="modal_transform g_transition3s {{ isShow ? 'g_scale1': ''}}"
+      id="modal-box"
+      style="height:{{height}}rpx"
     >
       <slot></slot>
     </view>
-  </view>
+ </view>
 
 </template>
 <script>
 import wepy from 'wepy'
 
-export default class actionSheet extends wepy.page {
+export default class actionSheet extends wepy.component {
   props = {
     isScaleModal: Boolean,
-    height: String
-  };
-  data = {
-    isShow: true
-  };
-  methods = {
-
+    height: Number
   }
-  //  声明
+  data = {
+    isShow: false,
+  }
+  methods = {
+    handleClose(){
+      this.isScaleModal = true
+    }
+  }
+  watch = {
+    isScaleModal(val) {
+      if (!val) {
+        this.isShow = true
+        this.isCenter = !this.isCenter
+        this.$apply()
+        // let query = wx.createSelectorQuery()
+        //   query.selectAll('#modal-box').boundingClientRect(function (rect) {
+        //     console.log(rect[0].height)
+        //   }).exec()
+      }
+    }
+  }
+  // 声明
   events = {
-
-  };
-  // Other properties
+    'showActionSheet':()=> {
+      this.isScaleModal = !this.isScaleModal
+    }
+  }
 }
 </script>

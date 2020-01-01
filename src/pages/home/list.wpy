@@ -9,7 +9,7 @@
           wx:for="{{list}}"
           wx:key="index"
         >
-          <view class="page_card {{activeIndex==index? 'page_card_active': ''}}">
+          <view class="page_card {{activeIndex==index? 'page_card_active': ''}}" @tap="selectJob({{index}},{{item}})">
             <view class="page_card_row">
               <view class="weui-flex between">
                 <view class="page_card_name">{{item.name}}</view>
@@ -39,8 +39,8 @@ export default class list extends wepy.page {
     dateStart: '2019-10-20',
     dateEnd: '2019-10-20',
     list: [
-      { name: '杨萌萌', companyName: '仁达网络科技（上海）有限公司', num: 40 },
-      { name: '杨萌萌', companyName: '仁达网络科技（上海）有限公司', num: 100 }
+      { name: '技术部', companyName: '仁达网络科技（上海）有限公司', num: 40 },
+      { name: '销售部', companyName: '仁达网络科技（上海）有限公司', num: 100 }
     ],
     activeIndex: 0
   };
@@ -49,9 +49,15 @@ export default class list extends wepy.page {
   }
   //事件处理函数(集中保存在methods对象中)
   methods = {
-
-  };
-
+   selectJob(index,item) {
+    this.activeIndex = index
+    let query = JSON.stringify(item)
+    wx.setStorageSync('query', query)
+    wx.navigateTo({
+      url: '/pages/home/addInfo?query=' + query　　// 页面 A
+    })
+   }
+  }
   //页面的生命周期函数
   onLoad () {
     console.log('onLoad');

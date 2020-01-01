@@ -10,6 +10,13 @@
     height: 24rpx;
     line-height: 24rpx;
     width: 150rpx;
+    &.my-text-require {
+      &::before {
+       content: '*';
+       color: @weuiColorWarn;
+       margin-right:10rpx;
+      }
+    }
     &.my-text-active {
       color: @weuiColorPrimary;
     }

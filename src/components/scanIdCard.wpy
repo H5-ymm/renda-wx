@@ -29,10 +29,10 @@
         <view class="page_card_row">
           <view
             class="weui-flex center wrap"
-            @tap="viewList"
           >
             <view class="card-text"> 点击开始识别正面（照片面）</view>
             <image
+              @tap="uploadImg"
               src="../images/cardIcon.png"
               class="idCard-bg"
               mode="scaleToFill"
@@ -45,6 +45,7 @@
           <view class="weui-flex center wrap">
             <view class="card-text">点击开始识别反面（国徽面）</view>
             <image
+              @tap="uploadImg"
               src="../images/cardIcon2.png"
               class="idCard-bg"
               mode="scaleToFill"
@@ -75,7 +76,25 @@ export default class scanIdCard extends wepy.component {
   };
   //事件处理函数(集中保存在methods对象中)
   methods = {
-
+   uploadImg(){
+     wx.chooseImage({
+      success (res) {
+        const tempFilePaths = res.tempFilePaths
+        wx.uploadFile({
+          url: 'https://example.weixin.qq.com/upload', //仅为示例，非真实的接口地址
+          filePath: tempFilePaths[0],
+          name: 'file',
+          formData: {
+            'user': 'test'
+          },
+          success (res){
+            const data = res.data
+            //do something
+          }
+        })
+      }
+    })
+   }
   };
 
   //页面的生命周期函数

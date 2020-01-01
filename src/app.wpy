@@ -100,6 +100,9 @@ page {
     &.page_card_status1 {
       background: @weuiColorWarn;
     }
+    &.page_card_status2 {
+      background: @weuiColorError;
+    }
   }
 }
 </style>
@@ -114,12 +117,12 @@ export default class extends wepy.app {
   config = {
     'pages': [
       'pages/home/index',
-      'pages/home/list',
       'pages/home/addInfo',
+      'pages/home/list',
       'pages/my/index',
       'pages/my/userInfo',
       'pages/my/userBind',
-      'pages/login'
+      'pages/login'   
     ],
     'window': {
       'navigationBarTextStyle': 'white',
@@ -134,10 +137,9 @@ export default class extends wepy.app {
       "list": [
         {
           "pagePath": "pages/home/index",
-          "text": "添加简历",
-
-          'iconPath': './images/add.png',
-          'selectedIconPath': './images/add-active.png'
+          "text": "简历列表",
+          'iconPath': './images/list.png',
+          'selectedIconPath': './images/list-active.png'
         },
         {
           "pagePath": 'pages/my/index',

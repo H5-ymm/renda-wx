@@ -6,13 +6,6 @@
 }
 .add-view {
   height: 76%;
-  .selected {
-    width: 44rpx;
-    height: 44rpx;
-  }
-  .weui-cell_btn {
-    padding-top: 40rpx;
-  }
 }
 .home-view-box {
   height: 100%;
@@ -25,16 +18,13 @@
         <view class="page_card_row">
           <view
             class="weui-flex between"
-            @tap="viewList"
           >
-            <view class="my-text  weui-flex__item">
-              简历录入位置：
-            </view>
+            <view class="my-text  weui-flex__item my-text-require">简历录入位置：</view>
             <view
               class="weui-flex between"
-              @tap.stop="selectType"
+              @tap="selectType"
             >
-              <view class="my-text-right"> 杨萌萌</view>
+              <view class="my-text-right">{{resumeType}}</view>
               <image
                 mode="scaleToFill"
                 src="../images/right.png"
@@ -43,13 +33,11 @@
             </view>
           </view>
         </view>
-        <view class="page_card_row">
+        <view class="page_card_row" wx:if="{{resumeType&&resumeType!='简历管理'}}" @tap="viewList">
           <view class="weui-flex between">
-            <view class="my-text  weui-flex__item">
-              内部发单：
-            </view>
+            <view class="my-text  weui-flex__auto my-text-require">{{resumeType}}</view>
             <view class="weui-flex between">
-              <view class="my-text-right"> 杨萌萌</view>
+              <view class="my-text-right">{{jobName?jobName:'请选择岗位名称'}}</view>
               <image
                 mode="scaleToFill"
                 src="../images/right.png"
@@ -60,114 +48,98 @@
         </view>
         <view class="page_card_row">
           <view class="weui-flex between ">
-            <view class="my-text weui-flex__item">
+            <view class="my-text weui-flex__auto">
               谁送给我：
             </view>
             <input
               class="weui-input"
-              auto-focus
               placeholder="请输入送给人"
+              value="{{form.name}}"
+              data-name="name"
+              @input="changeInput"
             />
           </view>
         </view>
         <view class="page_card_row">
           <view class="weui-flex between ">
-            <view class="my-text weui-flex__item">
+            <view class="my-text weui-flex__auto">
               我送给谁：
             </view>
-            <view class="my-text-right">
+            <input
+              readonly="{{resumeType&&resumeType!='简历管理'}}"
+              value="{{form.comName}}"
+              data-name="comName"
+              @input="changeInput"
+              class="weui-input my-text-right weui-flex__auto"
+              placeholder="请输入公司"
+            />
+            <!-- <view class="my-text-right">
               仁达网络科技（上海）有限公司
-            </view>
+            </view> -->
           </view>
         </view>
       </view>
     </view>
     <view class="weui-cell_btn weui-flex center">
-      <button class="weui-btn_cell .weui-btn_primary">下一步</button>
+      <button class="weui-btn_cell .weui-btn_primary" @tap="submit">下一步</button>
     </view>
-    <actionSheet
-      hidden="{{isScaleModal}}"
-      height="110px"
-    >
-      <view class="page_card modal-page_card">
-        <repeat
-          wx:for="{{list}}"
-          wx:key="index"
-        >
-          <view
-            class="page_card_row"
-            @tap="selectChange({{index}})"
-          >
-            <view class="weui-flex between modal-page_item">
-              <view class="my-text weui-flex__item {{activeIndex==index?'my-text-active':''}}">
-                {{item}}
-              </view>
-              <image
-                wx:if="{{activeIndex==index}}"
-                src="../images/selected.png"
-                class="selected"
-              />
-            </view>
-          </view>
-        </repeat>
-        <view class="weui-cell_btn weui-flex center">
-          <button class="weui-btn_cell .weui-btn_primary">确定</button>
-        </view>
-      </view>
-    </actionSheet>
   </view>
 </template>
 <script>
 import wepy from 'wepy';
-import actionSheet from './actionSheet'
 //通过继承自wepy.page的类创建页面逻辑
 export default class addBaseInfo extends wepy.component {
   //可用于页面模板绑定的数据
-  components = {
-    actionSheet: actionSheet
+  props = {
+   resumeType:String,
+   baseInfo:Object
   }
   data = {
     userInfo: {},
     isScaleModal: true,
-    list: [
-      '简历管理', '团队接单', '内部发单'
-    ],
-    activeIndex: 0
+    form: {
+      name:'',
+      comName: ''
+    },
+    jobName: ''
   };
+  events = {
+    'save': val => {
+      this.resumeType = val
+    },
+    'getBaseInfo': val => {
+      this.jobName = val.name
+      this.form.comName = val.companyName
+      this.resumeType = val.resumeType
+    }
+  }
   //事件处理函数(集中保存在methods对象中)
   methods = {
     selectType () {
-      this.isScaleModal = false
-      console.log(this.isScaleModal)
-
-      //   wx.showActionSheet({
-      //     itemList: ['简历管理', '团队接单', '内部发单'],
-      //     itemColor: '#333333',
-      //     success (res) {
-      //       console.log(res.tapIndex)
-      //     },
-      //     fail (res) {
-      //       console.log(res.errMsg)
-      //     }
-      //   })
-      // }
-    },
-    selectChange (index) {
-      console.log(index)
-      this.activeIndex = index
-      this.$emit('handleClose')
+      this.$emit('showActionSheet')
     },
     viewList () {
-      console.log(1)
       wx.navigateTo({
         url: '/pages/home/list'　　// 页面 A
       })
     },
-  };
-
+    changeInput(e) {
+     let key = e.currentTarget.dataset.name;
+     this.form[key] =e.detail.value
+    },
+    submit(){
+      if (this.resumeType!='简历管理'&&!this.form.jobName) {
+        return wx.showToast({
+          title: '请选择岗位名称',
+          icon: 'none',
+          duration: 2000
+        })
+      }
+      this.$emit('submit', this.form)
+    }
+  }
   //页面的生命周期函数
   onLoad () {
-    console.log('onLoad');
-  };
+  }
 }
 </script>

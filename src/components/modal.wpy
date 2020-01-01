@@ -1,15 +1,11 @@
 <style lang="less">
-.g_transition3s {
-  -webkit-transition: all 0.3s;
-  transition: all 0.3s;
-  -webkit-transform: translateY(-50%);
-  transform: translateY(-50%);
+.transition3s {
+  transition: 0.3s;
+  transform: scale(0);
+  &.g_scale1 {
+    transform: scale(1)
+  }
 }
-.g_scale1 {
-  -webkit-transform: translateY(0);
-  transform: translateY(0);
-}
-
 .modal_mask {
   position: fixed;
   z-index: 1000;
@@ -18,57 +14,131 @@
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.5);
+  transition: 0.2s;
 }
 
-.modal_scale {
+.modal_box {
   position: fixed;
   z-index: 1001;
   right: 0;
-  bottom: 0;
-  // top: 0;
+  bottom: 20%;
+  top:0;
   left: 0;
-  width: 100%;
+  width: 76%;
   min-height: 36%;
   margin: auto;
-  overflow: hidden;
   background: #fff;
-  border-radius: 10rpx 10rpx 0px 0px;
+  border-radius: 10rpx;
+}
+.close-icon {
+  position: absolute;
+  z-index: 1002;
+  right: 0;
+  bottom: -80rpx;
+  left: 46%;
+  width: 40rpx;
+  height: 40rpx;
+}
+.modal-content {
+  width: 86%;
+  margin: 10rpx auto;
+  line-height: 40rpx;
+  .modal-bg {
+    width: 86%;
+    height: 237rpx;
+    position: relative;
+    text-align: center;
+    margin: 10rpx auto;
+    .modal-img-bg {
+      width: 100%;
+      height: 237rpx;
+      margin: 0 auto;
+    }
+    .modal-icon {
+      position: absolute;
+      top: 20%;
+      left: 30%;
+      z-index: 20001;
+      width: 171rpx;
+      height: 171rpx;
+    }
+  }
+  .modal-title {
+    text-align: center;
+    font-size: 36rpx;
+    color: #000000;
+  }
+  .modal-subTitle {
+    text-align: center;
+    color: #999999;
+    margin-top: 20rpx;
+    font-size: 26rpx;
+  }
 }
 </style>
 
 <template>
-
-  <view
-    class='modal_mask'
-    hidden='{{isScaleModal}}'
-  >
+  <view hidden='{{isScaleModal}}'>
+    <view @tap="handleClose" class="modal_mask"></view>
     <view
-      class="modal_scale  g_transition3s {{isShow ? 'g_scale1' : ''}}"
-      style="height:{{height}}"
+      class="modal_box transition3s {{ isShow ? 'g_scale1': ''}}"
+      id="modal-box"
+      style="height:{{height}}rpx"
     >
       <slot></slot>
+      <view class="modal-content">
+        <view class="modal-bg">
+          <!-- <image src="../images/modalBg.png" class="modal-img-bg"/>
+          -->
+          <image src="{{modalObj.imgIcon}}" wx:if="{{modalObj.imgIcon}}" class="modal-icon" alt/> 
+          <image src="{{modalObj.imgBg}}" class="modal-img-bg" alt/>
+        </view>
+        <view class="modal-title">
+         {{modalObj.title}}
+        </view>
+        <view class="modal-subTitle" wx:if="{{modalObj.subTitle}}">
+          {{modalObj.subTitle}}
+        </view>
+        <view class="weui-cell_btn weui-flex center">
+          <button class="weui-btn_cell weui-btn_cell-gradient" @tap="handleClose">我知道啦</button>
+        </view>
+      </view>
+      <image src="../images/close.png" @tap="handleClose" class="close-icon"/>
     </view>
-  </view>
+ </view>
 
 </template>
 <script>
 import wepy from 'wepy'
 
-export default class modal extends wepy.page {
+export default class actionSheet extends wepy.component {
   props = {
     isScaleModal: Boolean,
-    height: String
-  };
-  data = {
-    isShow: true
-  };
-  methods = {
-
+    height: Number,
+    modalObj: Object
   }
-  //  声明
+  data = {
+    isShow: false,
+  }
+  methods = {
+    handleClose(){
+      this.isScaleModal = true
+    }
+  }
+  watch = {
+    isScaleModal(val) {
+      console.log(val)
+      if (!val) {
+        this.isShow = true
+        this.$apply()
+      }
+    }
+  }
+  // 声明
   events = {
-
-  };
-  // Other properties
+    'showModal':()=> {
+      this.isScaleModal = false
+    }
+  }
 }
 </script>

@@ -8,123 +8,46 @@
     <view class="home-view-header"></view>
     <view class="page page_margin">
       <view class="home-view-box">
-        <view class="weui-cell weui-flex between page_card">
-          <picker
-            mode="date"
-            value="{{date}}"
-            start="2015-09-01"
-            end="2017-09-01"
-            bindchange="bindDateChange"
-            class="picker-box"
-          >
-            <view class="picker weui-flex between">
-              <view class="weui-flex between weui-flex__item">
-                <view>{{dateStart}}</view>
-                <image
-                  src="../../images/dateIcon.png"
-                  class="dateIcon"
-                />
-              </view>
-              <text class="line">-</text>
-              <view class="weui-flex between weui-flex__item">
-                <view>{{dateEnd}}</view>
-                <image
-                  src="../../images/dateIcon.png"
-                  class="dateIcon"
-                />
-              </view>
-            </view>
-          </picker>
-        </view>
-        <view class="page_count-card weui-flex between">
-          <view class="weui-flex start weui-flex__item page_card page_count-card-item">
-            <view class="page_count-card-col1 weui-flex center">
-              <image
-                mode="scaleToFill"
-                src="../../images/homeIcon1.png"
-                class="page_card_icon"
-              />
-            </view>
-            <view class="page_count-card-col2">
-              <view>录入简历</view>
-              <view>200</view>
-            </view>
-          </view>
-          <view class="weui-flex start weui-flex__item page_card page_count-card-item">
-            <view class="page_count-card-col1 weui-flex center">
-              <image
-                mode="scaleToFill"
-                src="../../images/homeIcon2.png"
-                class="page_card_icon"
-              />
-            </view>
-            <view class="page_count-card-col2">
-              <view>录入简历</view>
-              <view>200</view>
-            </view>
-          </view>
-          <view class="weui-flex start weui-flex__item page_card page_count-card-item">
-            <view class="page_count-card-col1 weui-flex center">
-              <image
-                mode="scaleToFill"
-                src="../../images/homeIcon3.png"
-                class="page_card_icon"
-              />
-            </view>
-            <view class="page_count-card-col2">
-              <view>录入简历</view>
-              <view>200</view>
-            </view>
-          </view>
-        </view>
-        <view class="page_card">
-          <view class="page_card_row">
-            <view class="weui-flex between">
-              <view class="page_card_name">薛冰冰</view>
-              <view class="page_card_status">审核通过</view>
-            </view>
-            <view class="weui-flex between">
-              <view class="text-line weui-flex start">
-                <view> 谁送给我：</view>
-                <view class="page_card_col1">丁晓梅</view>
-              </view>
-              <image
-                mode="scaleToFill"
-                src="../../images/right.png"
-                class="page_card_icon"
-              />
-            </view>
-            <view class="weui-flex between">
-              <view class="weui-flex start weui-flex__item">
-                <view>我送给谁：</view>
-                <view class="page_card_col1 text-line">仁达网络科技（上海科技有限</view>
-              </view>
-              <view class="page_card_time">2019年12月15日</view>
-            </view>
-          </view>
-        </view>
+        <resumeQuery></resumeQuery>
+        <resumeCard></resumeCard>
+        <resumeList :list="list"></resumeList>
       </view>
+    </view>
+    <view class="home-add-resume" @tap="addResume">
+      <image src="../../images/add.png" class="add-icon"/>
+      <view class="home-add-text">添加简历</view>
     </view>
   </view>
 </template>
 <script>
 import wepy from 'wepy';
-
 //通过继承自wepy.page的类创建页面逻辑
+import resumeQuery from '../../components/resumeQuery'
+import resumeCard from '../../components/resumeCard'
+import resumeList from '../../components/resumeList'
 export default class home extends wepy.page {
   //可用于页面模板绑定的数据
+  components = {
+    resumeQuery:resumeQuery,
+    resumeCard:resumeCard,
+    resumeList:resumeList
+  }
   data = {
-    motto: 'Hello World',
     userInfo: {},
-    dateStart: '2019-10-20',
-    dateEnd: '2019-10-20'
+    list: [
+      { name: '杨萌萌', status: 0, companyName: '仁达网络科技（上海）有限公司', userName: '丁晓梅' ,time: '2019-10-19'},
+      { name: '杨萌萌', status: 1,companyName: '仁达网络科技（上海）有限公司', userName: '丁晓梅' ,time: '2019-10-19'},
+      { name: '杨萌萌', status: 2,companyName: '仁达网络科技（上海）有限公司', userName: '丁晓梅' ,time: '2019-10-19'},
+      { name: '杨萌萌', status: 2,companyName: '仁达网络科技（上海）有限公司', userName: '丁晓梅' ,time: '2019-10-19'}
+    ]
   };
-
-  //事件处理函数(集中保存在methods对象中)
   methods = {
-
-  };
-
+    addResume () {
+      wx.navigateTo({
+        url: '/pages/home/addInfo'　　// 页面 A
+      })
+    }
+  }
   //页面的生命周期函数
   onLoad () {
     console.log('onLoad');

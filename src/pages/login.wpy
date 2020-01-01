@@ -56,25 +56,6 @@
   .weui-cell_btn {
     padding: 40rpx 0;
   }
-  .mask {
-    width: 100%;
-    height: 100%; /*宽高 100% 铺满屏幕 */
-    background: @weuiActiveMaskWhite;
-    z-index: 9000;
-    position: fixed;
-    top: 0;
-    left: 0;
-  }
-  .modalDlg {
-    width: 100%;
-    height: 45%;
-    z-index: 9900; /* 要比遮罩层的大 */
-    background-color: @weuiBgColorWhite;
-    position: fixed; /* 生成绝对定位的元素，相对于浏览器窗口进行定位。 */
-    bottom: 0;
-    left: 0; /* (100% - width)/2 */
-    border-radius:10px 10px 0px 0px;
-  }
   .box {
     width: 100%;
     margin-top: 32rpx;
@@ -180,7 +161,7 @@
               auto-focus
               placeholder="输入验证码"
             />
-            <text class="code-btn">获取验证码</text>
+            <text class="code-btn" @tap="getCode">{{sendAuthCode ?'获取验证码':auth_time+'s'}}</text>
           </view>
           <view class="weui-cell_btn weui-flex center">
             <button class="weui-btn_cell weui-btn_cell-gradient" @tap="login">登录</button>
@@ -188,38 +169,47 @@
         </view>
       </view>
     </view>
-    <view class="mask" catchtouchmove="preventTouchMove" catchtap="tapcatch" wx:if="{{hasMask}}"></view>
- <view class="modalDlg" wx:if="{{hasMask}}">
-  <!-- 弹窗内容可以自定义 -->
-  <view class='box weui-flex start wrap'>
-    <view class='msg-box'>
-      <view class="msg-title weui-flex start">
-        <image src='../images/my-active.png' class="logo"></image>
-        <text class='title'>{{access.title}} </text>申请
-      </view>
-      <view class='msg'> {{access.msg}}</view>
-     </view>
-    <view class="user-box">
-        <open-data type="userAvatarUrl" class="col-1"></open-data>
-        <view class="col-2">
-          <view>微信个人信息</view>
-          <open-data type="userNickName" class="userNickName"></open-data>
+    <actionSheet
+      :isScaleModal="isScaleModal"
+      :height="height"
+    >
+    <view class='box weui-flex start wrap'>
+      <view class='msg-box'>
+        <view class="msg-title weui-flex start">
+          <image src='../images/my-active.png' class="logo" />
+          <text class='title'>{{access.title}} </text>申请
         </view>
-        <!-- <icon type="success_no_circle" size="22" color="green" /> -->
+        <view class='msg'> {{access.msg}}</view>
+      </view>
+      <view class="user-box">
+          <open-data type="userAvatarUrl" class="col-1"></open-data>
+          <view class="col-2">
+            <view>微信个人信息</view>
+            <open-data type="userNickName" class="userNickName"></open-data>
+          </view>
+          <!-- <icon type="success_no_circle" size="22" color="green" /> -->
+      </view>
+      <view class='btn weui-flex center'>
+        <button bindtap='cancle' class='weui-btn_cell btn-cancle' >{{access.cancle}}</button>
+        <button type='primary' class='weui-btn_cell btn-confirm'>{{access.confirm}}</button>
+      </view>
     </view>
-    <view class='btn weui-flex center'>
-      <button bindtap='cancle' class='weui-btn_cell btn-cancle' >{{access.cancle}}</button>
-      <button type='primary' class='weui-btn_cell btn-confirm'>{{access.confirm}}</button>
-    </view>
-  </view>
-</view>
+    </actionSheet>
+    <modal :isScaleModal="isModal" :height="modalHeight" :modalObj="modalObj"></modal>
   </view>
 </template>
 <script>
 import wepy from 'wepy';
+import actionSheet from '../components/actionSheet'
+import modal from '../components/modal'
+// const imgBg = require('../images/modalBg.png')
 //通过继承自wepy.page的类创建页面逻辑
 export default class Login extends wepy.page {
   //可用于页面模板绑定的数据
+  components = {
+    actionSheet:actionSheet,
+    modal
+  }
   data = {
     motto: 'Hello World',
     userInfo: {},
@@ -231,13 +221,38 @@ export default class Login extends wepy.page {
       msg: '获得你昵称、头像、地区以及性别',
       cancle: '取消',
       confirm: '允许'
-    }
+    },
+    activeIndex: 0,
+    height: 500,
+    isScaleModal: true,
+    isModal:true,
+    modalHeight: 520,
+    modalObj: {
+      title: '您还没有注册哦',
+      subTitle: '(请前往web端进行注册，谢谢配合 网址：)',
+      imgBg:'../images/modalBg.png',
+      imgIcon: '../images/modalIcon1.png'
+    },
+    auth_time: 60,//倒计时
+    sendAuthCode: true,//控制
   };
-
   //事件处理函数(集中保存在methods对象中)
   methods = {
+    getCode(){
+      this.sendAuthCode = false
+      let auth_timetimer = setInterval(() => {
+        this.auth_time--;
+        this.$apply()
+      if (this.auth_time <= 0) {
+          this.sendAuthCode = true;
+          this.$apply()
+          clearInterval(auth_timetimer);
+         }
+      }, 1000)
+    },
     login(){
-      this.hasMask = true
+      // this.$broadcast('showActionSheet')
+      this.$broadcast('showModal')
     },
     getUserInfo(e) {
     console.log(e)

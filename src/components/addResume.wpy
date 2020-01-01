@@ -7,6 +7,12 @@
 .add-view {
   height: 76%;
 }
+.page_down_icon {
+  width: 24rpx;
+  height: 24rpx;
+  margin-left: 10rpx;
+  transform: rotate(90deg);
+}
 </style>
 
 <template>
@@ -16,12 +22,13 @@
         <view class="page_card_row">
           <view
             class="weui-flex between"
-            @tap="viewList"
           >
             <view class="my-text  weui-flex__item"> 姓名：</view>
             <input
               class="weui-input"
-              auto-focus
+              data-name="name"
+              value={{form.name}}
+              @input="changeInput"
               placeholder="请输入姓名"
             />
           </view>
@@ -31,7 +38,9 @@
             <view class="my-text  weui-flex__item">身份证号码：</view>
             <input
               class="weui-input"
-              auto-focus
+              data-name="idCard"
+              value={{form.idCard}}
+              @input="changeInput"
               placeholder="请输入身份证号码"
             />
           </view>
@@ -41,7 +50,9 @@
             <view class="my-text weui-flex__item"> 手机号码：</view>
             <input
               class="weui-input"
-              auto-focus
+              data-name="mobile"
+              value={{form.mobile}}
+              @input="changeInput"
               placeholder="请输入手机号码"
             />
           </view>
@@ -54,17 +65,28 @@
               value="{{index}}"
               range="{{array}}"
             >
-              <view class="my-text-right">
+              <view class="my-text-right weui-flex between">
                 {{array[index]?array[index]:'请选择'}}
+                <image
+                  mode="scaleToFill"
+                  src="../images/right.png"
+                  class="page_down_icon"
+                />
               </view>
             </picker>
           </view>
         </view>
-
         <view class="page_card_row">
           <view class="weui-flex between ">
             <view class="my-text weui-flex__item">住址：</view>
-            <view class="my-text-right">仁达网络科技（上海）有限公司</view>
+             <input
+              class="weui-input"
+              data-name="address"
+              value={{form.address}}
+              @input="changeInput"
+              placeholder="请输入住址"
+            />
+            <!-- <view class="my-text-right">仁达网络科技（上海）有限公司</view> -->
           </view>
         </view>
         <view class="page_card_row">
@@ -75,21 +97,28 @@
               value="{{index}}"
               range="{{eduList}}"
             >
-              <view class="my-text-right">
+              <view class="my-text-right weui-flex between">
                 {{eduList[eduIndex]?eduList[eduIndex]:'请选择'}}
+               <image
+                  mode="scaleToFill"
+                  src="../images/right.png"
+                  class="page_down_icon"
+                />
               </view>
             </picker>
           </view>
         </view>
-      </view>
-      <view class="page_card_row">
-        <view class="weui-flex between">
-          <view class="my-text  weui-flex__item">年龄：</view>
-          <input
-            class="weui-input"
-            auto-focus
-            placeholder="请输入年龄"
-          />
+       <view class="page_card_row">
+          <view class="weui-flex between">
+            <view class="my-text  weui-flex__item">年龄：</view>
+            <input
+              class="weui-input"
+              data-name="age"
+              value={{form.age}}
+              @input="changeInput"
+              placeholder="请输入年龄"
+            />
+          </view>
         </view>
       </view>
     </view>
@@ -101,50 +130,35 @@
 
 <script>
 import wepy from 'wepy';
-import modal from './modal'
 //通过继承自wepy.page的类创建页面逻辑
 export default class addResume extends wepy.component {
-  //可用于页面模板绑定的数据
-  components = {
-    modal: modal
-  }
   data = {
-    userInfo: {},
     array: ['男', '女', '男女不限'],
     eduList: ['高中', '本科', '硕士'],
     isScaleModal: false,
     index: 0,
-    eduIndex: 0
+    eduIndex: 0,
+    form: {}
   };
   //事件处理函数(集中保存在methods对象中)
   methods = {
-    selectType () {
-      this.isScaleModal = true
-      console.log(this.isScaleModal)
-
-      //   wx.showActionSheet({
-      //     itemList: ['简历管理', '团队接单', '内部发单'],
-      //     itemColor: '#333333',
-      //     success (res) {
-      //       console.log(res.tapIndex)
-      //     },
-      //     fail (res) {
-      //       console.log(res.errMsg)
-      //     }
-      //   })
-      // }
-    },
     bindPickerChange (e) {
       this.index = e.detail.value
+      this.form.sex = this.index + 1
     },
     eduPickerChange (e) {
       this.eduIndex = e.detail.value
+      this.form.edu = this.eduIndex + 1
+    },
+    changeInput(e) {
+      let key = e.currentTarget.dataset.name;
+      this.form[key] = e.detail.value
     }
   };
 
   //页面的生命周期函数
   onLoad () {
     console.log('onLoad');
-  };
+  }
 }
 </script>

@@ -1,0 +1,59 @@
+
+<template>
+   <view>
+      <repeat
+          wx:for="{{list}}"
+          wx:key="index"
+        >
+        <view class="page_card">
+          <view class="page_card_row">
+            <view class="weui-flex between">
+              <view class="page_card_name">{{item.name}}</view>
+              <view class="page_card_status {{'page_card_status'+ item.status}}">{{item.status==0?'审核未通过':item.status==1?'审核通过':'面试未参加'}}</view>
+            </view>
+            <view class="weui-flex between">
+              <view class="text-line weui-flex start">
+                <view>谁送给我：</view>
+                <view class="page_card_col1">{{item.userName}}</view>
+              </view>
+              <image
+                mode="scaleToFill"
+                src="../images/right.png"
+                class="page_card_icon"
+              />
+            </view>
+            <view class="weui-flex between">
+              <view class="weui-flex start weui-flex__item">
+                <view>我送给谁：</view>
+                <view class="page_card_col1 text-line">{{item.companyName}}</view>
+              </view>
+              <view class="page_card_time">{{item.time}}</view>
+            </view>
+          </view>
+        </view>
+       </repeat>
+  </view>
+</template>
+
+<script>
+import wepy from 'wepy';
+//通过继承自wepy.page的类创建页面逻辑
+export default class resumeList extends wepy.component {
+  //可用于页面模板绑定的数据
+  props = {
+    list: Array
+  }
+  data = {
+    
+  };
+  //事件处理函数(集中保存在methods对象中)
+  methods = {
+
+  };
+
+  //页面的生命周期函数
+  onLoad () {
+    console.log('onLoad');
+  };
+}
+</script>
