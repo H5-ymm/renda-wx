@@ -1,0 +1,163 @@
+<style lang="less">
+@import '../../style/home.less';
+@height: 40;
+.weui-input {
+  text-align: right;
+}
+.add-view {
+  height: 76%;
+}
+.page_down_icon {
+  width: 24rpx;
+  height: 24rpx;
+  margin-left: 10rpx;
+  transform: rotate(90deg);
+}
+</style>
+<template>
+  <view class="page">
+    <view class="page_margin">
+      <view class="home-view-box">
+        <view class="page_card">
+          <view class="page_card_row">
+            <view class="weui-flex between">
+              <view class="my-text  weui-flex__item">简历录入位置</view>
+              <view class="my-text-right"> 团队接单 </view>
+            </view>
+          </view>
+          <view class="page_card_row">
+            <view class="weui-flex between">
+              <view class="my-text  weui-flex__item"> 职位名称</view>
+              <view class="my-text-right"> 高薪诚聘销售业务精英</view>
+            </view>
+          </view>
+          <view class="page_card_row">
+            <view class="weui-flex between">
+              <view class="my-text  weui-flex__item"> 谁送给我</view>
+              <view class="my-text-right"> 薛冰心</view>
+            </view>
+          </view>
+          <view class="page_card_row">
+            <view class="weui-flex between">
+              <view class="my-text  weui-flex__item">简历状态</view>
+              <view class="page_card_status ">审核未通过</view>
+            </view>
+          </view>
+          <view class="page_card_row">
+            <view class="weui-flex between ">
+              <view class="my-text weui-flex__item"> 姓名</view>
+              <view class="my-text-right"> 杨萌萌</view>
+            </view>
+          </view>
+          <view class="page_card_row">
+            <view class="weui-flex between ">
+              <view class="my-text weui-flex__item"> 身份证号</view>
+              <view class="my-text-right"> 323145199501232561</view>
+            </view>
+          </view>
+          <view class="page_card_row">
+            <view class="weui-flex between ">
+              <view class="my-text weui-flex__item"> 手机号</view>
+              <view class="my-text-right"> 13521671462</view>
+            </view>
+          </view>
+          <view class="page_card_row">
+            <view class="weui-flex between">
+              <view class="my-text weui-flex__item">性别</view>
+              <picker
+                @change="bindPickerChange"
+                value="{{index}}"
+                range="{{array}}"
+              >
+                <view class="my-text-right weui-flex between">
+                  {{array[index]?array[index]:'请选择'}}
+                  <image
+                    mode="scaleToFill"
+                    src="../../images/right.png"
+                    class="page_down_icon"
+                  />
+                </view>
+              </picker>
+            </view>
+          </view>
+          <view class="page_card_row">
+            <view class="weui-flex between">
+              <view class="my-text weui-flex__item">学历</view>
+              <picker
+                @change="eduPickerChange"
+                value="{{index}}"
+                range="{{eduList}}"
+              >
+                <view class="my-text-right weui-flex between">
+                  {{eduList[eduIndex]?eduList[eduIndex]:'请选择'}}
+                  <image
+                    mode="scaleToFill"
+                    src="../../images/right.png"
+                    class="page_down_icon"
+                  />
+                </view>
+              </picker>
+            </view>
+          </view>
+          <view class="page_card_row">
+            <view class="weui-flex between">
+              <view class="my-text  weui-flex__item">年龄</view>
+              <input
+                class="weui-input"
+                data-name="age"
+                value="{{form.age}}"
+                @input="changeInput"
+                placeholder="请输入年龄"
+              />
+            </view>
+          </view>
+          <view class="page_card_row">
+            <view class="weui-flex between ">
+              <view class="my-text weui-flex__item">住址</view>
+              <view class="my-text-right">仁达网络科技（上海）有限公司</view>
+            </view>
+          </view>
+        </view>
+      </view>
+      <view class="weui-cell_btn weui-flex center">
+        <button class="weui-btn_cell .weui-btn_primary">完成</button>
+      </view>
+    </view>
+  </view>
+</template>
+<script>
+import wepy from 'wepy';
+//通过继承自wepy.page的类创建页面逻辑
+export default class resumeDetail extends wepy.page {
+  data = {
+    array: ['男', '女', '男女不限'],
+    eduList: ['高中', '本科', '硕士'],
+    isScaleModal: false,
+    index: 0,
+    eduIndex: 0,
+    form: {
+      age: 24,
+      moile: 1822222009
+    }
+  }
+  //事件处理函数(集中保存在methods对象中)
+  methods = {
+    bindPickerChange (e) {
+      this.index = e.detail.value
+      this.form.sex = this.index + 1
+    },
+    eduPickerChange (e) {
+      this.eduIndex = e.detail.value
+      this.form.edu = this.eduIndex + 1
+    },
+    changeInput (e) {
+      let key = e.currentTarget.dataset.name;
+      this.form[key] = e.detail.value
+    }
+  };
+  //页面的生命周期函数
+  onLoad () {
+    console.log('onLoad');
+  }
+}
+</script>
