@@ -128,6 +128,25 @@
     color: #fff;
     background: #1890ff;
   }
+  .check-icon{
+    font-size: 18px;
+    width: 30rpx;
+    height: 30rpx;
+    margin-right: 10rpx;
+  }
+  .rule-view {
+    font-size: 26rpx;
+    color: #333;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-wrap: wrap;
+    position: relative;
+    z-index: 888;
+    .text {
+      color: #1890ff;
+    }
+  }
 }
 </style>
 
@@ -170,6 +189,25 @@
               class="weui-btn_cell weui-btn_cell-gradient"
               @tap="login"
             >登录</button>
+          </view>
+           <view class="rule-view">
+            <image
+              wx-if="{{!checked}}"
+              src="../images/check.png"
+              mode="scaleToFill"
+              class="check-icon"
+              @tap="checkedRule({{checked}})"
+            />
+           
+             <image
+              wx-if="{{checked}}"
+              src="../images/check1.png"
+              mode="scaleToFill"
+              @tap="checkedRule({{checked}})"
+              class="check-icon"
+            />
+            我已认真阅读并同意<view class="text" @tap="router">《用户协议及隐私政策》</view>和
+            <view class="text" @tap="routerPer">《个人信息保护政策》</view>
           </view>
         </view>
       </view>
@@ -259,9 +297,28 @@ export default class Login extends wepy.page {
     },
     auth_time: 60,//倒计时
     sendAuthCode: true,//控制
+    checked:false
   };
   //事件处理函数(集中保存在methods对象中)
   methods = {
+    checkedRule(checked){
+      this.checked = !checked
+      if (this.checked) {
+        wx.navigateTo({
+          url: '/pages/rule'　　// 页面 A
+        })
+      }
+    },
+    router(){
+      wx.navigateTo({
+        url: '/pages/rule'　　// 页面 A
+      })
+    },
+    routerPer(){
+      wx.navigateTo({
+        url: '/pages/personRule'　　// 页面 A
+      })
+    },
     getCode () {
       this.sendAuthCode = false
       let auth_timetimer = setInterval(() => {
@@ -275,7 +332,14 @@ export default class Login extends wepy.page {
       }, 1000)
     },
     login () {
-      // this.$broadcast('showActionSheet')
+      if (!this.checked) {
+        wx.showToast({
+          title: '请先阅读注册协议',
+          icon: 'none',
+          duration: 2000
+        })
+        return
+      }
       this.$broadcast('showModal')
     },
     getUserInfo (e) {

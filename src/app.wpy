@@ -115,7 +115,7 @@ import 'wepy-async-function';
 export default class extends wepy.app {
 
   config = {
-    'pages': [
+    'pages': [   
       'pages/home/index',
       'pages/home/resumeDetail',
       'pages/home/addInfo',
@@ -123,7 +123,9 @@ export default class extends wepy.app {
       'pages/my/index',
       'pages/my/userInfo',
       'pages/my/userBind',
-      'pages/login'
+      'pages/login',
+      'pages/rule',
+      'pages/personRule'
     ],
     'window': {
       'navigationBarTextStyle': 'white',
