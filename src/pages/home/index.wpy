@@ -14,13 +14,14 @@
       </view>
     </view>
     <view class="home-add-resume" @tap="addResume">
-      <image src="../../images/add.png" class="add-icon"/>
+      <image src="../../images/add.png" class="add-icon" />
       <view class="home-add-text">添加简历</view>
     </view>
   </view>
 </template>
 <script>
-import wepy from 'wepy';
+import wepy from 'wepy'
+let $http = require('../../http.js')
 //通过继承自wepy.page的类创建页面逻辑
 import resumeQuery from '../../components/resumeQuery'
 import resumeCard from '../../components/resumeCard'
@@ -28,29 +29,55 @@ import resumeList from '../../components/resumeList'
 export default class home extends wepy.page {
   //可用于页面模板绑定的数据
   components = {
-    resumeQuery:resumeQuery,
-    resumeCard:resumeCard,
-    resumeList:resumeList
+    resumeQuery: resumeQuery,
+    resumeCard: resumeCard,
+    resumeList: resumeList
   }
   data = {
     userInfo: {},
     list: [
-      { name: '杨萌萌', status: 0, companyName: '仁达网络科技（上海）有限公司', userName: '丁晓梅' ,time: '2019-10-19'},
-      { name: '杨萌萌', status: 1,companyName: '仁达网络科技（上海）有限公司', userName: '丁晓梅' ,time: '2019-10-19'},
-      { name: '杨萌萌', status: 2,companyName: '仁达网络科技（上海）有限公司', userName: '丁晓梅' ,time: '2019-10-19'},
-      { name: '杨萌萌', status: 2,companyName: '仁达网络科技（上海）有限公司', userName: '丁晓梅' ,time: '2019-10-19'}
+      {
+        name: '杨萌萌',
+        status: 0,
+        companyName: '仁达网络科技（上海）有限公司',
+        userName: '丁晓梅',
+        time: '2019-10-19'
+      },
+      {
+        name: '杨萌萌',
+        status: 1,
+        companyName: '仁达网络科技（上海）有限公司',
+        userName: '丁晓梅',
+        time: '2019-10-19'
+      },
+      {
+        name: '杨萌萌',
+        status: 2,
+        companyName: '仁达网络科技（上海）有限公司',
+        userName: '丁晓梅',
+        time: '2019-10-19'
+      },
+      {
+        name: '杨萌萌',
+        status: 2,
+        companyName: '仁达网络科技（上海）有限公司',
+        userName: '丁晓梅',
+        time: '2019-10-19'
+      }
     ]
-  };
+  }
   methods = {
-    addResume () {
+    addResume() {
       wx.navigateTo({
-        url: '/pages/home/addInfo'　　// 页面 A
+        url: '/pages/home/addInfo' // 页面 A
       })
     }
   }
   //页面的生命周期函数
-  onLoad () {
-    console.log('onLoad');
-  };
+  onLoad() {
+    $http.http('/Userinfo/getUserInfo', { uid: 2 }).then(res => {
+      console.log(res)
+    })
+  }
 }
 </script>

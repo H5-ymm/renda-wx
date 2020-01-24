@@ -10,41 +10,34 @@
             <view class="weui-flex between">
               <view class="my-text">头像</view>
               <view class="weui-flex between">
-                <image
-                  src="../../images/img1.png"
-                  alt=""
-                  class="my-head"
-                >
-                  <image
-                    mode="scaleToFill"
-                    src="../../images/right.png"
-                    class="page_card_right-icon"
-                  />
+                <image src="{{head_img}}" wx-if="{{head_img}}" alt="" class="my-head">
+                  <image src="../../images/img1.png" alt="" wx-if="{{!head_img}}" class="my-head">
+                    <image mode="scaleToFill" src="../../images/right.png" class="page_card_right-icon" />
               </view>
             </view>
           </view>
           <view class="page_card_row">
             <view class="weui-flex between">
               <view class="my-text">姓名</view>
-              <view class="my-text-right"> 杨萌萌</view>
+              <view class="my-text-right"> {{userInfo.user_name}}</view>
             </view>
           </view>
           <view class="page_card_row">
             <view class="weui-flex between">
               <view class="my-text">手机号码</view>
-              <view class="my-text-right">18124678953</view>
+              <view class="my-text-right">{{userInfo.mobile}}</view>
             </view>
           </view>
           <view class="page_card_row">
             <view class="weui-flex between">
               <view class="my-text">邮箱</view>
-              <view class="my-text-right weui-flex__item">1257868594@qq.com</view>
+              <view class="my-text-right weui-flex__item">{{userInfo.email}}</view>
             </view>
           </view>
           <view class="page_card_row">
             <view class="weui-flex between">
               <view class="my-text">住址</view>
-              <view class="my-text-right weui-flex__item">上海 上海市浦东新区金海路2588号 金桥科技园1幢A栋310室</view>
+              <view class="my-text-right weui-flex__item">{{address}}</view>
             </view>
           </view>
         </view>
@@ -53,7 +46,7 @@
   </view>
 </template>
 <script>
-import wepy from 'wepy';
+import wepy from 'wepy'
 
 //通过继承自wepy.page的类创建页面逻辑
 export default class my extends wepy.page {
@@ -64,18 +57,30 @@ export default class my extends wepy.page {
   data = {
     motto: 'Hello World',
     userInfo: {},
-    dateStart: '2019-10-20',
-    dateEnd: '2019-10-20'
-  };
-
+    head_img: ''
+  }
+  computed = {
+    address() {
+      return (
+        (this.userInfo.provinceName ? this.userInfo.provinceName : '') +
+        (this.userInfo.cityName ? this.userInfo.cityName : '') +
+        (this.userInfo.address ? this.userInfo.address : '')
+      )
+    }
+  }
   //事件处理函数(集中保存在methods对象中)
-  methods = {
-
-  };
+  methods = {}
 
   //页面的生命周期函数
-  onLoad () {
-    console.log('onLoad');
-  };
+  onLoad() {
+    if (wx.getStorageSync('userInfo')) {
+      this.userInfo = JSON.parse(wx.getStorageSync('userInfo'))
+      if (this.userInfo.head_img) {
+        this.head_img = 'http://tiantianxsg.com:39888/' + this.userInfo.head_img
+      }
+      this.$apply()
+      console.log(this.userInfo)
+    }
+  }
 }
 </script>

@@ -95,75 +95,44 @@
             <view class="step-item weui-flex__item {{stepActive>=3?'active': ''}}">3.确认信息</view>
           </view>
         </view>
-        <view
-          class="weui-cell weui-cell-switch page_card weui-flex wrap center"
-          @tap="changeInput"
-        >
-          <image
-            src="../../images/change.png"
-            class="step-icon"
-          />
+        <view class="weui-cell weui-cell-switch page_card weui-flex wrap center" @tap="changeInput">
+          <image src="../../images/change.png" class="step-icon" />
           <view class="step-text">更换方式</view>
         </view>
       </view>
-      <addBaseInfo
-        wx:if="{{stepActive==1}}"
-        :resumeType="resumeType"
-        :baseInfo="baseInfo"
-        @showActionSheet="showActionSheet"
-        @submit="submit"
-      ></addBaseInfo>
+      <addBaseInfo wx:if="{{stepActive==1}}" :resumeType="resumeType" :baseInfo="baseInfo" @showActionSheet="showActionSheet" @submit="submit"></addBaseInfo>
       <addResume wx:if="{{stepActive==2&&isInput}}"></addResume>
       <scanIdCard wx:if="{{stepActive==2&&!isInput}}"></scanIdCard>
       <addResume wx:if="{{stepActive==3}}"></addResume>
     </view>
-    <actionSheet
-      :isScaleModal="isScaleModal"
-      :height="height"
-    >
+    <actionSheet :isScaleModal="isScaleModal" :height="height">
       <view class="page_card modal-page_card">
-        <repeat
-          wx:for="{{list}}"
-          wx:key="index"
-        >
-          <view
-            class="page_card_row"
-            @tap="selectChange({{index}},{{item}})"
-          >
+        <repeat wx:for="{{list}}" wx:key="index">
+          <view class="page_card_row" @tap="selectChange({{index}},{{item}})">
             <view class="weui-flex between modal-page_item">
               <view class="my-text weui-flex__item {{activeIndex==index?'my-text-active':''}}">
                 {{item}}
               </view>
-              <image
-                wx:if="{{activeIndex==index}}"
-                src="../../images/selected.png"
-                class="selected"
-              />
+              <image wx:if="{{activeIndex==index}}" src="../../images/selected.png" class="selected" />
             </view>
           </view>
         </repeat>
         <view class="weui-cell_btn weui-flex center">
-          <button
-            class="weui-btn_cell .weui-btn_primary"
-            @tap="save"
-          >确定</button>
+          <button class="weui-btn_cell .weui-btn_primary" @tap="save">确定</button>
         </view>
       </view>
     </actionSheet>
-    <modal
-      :isScaleModal="isModal"
-      :height="modalHeight"
-      :modalObj="modalObj"
-    ></modal>
+    <modal :isScaleModal="isModal" :height="modalHeight" :modalObj="modalObj"></modal>
   </view>
 </template>
 <script>
-import wepy from 'wepy';
+import wepy from 'wepy'
 import addBaseInfo from '../../components/addBaseInfo'
 import addResume from '../../components/addResume'
 import scanIdCard from '../../components/scanIdCard'
 import actionSheet from '../../components/actionSheet'
 import modal from '../../components/modal'
+let $http = require('../../http.js')
 //通过继承自wepy.page的类创建页面逻辑
 export default class home extends wepy.page {
   //可用于页面模板绑定的数据
@@ -175,12 +144,9 @@ export default class home extends wepy.page {
     modal: modal
   }
   data = {
-    userInfo: {},
-    comName: "addBaseInfo",
+    comName: 'addBaseInfo',
     isScaleModal: true,
-    list: [
-      '简历管理', '团队接单', '内部发单'
-    ],
+    list: ['简历管理', '团队接单', '内部发单'],
     activeIndex: 0,
     height: 200,
     isModal: true,
@@ -195,44 +161,48 @@ export default class home extends wepy.page {
     isInput: true,
     stepActive: 1,
     resumeInfo: {},
-    baseInfo: {}
-  };
+    baseInfo: {},
+    params: {
+      uid: 2,
+      name: '',
+      age: '',
+      mobile: '',
+      sex: '',
+      education: '',
+      invoiceId: ''
+    }
+  }
   events = {
-    'showActionSheet': () => {
+    showActionSheet: () => {
       // this.isScaleModal = false
       // this.$apply()
       this.$broadcast('showActionSheet')
       // console.log(this.isScaleModal)
     },
-    'submit': data => {
+    submit: data => {
       this.stepActive = this.stepActive + 1
     }
   }
   //事件处理函数(集中保存在methods对象中)
   methods = {
-    changeInput () {
+    changeInput() {
       this.isInput = !this.isInput
       this.stepActive = 1
       this.resumeInfo = {}
     },
-    selectChange (index, item) {
+    selectChange(index, item) {
       this.activeIndex = index
       this.resumeType = item
       wx.setStorageSync('resumeType', this.resumeType)
     },
-    save () {
+    save() {
       this.$broadcast('save', this.resumeType)
       this.$broadcast('showActionSheet')
-    },
-    viewList () {
-      wx.navigateTo({
-        url: '/pages/home/list'　　// 页面 A
-      })
-    },
-  };
+    }
+  }
 
   //页面的生命周期函数
-  onLoad (options) {
+  onLoad(options) {
     if (options.query) {
       this.baseInfo = JSON.parse(options.query)
       this.baseInfo.resumeType = wx.getStorageSync('resumeType')

@@ -4,66 +4,37 @@
 <template>
   <view class="page_botttom page">
     <view class="my-view-header">
-      <image
-        src="../../images/bg.png"
-        class="my-view-header-bg"
-        mode="scaleToFill"
-        alt=""
-      >
-        <view class="my-view-userInfo">
-          <image
-            src="../../images/img1.png"
-            alt=""
-            class="my-avatar"
-          >
-            <view class="my-user-name">杨萌萌</view>
-            <view class="my-user-mobile">18337806536</view>
+      <image src="../../images/bg.png" class="my-view-header-bg" mode="scaleToFill" alt="">
+        <view class="my-view-userInfo" wx-if="{{userInfo}}">
+          <image src="{{head_img}}" wx-if="{{head_img}}" alt="" class="my-avatar">
+            <image src="../../images/img1.png" alt="" wx-if="{{!head_img}}" class="my-avatar">
+
+              <view class="my-user-name">{{userInfo.user_name}}</view>
+              <view class="my-user-mobile">{{userInfo.mobile}}</view>
         </view>
     </view>
     <view class="page_margin my-view my-view-main">
       <view class="my-view-box">
         <view class="page_card">
           <view class="page_card_row">
-            <view
-              class="weui-flex between"
-              @tap="viewUserInfo"
-            >
+            <view class="weui-flex between" @tap="viewUserInfo">
               <view class="weui-flex start">
-                <image
-                  src="../../images/icon1.png"
-                  alt=""
-                  class="my-icon"
-                >
+                <image src="../../images/icon1.png" alt="" class="my-icon">
                   <view class="my-text">账户信息</view>
               </view>
               <view>
-                <image
-                  mode="scaleToFill"
-                  src="../../images/right.png"
-                  class="page_card_icon"
-                />
+                <image mode="scaleToFill" src="../../images/right.png" class="page_card_icon" />
               </view>
             </view>
           </view>
           <view class="page_card_row">
-            <view
-              class="weui-flex between"
-              @tap="viewUserBind"
-            >
+            <view class="weui-flex between" @tap="viewUserBind">
               <view class="weui-flex start">
-                <image
-                  src="../../images/icon2.png"
-                  alt=""
-                  class="my-icon"
-                >
+                <image src="../../images/icon2.png" alt="" class="my-icon">
                   <view class="my-text">账户绑定</view>
               </view>
               <view>
-                <image
-                  mode="scaleToFill"
-                  src="../../images/right.png"
-                  class="page_card_icon"
-                />
+                <image mode="scaleToFill" src="../../images/right.png" class="page_card_icon" />
               </view>
             </view>
           </view>
@@ -73,39 +44,45 @@
   </view>
 </template>
 <script>
-import wepy from 'wepy';
-
+import wepy from 'wepy'
+let $http = require('../../http.js')
 //通过继承自wepy.page的类创建页面逻辑
 export default class my extends wepy.page {
   //可用于页面模板绑定的数据
   data = {
     userInfo: {},
-    dateStart: '2019-10-20',
-    dateEnd: '2019-10-20'
-  };
+    head_img: ''
+  }
 
   config = {
     navigationBarTitleText: '我的'
   }
   //事件处理函数(集中保存在methods对象中)
   methods = {
-    viewUserInfo () {
-      console.log(1)
+    viewUserInfo() {
       wx.navigateTo({
-        url: '/pages/my/userInfo'　　// 页面 A
+        url: '/pages/my/userInfo' // 页面 A
       })
     },
 
-    viewUserBind () {
+    viewUserBind() {
       wx.navigateTo({
-        url: '/pages/my/userBind'　　// 页面 A
+        url: '/pages/my/userBind' // 页面 A
       })
     }
-  };
+  }
 
   //页面的生命周期函数
-  onLoad () {
-    console.log('onLoad');
-  };
+  onLoad() {
+    $http.http('/Userinfo/getUserInfo', { uid: 2 }).then(res => {
+      this.userInfo = res.data
+      if (res.data.head_img) {
+        this.head_img = 'http://tiantianxsg.com:39888/' + res.data.head_img
+      }
+      this.$apply()
+      wx.setStorageSync('userInfo', JSON.stringify(this.userInfo))
+    })
+    console.log('onLoad')
+  }
 }
 </script>

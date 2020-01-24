@@ -9,31 +9,34 @@
           <view class="page_card_row">
             <view class="weui-flex between">
               <view class="my-text">支付宝</view>
-              <view class="page_card_status page_card_status1">未绑定</view>
+              <view class="page_card_status page_card_status1 {{!bindInfo.alipay_status? '': 'page_card_status2'}}"> {{bindInfo.alipay_status? bindInfo.account_no:'未绑定'}}</view>
             </view>
           </view>
           <view class="page_card_row">
             <view class="weui-flex between">
               <view class="my-text">银行卡</view>
-              <view class="my-text-right"> 6******************8 </view>
+              <view class="my-text-right" wx-if="{{bindInfo.bank_status}}"> {{bindInfo.bank_account_no}}</view>
+              <view class="page_card_status page_card_status1" wx:else>未绑定</view>
             </view>
           </view>
           <view class="page_card_row">
             <view class="weui-flex between">
               <view class="my-text">手机号码</view>
-              <view class="my-text-right">18124678953</view>
+              <view class="my-text-right">{{bindInfo.mobile}}</view>
             </view>
           </view>
           <view class="page_card_row">
             <view class="weui-flex between">
               <view class="my-text">身份证</view>
-              <view class="my-text-right">4****************2</view>
+              <view class="my-text-right" wx-if="{{bindInfo.idcard_status}}">{{bindInfo.id_card}}</view>
+              <view class="page_card_status page_card_status1" wx:else>未绑定</view>
             </view>
           </view>
           <view class="page_card_row">
             <view class="weui-flex between">
               <view class="my-text">邮箱</view>
-              <view class="my-text-right">1257868594@qq.com</view>
+              <view class="my-text-right" wx-if="{{bindInfo.email}}">{{bindInfo.email}}</view>
+              <view class="page_card_status page_card_status1" wx:else>未绑定</view>
             </view>
           </view>
         </view>
@@ -42,28 +45,43 @@
   </view>
 </template>
 <script>
-import wepy from 'wepy';
-
+import wepy from 'wepy'
+let $http = require('../../http.js')
 //通过继承自wepy.page的类创建页面逻辑
 export default class my extends wepy.page {
   //可用于页面模板绑定的数据
   data = {
-    motto: 'Hello World',
     userInfo: {},
-    dateStart: '2019-10-20',
-    dateEnd: '2019-10-20'
-  };
+    bindInfo: {}
+  }
   config = {
     navigationBarTitleText: '账户绑定'
   }
   //事件处理函数(集中保存在methods对象中)
-  methods = {
-
-  };
-
+  methods = {}
+  getBindInfo() {
+    $http.http('/Userinfo/userBinkInfo', { uid: 2 }).then(res => {
+      this.bindInfo = res.data
+      if (
+        this.bindInfo.bank_account_no &&
+        this.bindInfo.bank_account_no.length > 8
+      ) {
+        ;`${this.bindInfo.bank_account_no.substring(0, 4)} ${'*'
+          .repeat(this.bindInfo.bank_account_no.length - 8)
+          .replace(
+            /(.{4})/g,
+            `
+        $1 `
+          )}${
+          this.bindInfo.bank_account_no.length % 4 ? ' ' : ''
+        }${this.bindInfo.bank_account_no.slice(-4)}`
+      }
+      this.$apply()
+    })
+  }
   //页面的生命周期函数
-  onLoad () {
-    console.log('onLoad');
-  };
+  onLoad() {
+    this.getBindInfo()
+  }
 }
 </script>
