@@ -1,67 +1,67 @@
 
 <template>
-     <view class="page_count-card weui-flex between">
-          <view class="weui-flex start weui-flex__item page_card page_count-card-item">
-            <view class="page_count-card-col1 weui-flex center">
-              <image
-                mode="scaleToFill"
-                src="../images/homeIcon1.png"
-                class="page_card_icon"
-              />
-            </view>
-            <view class="page_count-card-col2">
-              <view>录入简历</view>
-              <view>200</view>
-            </view>
-          </view>
-          <view class="weui-flex start weui-flex__item page_card page_count-card-item">
-            <view class="page_count-card-col1 weui-flex center">
-              <image
-                mode="scaleToFill"
-                src="../images/homeIcon2.png"
-                class="page_card_icon"
-              />
-            </view>
-            <view class="page_count-card-col2">
-              <view>已通过</view>
-              <view>200</view>
-            </view>
-          </view>
-          <view class="weui-flex start weui-flex__item page_card page_count-card-item">
-            <view class="page_count-card-col1 weui-flex center">
-              <image
-                mode="scaleToFill"
-                src="../images/homeIcon3.png"
-                class="page_card_icon"
-              />
-            </view>
-            <view class="page_count-card-col2">
-              <view>未通过</view>
-              <view>200</view>
-            </view>
-          </view>
-        </view>
+  <view class="page_count-card weui-flex between">
+    <view class="weui-flex start weui-flex__item page_card page_count-card-item">
+      <view class="page_count-card-col1 weui-flex center">
+        <image mode="scaleToFill" src="../images/homeIcon1.png" class="page_card_icon" />
+      </view>
+      <view class="page_count-card-col2">
+        <view>录入简历</view>
+        <view>{{resumeTotal.total}}</view>
+      </view>
+    </view>
+    <view class="weui-flex start weui-flex__item page_card page_count-card-item">
+      <view class="page_count-card-col1 weui-flex center">
+        <image mode="scaleToFill" src="../images/homeIcon2.png" class="page_card_icon" />
+      </view>
+      <view class="page_count-card-col2">
+        <view>已通过</view>
+        <view>{{resumeTotal.pass}}</view>
+      </view>
+    </view>
+    <view class="weui-flex start weui-flex__item page_card page_count-card-item">
+      <view class="page_count-card-col1 weui-flex center">
+        <image mode="scaleToFill" src="../images/homeIcon3.png" class="page_card_icon" />
+      </view>
+      <view class="page_count-card-col2">
+        <view>未通过</view>
+        <view>{{resumeTotal.nopass}}</view>
+      </view>
+    </view>
+  </view>
 </template>
 
 <script>
-import wepy from 'wepy';
+import wepy from 'wepy'
+let $http = require('../http.js')
 //通过继承自wepy.page的类创建页面逻辑
 export default class resumeCard extends wepy.component {
   //可用于页面模板绑定的数据
-  props = {
-    list: Array
-  }
+  props = {}
   data = {
-    
-  };
+    resumeTotal: {},
+    params: {
+      uid: 2
+    }
+  }
   //事件处理函数(集中保存在methods对象中)
-  methods = {
-
-  };
-
+  methods = {}
+  getCount() {
+    $http.http('/Wxresume/resumecount ', this.params).then(res => {
+      this.resumeTotal = res.data
+      this.$apply()
+    })
+  }
+  events = {
+    changeDate: val => {
+      this.params = Object.assign(this.params, val)
+      this.getCount()
+    }
+  }
   //页面的生命周期函数
-  onLoad () {
-    console.log('onLoad');
-  };
+  onLoad() {
+    this.getCount()
+  }
+  //页面的生命周期函数
 }
 </script>

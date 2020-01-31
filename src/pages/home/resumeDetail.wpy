@@ -61,24 +61,17 @@
           <view class="page_card_row">
             <view class="weui-flex between ">
               <view class="my-text weui-flex__item"> 手机号</view>
-              <view class="my-text-right"> 13521671462</view>
+              <input class="weui-input" data-name="mobile" value="{{form.mobile}}" @input="changeInput" placeholder="请输入手机号" />
+              <!-- <view class="my-text-right"> 13521671462</view> -->
             </view>
           </view>
           <view class="page_card_row">
             <view class="weui-flex between">
               <view class="my-text weui-flex__item">性别</view>
-              <picker
-                @change="bindPickerChange"
-                value="{{index}}"
-                range="{{array}}"
-              >
+              <picker @change="bindPickerChange" value="{{index}}" range="{{array}}">
                 <view class="my-text-right weui-flex between">
                   {{array[index]?array[index]:'请选择'}}
-                  <image
-                    mode="scaleToFill"
-                    src="../../images/right.png"
-                    class="page_down_icon"
-                  />
+                  <image mode="scaleToFill" src="../../images/right.png" class="page_down_icon" />
                 </view>
               </picker>
             </view>
@@ -86,18 +79,10 @@
           <view class="page_card_row">
             <view class="weui-flex between">
               <view class="my-text weui-flex__item">学历</view>
-              <picker
-                @change="eduPickerChange"
-                value="{{index}}"
-                range="{{eduList}}"
-              >
+              <picker @change="eduPickerChange" value="{{index}}" range="{{eduList}}">
                 <view class="my-text-right weui-flex between">
                   {{eduList[eduIndex]?eduList[eduIndex]:'请选择'}}
-                  <image
-                    mode="scaleToFill"
-                    src="../../images/right.png"
-                    class="page_down_icon"
-                  />
+                  <image mode="scaleToFill" src="../../images/right.png" class="page_down_icon" />
                 </view>
               </picker>
             </view>
@@ -105,13 +90,7 @@
           <view class="page_card_row">
             <view class="weui-flex between">
               <view class="my-text  weui-flex__item">年龄</view>
-              <input
-                class="weui-input"
-                data-name="age"
-                value="{{form.age}}"
-                @input="changeInput"
-                placeholder="请输入年龄"
-              />
+              <input class="weui-input" data-name="age" value="{{form.age}}" @input="changeInput" placeholder="请输入年龄" />
             </view>
           </view>
           <view class="page_card_row">
@@ -129,7 +108,7 @@
   </view>
 </template>
 <script>
-import wepy from 'wepy';
+import wepy from 'wepy'
 //通过继承自wepy.page的类创建页面逻辑
 export default class resumeDetail extends wepy.page {
   data = {
@@ -140,27 +119,30 @@ export default class resumeDetail extends wepy.page {
     eduIndex: 0,
     form: {
       age: 24,
-      moile: 1822222009
+      mobile: 1822222009
     }
+  }
+  config = {
+    navigationBarTitleText: '简历信息'
   }
   //事件处理函数(集中保存在methods对象中)
   methods = {
-    bindPickerChange (e) {
+    bindPickerChange(e) {
       this.index = e.detail.value
       this.form.sex = this.index + 1
     },
-    eduPickerChange (e) {
+    eduPickerChange(e) {
       this.eduIndex = e.detail.value
       this.form.edu = this.eduIndex + 1
     },
-    changeInput (e) {
-      let key = e.currentTarget.dataset.name;
+    changeInput(e) {
+      let key = e.currentTarget.dataset.name
       this.form[key] = e.detail.value
     }
-  };
+  }
   //页面的生命周期函数
-  onLoad () {
-    console.log('onLoad');
+  onLoad() {
+    console.log('onLoad')
   }
 }
 </script>

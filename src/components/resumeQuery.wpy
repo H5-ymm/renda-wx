@@ -1,70 +1,61 @@
 
 <template>
-    <view class="weui-cell weui-flex between page_card">
-          <picker
-            mode="date"
-            value="{{dateStart}}"
-            start="2015-09-01"
-            end="2017-09-01"
-            @change="bindDateChange"
-            class="picker-box"
-          >
-            <view class="picker weui-flex between">
-              <view class="weui-flex between weui-flex__item">
-                <view>{{dateStart}}</view>
-                <image
-                  src="../images/dateIcon.png"
-                  class="dateIcon"
-                />
-              </view>
-            </view>
-          </picker>
-          <text class="line">-</text>
-           <picker
-            mode="date"
-            value="{{dateEnd}}"
-            start="2015-09-01"
-            end="2017-09-01"
-            @change="bindEndDateChange"
-            class="picker-box"
-          >
-            <view class="picker weui-flex between">
-              <view class="weui-flex between weui-flex__item">
-                <view>{{dateEnd}}</view>
-                <image
-                  src="../images/dateIcon.png"
-                  class="dateIcon"
-                />
-              </view>
-            </view>
-          </picker>
+  <view class="weui-cell weui-flex between page_card">
+    <picker mode="date" value="{{dateStart}}" @change="bindDateChange" class="picker-box">
+      <view class="picker weui-flex between">
+        <view class="weui-flex between weui-flex__item">
+          <view>{{dateStart}}</view>
+          <image src="../images/dateIcon.png" class="dateIcon" />
         </view>
+      </view>
+    </picker>
+    <text class="line">-</text>
+    <picker mode="date" value="{{dateEnd}}" @change="bindEndDateChange" class="picker-box">
+      <view class="picker weui-flex between">
+        <view class="weui-flex between weui-flex__item">
+          <view>{{dateEnd}}</view>
+          <image src="../images/dateIcon.png" class="dateIcon" />
+        </view>
+      </view>
+    </picker>
+  </view>
 </template>
 
 <script>
-import wepy from 'wepy';
+import wepy from 'wepy'
+let util = require('../util.js')
 //通过继承自wepy.page的类创建页面逻辑
 export default class resumeQuery extends wepy.component {
   //可用于页面模板绑定的数据
-  props = {
-    list: Array
-  }
   data = {
-    dateStart: '2019-10-20',
-    dateEnd: '2019-10-20',
-  };
+    dateStart: '选择开始日期',
+    dateEnd: '选择结束日期',
+    params: {
+      starttime: '',
+      endtime: ''
+    }
+  }
+  watch = {
+    params(val) {
+      if (val.starttime != '' && val.endtime != '') {
+        this.$emit('changeDate', val)
+      }
+    }
+  }
   //事件处理函数(集中保存在methods对象中)
   methods = {
-    bindDateChange(e){
-     this.dateStart = e.detail.value
+    bindDateChange(e) {
+      this.dateStart = e.detail.value
+      let starttime = new Date(e.detail.value).getTime() + ''
+      this.params.starttime = starttime.substr(0, 10)
     },
     bindEndDateChange(e) {
       this.dateEnd = e.detail.value
+      let endtime = new Date(e.detail.value).getTime() + ''
+      this.params.endtime = endtime.substr(0, 10)
     }
   }
   //页面的生命周期函数
-  onLoad () {
-    console.log('onLoad');
-  };
+  onLoad() {}
 }
 </script>

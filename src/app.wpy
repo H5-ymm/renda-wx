@@ -164,7 +164,8 @@ export default class extends wepy.app {
     this.use('requestfix')
   }
   globalData = {
-    userInfo: {}
+    userInfo: {},
+    uid: ''
   }
 }
 </script>

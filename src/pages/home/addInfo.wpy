@@ -177,9 +177,14 @@ export default class home extends wepy.page {
       // this.isScaleModal = false
       // this.$apply()
       this.$broadcast('showActionSheet')
-      // console.log(this.isScaleModal)
     },
     submit: data => {
+      // 发请求
+      if (this.stepActive == 3) {
+        wx.switchTab({
+          url: '/pages/home/index'
+        })
+      }
       this.stepActive = this.stepActive + 1
     }
   }

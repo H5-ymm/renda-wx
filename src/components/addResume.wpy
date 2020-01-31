@@ -20,58 +20,30 @@
     <view class="home-view-box">
       <view class="page_card">
         <view class="page_card_row">
-          <view
-            class="weui-flex between"
-          >
-            <view class="my-text  weui-flex__item"> 姓名：</view>
-            <input
-              class="weui-input"
-              data-name="name"
-              value={{form.name}}
-              @input="changeInput"
-              placeholder="请输入姓名"
-            />
+          <view class="weui-flex between">
+            <view class="my-text  weui-flex__item my-text-require"> 姓名：</view>
+            <input class="weui-input" data-name="name" value={{form.name}} @input="changeInput" placeholder="请输入姓名" />
           </view>
         </view>
         <view class="page_card_row">
           <view class="weui-flex between">
-            <view class="my-text  weui-flex__item">身份证号码：</view>
-            <input
-              class="weui-input"
-              data-name="idCard"
-              value={{form.idCard}}
-              @input="changeInput"
-              placeholder="请输入身份证号码"
-            />
+            <view class="my-text  weui-flex__item my-text-require">身份证号码：</view>
+            <input class="weui-input" data-name="idCard" value={{form.idCard}} @input="changeInput" placeholder="请输入身份证号码" />
           </view>
         </view>
         <view class="page_card_row">
           <view class="weui-flex between ">
-            <view class="my-text weui-flex__item"> 手机号码：</view>
-            <input
-              class="weui-input"
-              data-name="mobile"
-              value={{form.mobile}}
-              @input="changeInput"
-              placeholder="请输入手机号码"
-            />
+            <view class="my-text weui-flex__item my-text-require"> 手机号码：</view>
+            <input class="weui-input" data-name="mobile" value={{form.mobile}} @input="changeInput" placeholder="请输入手机号码" />
           </view>
         </view>
         <view class="page_card_row">
           <view class="weui-flex between">
             <view class="my-text weui-flex__item">性别：</view>
-            <picker
-              @change="bindPickerChange"
-              value="{{index}}"
-              range="{{array}}"
-            >
+            <picker @change="bindPickerChange" value="{{index}}" range="{{array}}">
               <view class="my-text-right weui-flex between">
                 {{array[index]?array[index]:'请选择'}}
-                <image
-                  mode="scaleToFill"
-                  src="../images/right.png"
-                  class="page_down_icon"
-                />
+                <image mode="scaleToFill" src="../images/right.png" class="page_down_icon" />
               </view>
             </picker>
           </view>
@@ -79,86 +51,113 @@
         <view class="page_card_row">
           <view class="weui-flex between ">
             <view class="my-text weui-flex__item">住址：</view>
-             <input
-              class="weui-input"
-              data-name="address"
-              value={{form.address}}
-              @input="changeInput"
-              placeholder="请输入住址"
-            />
+            <input class="weui-input" data-name="address" value={{form.address}} @input="changeInput" placeholder="请输入住址" />
             <!-- <view class="my-text-right">仁达网络科技（上海）有限公司</view> -->
           </view>
         </view>
         <view class="page_card_row">
           <view class="weui-flex between">
             <view class="my-text weui-flex__item">学历：</view>
-            <picker
-              @change="eduPickerChange"
-              value="{{index}}"
-              range="{{eduList}}"
-            >
+            <picker @change="eduPickerChange" value="{{index}}" range="{{eduList}}">
               <view class="my-text-right weui-flex between">
                 {{eduList[eduIndex]?eduList[eduIndex]:'请选择'}}
-               <image
-                  mode="scaleToFill"
-                  src="../images/right.png"
-                  class="page_down_icon"
-                />
+                <image mode="scaleToFill" src="../images/right.png" class="page_down_icon" />
               </view>
             </picker>
           </view>
         </view>
-       <view class="page_card_row">
+        <view class="page_card_row">
           <view class="weui-flex between">
             <view class="my-text  weui-flex__item">年龄：</view>
-            <input
-              class="weui-input"
-              data-name="age"
-              value={{form.age}}
-              @input="changeInput"
-              placeholder="请输入年龄"
-            />
+            <input class="weui-input" data-name="age" value={{form.age}} @input="changeInput" placeholder="请输入年龄" />
           </view>
         </view>
       </view>
     </view>
     <view class="weui-cell_btn weui-flex center">
-      <button class="weui-btn_cell .weui-btn_primary">下一步</button>
+      <button class="weui-btn_cell .weui-btn_primary" @tap="save">下一步</button>
     </view>
   </view>
 </template>
 
 <script>
-import wepy from 'wepy';
+import wepy from 'wepy'
+let util = require('../util.js')
 //通过继承自wepy.page的类创建页面逻辑
 export default class addResume extends wepy.component {
   data = {
     array: ['男', '女', '男女不限'],
-    eduList: ['高中', '本科', '硕士'],
+    eduList: ['高中以下', '高中', '专科', '本科', '硕士'],
     isScaleModal: false,
     index: 0,
     eduIndex: 0,
-    form: {}
-  };
+    form: {
+      name: '',
+      idCard: '',
+      mobile: '',
+      address: '',
+      age: '',
+      education: '',
+      uid: '',
+      sex: ''
+    }
+  }
   //事件处理函数(集中保存在methods对象中)
   methods = {
-    bindPickerChange (e) {
+    bindPickerChange(e) {
       this.index = e.detail.value
-      this.form.sex = this.index + 1
+      this.form.sex = Number(this.index) + 1
     },
-    eduPickerChange (e) {
+    eduPickerChange(e) {
       this.eduIndex = e.detail.value
-      this.form.edu = this.eduIndex + 1
+      this.form.education = this.eduIndex
     },
     changeInput(e) {
-      let key = e.currentTarget.dataset.name;
+      let key = e.currentTarget.dataset.name
       this.form[key] = e.detail.value
+    },
+    save() {
+      if (!this.form.name) {
+        wx.showToast({
+          title: '请输入姓名',
+          icon: 'none',
+          duration: 2000
+        })
+      } else if (!this.form.idCard) {
+        wx.showToast({
+          title: '请输入身份证号码',
+          icon: 'none',
+          duration: 2000
+        })
+      } else if (!util.validateIdCard(this.form.idCard)) {
+        wx.showToast({
+          title: '请输入正确的身份证',
+          icon: 'none',
+          duration: 2000
+        })
+      } else if (!this.form.mobile) {
+        wx.showToast({
+          title: '请输入手机号码',
+          icon: 'none',
+          duration: 2000
+        })
+      } else if (!util.checkMobile(this.form.mobile)) {
+        wx.showToast({
+          title: '请输入正确的手机号码',
+          icon: 'none',
+          duration: 2000
+        })
+        return
+      } else {
+        console.log(this.form)
+        this.$emit('submit', this.form)
+      }
     }
-  };
+  }
 
   //页面的生命周期函数
-  onLoad () {
-    console.log('onLoad');
+  onLoad() {
+    console.log('onLoad')
   }
 }
 </script>

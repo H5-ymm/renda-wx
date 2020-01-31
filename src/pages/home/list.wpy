@@ -2,19 +2,21 @@
 @import '../../style/home.less';
 </style>
 <template>
-  <view class="page page_botttom">
+  <scroll-view scroll-y="true" @scrolltolower="searchScrollLower" class="page page_botttom">
     <view class="page_margin">
       <view class="home-view-box">
         <repeat wx:for="{{list}}" wx:key="index">
           <view class="page_card {{activeIndex==index? 'page_card_active': ''}}" @tap="selectJob({{index}},{{item}})">
             <view class="page_card_row">
               <view class="weui-flex between">
-                <view class="page_card_name">{{item.name}}</view>
-                <view class="page_card_num">需求人数：{{item.num}}人</view>
+                <view class="page_card_name">{{item.job_name}}</view>
+                <view class="page_card_num" wx-if="{{resumeType == '团队接单'}}">需求人数：{{item.required_number}}人</view>
+                <view class="page_card_num" wx:else>需求人数：{{item.number}}人</view>
               </view>
               <view class="weui-flex between">
                 <view class="text-line weui-flex start">
-                  <view class="page_card_col1">{{item.companyName}}</view>
+                  <view class="page_card_col1" wx-if="{{resumeType == '团队接单'}}">{{item.com_name}}</view>
+                  <view class="page_card_col1" wx:else>{{item.company_name}}</view>
                 </view>
               </view>
             </view>
@@ -22,7 +24,7 @@
         </repeat>
       </view>
     </view>
-  </view>
+  </scroll-view>
 </template>
 <script>
 import wepy from 'wepy'
@@ -35,10 +37,7 @@ export default class list extends wepy.page {
     userInfo: {},
     dateStart: '2019-10-20',
     dateEnd: '2019-10-20',
-    list: [
-      { name: '技术部', companyName: '仁达网络科技（上海）有限公司', num: 40 },
-      { name: '销售部', companyName: '仁达网络科技（上海）有限公司', num: 100 }
-    ],
+    list: [],
     activeIndex: 0,
     resumeType: '',
     list1: [],
@@ -46,13 +45,23 @@ export default class list extends wepy.page {
       uid: 2,
       page: 1,
       limit: 10
-    }
+    },
+    count: 0
   }
   config = {
     navigationBarTitleText: this.resumeType
   }
   getGeportOrderList() {
     $http.http('/Wxresume/reportOrderList', this.params).then(res => {
+      this.list = res.data.data
+      this.count = res.data.count
+      this.$apply()
+    })
+  }
+  getInternalInvoiceList() {
+    $http.http('/Wxresume/internalInvoiceList', this.params).then(res => {
+      this.list = res.data.data || []
+      this.count = res.data.count
       this.$apply()
     })
   }
@@ -60,11 +69,38 @@ export default class list extends wepy.page {
   methods = {
     selectJob(index, item) {
       this.activeIndex = index
-      let query = JSON.stringify(item)
+      let params = {}
+      if (this.resumeType == '团队接单') {
+        this.getGeportOrderList()
+        params = {
+          name: item.job_name,
+          companyName: item.com_name,
+          resumeType: this.resumeType,
+          id: item.job_id
+        }
+      } else {
+        params = {
+          name: item.job_name,
+          companyName: item.company_name,
+          resumeType: this.resumeType,
+          id: item.id
+        }
+      }
+      let query = JSON.stringify(params)
       wx.setStorageSync('query', query)
       wx.navigateTo({
         url: '/pages/home/addInfo?query=' + query // 页面 A
       })
+    },
+    searchScrollLower() {
+      if (this.count > this.params.limit) {
+        this.params.page = this.params.page + 1
+        if (this.resumeType == '团队接单') {
+          this.getGeportOrderList()
+        } else {
+          this.getInternalInvoiceList()
+        }
+      }
     }
   }
   //页面的生命周期函数
@@ -73,7 +109,7 @@ export default class list extends wepy.page {
     if (this.resumeType == '团队接单') {
       this.getGeportOrderList()
     } else {
-      this.getGeportOrderList()
+      this.getInternalInvoiceList()
     }
   }
 }

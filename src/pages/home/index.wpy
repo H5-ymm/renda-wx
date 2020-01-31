@@ -1,17 +1,17 @@
 <style lang="less">
 @import '../../style/home.less';
 </style>
-
-
 <template>
   <view class="home-view page_botttom">
     <view class="home-view-header"></view>
     <view class="page page_margin">
-      <view class="home-view-box">
-        <resumeQuery></resumeQuery>
-        <resumeCard></resumeCard>
-        <resumeList :list="list"></resumeList>
-      </view>
+      <scroll-view scroll-y="true" style="height:100%" @scrolltolower="searchScrollLower">
+        <view class="home-view-box">
+          <resumeQuery @changeDate="changeDate"></resumeQuery>
+          <resumeCard :count="count"></resumeCard>
+          <resumeList :list="list"></resumeList>
+        </view>
+      </scroll-view>
     </view>
     <view class="home-add-resume" @tap="addResume">
       <image src="../../images/add.png" class="add-icon" />
@@ -34,7 +34,6 @@ export default class home extends wepy.page {
     resumeList: resumeList
   }
   data = {
-    userInfo: {},
     list: [
       {
         name: '杨萌萌',
@@ -64,20 +63,29 @@ export default class home extends wepy.page {
         userName: '丁晓梅',
         time: '2019-10-19'
       }
-    ]
+    ],
+    params: {
+      uid: 2
+    },
+    count: null
+  }
+  events = {
+    changeDate: val => {
+      this.$broadcast('changeDate', val)
+    }
   }
   methods = {
     addResume() {
       wx.navigateTo({
         url: '/pages/home/addInfo' // 页面 A
       })
+    },
+    searchScrollLower() {
+      console.log(2)
     }
   }
-  //页面的生命周期函数
   onLoad() {
-    $http.http('/Userinfo/getUserInfo', { uid: 2 }).then(res => {
-      console.log(res)
-    })
+    console.log(this.$parent.globalData)
   }
 }
 </script>
