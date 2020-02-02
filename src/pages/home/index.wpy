@@ -9,7 +9,8 @@
         <view class="home-view-box">
           <resumeQuery @changeDate="changeDate"></resumeQuery>
           <resumeCard :count="count"></resumeCard>
-          <resumeList :list="list"></resumeList>
+          <resumeList :list.sync="list"></resumeList>
+
         </view>
       </scroll-view>
     </view>
@@ -34,45 +35,28 @@ export default class home extends wepy.page {
     resumeList: resumeList
   }
   data = {
-    list: [
-      {
-        name: '杨萌萌',
-        status: 0,
-        companyName: '仁达网络科技（上海）有限公司',
-        userName: '丁晓梅',
-        time: '2019-10-19'
-      },
-      {
-        name: '杨萌萌',
-        status: 1,
-        companyName: '仁达网络科技（上海）有限公司',
-        userName: '丁晓梅',
-        time: '2019-10-19'
-      },
-      {
-        name: '杨萌萌',
-        status: 2,
-        companyName: '仁达网络科技（上海）有限公司',
-        userName: '丁晓梅',
-        time: '2019-10-19'
-      },
-      {
-        name: '杨萌萌',
-        status: 2,
-        companyName: '仁达网络科技（上海）有限公司',
-        userName: '丁晓梅',
-        time: '2019-10-19'
-      }
-    ],
+    list: [],
     params: {
-      uid: 2
+      uid: '',
+      page: 1,
+      limit: 10
     },
-    count: null
+    count: 0
   }
   events = {
     changeDate: val => {
+      this.params = Object.assign(this.params, val)
+      this.getResumeList()
       this.$broadcast('changeDate', val)
     }
+  }
+  getResumeList() {
+    $http.http('/Wxresume/resumelist', this.params).then(res => {
+      console.log(res)
+      this.list = res.data.data || []
+      this.count = res.data.count
+      this.$apply()
+    })
   }
   methods = {
     addResume() {
@@ -81,11 +65,21 @@ export default class home extends wepy.page {
       })
     },
     searchScrollLower() {
-      console.log(2)
+      if (this.count > this.list.length) {
+        this.params.limit = this.params.limit + 10
+        this.getResumeList()
+      }
     }
   }
   onLoad() {
-    console.log(this.$parent.globalData)
+    this.params.uid =
+      wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
+  }
+  onShow() {
+    console.log(wx.getStorageSync('rendaUid'))
+    if (wx.getStorageSync('rendaUid')) {
+      this.getResumeList()
+    }
   }
 }
 </script>

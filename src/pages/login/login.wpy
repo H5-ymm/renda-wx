@@ -1,0 +1,449 @@
+<style lang="less">
+@import '../../style/base/variable/color.less';
+.login_page {
+  // height: 100%;
+  .login-view {
+    position: relative;
+    height: 94%;
+  }
+  .login-title {
+    padding: 170rpx 0 80rpx;
+    font-size: 48rpx;
+    width: 100%;
+    color: @weuiTextColorTitle;
+    .login-title-col {
+      font-size: 36rpx;
+      margin-top: 10rpx;
+    }
+  }
+  .login-view-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 88%;
+  }
+  .login-view-box {
+    height: 85%;
+    width: 80%;
+    margin: 0 auto;
+    .login-view-form {
+      width: 100%;
+    }
+  }
+  .weui-cell {
+    margin-bottom: 20px;
+    font-size: 28rpx;
+    position: relative;
+    .weui-cell_label {
+      color: @weuiTextColorDesc;
+      width: 130rpx;
+    }
+    .weui-input {
+      padding: 20rpx 0 16rpx;
+    }
+    .weui-cell_line {
+      margin-right: 30rpx;
+    }
+    .code-btn {
+      position: absolute;
+      top: 20rpx;
+      right: 0;
+      color: @weuiColorPrimary;
+      font-size: 28rpx;
+    }
+  }
+  .weui-cell_btn {
+    padding: 40rpx 0;
+  }
+  .box {
+    width: 100%;
+    margin-top: 32rpx;
+  }
+  .msg-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 36rpx;
+  }
+  .logo {
+    width: 45rpx;
+    height: 55rpx;
+  }
+  .title {
+    margin: 10rpx;
+    color: @weuiTextColorDesc;
+    font-weight: 500;
+  }
+  .msg {
+    font-size: 28rpx;
+    color: @weuiTextColorDesc;
+    font-weight: bold;
+    width: 100%;
+  }
+  .msg-title {
+    text-align: left;
+    width: 100%;
+  }
+  .user-box {
+    display: flex;
+    width: 90%;
+    padding: 10rpx 0;
+    margin: 10px auto;
+    justify-content: flex-start;
+    align-items: center;
+    height: 120rpx;
+    border-top: 2rpx solid #eee;
+    border-bottom: 2rpx solid #eee;
+  }
+  .col-1 {
+    width: 80rpx;
+    height: 80rpx;
+  }
+  .col-2 {
+    margin-left: 25rpx;
+    width: 80%;
+  }
+  .userNickName {
+    font-size: 24rpx;
+    color: #ccc;
+  }
+  .btn {
+    width: 70%;
+    margin: 80rpx 15% 0;
+  }
+  .btn button {
+    font-size: 30rpx;
+    border-radius: 5rpx;
+    width: 166rpx;
+    height: 48rpx;
+    line-height: 0;
+    margin: 0 20rpx;
+  }
+  .btn .btn-cancle {
+    color: #1890ff;
+    background: #f0f0f0;
+    font-weight: bold;
+  }
+  .btn .btn-confirm {
+    color: #fff;
+    background: #1890ff;
+  }
+  .check-icon {
+    font-size: 18px;
+    width: 26rpx;
+    height: 26rpx;
+    margin-right: 10rpx;
+  }
+  .rule-view {
+    font-size: 26rpx;
+    color: #333;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-wrap: wrap;
+    position: relative;
+    z-index: 888;
+    .text {
+      color: #1890ff;
+    }
+  }
+}
+</style>
+
+<template>
+  <view class="login_page page_botttom">
+    <view class="login-view">
+      <image src="../../images/loginBg.png" mode="scaleToFill" class="login-view-bg" />
+      <view class="login-view-box">
+        <view class="login-title">
+          <view>您好，</view>
+          <view class="login-title-col">欢迎使用人事达</view>
+        </view>
+        <view class="login-view-form">
+          <view class="weui-cell weui-flex start weui-cell_input page_botttom">
+            <view class="weui-cell_label weui-flex between">+86<label class="weui-cell_line">|</label></view>
+            <input class="weui-input" value={{form.mobile}} @input="changeInput" placeholder="输入您的手机号" />
+          </view>
+          <view class="weui-cell weui-flex start weui-cell_input page_botttom">
+            <view class="weui-cell_label weui-flex between">验证码<label class="weui-cell_line">|</label></view>
+            <input class="weui-input" value={{form.code}} @input="changeInputCode" placeholder="输入验证码" />
+            <text class="code-btn" @tap="getCode">{{sendAuthCode ?'获取验证码':auth_time+'s'}}</text>
+          </view>
+          <view class="weui-cell_btn weui-flex center">
+            <button class="weui-btn_cell weui-btn_cell-gradient" lang='zh_CN' @getuserinfo="getUserInfo" open-type="getUserInfo">登录</button>
+          </view>
+          <view class="rule-view">
+            <image wx:if="{{!checked}}" src="../../images/check.png" mode="scaleToFill" class="check-icon" @tap="checkedRule({{checked}})" />
+
+            <image wx:else src="../../images/check1.png" mode="scaleToFill" @tap="checkedRule({{checked}})" class="check-icon" />
+            我已认真阅读并同意<view class="text" @tap="router">《用户协议及隐私政策》</view>和
+            <view class="text" @tap="routerPer">《个人信息保护政策》</view>
+          </view>
+        </view>
+      </view>
+    </view>
+    <!-- <actionSheet :isScaleModal="isScaleModal" :height="height">
+      <view class='box weui-flex start wrap'>
+        <view class='msg-box'>
+          <view class="msg-title weui-flex start">
+            <image src='../../images/logo.jpeg' class="logo" />
+            <text class='title'>{{access.title}} </text>申请
+          </view>
+          <view class='msg'> {{access.msg}}</view>
+        </view>
+        <view class="user-box">
+          <open-data type="userAvatarUrl" class="col-1"></open-data>
+          <view class="col-2">
+            <view>微信个人信息</view>
+            <open-data type="userNickName" class="userNickName"></open-data>
+          </view>
+        </view>
+        <view class='btn weui-flex center'>
+          <button @tap='cancle' class='weui-btn_cell btn-cancle'>{{access.cancle}}</button>
+          <button type='primary' @getuserinfo="getUserInfo" open-type="getUserInfo" class='weui-btn_cell btn-confirm'>{{access.confirm}}</button>
+        </view>
+      </view>
+    </actionSheet> -->
+    <modal :isScaleModal="isModal" @handleOk="handleOk" :height="modalHeight" :modalObj="modalObj"></modal>
+  </view>
+</template>
+<script>
+import wepy from 'wepy'
+// import actionSheet from '../../components/actionSheet'
+import modal from '../../components/modal'
+//通过继承自wepy.page的类创建页面逻辑
+let $http = require('../../http.js')
+let util = require('../../util.js')
+export default class Login extends wepy.page {
+  //可用于页面模板绑定的数据
+  components = {
+    // actionSheet: actionSheet,
+    modal: modal
+  }
+  data = {
+    userInfo: null,
+    access: {
+      title: '小程序名字',
+      msg: '获得你昵称、头像、地区以及性别',
+      cancle: '取消',
+      confirm: '允许'
+    },
+    height: 500,
+    isScaleModal: true,
+    isModal: true,
+    modalHeight: 640,
+    modalObj: {
+      title: '您还没有注册哦',
+      subTitle:
+        '亲！您还不是团队成员或企业，请前往 www.rsd123.com 进行注册申请，\n或联系客服人员：021-51991869，\n 微信：118621532378 QQ：529350865   ',
+      imgBg: '../../images/modalBg.png',
+      imgIcon: '../../images/modalIcon1.png'
+    },
+    form: {
+      mobile: '',
+      code: '',
+      token: ''
+    },
+    auth_time: 60, //倒计时
+    sendAuthCode: true, //控制
+    checked: false,
+    authorize: false
+  }
+  getCodeApi() {
+    $http
+      .http('/Login/sendVerification', { mobile: this.form.mobile })
+      .then(res => {
+        this.form.token = res.data.token || ''
+      })
+  }
+  login() {
+    if (!this.form.mobile) {
+      wx.showToast({
+        title: '请输入手机号码',
+        icon: 'none',
+        duration: 2000
+      })
+      return
+    } else if (!util.checkMobile(this.form.mobile)) {
+      wx.showToast({
+        title: '请输入正确的手机号码',
+        icon: 'none',
+        duration: 2000
+      })
+      return
+    } else if (!this.form.code) {
+      wx.showToast({
+        title: '请输入验证码',
+        icon: 'none',
+        duration: 2000
+      })
+      return
+    }
+    if (!this.checked) {
+      wx.showToast({
+        title: '请先阅读注册协议',
+        icon: 'none',
+        duration: 2000
+      })
+      return
+    }
+    let openid =
+      wx.getStorageSync('rendaOpenId') || this.$parent.globalData.openId
+    let params = Object.assign(this.form, { openid })
+    $http
+      .http('/Login/login', params)
+      .then(res => {
+        if (res.status.code == 200) {
+          this.$parent.globalData.uid = res.data.uid
+          wx.setStorageSync('rendaUid', res.data.uid)
+          wx.switchTab({
+            url: '/pages/home/index'
+          })
+        }
+      })
+      .catch(error => {
+        if (error && error.status.code == 3011) {
+          this.$broadcast('showModal')
+          return
+        }
+      })
+  }
+  events = {
+    handleOk: () => {
+      this.$broadcast('showModal')
+    }
+  }
+  //事件处理函数(集中保存在methods对象中)
+  methods = {
+    checkedRule(checked) {
+      this.checked = !checked
+      this.$apply()
+      if (this.checked) {
+        wx.navigateTo({
+          url: '/pages/login/rule' // 页面 A
+        })
+      }
+    },
+    changeInput(e) {
+      this.form.mobile = e.detail.value
+    },
+    changeInputCode(e) {
+      this.form.code = e.detail.value
+    },
+    router() {
+      wx.navigateTo({
+        url: '/pages/login/rule' // 页面 A
+      })
+    },
+    routerPer() {
+      wx.navigateTo({
+        url: '/pages/login/personRule' // 页面 A
+      })
+    },
+    getCode() {
+      if (!this.form.mobile) {
+        wx.showToast({
+          title: '请输入手机号码',
+          icon: 'none',
+          duration: 2000
+        })
+        return
+      } else if (!util.checkMobile(this.form.mobile)) {
+        wx.showToast({
+          title: '请输入正确的手机号码',
+          icon: 'none',
+          duration: 2000
+        })
+        return
+      }
+      this.getCodeApi()
+      this.sendAuthCode = false
+      let auth_timetimer = setInterval(() => {
+        this.auth_time--
+        this.$apply()
+        if (this.auth_time <= 0) {
+          this.sendAuthCode = true
+          this.auth_time = 60
+          this.$apply()
+          clearInterval(auth_timetimer)
+        }
+      }, 1000)
+    },
+    getUserInfo(e) {
+      this.userInfo = e.detail.userInfo
+      if (this.userInfo) {
+        let params = {
+          head_img: this.userInfo.avatarUrl,
+          address: this.userInfo.province + this.userInfo.city
+        }
+        this.$parent.globalData.wxInfo = params
+        wx.setStorageSync('wxInfo', JSON.stringify(params))
+        this.authorize = true
+        if (this.authorize) {
+          this.login()
+        }
+      } else {
+        wx.showModal({
+          title: '警告',
+          content: '您点击了拒绝授权，将无法进入小程序，请授权之后再进入!!!',
+          showCancel: false,
+          confirmText: '返回授权',
+          success: res => {
+            if (res.confirm) {
+              this.authorize = false
+            }
+          }
+        })
+      }
+      // wx.authorize({
+      //   scope: 'scope.userInfo',
+      //   success() {
+      //     wx.getUserInfo({
+      //       success: function(res) {
+      //         that.userInfo = res.userInfo
+      //         let params = {
+      //           head_img: that.userInfo.avatarUrl,
+      //           address: that.userInfo.province + that.userInfo.city
+      //         }
+      //         that.$parent.globalData.wxInfo = params
+      //         wx.setStorageSync('wxInfo', JSON.stringify(params))
+      //         that.login()
+      //       },
+      //       fail(error) {
+      //         wx.showModal({
+      //           title: '警告',
+      //           content:
+      //             '您点击了拒绝授权，将无法进入小程序，请授权之后再进入!!!',
+      //           showCancel: false,
+      //           confirmText: '返回授权',
+      //           success: res => {
+      //             if (res.confirm) {
+      //               that.authorize = false
+      //             } else {
+      //               that.authorize = true
+      //             }
+      //           }
+      //         })
+      //       }
+      //     })
+      //   }
+      // })
+    },
+    cancle() {
+      this.$broadcast('showActionSheet')
+      wx.showModal({
+        title: '警告',
+        content: '您点击了拒绝授权，将无法进入小程序，请授权之后再进入!!!',
+        showCancel: false,
+        confirmText: '返回授权',
+        success: res => {
+          if (res.confirm) {
+            this.$broadcast('showActionSheet')
+          }
+        }
+      })
+    }
+  }
+}
+</script>

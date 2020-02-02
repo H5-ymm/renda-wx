@@ -38,7 +38,7 @@
             <view class="my-text weui-flex__auto">
               谁送给我：
             </view>
-            <input class="weui-input" placeholder="请输入送给人" value="{{form.name}}" data-name="name" @input="changeInput" />
+            <input class="weui-input" placeholder="请输入送给人" value="{{form.from_user}}" data-name="from_user" @input="changeInput" />
           </view>
         </view>
         <view class="page_card_row">
@@ -46,7 +46,7 @@
             <view class="my-text weui-flex__auto">
               我送给谁：
             </view>
-            <input disabled="{{resumeType&&resumeType!='简历管理'&&form.comName!=''}}" value="{{form.comName}}" data-name="comName" @input="changeInput" class="weui-input my-text-right weui-flex__auto" placeholder="请输入公司" />
+            <input disabled="{{resumeType&&resumeType!='简历管理'&&form.to_user!=''}}" value="{{form.to_user}}" data-name="to_user" @input="changeInput" class="weui-input my-text-right weui-flex__auto" placeholder="请输入公司" />
           </view>
         </view>
       </view>
@@ -70,9 +70,8 @@ export default class addBaseInfo extends wepy.component {
     isScaleModal: true,
     form: {
       name: '',
-      comName: '',
-      jobName: '',
-      invoiceId: ''
+      to_user: '',
+      from_user: ''
     },
     jobName: ''
   }
@@ -81,11 +80,10 @@ export default class addBaseInfo extends wepy.component {
       this.resumeType = val
     },
     getBaseInfo: val => {
-      console.log(val)
       this.jobName = val.name
-      this.form.jobName = val.name
-      this.form.comName = val.companyName
-      this.form.invoiceId = val.id
+      this.form.from_user = val.name
+      this.form.to_user = val.companyName
+      this.form.job_id = val.id
       this.resumeType = val.resumeType
     }
   }
@@ -96,9 +94,8 @@ export default class addBaseInfo extends wepy.component {
       this.jobName = ''
       this.form = {
         name: '',
-        comName: '',
-        jobName: '',
-        invoiceId: ''
+        to_user: '',
+        from_user: ''
       }
     },
     viewList() {
@@ -111,12 +108,18 @@ export default class addBaseInfo extends wepy.component {
       this.form[key] = e.detail.value
     },
     submit() {
-      if (this.resumeType != '简历管理' && !this.form.jobName) {
+      if (this.resumeType != '简历管理' && !this.form.to_user) {
         return wx.showToast({
           title: '请选择岗位名称',
           icon: 'none',
           duration: 2000
         })
+      }
+      if (this.resumeType == '团队接单') {
+        this.form = Object.assign(this.form, { job_type: 1 })
+      }
+      if (this.resumeType == '内部发单') {
+        this.form = Object.assign(this.form, { job_type: 2 })
       }
       this.$emit('submit', this.form)
     }

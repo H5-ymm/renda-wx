@@ -1,66 +1,63 @@
 
 <template>
   <view>
-    <repeat
-      wx:for="{{list}}"
-      wx:key="index"
-    >
-      <view
-        class="page_card"
-        @tap="viewDetail"
-      >
+    <repeat wx:for="{{list}}" wx:key="index">
+      <view class="page_card" wx:if="{{list.length}}" @tap="viewDetail({{item}})">
         <view class="page_card_row">
           <view class="weui-flex between">
-            <view class="page_card_name">{{item.name}}</view>
-            <view class="page_card_status {{'page_card_status'+ item.status}}">{{item.status==0?'审核未通过':item.status==1?'审核通过':'面试未参加'}}</view>
+            <view class="page_card_name">{{item.job_name}}</view>
+            <view class="page_card_status {{'page_card_status'+ item.status}}" wx:if="{{!item.interview_status&&!item.entry_status}}">{{item.status==0?'待审核':item.status==1?'审核通过':'审核未通过'}}</view>
+            <view class="page_card_status {{'page_card_status'+ item.interview_status}}" wx:if="{{!item.entry_status&&item.status==1}}">{{item.interview_status==0?'待审核':item.interview_status==1?'面试通过':item.interview_status==2?'面试未通过':'面试未参加'}}</view>
+            <view class="page_card_status {{'page_card_status'+ item.entry_status}}" wx:if="{{item.interview_status==1}}">{{item.entry_status==0?'待审核':item.entry_status==1?'入职通过':item.entry_status==2?'入职未通过':'入职未参加'}}</view>
           </view>
           <view class="weui-flex between">
             <view class="text-line weui-flex start">
               <view>谁送给我：</view>
-              <view class="page_card_col1">{{item.userName}}</view>
+              <view class="page_card_col1">{{item.from_user?item.from_user : '-'}}</view>
             </view>
-            <image
-              mode="scaleToFill"
-              src="../images/right.png"
-              class="page_card_icon"
-            />
+            <image mode="scaleToFill" src="../images/right.png" class="page_card_icon" />
           </view>
           <view class="weui-flex between">
             <view class="weui-flex start weui-flex__item">
               <view>我送给谁：</view>
-              <view class="page_card_col1 text-line">{{item.companyName}}</view>
+              <view class="page_card_col1 text-line">{{item.com_name}}</view>
             </view>
-            <view class="page_card_time">{{item.time}}</view>
+            <view class="page_card_time">{{wxs.dateFormat(item.addtime,'yyyy年MM月dd日')}}</view>
           </view>
         </view>
       </view>
     </repeat>
+    <view wx:if="{{!list.length}}" class="page_list">
+      <image src="../images/noBg.png" @tap="view" class="page_noData" mode="scaleToFill" />
+      <view class="page_noData_text">暂无数据！</view>
+    </view>
   </view>
 </template>
 
 <script>
-import wepy from 'wepy';
+import wepy from 'wepy'
+import wxs from '../dateFilter.wxs'
 //通过继承自wepy.page的类创建页面逻辑
 export default class resumeList extends wepy.component {
   //可用于页面模板绑定的数据
+  wxs = { wxs }
   props = {
     list: Array
   }
-  data = {
-
-  };
+  data = {}
   //事件处理函数(集中保存在methods对象中)
   methods = {
-    viewDetail () {
+    viewDetail(item) {
       wx.navigateTo({
-        url: '/pages/home/resumeDetail'　　// 页面 A
+        url:
+          '/pages/home/resumeDetail?job_id=' +
+          item.job_id +
+          '&resume_id=' +
+          item.resume_id +
+          '&type=' +
+          item.job_type // 页面 A
       })
     }
-  };
-
-  //页面的生命周期函数
-  onLoad () {
-    console.log('onLoad');
-  };
+  }
 }
 </script>

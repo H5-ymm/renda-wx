@@ -10,8 +10,8 @@
             <view class="weui-flex between">
               <view class="my-text">头像</view>
               <view class="weui-flex between">
-                <image src="{{head_img}}" wx-if="{{head_img}}" alt="" class="my-head">
-                  <image src="../../images/img1.png" alt="" wx-if="{{!head_img}}" class="my-head">
+                <image src="{{head_img}}" wx:if="{{head_img}}" alt="" mode="aspectFit" class="my-head">
+                  <image src="../../images/header.png" wx:else alt="" mode="aspectFit" class="my-head">
                     <image mode="scaleToFill" src="../../images/right.png" class="page_card_right-icon" />
               </view>
             </view>
@@ -31,13 +31,13 @@
           <view class="page_card_row">
             <view class="weui-flex between">
               <view class="my-text">邮箱</view>
-              <view class="my-text-right weui-flex__item">{{userInfo.email}}</view>
+              <view class="my-text-right weui-flex__item">{{userInfo.email?userInfo.email:'无'}}</view>
             </view>
           </view>
           <view class="page_card_row">
             <view class="weui-flex between">
               <view class="my-text">住址</view>
-              <view class="my-text-right weui-flex__item">{{address}}</view>
+              <view class="my-text-right weui-flex__item">{{address?address:wxAddress}}</view>
             </view>
           </view>
         </view>
@@ -57,7 +57,8 @@ export default class my extends wepy.page {
   data = {
     motto: 'Hello World',
     userInfo: {},
-    head_img: ''
+    head_img: '',
+    wxAddress: ''
   }
   computed = {
     address() {
@@ -75,11 +76,14 @@ export default class my extends wepy.page {
   onLoad() {
     if (wx.getStorageSync('userInfo')) {
       this.userInfo = JSON.parse(wx.getStorageSync('userInfo'))
+      let wxUserinfo = wx.getStorageSync('wxInfo')
+      this.wxAddress = wxUserinfo ? JSON.parse(wxUserinfo).address : ''
       if (this.userInfo.head_img) {
         this.head_img = 'http://tiantianxsg.com:39888/' + this.userInfo.head_img
+      } else {
+        this.head_img = wxUserinfo ? JSON.parse(wxUserinfo).head_img : ''
       }
       this.$apply()
-      console.log(this.userInfo)
     }
   }
 }

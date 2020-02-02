@@ -41,13 +41,13 @@ export default class resumeCard extends wepy.component {
   data = {
     resumeTotal: {},
     params: {
-      uid: 2
+      uid: ''
     }
   }
   //事件处理函数(集中保存在methods对象中)
   methods = {}
   getCount() {
-    $http.http('/Wxresume/resumecount ', this.params).then(res => {
+    $http.http('/Wxresume/resumecount', this.params).then(res => {
       this.resumeTotal = res.data
       this.$apply()
     })
@@ -60,7 +60,11 @@ export default class resumeCard extends wepy.component {
   }
   //页面的生命周期函数
   onLoad() {
-    this.getCount()
+    this.params.uid =
+      wx.getStorageSync('rendaUid') || this.$parent.$parent.globalData.uid
+    if (this.params.uid) {
+      this.getCount()
+    }
   }
   //页面的生命周期函数
 }

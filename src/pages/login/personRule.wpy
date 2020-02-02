@@ -1,8 +1,8 @@
 <style lang="less">
-@import '../style/rule.less';
+@import '../../style/rule.less';
 </style>
 <template>
-  <view class="page_margin page">
+  <view class="page_margin page login_page">
     <view class="rule-content-box">
       <view class="rule-content">
         <view class="title">欢迎您使用我们的产品和服务！我们非常重视您的隐私保护和个人信息保护。本《个人信息保护政策》将帮助您了解以下内容：</view>

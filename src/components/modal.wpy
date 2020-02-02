@@ -3,7 +3,7 @@
   transition: 0.3s;
   transform: scale(0);
   &.g_scale1 {
-    transform: scale(1)
+    transform: scale(1);
   }
 }
 .modal_mask {
@@ -22,7 +22,7 @@
   z-index: 1001;
   right: 0;
   bottom: 20%;
-  top:0;
+  top: 0;
   left: 0;
   width: 76%;
   min-height: 36%;
@@ -80,32 +80,29 @@
 <template>
   <view hidden='{{isScaleModal}}'>
     <view @tap="handleClose" class="modal_mask"></view>
-    <view
-      class="modal_box transition3s {{ isShow ? 'g_scale1': ''}}"
-      id="modal-box"
-      style="height:{{height}}rpx"
-    >
+    <view class="modal_box transition3s {{ isShow ? 'g_scale1': ''}}" id="modal-box" style="height:{{height}}rpx">
       <slot></slot>
       <view class="modal-content">
         <view class="modal-bg">
           <!-- <image src="../images/modalBg.png" class="modal-img-bg"/>
           -->
-          <image src="{{modalObj.imgIcon}}" wx:if="{{modalObj.imgIcon}}" class="modal-icon" alt/> 
-          <image src="{{modalObj.imgBg}}" class="modal-img-bg" alt/>
+          <image src="{{modalObj.imgIcon}}" wx:if="{{modalObj.imgIcon}}" class="modal-icon" />
+          <image src="{{modalObj.imgBg}}" class="modal-img-bg" />
         </view>
         <view class="modal-title">
-         {{modalObj.title}}
+          {{modalObj.title}}
         </view>
-        <view class="modal-subTitle" wx:if="{{modalObj.subTitle}}">
+        <text selectable='true' decode="{{true}}" class="modal-subTitle" wx:if="{{modalObj.subTitle}}"> {{modalObj.subTitle}}</text>
+        <!-- <view class="modal-subTitle" wx:if="{{modalObj.subTitle}}">
           {{modalObj.subTitle}}
-        </view>
+        </view> -->
         <view class="weui-cell_btn weui-flex center">
-          <button class="weui-btn_cell weui-btn_cell-gradient" @tap="handleClose">我知道啦</button>
+          <button class="weui-btn_cell weui-btn_cell-gradient" @tap="handleOk">我知道啦</button>
         </view>
       </view>
-      <image src="../images/close.png" @tap="handleClose" class="close-icon"/>
+      <image src="../images/close.png" @tap="handleClose" class="close-icon" />
     </view>
- </view>
+  </view>
 
 </template>
 <script>
@@ -118,26 +115,33 @@ export default class actionSheet extends wepy.component {
     modalObj: Object
   }
   data = {
-    isShow: false,
+    isShow: false
   }
   methods = {
-    handleClose(){
+    handleClose() {
       this.isScaleModal = true
+      this.isShow = false
+    },
+    handleOk() {
+      this.isShow = true
+      this.$emit('handleOk')
     }
   }
   watch = {
     isScaleModal(val) {
-      console.log(val)
       if (!val) {
         this.isShow = true
-        this.$apply()
+      } else {
+        this.isShow = false
       }
+      this.$apply()
     }
   }
   // 声明
   events = {
-    'showModal':()=> {
-      this.isScaleModal = false
+    showModal: () => {
+      this.isScaleModal = !this.isScaleModal
+      this.$apply()
     }
   }
 }

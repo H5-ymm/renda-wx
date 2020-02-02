@@ -22,19 +22,19 @@
         <view class="page_card_row">
           <view class="weui-flex between">
             <view class="my-text  weui-flex__item my-text-require"> 姓名：</view>
-            <input class="weui-input" data-name="name" value={{form.name}} @input="changeInput" placeholder="请输入姓名" />
+            <input class="weui-input" data-name="name" value="{{form.name}}" @input="changeInput" placeholder="请输入姓名" />
           </view>
         </view>
-        <view class="page_card_row">
+        <!-- <view class="page_card_row">
           <view class="weui-flex between">
             <view class="my-text  weui-flex__item my-text-require">身份证号码：</view>
             <input class="weui-input" data-name="idCard" value={{form.idCard}} @input="changeInput" placeholder="请输入身份证号码" />
           </view>
-        </view>
+        </view> -->
         <view class="page_card_row">
           <view class="weui-flex between ">
             <view class="my-text weui-flex__item my-text-require"> 手机号码：</view>
-            <input class="weui-input" data-name="mobile" value={{form.mobile}} @input="changeInput" placeholder="请输入手机号码" />
+            <input class="weui-input" data-name="mobile" value="{{form.mobile}}" @input="changeInput" placeholder="请输入手机号码" />
           </view>
         </view>
         <view class="page_card_row">
@@ -51,14 +51,14 @@
         <view class="page_card_row">
           <view class="weui-flex between ">
             <view class="my-text weui-flex__item">住址：</view>
-            <input class="weui-input" data-name="address" value={{form.address}} @input="changeInput" placeholder="请输入住址" />
+            <input class="weui-input" data-name="address" value="{{form.address}}" @input="changeInput" placeholder="请输入住址" />
             <!-- <view class="my-text-right">仁达网络科技（上海）有限公司</view> -->
           </view>
         </view>
         <view class="page_card_row">
           <view class="weui-flex between">
             <view class="my-text weui-flex__item">学历：</view>
-            <picker @change="eduPickerChange" value="{{index}}" range="{{eduList}}">
+            <picker @change="eduPickerChange" value="{{eduIndex}}" range="{{eduList}}">
               <view class="my-text-right weui-flex between">
                 {{eduList[eduIndex]?eduList[eduIndex]:'请选择'}}
                 <image mode="scaleToFill" src="../images/right.png" class="page_down_icon" />
@@ -69,13 +69,13 @@
         <view class="page_card_row">
           <view class="weui-flex between">
             <view class="my-text  weui-flex__item">年龄：</view>
-            <input class="weui-input" data-name="age" value={{form.age}} @input="changeInput" placeholder="请输入年龄" />
+            <input class="weui-input" data-name="age" value="{{form.age}}" @input=" changeInput" placeholder="请输入年龄" />
           </view>
         </view>
       </view>
     </view>
     <view class="weui-cell_btn weui-flex center">
-      <button class="weui-btn_cell .weui-btn_primary" @tap="save">下一步</button>
+      <button class="weui-btn_cell .weui-btn_primary" @tap="save">{{step==1?'下一步':'保存'}}</button>
     </view>
   </view>
 </template>
@@ -88,19 +88,17 @@ export default class addResume extends wepy.component {
   data = {
     array: ['男', '女', '男女不限'],
     eduList: ['高中以下', '高中', '专科', '本科', '硕士'],
-    isScaleModal: false,
     index: 0,
     eduIndex: 0,
     form: {
       name: '',
-      idCard: '',
       mobile: '',
       address: '',
       age: '',
-      education: '',
-      uid: '',
-      sex: ''
-    }
+      education: 0,
+      sex: '1'
+    },
+    step: 1
   }
   //事件处理函数(集中保存在methods对象中)
   methods = {
@@ -123,24 +121,14 @@ export default class addResume extends wepy.component {
           icon: 'none',
           duration: 2000
         })
-      } else if (!this.form.idCard) {
-        wx.showToast({
-          title: '请输入身份证号码',
-          icon: 'none',
-          duration: 2000
-        })
-      } else if (!util.validateIdCard(this.form.idCard)) {
-        wx.showToast({
-          title: '请输入正确的身份证',
-          icon: 'none',
-          duration: 2000
-        })
+        return
       } else if (!this.form.mobile) {
         wx.showToast({
           title: '请输入手机号码',
           icon: 'none',
           duration: 2000
         })
+        return
       } else if (!util.checkMobile(this.form.mobile)) {
         wx.showToast({
           title: '请输入正确的手机号码',
@@ -148,16 +136,25 @@ export default class addResume extends wepy.component {
           duration: 2000
         })
         return
+      } else if (this.form.age && Number(this.form.age) < 16) {
+        wx.showToast({
+          title: '请输入的年龄不小于16',
+          icon: 'none',
+          duration: 2000
+        })
+        return
+      } else if (this.form.age && Number(this.form.age) > 65) {
+        wx.showToast({
+          title: '请输入的年龄不大于65',
+          icon: 'none',
+          duration: 2000
+        })
+        return
       } else {
-        console.log(this.form)
+        this.step = this.step + 1
         this.$emit('submit', this.form)
       }
     }
-  }
-
-  //页面的生命周期函数
-  onLoad() {
-    console.log('onLoad')
   }
 }
 </script>

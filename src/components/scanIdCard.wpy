@@ -7,6 +7,7 @@
 .add-view {
   height: 78%;
   .page_card_row {
+    height: 100%;
     .card-text {
       width: 100%;
       margin: 20rpx auto 0;
@@ -27,42 +28,25 @@
     <view class="home-view-box">
       <view class="page_card">
         <view class="page_card_row">
-          <view
-            class="weui-flex center wrap"
-          >
-            <view class="card-text"> 点击开始识别正面（照片面）</view>
-            <image
-              @tap="uploadImg"
-              src="../images/cardIcon.png"
-              class="idCard-bg"
-              mode="scaleToFill"
-            >
-          </view>
-        </view>
-      </view>
-      <view class="page_card">
-        <view class="page_card_row">
           <view class="weui-flex center wrap">
-            <view class="card-text">点击开始识别反面（国徽面）</view>
-            <image
-              @tap="uploadImg"
-              src="../images/cardIcon2.png"
-              class="idCard-bg"
-              mode="scaleToFill"
-            >
+            <view class="card-text"> 点击开始识别正面（照片面）</view>
+            <image @tap="uploadImg" src="../images/cardIcon.png" wx:if="{{!infoImg}}" class="idCard-bg" mode="scaleToFill" />
+            <image @tap="uploadImg" src="{{infoImg}}" wx:else class="idCard-bg" mode="aspectFit" />
+            <canvas canvas-id="canvas" style="width:{{cWidth}}px;height:{{cHeight}}px;position: absolute;left:-1000px;top:-1000px;"></canvas>
           </view>
         </view>
       </view>
     </view>
     <view class="weui-cell_btn weui-flex center">
-      <button class="weui-btn_cell .weui-btn_primary">下一步</button>
+      <button class="weui-btn_cell .weui-btn_primary" @tap="save">下一步</button>
     </view>
   </view>
 </template>
-
 <script>
-import wepy from 'wepy';
+import wepy from 'wepy'
 import modal from './modal'
+let $http = require('../http.js')
+let util = require('../util')
 //通过继承自wepy.page的类创建页面逻辑
 export default class scanIdCard extends wepy.component {
   //可用于页面模板绑定的数据
@@ -70,36 +54,144 @@ export default class scanIdCard extends wepy.component {
     modal: modal
   }
   data = {
-    userInfo: {},
-    array: ['美国', '中国', '巴西', '日本'],
-    isScaleModal: false
-  };
+    isScaleModal: false,
+    form: {
+      name: '',
+      mobile: '',
+      address: '',
+      age: '',
+      education: 0,
+      sex: 1
+    },
+    infoImg: '',
+    tempFilePaths: [],
+    cWidth: '',
+    cHeight: ''
+  }
   //事件处理函数(集中保存在methods对象中)
-  methods = {
-   uploadImg(){
-     wx.chooseImage({
-      success (res) {
-        const tempFilePaths = res.tempFilePaths
-        wx.uploadFile({
-          url: 'https://example.weixin.qq.com/upload', //仅为示例，非真实的接口地址
-          filePath: tempFilePaths[0],
-          name: 'file',
-          formData: {
-            'user': 'test'
-          },
-          success (res){
-            const data = res.data
-            //do something
-          }
+
+  getUrl(infoImg) {
+    let params = {
+      uid: wx.getStorageSync('rendaUid') || this.$parent.$parent.globalData.uid,
+      infoImg
+    }
+    $http.http('/Wxresume/ocrIdCard ', params).then(res => {
+      let data = JSON.parse(res.data)
+      if (data.success) {
+        this.form.address = data.data.address
+        this.form.name = data.data.name
+        if (data.data.gender == '男') {
+          this.form.sex = 1
+        }
+        if (data.data.gender == '女') {
+          this.form.sex = 2
+        }
+      } else {
+        wx.showToast({
+          icon: 'none',
+          title: '获取信息失败'
         })
       }
     })
-   }
-  };
+  }
+  getImg(tempFilePaths) {
+    console.log(this.tempFilePaths)
+    $http.uploadFile(tempFilePaths).then(res => {
+      if (res.data && res.data.url) {
+        let imgUrl = 'http://tiantianxsg.com:39888/' + res.data.url
+        this.infoImg = imgUrl
+        this.$apply()
+      } else {
+        wx.showToast({
+          icon: 'none',
+          title: '图片获取失败'
+        })
+      }
+    })
+  }
+  compressImg(photoSrc, ratio = 2) {
+    let that = this
+    return new Promise((resolve, reject) => {
+      wx.getImageInfo({
+        src: photoSrc,
+        success(res) {
+          let canvasWidth = res.width //图片原始长宽
+          let canvasHeight = res.height
+
+          while (canvasWidth > 120 || canvasHeight > 90) {
+            // 保证宽高在400以内
+            canvasWidth = 120
+            canvasHeight = 90
+            // ratio++
+          }
+          console.log(canvasWidth)
+          console.log(canvasHeight)
+          that.cWidth = 240
+          that.cHeight = 180
+          //----------绘制图形并取出图片路径--------------
+          var ctx = wx.createCanvasContext('canvas')
+          ctx.drawImage(res.path, 0, 0, canvasWidth, canvasHeight)
+          ctx.draw(
+            false,
+            setTimeout(() => {
+              wx.canvasToTempFilePath({
+                canvasId: 'canvas',
+                destWidth: canvasWidth,
+                destHeight: canvasHeight,
+                success: function(res) {
+                  // console.log(res.tempFilePath)//最终图片路径
+                  resolve(res.tempFilePath)
+                },
+                fail: function(res) {
+                  console.log(res.errMsg)
+                }
+              })
+            }, 100)
+          )
+        },
+        fail: function(res) {
+          console.log(res.errMsg)
+        }
+      })
+    })
+  }
+  methods = {
+    uploadImg() {
+      wx.chooseImage({
+        sizeType: ['compressed'],
+        success: res => {
+          let tempFilePath = res.tempFilePaths[0]
+          this.compressImg(res.tempFilePaths[0]).then(res => {
+            this.tempFilePaths = [res]
+            this.getImg(this.tempFilePaths)
+          })
+          wx.getFileSystemManager().readFile({
+            filePath: tempFilePath, //选择图片返回的相对路径
+            encoding: 'base64', //编码格式
+            success: res => {
+              //成功的回调
+              this.getUrl(res.data)
+            },
+            fail: error => {
+              wx.showToast({
+                icon: 'none',
+                title: '图片获取失败'
+              })
+              return
+            }
+          })
+        }
+      })
+    },
+    save() {
+      if (!this.infoImg) return
+      this.$emit('submit', this.form)
+    }
+  }
 
   //页面的生命周期函数
-  onLoad () {
-    console.log('onLoad');
-  };
+  onLoad() {
+    console.log('onLoad')
+  }
 }
 </script>

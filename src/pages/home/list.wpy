@@ -10,12 +10,12 @@
             <view class="page_card_row">
               <view class="weui-flex between">
                 <view class="page_card_name">{{item.job_name}}</view>
-                <view class="page_card_num" wx-if="{{resumeType == '团队接单'}}">需求人数：{{item.required_number}}人</view>
+                <view class="page_card_num" wx:if="{{resumeType == '团队接单'}}">需求人数：{{item.required_number}}人</view>
                 <view class="page_card_num" wx:else>需求人数：{{item.number}}人</view>
               </view>
               <view class="weui-flex between">
                 <view class="text-line weui-flex start">
-                  <view class="page_card_col1" wx-if="{{resumeType == '团队接单'}}">{{item.com_name}}</view>
+                  <view class="page_card_col1" wx:if="{{resumeType == '团队接单'}}">{{item.com_name}}</view>
                   <view class="page_card_col1" wx:else>{{item.company_name}}</view>
                 </view>
               </view>
@@ -42,7 +42,7 @@ export default class list extends wepy.page {
     resumeType: '',
     list1: [],
     params: {
-      uid: 2,
+      uid: '',
       page: 1,
       limit: 10
     },
@@ -104,7 +104,9 @@ export default class list extends wepy.page {
     }
   }
   //页面的生命周期函数
-  onLoad() {
+  onShow() {
+    this.params.uid =
+      wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
     this.resumeType = wx.getStorageSync('resumeType')
     if (this.resumeType == '团队接单') {
       this.getGeportOrderList()

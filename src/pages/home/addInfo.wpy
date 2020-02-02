@@ -122,7 +122,7 @@
         </view>
       </view>
     </actionSheet>
-    <modal :isScaleModal="isModal" :height="modalHeight" :modalObj="modalObj"></modal>
+    <modal :isScaleModal="isModal" :height="modalHeight" @handleOk="handleOk" :modalObj="modalObj"></modal>
   </view>
 </template>
 <script>
@@ -133,6 +133,7 @@ import scanIdCard from '../../components/scanIdCard'
 import actionSheet from '../../components/actionSheet'
 import modal from '../../components/modal'
 let $http = require('../../http.js')
+let lock = false
 //通过继承自wepy.page的类创建页面逻辑
 export default class home extends wepy.page {
   //可用于页面模板绑定的数据
@@ -150,12 +151,12 @@ export default class home extends wepy.page {
     activeIndex: 0,
     height: 200,
     isModal: true,
-    modalHeight: 520,
+    modalHeight: 470,
     modalObj: {
       title: '添加成功！',
       subTitle: '',
-      imgBg: '../../images/modaIcon.png',
-      imgIcon: ''
+      imgBg: '../../images/modalBg.png',
+      imgIcon: '../../images/modalIcon1.png'
     },
     resumeType: '简历管理',
     isInput: true,
@@ -163,37 +164,73 @@ export default class home extends wepy.page {
     resumeInfo: {},
     baseInfo: {},
     params: {
-      uid: 2,
       name: '',
       age: '',
       mobile: '',
-      sex: '',
-      education: '',
-      invoiceId: ''
+      sex: 1,
+      education: 0
     }
   }
   events = {
     showActionSheet: () => {
-      // this.isScaleModal = false
-      // this.$apply()
       this.$broadcast('showActionSheet')
     },
+    handleOk: () => {
+      wx.switchTab({
+        url: '/pages/home/index'
+      })
+    },
     submit: data => {
-      // 发请求
-      if (this.stepActive == 3) {
-        wx.switchTab({
-          url: '/pages/home/index'
-        })
+      if (!this.isInput) {
+        this.index = data.sex - 1
       }
-      this.stepActive = this.stepActive + 1
+      // 发请求
+      this.params = Object.assign(this.params, data)
+      if (this.stepActive == 3) {
+        this.params.uid =
+          wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
+        if (!lock) {
+          this.addResume()
+        }
+      } else {
+        this.stepActive = this.stepActive + 1
+      }
     }
+  }
+  addResume() {
+    lock = true
+    $http
+      .http('/Wxresume/addResume', this.params)
+      .then(res => {
+        lock = false
+        if (res.data) {
+          this.$broadcast('showModal')
+        } else {
+          wx.showToast({
+            icon: 'none',
+            title: '添加失败'
+          })
+        }
+      })
+      .catch(error => {
+        lock = false
+        wx.showToast({
+          icon: 'none',
+          title: error.status.remind
+        })
+        this.stepActive = 3
+      })
+    this.$apply()
   }
   //事件处理函数(集中保存在methods对象中)
   methods = {
     changeInput() {
-      this.isInput = !this.isInput
-      this.stepActive = 1
-      this.resumeInfo = {}
+      if (this.stepActive < 3) {
+        this.isInput = !this.isInput
+      }
+
+      // this.stepActive = 1
+      // this.resumeInfo = {}
     },
     selectChange(index, item) {
       this.activeIndex = index

@@ -9,14 +9,14 @@
           <view class="page_card_row">
             <view class="weui-flex between">
               <view class="my-text">支付宝</view>
-              <view class="page_card_status page_card_status1 {{!bindInfo.alipay_status? '': 'page_card_status2'}}"> {{bindInfo.alipay_status? bindInfo.account_no:'未绑定'}}</view>
+              <view class="page_card_status page_card_status2 {{!bindInfo.alipay_status? '': 'page_card_status1'}}"> {{bindInfo.alipay_status? wxs.getCardNum(bindInfo.account_no):'未绑定'}}</view>
             </view>
           </view>
           <view class="page_card_row">
             <view class="weui-flex between">
               <view class="my-text">银行卡</view>
-              <view class="my-text-right" wx-if="{{bindInfo.bank_status}}"> {{bindInfo.bank_account_no}}</view>
-              <view class="page_card_status page_card_status1" wx:else>未绑定</view>
+              <view class="my-text-right" wx:if="{{bindInfo.bank_status}}"> {{wxs.getCardNum(bindInfo.bank_account_no)}}</view>
+              <view class="page_card_status page_card_status2" wx:else>未绑定</view>
             </view>
           </view>
           <view class="page_card_row">
@@ -28,15 +28,15 @@
           <view class="page_card_row">
             <view class="weui-flex between">
               <view class="my-text">身份证</view>
-              <view class="my-text-right" wx-if="{{bindInfo.idcard_status}}">{{bindInfo.id_card}}</view>
-              <view class="page_card_status page_card_status1" wx:else>未绑定</view>
+              <view class="my-text-right" wx:if="{{bindInfo.idcard_status}}">{{wxs.getCardNum(bindInfo.id_card)}}</view>
+              <view class="page_card_status page_card_status2" wx:else>未绑定</view>
             </view>
           </view>
           <view class="page_card_row">
             <view class="weui-flex between">
               <view class="my-text">邮箱</view>
-              <view class="my-text-right" wx-if="{{bindInfo.email}}">{{bindInfo.email}}</view>
-              <view class="page_card_status page_card_status1" wx:else>未绑定</view>
+              <view class="my-text-right" wx:if="{{bindInfo.email}}">{{bindInfo.email}}</view>
+              <view class="page_card_status page_card_status2" wx:else>未绑定</view>
             </view>
           </view>
         </view>
@@ -47,9 +47,11 @@
 <script>
 import wepy from 'wepy'
 let $http = require('../../http.js')
+import wxs from '../../dateFilter.wxs'
 //通过继承自wepy.page的类创建页面逻辑
 export default class my extends wepy.page {
   //可用于页面模板绑定的数据
+  wxs = { wxs }
   data = {
     userInfo: {},
     bindInfo: {}
@@ -60,7 +62,8 @@ export default class my extends wepy.page {
   //事件处理函数(集中保存在methods对象中)
   methods = {}
   getBindInfo() {
-    $http.http('/Userinfo/userBinkInfo', { uid: 2 }).then(res => {
+    let uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
+    $http.http('/Userinfo/userBinkInfo', { uid }).then(res => {
       this.bindInfo = res.data
       if (
         this.bindInfo.bank_account_no &&

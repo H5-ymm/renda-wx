@@ -5,12 +5,13 @@
   <view class="page_botttom page">
     <view class="my-view-header">
       <image src="../../images/bg.png" class="my-view-header-bg" mode="scaleToFill" alt="">
-        <view class="my-view-userInfo" wx-if="{{userInfo}}">
-          <image src="{{head_img}}" wx-if="{{head_img}}" alt="" class="my-avatar">
-            <image src="../../images/img1.png" alt="" wx-if="{{!head_img}}" class="my-avatar">
-
-              <view class="my-user-name">{{userInfo.user_name}}</view>
-              <view class="my-user-mobile">{{userInfo.mobile}}</view>
+        <view class="my-view-userInfo">
+          <view class="my-avatar-box">
+            <image src="{{head_img}}" wx:if="{{head_img}}" alt="" mode="aspectFit" class="my-avatar">
+              <image src="../../images/header.png" wx:else alt="" mode="aspectFit" class="my-avatar">
+          </view>
+          <view class="my-user-name">{{userInfo.user_name}}</view>
+          <view class="my-user-mobile">{{userInfo.mobile}}</view>
         </view>
     </view>
     <view class="page_margin my-view my-view-main">
@@ -74,15 +75,20 @@ export default class my extends wepy.page {
 
   //页面的生命周期函数
   onLoad() {
-    $http.http('/Userinfo/getUserInfo', { uid: 2 }).then(res => {
-      this.userInfo = res.data
+    let uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
+    $http.http('/Userinfo/getUserInfo', { uid }).then(res => {
+      this.userInfo = res.data || {}
       if (res.data.head_img) {
         this.head_img = 'http://tiantianxsg.com:39888/' + res.data.head_img
+      } else {
+        this.head_img = wx.getStorageSync('wxInfo')
+          ? JSON.parse(wx.getStorageSync('wxInfo')).head_img
+          : ''
       }
+      console.log(this.head_img)
       this.$apply()
       wx.setStorageSync('userInfo', JSON.stringify(this.userInfo))
     })
-    console.log('onLoad')
   }
 }
 </script>

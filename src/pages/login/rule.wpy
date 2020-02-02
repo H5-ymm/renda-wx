@@ -1,8 +1,8 @@
 <style lang="less">
-@import '../style/rule.less';
+@import '../../style/rule.less';
 </style>
 <template>
-  <view class="page_margin page">
+  <view class="page_margin page login_page">
     <view class="rule-content-box">
       <view class="rule-content">
         <view class="title">【审慎阅读】您在申请注册流程中点击同意前，应当认真阅读以下协议。请您务必审慎阅读、充分理解协议中各条款内容，其中包括：</view>

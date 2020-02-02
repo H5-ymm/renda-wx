@@ -59,25 +59,9 @@ const checkMobile = mobile => {
     }
     return flag;
 };
-const changeFormat = format => {
-    let time = new Date();
-    var date = {
-        'M+': time.getMonth() + 1, // 月份
-        'd+': time.getDate(), // 日
-    };
-    if (/(y+)/i.test(format)) {
-        format = format.replace(RegExp.$1, (time.getFullYear() + '').substr(4 - RegExp.$1.length));
-    }
-    for (var k in date) {
-        if (new RegExp('(' + k + ')').test(format)) {
-            format = format.replace(RegExp.$1, RegExp.$1.length === 1 ? date[k] : ('00' + date[k]).substr(('' + date[k]).length));
-        }
-    };
-    return format;
-};
+
 module.exports = {
     manglingFormatCardNumber: manglingFormatCardNumber,
     validateIdCard: validateIdCard,
-    checkMobile: checkMobile,
-    changeFormat: changeFormat
+    checkMobile: checkMobile
 };
