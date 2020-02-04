@@ -37,9 +37,9 @@
         </view>
       </view>
     </view>
-    <view class="weui-cell_btn weui-flex center">
+    <!-- <view class="weui-cell_btn weui-flex center">
       <button class="weui-btn_cell .weui-btn_primary" @tap="save">下一步</button>
-    </view>
+    </view> -->
   </view>
 </template>
 <script>
@@ -75,31 +75,54 @@ export default class scanIdCard extends wepy.component {
       uid: wx.getStorageSync('rendaUid') || this.$parent.$parent.globalData.uid,
       infoImg
     }
-    $http.http('/Wxresume/ocrIdCard ', params).then(res => {
-      let data = JSON.parse(res.data)
-      if (data.success) {
+    console.log(params)
+    $http.http('/Wxresume/getocridcard', params).then(res => {
+      let data = res.data
+      if (res.status.code == 200) {
         this.form.address = data.data.address
         this.form.name = data.data.name
+        let myDate = new Date()
+        let tYear = myDate.getFullYear()
+        let year = data.data.birthDay ? data.data.birthDay.split('/')[0] : ''
+        if (year) {
+          this.form.age = tYear - year
+        }
         if (data.data.gender == '男') {
           this.form.sex = 1
         }
         if (data.data.gender == '女') {
           this.form.sex = 2
         }
+        this.$emit('submitForm', this.form)
       } else {
         wx.showToast({
           icon: 'none',
-          title: '获取信息失败'
+          title: '获取信息失败',
+          duration: 2000
         })
       }
     })
   }
   getImg(tempFilePaths) {
-    console.log(this.tempFilePaths)
+    let that = this
     $http.uploadFile(tempFilePaths).then(res => {
       if (res.data && res.data.url) {
-        let imgUrl = 'http://tiantianxsg.com:39888/' + res.data.url
+        let imgUrl = 'https://a.rsd123.com/' + res.data.url
         this.infoImg = imgUrl
+        console.log(imgUrl)
+        wx.downloadFile({
+          url: imgUrl,
+          success(res) {
+            wx.getFileSystemManager().readFile({
+              filePath: res.tempFilePath, //选择图片返回的相对路径
+              encoding: 'base64', //编码格式
+              success: res => {
+                //成功的回调
+                that.getUrl(res.data)
+              }
+            })
+          }
+        })
         this.$apply()
       } else {
         wx.showToast({
@@ -117,35 +140,35 @@ export default class scanIdCard extends wepy.component {
         success(res) {
           let canvasWidth = res.width //图片原始长宽
           let canvasHeight = res.height
-
-          while (canvasWidth > 120 || canvasHeight > 90) {
+          if (canvasWidth > 120 || canvasHeight > 90) {
             // 保证宽高在400以内
-            canvasWidth = 120
-            canvasHeight = 90
+            canvasWidth = 300
+            canvasHeight = 200
             // ratio++
           }
-          console.log(canvasWidth)
-          console.log(canvasHeight)
-          that.cWidth = 240
-          that.cHeight = 180
+          that.cWidth = canvasWidth
+          that.cHeight = canvasHeight + 40
           //----------绘制图形并取出图片路径--------------
           var ctx = wx.createCanvasContext('canvas')
           ctx.drawImage(res.path, 0, 0, canvasWidth, canvasHeight)
           ctx.draw(
             false,
             setTimeout(() => {
-              wx.canvasToTempFilePath({
-                canvasId: 'canvas',
-                destWidth: canvasWidth,
-                destHeight: canvasHeight,
-                success: function(res) {
-                  // console.log(res.tempFilePath)//最终图片路径
-                  resolve(res.tempFilePath)
+              wx.canvasToTempFilePath(
+                {
+                  canvasId: 'canvas',
+                  destWidth: canvasWidth,
+                  destHeight: canvasHeight,
+                  success: function(res) {
+                    // console.log(res.tempFilePath)//最终图片路径
+                    resolve(res.tempFilePath)
+                  },
+                  fail: function(res) {
+                    console.log(res.errMsg)
+                  }
                 },
-                fail: function(res) {
-                  console.log(res.errMsg)
-                }
-              })
+                this
+              )
             }, 100)
           )
         },
@@ -161,10 +184,6 @@ export default class scanIdCard extends wepy.component {
         sizeType: ['compressed'],
         success: res => {
           let tempFilePath = res.tempFilePaths[0]
-          this.compressImg(res.tempFilePaths[0]).then(res => {
-            this.tempFilePaths = [res]
-            this.getImg(this.tempFilePaths)
-          })
           wx.getFileSystemManager().readFile({
             filePath: tempFilePath, //选择图片返回的相对路径
             encoding: 'base64', //编码格式
@@ -185,7 +204,7 @@ export default class scanIdCard extends wepy.component {
     },
     save() {
       if (!this.infoImg) return
-      this.$emit('submit', this.form)
+      this.$emit('submitForm', this.form)
     }
   }
 

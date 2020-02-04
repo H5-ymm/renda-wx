@@ -25,7 +25,6 @@
   top: 0;
   left: 0;
   width: 76%;
-  min-height: 36%;
   margin: auto;
   background: #fff;
   border-radius: 10rpx;
@@ -84,8 +83,6 @@
       <slot></slot>
       <view class="modal-content">
         <view class="modal-bg">
-          <!-- <image src="../images/modalBg.png" class="modal-img-bg"/>
-          -->
           <image src="{{modalObj.imgIcon}}" wx:if="{{modalObj.imgIcon}}" class="modal-icon" />
           <image src="{{modalObj.imgBg}}" class="modal-img-bg" />
         </view>

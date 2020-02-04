@@ -8,9 +8,8 @@
       <scroll-view scroll-y="true" style="height:100%" @scrolltolower="searchScrollLower">
         <view class="home-view-box">
           <resumeQuery @changeDate="changeDate"></resumeQuery>
-          <resumeCard :count="count"></resumeCard>
+          <resumeCard></resumeCard>
           <resumeList :list.sync="list"></resumeList>
-
         </view>
       </scroll-view>
     </view>
@@ -41,7 +40,8 @@ export default class home extends wepy.page {
       page: 1,
       limit: 10
     },
-    count: 0
+    count: 0,
+    authorize: true
   }
   events = {
     changeDate: val => {
@@ -50,14 +50,7 @@ export default class home extends wepy.page {
       this.$broadcast('changeDate', val)
     }
   }
-  getResumeList() {
-    $http.http('/Wxresume/resumelist', this.params).then(res => {
-      console.log(res)
-      this.list = res.data.data || []
-      this.count = res.data.count
-      this.$apply()
-    })
-  }
+
   methods = {
     addResume() {
       wx.navigateTo({
@@ -65,20 +58,103 @@ export default class home extends wepy.page {
       })
     },
     searchScrollLower() {
-      if (this.count > this.list.length) {
+      if (this.count > this.list.length && this.count > this.limit) {
         this.params.limit = this.params.limit + 10
         this.getResumeList()
       }
     }
   }
-  onLoad() {
-    this.params.uid =
-      wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
+  getOpenId() {
+    let that = this
+    wx.login({
+      success(res) {
+        if (res.code) {
+          $http
+            .http('/Login/getopenid', { code: res.code })
+            .then(res => {
+              let data = JSON.parse(res.data)
+              that.$parent.globalData.openId = data.openid
+              wx.setStorageSync('rendaOpenId', data.openid)
+              if (!that.authorize) {
+                setTimeout(() => {
+                  wx.redirectTo({
+                    url: '/pages/login/login' // 页面 A
+                  })
+                }, 300)
+              } else {
+                that.checkUserLogin(data.openid)
+              }
+            })
+            .catch(error => {
+              console.log(error)
+            })
+        } else {
+          console.log('获取失败！' + res.errMsg)
+        }
+      }
+    })
+  }
+  checkUserLogin(openid) {
+    let that = this
+    $http
+      .http('/Login/is_loginUser', { openid })
+      .then(res => {
+        if (res.data && res.data.uid) {
+          that.$parent.globalData.uid = res.data.uid
+          this.params.uid = res.data.uid
+          this.$broadcast('getUid', res.data.uid)
+          this.getResumeList()
+          wx.setStorageSync('rendaUid', res.data.uid)
+        } else {
+          setTimeout(() => {
+            wx.redirectTo({
+              url: '/pages/login/login' // 页面 A
+            })
+          }, 300)
+        }
+      })
+      .catch(error => {
+        console.log(error)
+      })
+  }
+  getResumeList() {
+    $http.http('/Wxresume/resumelist', this.params).then(res => {
+      this.list = res.data.data || []
+      this.count = res.data.count
+      this.$apply()
+    })
   }
   onShow() {
-    console.log(wx.getStorageSync('rendaUid'))
+    let that = this
     if (wx.getStorageSync('rendaUid')) {
+      this.authorize = true
+      this.params.uid = Number(wx.getStorageSync('rendaUid'))
+      this.$broadcast('getUid', this.params.uid)
       this.getResumeList()
+    } else {
+      wx.getSetting({
+        success(res) {
+          console.log(res.authSetting['scope.userInfo'] + '是否授权')
+          if (!res.authSetting['scope.userInfo']) {
+            that.authorize = false
+            that.$apply()
+            that.getOpenId()
+          } else {
+            that.authorize = true
+            that.$apply()
+            console.log(wx.getStorageSync('rendaUid') == '')
+            if (wx.getStorageSync('rendaUid') == '') {
+              that.getOpenId()
+            } else {
+              setTimeout(() => {
+                wx.redirectTo({
+                  url: '/pages/login/login' // 页面 A
+                })
+              }, 100)
+            }
+          }
+        }
+      })
     }
   }
 }

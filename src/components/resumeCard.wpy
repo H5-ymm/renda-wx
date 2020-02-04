@@ -56,16 +56,11 @@ export default class resumeCard extends wepy.component {
     changeDate: val => {
       this.params = Object.assign(this.params, val)
       this.getCount()
-    }
-  }
-  //页面的生命周期函数
-  onLoad() {
-    this.params.uid =
-      wx.getStorageSync('rendaUid') || this.$parent.$parent.globalData.uid
-    if (this.params.uid) {
+    },
+    getUid: val => {
+      this.params.uid = val || wx.getStorageSync('rendaUid')
       this.getCount()
     }
   }
-  //页面的生命周期函数
 }
 </script>

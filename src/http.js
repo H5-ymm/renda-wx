@@ -1,6 +1,7 @@
 /* eslint-disable eqeqeq */
-const apiUrl = 'http://tiantianxsg.com:39888/wx.php'; // 服务器api地址
+const apiUrl = 'https://a.rsd123.com/wx.php'; // 服务器api地址
 const http = (url, params, method) => {
+    console.log(url);
     return new Promise((resolve, reject) => {
         wx.request({
             url: apiUrl + url, // 服务器url+参数中携带的接口具体地址
@@ -10,11 +11,22 @@ const http = (url, params, method) => {
             },
             method: method || 'POST', // 默认为GET,可以不写，如常用请求格式为POST，可以设置POST为默认请求方式
             success: function (res) {
+                console.log(url + '成功调用接口');
+                console.log(res);
                 // 接口访问正常返回数据
                 if (res.statusCode === 200) {
                     // 1. 操作成功返回数据,原则上只针对服务器端返回成功的状态（如本例中为000000）
                     if (res.data.status.code === 200) {
                         resolve(res.data);
+                    } else if (res.data.status.code === 1003) {
+                        // 需要特殊处理的接口，可以单独列出来返回数据
+                        wx.showToast({
+                            icon: 'none',
+                            title: res.data.status.remind
+                        });
+                        // wx.redirectTo({
+                        //     url: '/pages/login/login' // 页面 A
+                        // });
                     } else if (url == '/Wxresume/addResume') {
                         // 需要特殊处理的接口，可以单独列出来返回数据
                         reject(res.data);
@@ -39,14 +51,18 @@ const http = (url, params, method) => {
                     // 2. 操作不成功返回数据，以toast方式弹出响应信息，如后端未格式化非操作成功异常信息，则可以统一定义异常提示
                     wx.showToast({
                         icon: 'none',
-                        title: '网络失败'
+                        title: '网络失败',
+                        duration: 2000
                     });
                 }
             },
             fail: function (error) {
+                console.log(error);
+                console.log(url + '失败调用接口');
                 wx.showToast({
                     icon: 'none',
-                    title: '请求失败'
+                    title: '请求失败',
+                    duration: 2000
                 });
                 reject(error);
             }
@@ -56,7 +72,7 @@ const http = (url, params, method) => {
 const uploadFile = (tempFilePaths) => {
     return new Promise((resolve, reject) => {
         wx.uploadFile({
-            url: 'http://tiantianxsg.com:39888/index.php/uploadimg/moreupload',
+            url: 'https://a.rsd123.com/index.php/uploadimg/moreupload',
             filePath: tempFilePaths[0],
             name: 'image',
             success: res => {

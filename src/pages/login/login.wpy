@@ -21,7 +21,7 @@
     top: 0;
     left: 0;
     width: 100%;
-    height: 88%;
+    height: 90%;
   }
   .login-view-box {
     height: 85%;
@@ -154,7 +154,7 @@
 <template>
   <view class="login_page page_botttom">
     <view class="login-view">
-      <image src="../../images/loginBg.png" mode="scaleToFill" class="login-view-bg" />
+      <image src="../../images/loginBg.png" mode="widthFix" class="login-view-bg" />
       <view class="login-view-box">
         <view class="login-title">
           <view>您好，</view>
@@ -303,7 +303,7 @@ export default class Login extends wepy.page {
         }
       })
       .catch(error => {
-        if (error && error.status.code == 3011) {
+        if (error && error.status && error.status.code == 3011) {
           this.$broadcast('showModal')
           return
         }
@@ -372,10 +372,12 @@ export default class Login extends wepy.page {
     },
     getUserInfo(e) {
       this.userInfo = e.detail.userInfo
+      console.log(e.detail.userInfo)
       if (this.userInfo) {
         let params = {
           head_img: this.userInfo.avatarUrl,
-          address: this.userInfo.province + this.userInfo.city
+          address: this.userInfo.province + this.userInfo.city,
+          user_name: this.userInfo.nickName
         }
         this.$parent.globalData.wxInfo = params
         wx.setStorageSync('wxInfo', JSON.stringify(params))

@@ -101,9 +101,9 @@
         </view>
       </view>
       <addBaseInfo wx:if="{{stepActive==1}}" :resumeType="resumeType" :baseInfo="baseInfo" @showActionSheet="showActionSheet" @submit="submit"></addBaseInfo>
-      <addResume wx:if="{{stepActive==2&&isInput}}"></addResume>
-      <scanIdCard wx:if="{{stepActive==2&&!isInput}}"></scanIdCard>
-      <addResume wx:if="{{stepActive==3}}"></addResume>
+      <addResume wx:if="{{stepActive==2&&isInput}}" @submit="submit"></addResume>
+      <scanIdCard wx:if="{{stepActive==2&&!isInput}}" @submitForm="submitForm"></scanIdCard>
+      <addResume wx:if="{{stepActive==3}}" :resumeInfo.sync="resumeInfo"></addResume>
     </view>
     <actionSheet :isScaleModal="isScaleModal" :height="height">
       <view class="page_card modal-page_card">
@@ -151,7 +151,7 @@ export default class home extends wepy.page {
     activeIndex: 0,
     height: 200,
     isModal: true,
-    modalHeight: 470,
+    modalHeight: 460,
     modalObj: {
       title: '添加成功！',
       subTitle: '',
@@ -180,12 +180,16 @@ export default class home extends wepy.page {
         url: '/pages/home/index'
       })
     },
+    submitForm: data => {
+      this.stepActive = 3
+      this.resumeInfo = data
+    },
     submit: data => {
-      if (!this.isInput) {
-        this.index = data.sex - 1
-      }
       // 发请求
       this.params = Object.assign(this.params, data)
+      if (this.stepActive == 2) {
+        this.resumeInfo = data
+      }
       if (this.stepActive == 3) {
         this.params.uid =
           wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
@@ -228,9 +232,6 @@ export default class home extends wepy.page {
       if (this.stepActive < 3) {
         this.isInput = !this.isInput
       }
-
-      // this.stepActive = 1
-      // this.resumeInfo = {}
     },
     selectChange(index, item) {
       this.activeIndex = index
@@ -242,12 +243,23 @@ export default class home extends wepy.page {
       this.$broadcast('showActionSheet')
     }
   }
-
+  watch = {
+    resumeType(val) {
+      if (val == '简历管理') {
+        this.activeIndex = 0
+      } else if (val == '团队接单') {
+        this.activeIndex = 1
+      } else {
+        this.activeIndex = 2
+      }
+    }
+  }
   //页面的生命周期函数
   onLoad(options) {
     if (options.query) {
       this.baseInfo = JSON.parse(options.query)
-      this.baseInfo.resumeType = wx.getStorageSync('resumeType')
+      this.resumeType = wx.getStorageSync('resumeType') || '简历管理'
+      this.baseInfo.resumeType = wx.getStorageSync('resumeType') || '简历管理'
       this.$broadcast('getBaseInfo', this.baseInfo)
     }
   }

@@ -19,7 +19,7 @@
           <view class="page_card_row">
             <view class="weui-flex between">
               <view class="my-text">姓名</view>
-              <view class="my-text-right"> {{userInfo.user_name}}</view>
+              <view class="my-text-right"> {{userName}}</view>
             </view>
           </view>
           <view class="page_card_row">
@@ -55,12 +55,17 @@ export default class my extends wepy.page {
   }
   //可用于页面模板绑定的数据
   data = {
-    motto: 'Hello World',
     userInfo: {},
     head_img: '',
     wxAddress: ''
   }
   computed = {
+    userName() {
+      let name = wx.getStorageSync('wxInfo')
+        ? JSON.parse(wx.getStorageSync('wxInfo')).user_name
+        : ''
+      return this.userInfo.user_name ? this.userInfo.user_name : name
+    },
     address() {
       return (
         (this.userInfo.provinceName ? this.userInfo.provinceName : '') +
@@ -79,7 +84,7 @@ export default class my extends wepy.page {
       let wxUserinfo = wx.getStorageSync('wxInfo')
       this.wxAddress = wxUserinfo ? JSON.parse(wxUserinfo).address : ''
       if (this.userInfo.head_img) {
-        this.head_img = 'http://tiantianxsg.com:39888/' + this.userInfo.head_img
+        this.head_img = 'https://a.rsd123.com/' + this.userInfo.head_img
       } else {
         this.head_img = wxUserinfo ? JSON.parse(wxUserinfo).head_img : ''
       }

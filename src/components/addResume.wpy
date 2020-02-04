@@ -69,7 +69,7 @@
         <view class="page_card_row">
           <view class="weui-flex between">
             <view class="my-text  weui-flex__item">年龄：</view>
-            <input class="weui-input" data-name="age" value="{{form.age}}" @input=" changeInput" placeholder="请输入年龄" />
+            <input class="weui-input" data-name="age" value="{{form.age}}" @input="changeInput" placeholder="请输入年龄" />
           </view>
         </view>
       </view>
@@ -85,6 +85,9 @@ import wepy from 'wepy'
 let util = require('../util.js')
 //通过继承自wepy.page的类创建页面逻辑
 export default class addResume extends wepy.component {
+  props = {
+    resumeInfo: Object
+  }
   data = {
     array: ['男', '女', '男女不限'],
     eduList: ['高中以下', '高中', '专科', '本科', '硕士'],
@@ -99,6 +102,25 @@ export default class addResume extends wepy.component {
       sex: '1'
     },
     step: 1
+  }
+  watch = {
+    resumeInfo(val) {
+      if (val && val.name) {
+        this.form = val
+        this.index = val.sex - 1
+      } else {
+        this.form = {
+          name: '',
+          mobile: '',
+          address: '',
+          age: '',
+          education: 0,
+          sex: '1'
+        }
+        this.index = 0
+      }
+      this.$apply()
+    }
   }
   //事件处理函数(集中保存在methods对象中)
   methods = {

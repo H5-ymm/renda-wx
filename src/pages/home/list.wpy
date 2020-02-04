@@ -53,7 +53,7 @@ export default class list extends wepy.page {
   }
   getGeportOrderList() {
     $http.http('/Wxresume/reportOrderList', this.params).then(res => {
-      this.list = res.data.data
+      this.list = res.data.data || []
       this.count = res.data.count
       this.$apply()
     })
@@ -88,19 +88,22 @@ export default class list extends wepy.page {
       }
       let query = JSON.stringify(params)
       wx.setStorageSync('query', query)
-      wx.navigateTo({
+      wx.redirectTo({
         url: '/pages/home/addInfo?query=' + query // 页面 A
       })
     },
     searchScrollLower() {
-      if (this.count > this.params.limit) {
-        this.params.page = this.params.page + 1
-        if (this.resumeType == '团队接单') {
-          this.getGeportOrderList()
-        } else {
-          this.getInternalInvoiceList()
-        }
+      if (this.count > this.params.limit && this.count > this.list.length) {
+        this.params.limit = this.params.limit + 10
+        this.getList()
       }
+    }
+  }
+  getList() {
+    if (this.resumeType == '团队接单') {
+      this.getGeportOrderList()
+    } else {
+      this.getInternalInvoiceList()
     }
   }
   //页面的生命周期函数
@@ -108,11 +111,7 @@ export default class list extends wepy.page {
     this.params.uid =
       wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
     this.resumeType = wx.getStorageSync('resumeType')
-    if (this.resumeType == '团队接单') {
-      this.getGeportOrderList()
-    } else {
-      this.getInternalInvoiceList()
-    }
+    this.getList()
   }
 }
 </script>

@@ -10,7 +10,7 @@
             <image src="{{head_img}}" wx:if="{{head_img}}" alt="" mode="aspectFit" class="my-avatar">
               <image src="../../images/header.png" wx:else alt="" mode="aspectFit" class="my-avatar">
           </view>
-          <view class="my-user-name">{{userInfo.user_name}}</view>
+          <view class="my-user-name">{{userName}}</view>
           <view class="my-user-mobile">{{userInfo.mobile}}</view>
         </view>
     </view>
@@ -72,20 +72,26 @@ export default class my extends wepy.page {
       })
     }
   }
-
+  computed = {
+    userName() {
+      let name = wx.getStorageSync('wxInfo')
+        ? JSON.parse(wx.getStorageSync('wxInfo')).user_name
+        : ''
+      return this.userInfo.user_name ? this.userInfo.user_name : name
+    }
+  }
   //页面的生命周期函数
   onLoad() {
     let uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
     $http.http('/Userinfo/getUserInfo', { uid }).then(res => {
       this.userInfo = res.data || {}
       if (res.data.head_img) {
-        this.head_img = 'http://tiantianxsg.com:39888/' + res.data.head_img
+        this.head_img = 'https://a.rsd123.com/' + res.data.head_img
       } else {
         this.head_img = wx.getStorageSync('wxInfo')
           ? JSON.parse(wx.getStorageSync('wxInfo')).head_img
           : ''
       }
-      console.log(this.head_img)
       this.$apply()
       wx.setStorageSync('userInfo', JSON.stringify(this.userInfo))
     })
