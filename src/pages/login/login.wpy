@@ -55,6 +55,10 @@
   }
   .weui-cell_btn {
     padding: 40rpx 0;
+    .weui-btn_cell-disabled {
+      color: #fff;
+      background: #8e8e8e;
+    }
   }
   .box {
     width: 100%;
@@ -171,14 +175,14 @@
             <text class="code-btn" @tap="getCode">{{sendAuthCode ?'获取验证码':auth_time+'s'}}</text>
           </view>
           <view class="weui-cell_btn weui-flex center">
-            <button class="weui-btn_cell weui-btn_cell-gradient" lang='zh_CN' @getuserinfo="getUserInfo" open-type="getUserInfo">登录</button>
+            <button class="weui-btn_cell weui-btn_cell-gradient {{!checked?'weui-btn_cell-disabled':''}}" lang='zh_CN' disabled="{{!checked}}" @getuserinfo="getUserInfo" open-type="getUserInfo">登录</button>
           </view>
           <view class="rule-view">
             <image wx:if="{{!checked}}" src="../../images/check.png" mode="scaleToFill" class="check-icon" @tap="checkedRule({{checked}})" />
 
             <image wx:else src="../../images/check1.png" mode="scaleToFill" @tap="checkedRule({{checked}})" class="check-icon" />
             我已认真阅读并同意<view class="text" @tap="router">《用户协议及隐私政策》</view>和
-            <view class="text" @tap="routerPer">《个人信息保护政策》</view>
+            <view class="text" @tap="router">《信息保护政策》</view>
           </view>
         </view>
       </view>
@@ -248,7 +252,8 @@ export default class Login extends wepy.page {
     auth_time: 60, //倒计时
     sendAuthCode: true, //控制
     checked: false,
-    authorize: false
+    authorize: false,
+    isRead: false
   }
   getCodeApi() {
     $http
@@ -317,6 +322,22 @@ export default class Login extends wepy.page {
         }
       })
   }
+  onLoad(options) {
+    if (options && options.query) {
+      this.checked = true
+      this.isRead = true
+      this.form = JSON.parse(options.query)
+    } else {
+      this.isRead = false
+    }
+    this.$apply()
+  }
+  onShow() {
+    if (!this.isRead) {
+      this.checked = false
+      this.$apply()
+    }
+  }
   events = {
     handleOk: () => {
       this.$broadcast('showModal')
@@ -328,8 +349,9 @@ export default class Login extends wepy.page {
       this.checked = !checked
       this.$apply()
       if (this.checked) {
+        let query = JSON.stringify(this.form)
         wx.navigateTo({
-          url: '/pages/login/rule' // 页面 A
+          url: '/pages/login/rule?query=' + query // 页面 A
         })
       }
     },
@@ -340,8 +362,9 @@ export default class Login extends wepy.page {
       this.form.code = e.detail.value
     },
     router() {
+      let query = JSON.stringify(this.form)
       wx.navigateTo({
-        url: '/pages/login/rule' // 页面 A
+        url: '/pages/login/rule?query=' + query // 页面 A
       })
     },
     routerPer() {

@@ -1,0 +1,159 @@
+<template>
+  <picker mode="multiSelector" bindchange="bindMultiPickerChange" bindcolumnchange="bindMultiPickerColumnChange" value="{{multiIndex}}" range="{{multiArray}}">
+    <view class="my-text-right weui-flex between">
+      <view wx:if="{{options.length}}"> {{multiArray[0][multiIndex[0]]}}{{multiArray[1][multiIndex[1]]}}</view>
+      <view wx:else>请选择</view>
+      <image mode="scaleToFill" src="../images/right.png" class="page_down_icon" />
+    </view>
+  </picker>
+</template>
+<script>
+import wepy from 'wepy'
+let $http = require('../http.js')
+//通过继承自wepy.page的类创建页面逻辑
+export default class districtSelet extends wepy.component {
+  //可用于页面模板绑定的数据
+  props = {
+    address: Array
+  }
+  data = {
+    options: [],
+    list: [],
+    arr: [],
+    multiArray: [],
+    multiIndex: [0, 0],
+    disabled: false,
+    codeList: [],
+    province: []
+  }
+  getProlist1(list) {
+    return list.map(item => {
+      let obj = {
+        code: item.provinceid,
+        name: item.province
+      }
+      return obj
+    })
+  }
+  getCode(list) {
+    return list.map(item => {
+      return item.code || item.provinceid
+    })
+  }
+  getList(list) {
+    return list.map(item => {
+      return item.name || item.province
+    })
+  }
+  getRegion(value) {
+    $http
+      .http('/Wxresume/getProvincesList')
+      .then(res => {
+        let arr = this.getList(res.data)
+        this.province = this.getProlist1(res.data)
+        this.multiArray[0] = arr
+        if (this.address && this.address.length) {
+          this.province.forEach((item, index) => {
+            if (item.code == this.address[0]) {
+              this.multiIndex[0] = index
+            }
+          })
+        }
+        this.getCityList(value)
+      })
+      .catch(error => {
+        if (error) {
+          this.$message.warning(error.status.remind)
+        }
+      })
+  }
+  getCityList(value) {
+    let code = ''
+    if (!value.length) {
+      code = '110000'
+    } else {
+      code = value[0]
+    }
+    $http.http('/Wxresume/getCitysList', { code }).then(res => {
+      let arr = this.getList(res.data)
+      this.codeList = this.getCode(res.data)
+      this.multiArray[1] = arr
+      if (this.address && this.address.length) {
+        this.codeList.forEach((item, index) => {
+          if (item == this.address[1]) {
+            this.multiIndex[1] = index
+          }
+        })
+      }
+      this.$apply()
+    })
+  }
+  getAreaList(value) {
+    let code = ''
+    if (!value[1]) {
+      code = '110100'
+    } else {
+      code = value[1]
+    }
+    $http.http('/Wxresume/getAreasList', { code }).then(res => {
+      let arr = this.getList(res.data)
+      this.codeList[1] = this.getCode(res.data)
+      this.multiArray[1] = arr
+      this.$apply()
+    })
+  }
+  onLoad() {
+    if (!this.address || (this.address && this.address.length)) {
+      this.getRegion([])
+    }
+  }
+  watch = {
+    address(val) {
+      if (val && val[0] != 0) {
+        this.options = val
+        this.$apply()
+        this.getRegion(val)
+      }
+    }
+  }
+  //事件处理函数(集中保存在methods对象中)
+  methods = {
+    bindMultiPickerChange(e) {
+      this.multiIndex = e.detail.value
+      let provinceId = this.province[this.multiIndex[0]].code
+      let cityid = this.codeList[this.multiIndex[1]]
+        ? this.codeList[this.multiIndex[1]]
+        : 0
+      this.options = [provinceId, cityid]
+      if (this.options.length) {
+        this.$emit('selectCity', this.options)
+      }
+    },
+    bindMultiPickerColumnChange(e) {
+      this.multiIndex[e.detail.column] = e.detail.value
+      const provinceName = this.multiArray[0][this.multiIndex[0]]
+      let provinceId = ''
+      let province = this.province
+      try {
+        province.forEach(item => {
+          if (item.name === provinceName) {
+            provinceId = item.code
+            this.options[0] = item.code
+            this.getCityList([item.code])
+            throw new Error('find item')
+          }
+        })
+      } catch (err) {}
+      if (e.detail.column == 0) {
+        this.multiIndex = [e.detail.value, 0]
+      } else if (e.detail.column == 1) {
+        this.multiIndex[2] = e.detail.value
+        try {
+          this.options[1] = this.codeList[e.detail.value]
+        } catch (err) {}
+      }
+      this.$apply()
+    }
+  }
+}
+</script>

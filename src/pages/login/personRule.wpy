@@ -245,7 +245,7 @@ export default class personRule extends wepy.page {
   //可用于页面模板绑定的数据
   data = {}
   config = {
-    navigationBarTitleText: '《个人信息保护政策》'
+    navigationBarTitleText: '《信息保护政策》'
   }
 }
 </script>

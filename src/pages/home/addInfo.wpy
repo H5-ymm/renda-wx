@@ -168,7 +168,10 @@ export default class home extends wepy.page {
       age: '',
       mobile: '',
       sex: 1,
-      education: 0
+      education: 0,
+      desired_position: '',
+      provinceid: '',
+      cityid: ''
     }
   }
   events = {

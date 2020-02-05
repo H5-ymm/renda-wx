@@ -5,24 +5,26 @@
       <view class="page_card" wx:if="{{list.length}}" @tap="viewDetail({{item}})">
         <view class="page_card_row">
           <view class="weui-flex between">
-            <view class="page_card_name">{{item.job_name}}</view>
-            <view class="page_card_status {{'page_card_status'+ item.status}}" wx:if="{{!item.interview_status&&!item.entry_status}}">{{item.status==0?'待审核':item.status==1?'审核通过':'审核未通过'}}</view>
-            <view class="page_card_status {{'page_card_status'+ item.interview_status}}" wx:if="{{!item.entry_status&&item.status==1}}">{{item.interview_status==0?'待审核':item.interview_status==1?'面试通过':item.interview_status==2?'面试未通过':'面试未参加'}}</view>
-            <view class="page_card_status {{'page_card_status'+ item.entry_status}}" wx:if="{{item.interview_status==1}}">{{item.entry_status==0?'待审核':item.entry_status==1?'入职通过':item.entry_status==2?'入职未通过':'入职未参加'}}</view>
+            <view class="page_card_name">{{item.name}}</view>
+            <view class="page_card_status {{'page_card_status'+ item.jobinfo.status}}" wx:if="{{item.jobinfo&&!item.jobinfo.interview_status&&!item.jobinfo.entry_status}}">{{item.jobinfo.status==0?'待审核':item.jobinfo.status==1?'审核通过':'审核未通过'}}</view>
+            <view class="page_card_status {{'page_card_status'+ item.jobinfo.interview_status}}" wx:if="{{item.jobinfo&&!item.jobinfo.entry_status&&item.jobinfo.status==1}}">{{item.jobinfo.interview_status==0?'待审核':item.jobinfo.interview_status==1?'面试通过':item.jobinfo.interview_status==2?'面试未通过':'面试未参加'}}</view>
+            <view class="page_card_status {{'page_card_status'+ item.jobinfo.entry_status}}" wx:if="{{item.jobinfo&&item.jobinfo.interview_status==1}}">{{item.jobinfo.entry_status==0?'待审核':item.jobinfo.entry_status==1?'入职通过':item.jobinfo.entry_status==2?'入职未通过':'入职未参加'}}</view>
           </view>
           <view class="weui-flex between">
             <view class="text-line weui-flex start">
               <view>谁送给我：</view>
-              <view class="page_card_col1">{{item.from_user?item.from_user : '-'}}</view>
+              <view class="page_card_col1" wx:if="{{item.from_user}}">{{item.from_user?item.from_user : '-'}}</view>
+              <view class="page_card_col1" wx:else>{{item.jobinfo?item.jobinfo.com_name : '-'}}</view>
             </view>
             <image mode="scaleToFill" src="../images/right.png" class="page_card_icon" />
           </view>
           <view class="weui-flex between">
             <view class="weui-flex start weui-flex__item">
               <view>我送给谁：</view>
-              <view class="page_card_col1 text-line">{{item.com_name}}</view>
+              <view class="page_card_col1 text-line" wx:if="{{item.to_user}}">{{item.to_user}}</view>
+              <view class="page_card_col1 text-line" wx:else>{{item.jobinfo?item.jobinfo.job_name:'-'}}</view>
             </view>
-            <view class="page_card_time">{{wxs.dateFormat(item.addtime,'yyyy年MM月dd日')}}</view>
+            <view class="page_card_time" wx:if="{{item.jobinfo}}">{{wxs.dateFormat(item.jobinfo.addtime,'yyyy年MM月dd日')}}</view>
           </view>
         </view>
       </view>
@@ -48,14 +50,20 @@ export default class resumeList extends wepy.component {
   //事件处理函数(集中保存在methods对象中)
   methods = {
     viewDetail(item) {
+      let job_id = ''
+      let job_type = ''
+      if (item.jobinfo) {
+        job_id = item.jobinfo.job_id
+        job_type = item.jobinfo.job_type
+      }
       wx.navigateTo({
         url:
           '/pages/home/resumeDetail?job_id=' +
-          item.job_id +
+          job_id +
           '&resume_id=' +
           item.resume_id +
           '&type=' +
-          item.job_type // 页面 A
+          job_type // 页面 A
       })
     }
   }
