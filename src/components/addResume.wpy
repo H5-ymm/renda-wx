@@ -108,6 +108,7 @@ export default class addResume extends wepy.component {
       if (val && val.name) {
         this.form = val
         this.index = val.sex - 1
+        this.step = this.step + 1
       } else {
         this.form = {
           name: '',
@@ -173,7 +174,9 @@ export default class addResume extends wepy.component {
         })
         return
       } else {
-        this.step = this.step + 1
+        if (this.step < 2) {
+          this.step = this.step + 1
+        }
         this.$emit('submit', this.form)
       }
     }

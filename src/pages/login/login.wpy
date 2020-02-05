@@ -303,8 +303,16 @@ export default class Login extends wepy.page {
         }
       })
       .catch(error => {
-        if (error && error.status && error.status.code == 3011) {
+        if (error && error.status && error.status.code == 6001) {
           this.$broadcast('showModal')
+          return
+        }
+        if (error && error.status && error.status.code == 5030) {
+          wx.showToast({
+            icon: 'none',
+            title: '只允许团队成员登录查看',
+            duration: 2000
+          })
           return
         }
       })
@@ -372,7 +380,6 @@ export default class Login extends wepy.page {
     },
     getUserInfo(e) {
       this.userInfo = e.detail.userInfo
-      console.log(e.detail.userInfo)
       if (this.userInfo) {
         let params = {
           head_img: this.userInfo.avatarUrl,
@@ -398,39 +405,6 @@ export default class Login extends wepy.page {
           }
         })
       }
-      // wx.authorize({
-      //   scope: 'scope.userInfo',
-      //   success() {
-      //     wx.getUserInfo({
-      //       success: function(res) {
-      //         that.userInfo = res.userInfo
-      //         let params = {
-      //           head_img: that.userInfo.avatarUrl,
-      //           address: that.userInfo.province + that.userInfo.city
-      //         }
-      //         that.$parent.globalData.wxInfo = params
-      //         wx.setStorageSync('wxInfo', JSON.stringify(params))
-      //         that.login()
-      //       },
-      //       fail(error) {
-      //         wx.showModal({
-      //           title: '警告',
-      //           content:
-      //             '您点击了拒绝授权，将无法进入小程序，请授权之后再进入!!!',
-      //           showCancel: false,
-      //           confirmText: '返回授权',
-      //           success: res => {
-      //             if (res.confirm) {
-      //               that.authorize = false
-      //             } else {
-      //               that.authorize = true
-      //             }
-      //           }
-      //         })
-      //       }
-      //     })
-      //   }
-      // })
     },
     cancle() {
       this.$broadcast('showActionSheet')

@@ -79,6 +79,14 @@ export default class scanIdCard extends wepy.component {
     $http.http('/Wxresume/getocridcard', params).then(res => {
       let data = res.data
       if (res.status.code == 200) {
+        if (!data.data.name && !data.data.address && !data.data.birthDay) {
+          wx.showToast({
+            icon: 'none',
+            title: '获取信息失败,请重新上传身份证正面',
+            duration: 2000
+          })
+          return
+        }
         this.form.address = data.data.address
         this.form.name = data.data.name
         let myDate = new Date()
@@ -109,7 +117,6 @@ export default class scanIdCard extends wepy.component {
       if (res.data && res.data.url) {
         let imgUrl = 'https://a.rsd123.com/' + res.data.url
         this.infoImg = imgUrl
-        console.log(imgUrl)
         wx.downloadFile({
           url: imgUrl,
           success(res) {

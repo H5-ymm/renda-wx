@@ -75,13 +75,20 @@ export default class home extends wepy.page {
               let data = JSON.parse(res.data)
               that.$parent.globalData.openId = data.openid
               wx.setStorageSync('rendaOpenId', data.openid)
+              // 没有授权获取openid 跳转登录页面
               if (!that.authorize) {
+                wx.showToast({
+                  icon: 'none',
+                  title: '请登录页面授权登录',
+                  duration: 2000
+                })
                 setTimeout(() => {
                   wx.redirectTo({
                     url: '/pages/login/login' // 页面 A
                   })
                 }, 300)
               } else {
+                // 有授权，调免登接口 获取uid
                 that.checkUserLogin(data.openid)
               }
             })
@@ -95,12 +102,11 @@ export default class home extends wepy.page {
     })
   }
   checkUserLogin(openid) {
-    let that = this
     $http
       .http('/Login/is_loginUser', { openid })
       .then(res => {
         if (res.data && res.data.uid) {
-          that.$parent.globalData.uid = res.data.uid
+          this.$parent.globalData.uid = res.data.uid
           this.params.uid = res.data.uid
           this.$broadcast('getUid', res.data.uid)
           this.getResumeList()
@@ -124,8 +130,25 @@ export default class home extends wepy.page {
       this.$apply()
     })
   }
+  onLoad() {
+    // 授权成功，缓存没有微信信息
+    if (!wx.getStorageSync('wxInfo')) {
+      wx.getUserInfo({
+        success: res => {
+          let params = {
+            head_img: res.userInfo.avatarUrl,
+            address: res.userInfo.province + res.userInfo.city,
+            user_name: res.userInfo.nickName
+          }
+          this.$parent.globalData.wxInfo = params
+          wx.setStorageSync('wxInfo', JSON.stringify(params))
+        }
+      })
+    }
+  }
   onShow() {
     let that = this
+    // 缓存有uid
     if (wx.getStorageSync('rendaUid')) {
       this.authorize = true
       this.params.uid = Number(wx.getStorageSync('rendaUid'))
@@ -134,15 +157,15 @@ export default class home extends wepy.page {
     } else {
       wx.getSetting({
         success(res) {
-          console.log(res.authSetting['scope.userInfo'] + '是否授权')
+          // 没有授权
           if (!res.authSetting['scope.userInfo']) {
             that.authorize = false
             that.$apply()
             that.getOpenId()
           } else {
+            // 已经授权
             that.authorize = true
             that.$apply()
-            console.log(wx.getStorageSync('rendaUid') == '')
             if (wx.getStorageSync('rendaUid') == '') {
               that.getOpenId()
             } else {
@@ -150,7 +173,7 @@ export default class home extends wepy.page {
                 wx.redirectTo({
                   url: '/pages/login/login' // 页面 A
                 })
-              }, 100)
+              }, 300)
             }
           }
         }

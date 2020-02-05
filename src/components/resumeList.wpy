@@ -28,7 +28,7 @@
       </view>
     </repeat>
     <view wx:if="{{!list.length}}" class="page_list">
-      <image src="../images/noBg.png" @tap="view" class="page_noData" mode="scaleToFill" />
+      <image src="../images/noBg.png" class="page_noData" mode="scaleToFill" />
       <view class="page_noData_text">暂无数据！</view>
     </view>
   </view>

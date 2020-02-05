@@ -6,7 +6,7 @@
     <view class="page_margin">
       <view class="home-view-box">
         <repeat wx:for="{{list}}" wx:key="index">
-          <view class="page_card {{activeIndex==index? 'page_card_active': ''}}" @tap="selectJob({{index}},{{item}})">
+          <view class="page_card  {{activeIndex==index? 'page_card_active': ''}}" wx:if="{{list.length}}" @tap="selectJob({{index}},{{item}})">
             <view class="page_card_row">
               <view class="weui-flex between">
                 <view class="page_card_name">{{item.job_name}}</view>
@@ -22,6 +22,10 @@
             </view>
           </view>
         </repeat>
+        <view wx:if="{{!list.length}}" class="page_list">
+          <image src="../../images/noBg.png" class="page_noData" mode="scaleToFill" />
+          <view class="page_noData_text">暂无数据！</view>
+        </view>
       </view>
     </view>
   </scroll-view>
