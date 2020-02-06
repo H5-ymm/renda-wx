@@ -66,8 +66,6 @@ export default class addBaseInfo extends wepy.component {
     baseInfo: Object
   }
   data = {
-    userInfo: {},
-    isScaleModal: true,
     form: {
       name: '',
       to_user: '',
@@ -89,7 +87,7 @@ export default class addBaseInfo extends wepy.component {
   }
   //事件处理函数(集中保存在methods对象中)
   methods = {
-    selectType() {
+    selectType () {
       this.$emit('showActionSheet')
       this.jobName = ''
       this.form = {
@@ -98,16 +96,16 @@ export default class addBaseInfo extends wepy.component {
         from_user: ''
       }
     },
-    viewList() {
+    viewList () {
       wx.navigateTo({
         url: '/pages/home/list' // 页面 A
       })
     },
-    changeInput(e) {
+    changeInput (e) {
       let key = e.currentTarget.dataset.name
       this.form[key] = e.detail.value
     },
-    submit() {
+    submit () {
       if (this.resumeType != '简历管理' && !this.form.to_user) {
         return wx.showToast({
           title: '请选择岗位名称',
@@ -125,6 +123,6 @@ export default class addBaseInfo extends wepy.component {
     }
   }
   //页面的生命周期函数
-  onLoad() {}
+  onLoad () { }
 }
 </script>

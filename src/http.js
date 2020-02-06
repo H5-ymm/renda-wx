@@ -1,4 +1,3 @@
-/* eslint-disable eqeqeq */
 const apiUrl = 'https://a.rsd123.com/wx.php'; // 服务器api地址
 const http = (url, params, method) => {
     return new Promise((resolve, reject) => {
@@ -15,49 +14,11 @@ const http = (url, params, method) => {
                     // 1. 操作成功返回数据,原则上只针对服务器端返回成功的状态（如本例中为000000）
                     if (res.data.status.code === 200) {
                         resolve(res.data);
-                    } else if (res.data.status.code === 1003) {
-                        // 需要特殊处理的接口，可以单独列出来返回数据
-                        wx.showToast({
-                            icon: 'none',
-                            title: res.data.status.remind,
-                            duration: 2000
-                        });
-                    } else if (url == '/Login/is_loginUser' && res.data.status.code === 1009) {
-                        // 需要特殊处理的接口，可以单独列出来返回数据
-                        wx.showToast({
-                            icon: 'none',
-                            title: '团队被锁定',
-                            duration: 2000
-                        });
-                        setTimeout(() => {
-                            wx.redirectTo({
-                                url: '/pages/login/login' // 页面 A
-                            });
-                        }, 300);
-                    } else if (url == '/Login/login' && res.data.status.code === 1009) {
-                        // 需要特殊处理的接口，可以单独列出来返回数据
-                        wx.showToast({
-                            icon: 'none',
-                            title: '团队被锁定',
-                            duration: 2000
-                        });
-                    } else if (url != '/Login/login' && res.data.status.code === 5030) {
-                        // 需要特殊处理的接口，可以单独列出来返回数据
-                        wx.showToast({
-                            icon: 'none',
-                            title: '只有团队成员才能查看',
-                            duration: 2000
-                        });
-                        setTimeout(() => {
-                            wx.redirectTo({
-                                url: '/pages/login/login' // 页面 A
-                            });
-                        }, 300);
-
-                    } else if (url == '/Wxresume/addResume') {
+                    } else if (res.data.status.code === 1009 || res.data.status.code === 6001 || res.data.status.code === 6002 ||
+                        res.data.status.code === 6006 || res.data.status.code === 6007 || res.data.status.code === 6007) {
                         // 需要特殊处理的接口，可以单独列出来返回数据
                         reject(res.data);
-                    } else if (url == '/Login/login' && (res.data.status.code === 6001 || res.data.status.code === 5030)) {
+                    } else if (url == '/Wxresume/addResume') {
                         // 需要特殊处理的接口，可以单独列出来返回数据
                         reject(res.data);
                     } else if (url == '/Login/is_loginUser' && res.data.status.code === 6003) {

@@ -37,14 +37,9 @@ let $http = require('../../http.js')
 export default class list extends wepy.page {
   //可用于页面模板绑定的数据
   data = {
-    motto: 'Hello World',
-    userInfo: {},
-    dateStart: '2019-10-20',
-    dateEnd: '2019-10-20',
     list: [],
     activeIndex: 0,
     resumeType: '',
-    list1: [],
     params: {
       uid: '',
       page: 1,
@@ -55,14 +50,14 @@ export default class list extends wepy.page {
   config = {
     navigationBarTitleText: this.resumeType
   }
-  getGeportOrderList() {
+  getGeportOrderList () {
     $http.http('/Wxresume/reportOrderList', this.params).then(res => {
       this.list = res.data.data || []
       this.count = res.data.count
       this.$apply()
     })
   }
-  getInternalInvoiceList() {
+  getInternalInvoiceList () {
     $http.http('/Wxresume/internalInvoiceList', this.params).then(res => {
       this.list = res.data.data || []
       this.count = res.data.count
@@ -71,11 +66,10 @@ export default class list extends wepy.page {
   }
   //事件处理函数(集中保存在methods对象中)
   methods = {
-    selectJob(index, item) {
+    selectJob (index, item) {
       this.activeIndex = index
       let params = {}
       if (this.resumeType == '团队接单') {
-        this.getGeportOrderList()
         params = {
           name: item.job_name,
           companyName: item.com_name,
@@ -96,14 +90,14 @@ export default class list extends wepy.page {
         url: '/pages/home/addInfo?query=' + query // 页面 A
       })
     },
-    searchScrollLower() {
+    searchScrollLower () {
       if (this.count > this.params.limit && this.count > this.list.length) {
         this.params.limit = this.params.limit + 10
         this.getList()
       }
     }
   }
-  getList() {
+  getList () {
     if (this.resumeType == '团队接单') {
       this.getGeportOrderList()
     } else {
@@ -111,7 +105,7 @@ export default class list extends wepy.page {
     }
   }
   //页面的生命周期函数
-  onShow() {
+  onShow () {
     this.params.uid =
       wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
     this.resumeType = wx.getStorageSync('resumeType')

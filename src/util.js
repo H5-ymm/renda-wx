@@ -61,26 +61,37 @@ const checkMobile = mobile => {
     return flag;
 };
 const getErrorTip = code => {
+    let text = '联系客服人员：021-51991869，\n 微信：18621532378 QQ：529350865';
     let obj = {
         title: '',
         subTitle: ''
     };
+
     switch (code) {
-        case 6003:
+
+        case 6001:
             obj.title = '您还没有注册哦';
-            obj.subTitle = '亲！您还不是团队成员或企业，请前往 www.rsd123.com 进行注册申请，\n或';
+            obj.subTitle = '亲！您还不是团队成员或企业，请前往 www.rsd123.com 进行注册申请，\n或' + text;
+            break;
+        case 6002:
+            obj.title = '仅允许团队成员查看';
+            obj.subTitle = text;
             break;
         case 6006:
             obj.title = '您的团队还在审核中哦';
-            obj.subTitle = '';
+            obj.subTitle = text;
             break;
         case 6007:
             obj.title = '您团队审核未通过哦';
-            obj.subTitle = '亲！团队审核未通过';
+            obj.subTitle = text;
+            break;
+        case 6008:
+            obj.title = '团队信息未完善';
+            obj.subTitle = '亲！您的团队信息未完善，请前往 www.rsd123.com 进行团队完善，\n或' + text;
             break;
         case 1009:
             obj.title = '您团队账号被锁定';
-            obj.subTitle = '';
+            obj.subTitle = text;
             break;
         default:
             obj = {

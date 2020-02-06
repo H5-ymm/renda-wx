@@ -32,20 +32,15 @@
   background: #fff;
   border-radius: 10rpx 10rpx 0px 0px;
 }
-
 </style>
 
 <template>
-  <view hidden='{{isScaleModal}}' >
-    <view @tap="handleClose" class="modal_mask"></view>
-    <view
-      class="modal_transform g_transition3s {{ isShow ? 'g_scale1': ''}}"
-      id="modal-box"
-      style="height:{{height}}rpx"
-    >
+  <view hidden='{{isScaleModal}}'>
+    <view @tap="handleClose" wx:if="{{isShow}}" class="modal_mask"></view>
+    <view class="modal_transform g_transition3s {{ isShow ? 'g_scale1': ''}}" id="modal-box" style="height:{{height}}rpx">
       <slot></slot>
     </view>
- </view>
+  </view>
 
 </template>
 <script>
@@ -60,27 +55,21 @@ export default class actionSheet extends wepy.component {
     isShow: false,
   }
   methods = {
-    handleClose(){
-      this.isScaleModal = true
+    handleClose () {
+      this.isShow = false
+      this.$apply()
+      this.$emit('handleClose')
     }
   }
   watch = {
-    isScaleModal(val) {
+    isScaleModal (val) {
       if (!val) {
         this.isShow = true
-        this.isCenter = !this.isCenter
-        this.$apply()
-        // let query = wx.createSelectorQuery()
-        //   query.selectAll('#modal-box').boundingClientRect(function (rect) {
-        //     console.log(rect[0].height)
-        //   }).exec()
       }
-    }
-  }
-  // 声明
-  events = {
-    'showActionSheet':()=> {
-      this.isScaleModal = !this.isScaleModal
+      else {
+        this.isShow = false
+      }
+      this.$apply()
     }
   }
 }

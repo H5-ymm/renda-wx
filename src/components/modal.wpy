@@ -70,15 +70,16 @@
   .modal-subTitle {
     text-align: center;
     color: #999999;
-    margin-top: 24rpx;
+    margin: 24rpx 0;
     font-size: 26rpx;
+    display: inline-block;
   }
 }
 </style>
 
 <template>
   <view hidden='{{isScaleModal}}'>
-    <view @tap="handleClose" class="modal_mask"></view>
+    <view @tap=" handleClose" wx:if="{{isShow}}" class="modal_mask"></view>
     <view class="modal_box transition3s {{ isShow ? 'g_scale1': ''}}" id="modal-box" style="height:{{height}}rpx">
       <slot></slot>
       <view class="modal-content">
@@ -94,7 +95,7 @@
           <button class="weui-btn_cell weui-btn_cell-gradient" @tap="handleOk">我知道啦</button>
         </view>
       </view>
-      <image src="../images/close.png" @tap="handleClose" class="close-icon" />
+      <image src="../images/close.png" @tap="handleOk" class="close-icon" />
     </view>
   </view>
 
@@ -115,9 +116,12 @@ export default class actionSheet extends wepy.component {
     handleClose() {
       this.isScaleModal = true
       this.isShow = false
+      this.$apply()
+      this.$emit('handleOk')
     },
     handleOk() {
-      this.isShow = true
+      this.isShow = false
+      this.$apply()
       this.$emit('handleOk')
     }
   }
@@ -128,13 +132,6 @@ export default class actionSheet extends wepy.component {
       } else {
         this.isShow = false
       }
-      this.$apply()
-    }
-  }
-  // 声明
-  events = {
-    showModal: () => {
-      this.isScaleModal = !this.isScaleModal
       this.$apply()
     }
   }

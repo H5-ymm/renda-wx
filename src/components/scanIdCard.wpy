@@ -44,17 +44,11 @@
 </template>
 <script>
 import wepy from 'wepy'
-import modal from './modal'
 let $http = require('../http.js')
 let util = require('../util')
 //通过继承自wepy.page的类创建页面逻辑
 export default class scanIdCard extends wepy.component {
-  //可用于页面模板绑定的数据
-  components = {
-    modal: modal
-  }
   data = {
-    isScaleModal: false,
     form: {
       name: '',
       mobile: '',
@@ -70,7 +64,7 @@ export default class scanIdCard extends wepy.component {
   }
   //事件处理函数(集中保存在methods对象中)
 
-  getUrl(infoImg) {
+  getUrl (infoImg) {
     let params = {
       uid: wx.getStorageSync('rendaUid') || this.$parent.$parent.globalData.uid,
       infoImg
@@ -78,7 +72,7 @@ export default class scanIdCard extends wepy.component {
     $http.http('/Wxresume/ocrIdCard', params).then(res => {
       let data = res.data
       if (res.status.code == 200) {
-        if (!data.data.name && !data.data.address && !data.data.birthDay) {
+        if (!data || (!data.data.name && !data.data.address && !data.data.birthDay)) {
           wx.showToast({
             icon: 'none',
             title: '获取信息失败,请重新上传身份证正面',
@@ -110,7 +104,7 @@ export default class scanIdCard extends wepy.component {
       }
     })
   }
-  getImg(tempFilePaths) {
+  getImg (tempFilePaths) {
     let that = this
     $http.uploadFile(tempFilePaths).then(res => {
       if (res.data && res.data.url) {
@@ -118,7 +112,7 @@ export default class scanIdCard extends wepy.component {
         this.infoImg = imgUrl
         wx.downloadFile({
           url: imgUrl,
-          success(res) {
+          success (res) {
             wx.getFileSystemManager().readFile({
               filePath: res.tempFilePath, //选择图片返回的相对路径
               encoding: 'base64', //编码格式
@@ -138,12 +132,12 @@ export default class scanIdCard extends wepy.component {
       }
     })
   }
-  compressImg(photoSrc, ratio = 2) {
+  compressImg (photoSrc, ratio = 2) {
     let that = this
     return new Promise((resolve, reject) => {
       wx.getImageInfo({
         src: photoSrc,
-        success(res) {
+        success (res) {
           let canvasWidth = res.width //图片原始长宽
           let canvasHeight = res.height
           if (canvasWidth > 120 || canvasHeight > 90) {
@@ -165,11 +159,11 @@ export default class scanIdCard extends wepy.component {
                   canvasId: 'canvas',
                   destWidth: canvasWidth,
                   destHeight: canvasHeight,
-                  success: function(res) {
+                  success: function (res) {
                     // console.log(res.tempFilePath)//最终图片路径
                     resolve(res.tempFilePath)
                   },
-                  fail: function(res) {
+                  fail: function (res) {
                     console.log(res.errMsg)
                   }
                 },
@@ -178,14 +172,14 @@ export default class scanIdCard extends wepy.component {
             }, 100)
           )
         },
-        fail: function(res) {
+        fail: function (res) {
           console.log(res.errMsg)
         }
       })
     })
   }
   methods = {
-    uploadImg() {
+    uploadImg () {
       wx.chooseImage({
         sizeType: ['compressed'],
         success: res => {
@@ -208,15 +202,10 @@ export default class scanIdCard extends wepy.component {
         }
       })
     },
-    save() {
+    save () {
       if (!this.infoImg) return
       this.$emit('submitForm', this.form)
     }
-  }
-
-  //页面的生命周期函数
-  onLoad() {
-    console.log('onLoad')
   }
 }
 </script>

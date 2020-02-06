@@ -139,8 +139,7 @@ export default class extends wepy.app {
       'pages/my/userBind',
       'pages/my/teamInfo',
       'pages/login/login',
-      'pages/login/rule',
-      'pages/login/personRule'
+      'pages/login/rule'
     ],
     window: {
       navigationBarTextStyle: 'white',
@@ -174,6 +173,7 @@ export default class extends wepy.app {
       downloadFile: 10000
     }
   }
+
   constructor() {
     super()
     this.use('promisify')

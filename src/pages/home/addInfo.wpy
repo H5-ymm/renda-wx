@@ -105,7 +105,7 @@
       <scanIdCard wx:if="{{stepActive==2&&!isInput}}" @submitForm="submitForm"></scanIdCard>
       <addResume wx:if="{{stepActive==3}}" :resumeInfo.sync="resumeInfo"></addResume>
     </view>
-    <actionSheet :isScaleModal="isScaleModal" :height="height">
+    <actionSheet :isScaleModal.sync="isScaleModal" :height.sync="height" @handleClose="showActionSheet">
       <view class="page_card modal-page_card">
         <repeat wx:for="{{list}}" wx:key="index">
           <view class="page_card_row" @tap="selectChange({{index}},{{item}})">
@@ -122,7 +122,7 @@
         </view>
       </view>
     </actionSheet>
-    <modal :isScaleModal="isModal" :height="modalHeight" @handleOk="handleOk" :modalObj="modalObj"></modal>
+    <modal :isScaleModal.sync="isModal" :height.sync="modalHeight" @handleOk="handleOk" :modalObj.sync="modalObj"></modal>
   </view>
 </template>
 <script>
@@ -176,9 +176,12 @@ export default class home extends wepy.page {
   }
   events = {
     showActionSheet: () => {
-      this.$broadcast('showActionSheet')
+      this.isScaleModal = !this.isScaleModal
+      this.$apply()
     },
     handleOk: () => {
+      this.isModal = true
+      this.$apply()
       wx.switchTab({
         url: '/pages/home/index'
       })
@@ -204,18 +207,21 @@ export default class home extends wepy.page {
       }
     }
   }
-  addResume() {
+  // 添加简历接口
+  addResume () {
     lock = true
     $http
       .http('/Wxresume/addResume', this.params)
       .then(res => {
         lock = false
         if (res.data) {
-          this.$broadcast('showModal')
+          this.isModal = false
+          this.$apply()
         } else {
           wx.showToast({
             icon: 'none',
-            title: '添加失败'
+            title: '添加失败',
+            duration: 2000
           })
         }
       })
@@ -223,7 +229,8 @@ export default class home extends wepy.page {
         lock = false
         wx.showToast({
           icon: 'none',
-          title: error.status.remind
+          title: error.status.remind,
+          duration: 2000
         })
         this.stepActive = 3
       })
@@ -231,23 +238,25 @@ export default class home extends wepy.page {
   }
   //事件处理函数(集中保存在methods对象中)
   methods = {
-    changeInput() {
+    changeInput () {
       if (this.stepActive < 3) {
         this.isInput = !this.isInput
       }
     },
-    selectChange(index, item) {
+    selectChange (index, item) {
       this.activeIndex = index
       this.resumeType = item
-      wx.setStorageSync('resumeType', this.resumeType)
+      this.$apply()
     },
-    save() {
+    save () {
+      this.isScaleModal = true
+      this.$apply()
+      wx.setStorageSync('resumeType', this.resumeType)
       this.$broadcast('save', this.resumeType)
-      this.$broadcast('showActionSheet')
     }
   }
   watch = {
-    resumeType(val) {
+    resumeType (val) {
       if (val == '简历管理') {
         this.activeIndex = 0
       } else if (val == '团队接单') {
@@ -258,11 +267,11 @@ export default class home extends wepy.page {
     }
   }
   //页面的生命周期函数
-  onLoad(options) {
+  onLoad (options) {
     if (options.query) {
       this.baseInfo = JSON.parse(options.query)
-      this.resumeType = wx.getStorageSync('resumeType') || '简历管理'
-      this.baseInfo.resumeType = wx.getStorageSync('resumeType') || '简历管理'
+      this.resumeType = this.baseInfo.resumeType || '简历管理'
+      this.$apply()
       this.$broadcast('getBaseInfo', this.baseInfo)
     }
   }
