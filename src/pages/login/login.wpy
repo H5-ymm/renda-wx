@@ -240,9 +240,9 @@ export default class Login extends wepy.page {
     modalObj: {
       title: '您还没有注册哦',
       subTitle:
-        '亲！您还不是团队成员或企业，请前往 www.rsd123.com 进行注册申请，\n或联系客服人员：021-51991869，\n 微信：118621532378 QQ：529350865   ',
-      imgBg: '../../images/modalBg.png',
-      imgIcon: '../../images/modalIcon1.png'
+        '联系客服人员：021-51991869，\n 微信：18621532378 QQ：529350865   ',
+      imgBg: '',
+      imgIcon: '../../images/modalIcon.png'
     },
     form: {
       mobile: '',
@@ -253,7 +253,8 @@ export default class Login extends wepy.page {
     sendAuthCode: true, //控制
     checked: false,
     authorize: false,
-    isRead: false
+    isRead: false,
+    auth_timetimer: null
   }
   getCodeApi() {
     $http
@@ -293,6 +294,8 @@ export default class Login extends wepy.page {
       })
       return
     }
+    wx.removeStorageSync('auth_time')
+    wx.removeStorageSync('sendAuthCode')
     let openid =
       wx.getStorageSync('rendaOpenId') || this.$parent.globalData.openId
     let params = Object.assign(this.form, { openid })
@@ -327,6 +330,11 @@ export default class Login extends wepy.page {
       this.checked = true
       this.isRead = true
       this.form = JSON.parse(options.query)
+      if (wx.getStorageSync('sendAuthCode')) {
+        this.auth_time = wx.getStorageSync('auth_time') - 3
+        clearInterval(this.auth_timetimer)
+        this.getTime()
+      }
     } else {
       this.isRead = false
     }
@@ -335,6 +343,11 @@ export default class Login extends wepy.page {
   onShow() {
     if (!this.isRead) {
       this.checked = false
+      if (wx.getStorageSync('sendAuthCode')) {
+        this.auth_time = wx.getStorageSync('auth_time') - 3
+        clearInterval(this.auth_timetimer)
+        this.getTime()
+      }
       this.$apply()
     }
   }
@@ -342,6 +355,27 @@ export default class Login extends wepy.page {
     handleOk: () => {
       this.$broadcast('showModal')
     }
+  }
+  getTime() {
+    this.sendAuthCode = false
+    this.auth_timetimer = setInterval(() => {
+      this.auth_time--
+      wx.setStorageSync('auth_time', this.auth_time)
+      this.$apply()
+      wx.setStorageSync('sendAuthCode', true)
+      if (this.auth_time <= 0) {
+        this.sendAuthCode = true
+        this.auth_time = 60
+        this.$apply()
+        clearInterval(this.auth_timetimer)
+      }
+    }, 1000)
+  }
+  onHide() {
+    clearInterval(this.auth_timetimer)
+  }
+  onUnload() {
+    clearInterval(this.auth_timetimer)
   }
   //事件处理函数(集中保存在methods对象中)
   methods = {
@@ -389,17 +423,7 @@ export default class Login extends wepy.page {
         return
       }
       this.getCodeApi()
-      this.sendAuthCode = false
-      let auth_timetimer = setInterval(() => {
-        this.auth_time--
-        this.$apply()
-        if (this.auth_time <= 0) {
-          this.sendAuthCode = true
-          this.auth_time = 60
-          this.$apply()
-          clearInterval(auth_timetimer)
-        }
-      }, 1000)
+      this.getTime()
     },
     getUserInfo(e) {
       this.userInfo = e.detail.userInfo

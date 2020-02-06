@@ -49,7 +49,7 @@ import wepy from 'wepy'
 let $http = require('../../http.js')
 import wxs from '../../dateFilter.wxs'
 //通过继承自wepy.page的类创建页面逻辑
-export default class my extends wepy.page {
+export default class userBind extends wepy.page {
   //可用于页面模板绑定的数据
   wxs = { wxs }
   data = {

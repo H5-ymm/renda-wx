@@ -19,7 +19,27 @@ const http = (url, params, method) => {
                         // 需要特殊处理的接口，可以单独列出来返回数据
                         wx.showToast({
                             icon: 'none',
-                            title: res.data.status.remind
+                            title: res.data.status.remind,
+                            duration: 2000
+                        });
+                    } else if (url == '/Login/is_loginUser' && res.data.status.code === 1009) {
+                        // 需要特殊处理的接口，可以单独列出来返回数据
+                        wx.showToast({
+                            icon: 'none',
+                            title: '团队被锁定',
+                            duration: 2000
+                        });
+                        setTimeout(() => {
+                            wx.redirectTo({
+                                url: '/pages/login/login' // 页面 A
+                            });
+                        }, 300);
+                    } else if (url == '/Login/login' && res.data.status.code === 1009) {
+                        // 需要特殊处理的接口，可以单独列出来返回数据
+                        wx.showToast({
+                            icon: 'none',
+                            title: '团队被锁定',
+                            duration: 2000
                         });
                     } else if (url != '/Login/login' && res.data.status.code === 5030) {
                         // 需要特殊处理的接口，可以单独列出来返回数据

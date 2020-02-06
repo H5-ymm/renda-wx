@@ -6,6 +6,9 @@ page {
   height: 100%;
   font-family: -apple-system-font, Helvetica Neue, Helvetica, sans-serif;
 }
+.placeholder {
+  color: #eeeeee;
+}
 .page_margin {
   margin: 24rpx;
 }
@@ -134,6 +137,7 @@ export default class extends wepy.app {
       'pages/my/index',
       'pages/my/userInfo',
       'pages/my/userBind',
+      'pages/my/teamInfo',
       'pages/login/login',
       'pages/login/rule',
       'pages/login/personRule'
@@ -175,6 +179,7 @@ export default class extends wepy.app {
     this.use('promisify')
     this.use('requestfix')
     wx.removeStorageSync('resumeType')
+    wx.removeStorageSync('sendAuthCode')
   }
   globalData = {
     userInfo: null,

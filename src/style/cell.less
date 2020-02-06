@@ -1,29 +1,34 @@
 @import "./base/variable/color";
+
 .page_card_row {
-  border-bottom: 1px solid @weuiLineColorLight;
-  &:nth-last-child(1) {
-    border-bottom: none;
-  }
-  .my-text {
-    color: @weuiTextColorDesc;
-    font-size: 32rpx;
-    height: 24rpx;
-    line-height: 24rpx;
-    width: 150rpx;
-    &.my-text-require {
-      &::before {
-       content: '*';
-       color: @weuiColorWarn;
-       margin-right:10rpx;
-      }
+    border-bottom: 1px solid @weuiLineColorLight;
+
+    &:nth-last-child(1) {
+        border-bottom: none;
     }
-    &.my-text-active {
-      color: @weuiColorPrimary;
+
+    .my-text {
+        color: @weuiTextColorDesc;
+        font-size: 32rpx;
+        height: 30rpx;
+        line-height: 30rpx;
+        width: 150rpx;
+
+        &.my-text-require {
+            &::before {
+                content: '*';
+                color: @weuiColorWarn;
+                margin-right: 10rpx;
+            }
+        }
+
+        &.my-text-active {
+            color: @weuiColorPrimary;
+        }
     }
-  }
-  .my-text-right {
-    color: @weuiTextColorLight;
-    // flex: auto;
-    text-align: right;
-  }
+
+    .my-text-right {
+        color: @weuiTextColorLight;
+        text-align: right;
+    }
 }

@@ -75,8 +75,7 @@ export default class scanIdCard extends wepy.component {
       uid: wx.getStorageSync('rendaUid') || this.$parent.$parent.globalData.uid,
       infoImg
     }
-    console.log(params)
-    $http.http('/Wxresume/getocridcard', params).then(res => {
+    $http.http('/Wxresume/ocrIdCard', params).then(res => {
       let data = res.data
       if (res.status.code == 200) {
         if (!data.data.name && !data.data.address && !data.data.birthDay) {

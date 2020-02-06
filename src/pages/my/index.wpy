@@ -29,6 +29,17 @@
             </view>
           </view>
           <view class="page_card_row">
+            <view class="weui-flex between" @tap="viewTeamInfo">
+              <view class="weui-flex start">
+                <image src="../../images/icon3.png" alt="" class="my-icon">
+                  <view class="my-text">团队信息</view>
+              </view>
+              <view>
+                <image mode="scaleToFill" src="../../images/right.png" class="page_card_icon" />
+              </view>
+            </view>
+          </view>
+          <view class="page_card_row">
             <view class="weui-flex between" @tap="viewUserBind">
               <view class="weui-flex start">
                 <image src="../../images/icon2.png" alt="" class="my-icon">
@@ -65,7 +76,11 @@ export default class my extends wepy.page {
         url: '/pages/my/userInfo' // 页面 A
       })
     },
-
+    viewTeamInfo() {
+      wx.navigateTo({
+        url: '/pages/my/userInfo' // 页面 A
+      })
+    },
     viewUserBind() {
       wx.navigateTo({
         url: '/pages/my/userBind' // 页面 A

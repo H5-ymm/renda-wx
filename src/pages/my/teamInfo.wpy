@@ -8,36 +8,60 @@
         <view class="page_card">
           <view class="page_card_row">
             <view class="weui-flex between">
-              <view class="my-text">头像</view>
+              <view class="my-text">团队logo</view>
               <view class="weui-flex between">
-                <image src="{{head_img}}" wx:if="{{head_img}}" alt="" mode="aspectFit" class="my-head" />
-                <image src="../../images/header.png" wx:else alt="" mode="aspectFit" class="my-head" />
+                <image src="{{head_img}}" wx:if="{{head_img}}" mode="aspectFit" class="my-head" />
+                <image src="../../images/header.png" wx:else mode="aspectFit" class="my-head" />
                 <image mode="scaleToFill" src="../../images/right.png" class="page_card_right-icon" />
               </view>
             </view>
           </view>
           <view class="page_card_row">
             <view class="weui-flex between">
-              <view class="my-text">姓名</view>
+              <view class="my-text">团队名称</view>
               <view class="my-text-right"> {{userName}}</view>
             </view>
           </view>
           <view class="page_card_row">
             <view class="weui-flex between">
-              <view class="my-text">手机号码</view>
-              <view class="my-text-right">{{userInfo.mobile}}</view>
+              <view class="my-text">成员数量</view>
+              <view class="my-text-right">22人</view>
             </view>
           </view>
           <view class="page_card_row">
             <view class="weui-flex between">
-              <view class="my-text">邮箱</view>
-              <view class="my-text-right weui-flex__item">{{userInfo.email?userInfo.email:'无'}}</view>
+              <view class="my-text">简历数量</view>
+              <view class="my-text-right">222</view>
             </view>
           </view>
           <view class="page_card_row">
             <view class="weui-flex between">
-              <view class="my-text">住址</view>
-              <view class="my-text-right weui-flex__item">{{address?address:wxAddress}}</view>
+              <view class="my-text">已入职</view>
+              <view class="my-text-right">11</view>
+            </view>
+          </view>
+          <view class="page_card_row">
+            <view class="weui-flex between">
+              <view class="my-text">所属部门</view>
+              <view class="my-text-right weui-flex__item">技术部</view>
+            </view>
+          </view>
+          <view class="page_card_row">
+            <view class="weui-flex between">
+              <view class="my-text">等级</view>
+              <view class="my-text-right weui-flex__item">经理</view>
+            </view>
+          </view>
+          <view class="page_card_row">
+            <view class="weui-flex between">
+              <view class="my-text">直属上级</view>
+              <view class="my-text-right weui-flex__item">总经理</view>
+            </view>
+          </view>
+          <view class="page_card_row">
+            <view class="weui-flex between">
+              <view class="my-text">最近登录时间</view>
+              <view class="my-text-right weui-flex__item">2019-10-19 12:22:12</view>
             </view>
           </view>
         </view>
@@ -47,11 +71,10 @@
 </template>
 <script>
 import wepy from 'wepy'
-
 //通过继承自wepy.page的类创建页面逻辑
-export default class userInfo extends wepy.page {
+export default class teamInfo extends wepy.page {
   config = {
-    navigationBarTitleText: '账户信息'
+    navigationBarTitleText: '团队信息'
   }
   //可用于页面模板绑定的数据
   data = {

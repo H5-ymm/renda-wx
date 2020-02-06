@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 /* eslint-disable no-array-constructor */
 const manglingFormatCardNumber = (cardNumber) => {
     if (cardNumber && cardNumber.length > 8) {
@@ -59,9 +60,39 @@ const checkMobile = mobile => {
     }
     return flag;
 };
-
+const getErrorTip = code => {
+    let obj = {
+        title: '',
+        subTitle: ''
+    };
+    switch (code) {
+        case 6003:
+            obj.title = '您还没有注册哦';
+            obj.subTitle = '亲！您还不是团队成员或企业，请前往 www.rsd123.com 进行注册申请，\n或';
+            break;
+        case 6006:
+            obj.title = '您的团队还在审核中哦';
+            obj.subTitle = '';
+            break;
+        case 6007:
+            obj.title = '您团队审核未通过哦';
+            obj.subTitle = '亲！团队审核未通过';
+            break;
+        case 1009:
+            obj.title = '您团队账号被锁定';
+            obj.subTitle = '';
+            break;
+        default:
+            obj = {
+                title: '',
+                subTitle: ''
+            };
+    }
+    return obj;
+};
 module.exports = {
     manglingFormatCardNumber: manglingFormatCardNumber,
     validateIdCard: validateIdCard,
-    checkMobile: checkMobile
+    checkMobile: checkMobile,
+    getErrorTip: getErrorTip
 };

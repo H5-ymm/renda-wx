@@ -70,7 +70,7 @@
   .modal-subTitle {
     text-align: center;
     color: #999999;
-    margin-top: 20rpx;
+    margin-top: 24rpx;
     font-size: 26rpx;
   }
 }
@@ -90,9 +90,6 @@
           {{modalObj.title}}
         </view>
         <text selectable='true' decode="{{true}}" class="modal-subTitle" wx:if="{{modalObj.subTitle}}"> {{modalObj.subTitle}}</text>
-        <!-- <view class="modal-subTitle" wx:if="{{modalObj.subTitle}}">
-          {{modalObj.subTitle}}
-        </view> -->
         <view class="weui-cell_btn weui-flex center">
           <button class="weui-btn_cell weui-btn_cell-gradient" @tap="handleOk">我知道啦</button>
         </view>

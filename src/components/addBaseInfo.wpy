@@ -38,7 +38,7 @@
             <view class="my-text weui-flex__auto">
               谁送给我：
             </view>
-            <input class="weui-input" placeholder="请输入送给人" value="{{form.from_user}}" data-name="from_user" @input="changeInput" />
+            <input class="weui-input" placeholder-class="placeholder" placeholder="请输入送给人" value="{{form.from_user}}" data-name="from_user" @input="changeInput" />
           </view>
         </view>
         <view class="page_card_row">
@@ -46,7 +46,7 @@
             <view class="my-text weui-flex__auto">
               我送给谁：
             </view>
-            <input disabled="{{resumeType&&resumeType!='简历管理'&&form.to_user!=''}}" value="{{form.to_user}}" data-name="to_user" @input="changeInput" class="weui-input my-text-right weui-flex__auto" placeholder="请输入公司" />
+            <input placeholder-class="placeholder" disabled="{{resumeType&&resumeType!='简历管理'&&form.to_user!=''}}" value="{{form.to_user}}" data-name="to_user" @input="changeInput" class="weui-input my-text-right weui-flex__auto" placeholder="请输入公司" />
           </view>
         </view>
       </view>

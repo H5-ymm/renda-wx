@@ -22,7 +22,7 @@
         <view class="page_card_row">
           <view class="weui-flex between">
             <view class="my-text  weui-flex__item my-text-require"> 姓名：</view>
-            <input class="weui-input" data-name="name" value="{{form.name}}" @input="changeInput" placeholder="请输入姓名" />
+            <input class="weui-input" placeholder-class="placeholder" data-name="name" value="{{form.name}}" @input="changeInput" placeholder="请输入姓名" />
           </view>
         </view>
         <!-- <view class="page_card_row">
@@ -34,7 +34,7 @@
         <view class="page_card_row">
           <view class="weui-flex between ">
             <view class="my-text weui-flex__item my-text-require"> 手机号码：</view>
-            <input class="weui-input" data-name="mobile" value="{{form.mobile}}" @input="changeInput" placeholder="请输入手机号码" />
+            <input class="weui-input" data-name="mobile" placeholder-class="placeholder" value="{{form.mobile}}" @input="changeInput" placeholder="请输入手机号码" />
           </view>
         </view>
         <view class="page_card_row">
@@ -42,7 +42,7 @@
             <view class="my-text weui-flex__item">性别：</view>
             <picker @change="bindPickerChange" value="{{index}}" range="{{array}}">
               <view class="my-text-right weui-flex between">
-                {{array[index]?array[index]:'请选择'}}
+                <view class="{{array[index]?'':'placeholder'}}"> {{array[index]?array[index]:'请选择'}}</view>
                 <image mode="scaleToFill" src="../images/right.png" class="page_down_icon" />
               </view>
             </picker>
@@ -51,7 +51,7 @@
         <view class="page_card_row">
           <view class="weui-flex between ">
             <view class="my-text weui-flex__item">住址：</view>
-            <input class="weui-input" data-name="address" value="{{form.address}}" @input="changeInput" placeholder="请输入住址" />
+            <input class="weui-input" placeholder-class="placeholder" data-name="address" value="{{form.address}}" @input="changeInput" placeholder="请输入住址" />
             <!-- <view class="my-text-right">仁达网络科技（上海）有限公司</view> -->
           </view>
         </view>
@@ -60,7 +60,7 @@
             <view class="my-text weui-flex__item">学历：</view>
             <picker @change="eduPickerChange" value="{{eduIndex}}" range="{{eduList}}">
               <view class="my-text-right weui-flex between">
-                {{eduList[eduIndex]?eduList[eduIndex]:'请选择'}}
+                <view class="{{eduList[eduIndex]?'':'placeholder'}}"> {{eduList[eduIndex]?eduList[eduIndex]:'请选择'}}</view>
                 <image mode="scaleToFill" src="../images/right.png" class="page_down_icon" />
               </view>
             </picker>
@@ -69,19 +69,19 @@
         <view class="page_card_row">
           <view class="weui-flex between">
             <view class="my-text  weui-flex__item">年龄：</view>
-            <input class="weui-input" data-name="age" value="{{form.age}}" @input="changeInput" placeholder="请输入年龄" />
+            <input class="weui-input" placeholder-class="placeholder" data-name="age" value="{{form.age}}" @input="changeInput" placeholder="请输入年龄" />
+          </view>
+        </view>
+        <view class="page_card_row">
+          <view class="weui-flex between">
+            <view class="my-text  weui-flex__item">期望岗位：</view>
+            <input class="weui-input" data-name="desired_position" placeholder-class="placeholder" value="{{form.desired_position}}" @input="changeInput" placeholder="请输入期望岗位" />
           </view>
         </view>
         <view class="page_card_row">
           <view class="weui-flex between">
             <view class="my-text  weui-flex__item">现住地址：</view>
             <districtSelet @selectCity="selectCity" :address.sync="[]"></districtSelet>
-          </view>
-        </view>
-        <view class="page_card_row">
-          <view class="weui-flex between">
-            <view class="my-text  weui-flex__item">期望岗位：</view>
-            <input class="weui-input" data-name="desired_position" value="{{form.desired_position}}" @input="changeInput" placeholder="请输入期望岗位" />
           </view>
         </view>
       </view>

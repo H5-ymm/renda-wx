@@ -58,7 +58,7 @@ export default class home extends wepy.page {
       })
     },
     searchScrollLower() {
-      if (this.count > this.list.length && this.count > this.limit) {
+      if (this.count > this.list.length && this.count > this.params.limit) {
         this.params.limit = this.params.limit + 10
         this.getResumeList()
       }

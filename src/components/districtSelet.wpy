@@ -1,8 +1,8 @@
 <template>
-  <picker mode="multiSelector" bindchange="bindMultiPickerChange" bindcolumnchange="bindMultiPickerColumnChange" value="{{multiIndex}}" range="{{multiArray}}">
+  <picker mode="multiSelector" @cancel="cancelPickerChange" @change="bindMultiPickerChange" @columnchange="bindMultiPickerColumnChange" value="{{multiIndex}}" range="{{multiArray}}">
     <view class="my-text-right weui-flex between">
       <view wx:if="{{options.length}}"> {{multiArray[0][multiIndex[0]]}}{{multiArray[1][multiIndex[1]]}}</view>
-      <view wx:else>请选择</view>
+      <view wx:else class="placeholder">请选择</view>
       <image mode="scaleToFill" src="../images/right.png" class="page_down_icon" />
     </view>
   </picker>
@@ -10,6 +10,7 @@
 <script>
 import wepy from 'wepy'
 let $http = require('../http.js')
+let lock = false
 //通过继承自wepy.page的类创建页面逻辑
 export default class districtSelet extends wepy.component {
   //可用于页面模板绑定的数据
@@ -18,22 +19,11 @@ export default class districtSelet extends wepy.component {
   }
   data = {
     options: [],
-    list: [],
-    arr: [],
     multiArray: [],
     multiIndex: [0, 0],
     disabled: false,
     codeList: [],
     province: []
-  }
-  getProlist1(list) {
-    return list.map(item => {
-      let obj = {
-        code: item.provinceid,
-        name: item.province
-      }
-      return obj
-    })
   }
   getCode(list) {
     return list.map(item => {
@@ -50,15 +40,8 @@ export default class districtSelet extends wepy.component {
       .http('/Wxresume/getProvincesList')
       .then(res => {
         let arr = this.getList(res.data)
-        this.province = this.getProlist1(res.data)
+        this.codeList[0] = this.getCode(res.data)
         this.multiArray[0] = arr
-        if (this.address && this.address.length) {
-          this.province.forEach((item, index) => {
-            if (item.code == this.address[0]) {
-              this.multiIndex[0] = index
-            }
-          })
-        }
         this.getCityList(value)
       })
       .catch(error => {
@@ -76,13 +59,14 @@ export default class districtSelet extends wepy.component {
     }
     $http.http('/Wxresume/getCitysList', { code }).then(res => {
       let arr = this.getList(res.data)
-      this.codeList = this.getCode(res.data)
+      this.codeList[1] = this.getCode(res.data)
       this.multiArray[1] = arr
-      if (this.address && this.address.length) {
-        this.codeList.forEach((item, index) => {
-          if (item == this.address[1]) {
-            this.multiIndex[1] = index
-          }
+      if (lock && (this.address && this.address.length)) {
+        lock = false
+        this.multiIndex = this.codeList.map((val, ind) => {
+          return val.indexOf(this.address[ind]) == -1
+            ? 0
+            : val.indexOf(this.address[ind])
         })
       }
       this.$apply()
@@ -103,7 +87,7 @@ export default class districtSelet extends wepy.component {
     })
   }
   onLoad() {
-    if (!this.address || (this.address && this.address.length)) {
+    if (!this.address || (this.address && this.address.length == 0)) {
       this.getRegion([])
     }
   }
@@ -111,6 +95,7 @@ export default class districtSelet extends wepy.component {
     address(val) {
       if (val && val[0] != 0) {
         this.options = val
+        lock = true
         this.$apply()
         this.getRegion(val)
       }
@@ -120,39 +105,36 @@ export default class districtSelet extends wepy.component {
   methods = {
     bindMultiPickerChange(e) {
       this.multiIndex = e.detail.value
-      let provinceId = this.province[this.multiIndex[0]].code
-      let cityid = this.codeList[this.multiIndex[1]]
-        ? this.codeList[this.multiIndex[1]]
-        : 0
-      this.options = [provinceId, cityid]
+      this.codeList.forEach((item, index) => {
+        this.options[index] = item[this.multiIndex[index]]
+          ? item[this.multiIndex[index]]
+          : 0
+      })
       if (this.options.length) {
         this.$emit('selectCity', this.options)
       }
     },
     bindMultiPickerColumnChange(e) {
       this.multiIndex[e.detail.column] = e.detail.value
-      const provinceName = this.multiArray[0][this.multiIndex[0]]
-      let provinceId = ''
-      let province = this.province
-      try {
-        province.forEach(item => {
-          if (item.name === provinceName) {
-            provinceId = item.code
-            this.options[0] = item.code
-            this.getCityList([item.code])
-            throw new Error('find item')
-          }
-        })
-      } catch (err) {}
+      let cityid = this.codeList[0][this.multiIndex[0]]
+      this.getCityList([cityid])
       if (e.detail.column == 0) {
         this.multiIndex = [e.detail.value, 0]
       } else if (e.detail.column == 1) {
-        this.multiIndex[2] = e.detail.value
-        try {
-          this.options[1] = this.codeList[e.detail.value]
-        } catch (err) {}
+        this.multiIndex[1] = e.detail.value
       }
       this.$apply()
+    },
+    cancelPickerChange(e) {
+      if (!this.address || (this.address && this.address.length == 0)) {
+        this.multiIndex = [0, 0]
+        this.options = []
+        this.$apply()
+        this.getRegion([])
+      } else {
+        lock = true
+        this.getRegion(this.address)
+      }
     }
   }
 }

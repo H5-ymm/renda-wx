@@ -61,8 +61,7 @@
           <view class="page_card_row">
             <view class="weui-flex between ">
               <view class="my-text weui-flex__item"> 手机号</view>
-              <input class="weui-input" data-name="mobile" value="{{form.mobile}}" @input="changeInput" placeholder="请输入手机号" />
-              <!-- <view class="my-text-right"> 13521671462</view> -->
+              <input class="weui-input" placeholder-class="placeholder" data-name="mobile" value="{{form.mobile}}" @input="changeInput" placeholder="请输入手机号" />
             </view>
           </view>
           <view class="page_card_row">
@@ -90,19 +89,19 @@
           <view class="page_card_row">
             <view class="weui-flex between">
               <view class="my-text  weui-flex__item">年龄</view>
-              <input class="weui-input" data-name="age" value="{{form.age}}" @input="changeInput" placeholder="请输入年龄" />
+              <input class="weui-input" placeholder-class="placeholder" data-name="age" value="{{form.age}}" @input="changeInput" placeholder="请输入年龄" />
             </view>
           </view>
           <view class="page_card_row">
             <view class="weui-flex between ">
               <view class="my-text weui-flex__item">住址</view>
-              <input class="weui-input" data-name="address" value="{{form.address}}" @input="changeInput" placeholder="请输入住址" />
+              <input class="weui-input" placeholder-class="placeholder" data-name="address" value="{{form.address}}" @input="changeInput" placeholder="请输入住址" />
             </view>
           </view>
           <view class="page_card_row">
             <view class="weui-flex between">
               <view class="my-text  weui-flex__item">期望岗位</view>
-              <input class="weui-input" data-name="desired_position" value="{{form.desired_position}}" @input="changeInput" placeholder="请输入期望岗位" />
+              <input class="weui-input" placeholder-class="placeholder" data-name="desired_position" value="{{form.desired_position}}" @input="changeInput" placeholder="请输入期望岗位" />
             </view>
           </view>
           <view class="page_card_row">
@@ -159,7 +158,8 @@ export default class resumeDetail extends wepy.page {
       } else {
         wx.showToast({
           icon: 'none',
-          title: '修改失败'
+          title: '修改失败',
+          duration: 2000
         })
       }
     })
