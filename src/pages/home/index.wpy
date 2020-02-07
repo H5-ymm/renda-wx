@@ -30,7 +30,7 @@ import resumeCard from '../../components/resumeCard'
 import resumeList from '../../components/resumeList'
 import modal from '../../components/modal'
 export default class home extends wepy.page {
-  //可用于页面模板绑定的数据
+  // 可用于页面模板绑定的数据
   components = {
     resumeQuery: resumeQuery,
     resumeCard: resumeCard,
@@ -195,8 +195,7 @@ export default class home extends wepy.page {
           that.$apply()
           if (openid == '') {
             that.getOpenId()
-          }
-          else {
+          } else {
             that.checkUserLogin(openid)
           }
         }

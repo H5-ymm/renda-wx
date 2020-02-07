@@ -3,7 +3,7 @@ let prod = process.env.NODE_ENV === 'production';
 
 module.exports = {
     eslint: true,
-    wpyExt: ".wpy",
+    wpyExt: '.wpy',
     build: {
         web: {
             apis: ['showToast', 'showActionSheet', 'showModal'],
@@ -12,6 +12,10 @@ module.exports = {
             htmlOutput: path.join('web', 'index.html'),
             jsOutput: path.join('web', 'index.js')
         }
+    },
+    appConfig: {
+        baseUrl: process.env.NODE_ENV === 'production' ? 'https://a.rsd123.com/'
+       : 'http://tiantianxsg.com:39888/'
     },
     compilers: {
         less: {},
@@ -35,7 +39,7 @@ if (prod) {
     // 压缩less
     module.exports.compilers['less'] = {
         compress: true
-    }
+    };
 
     // 压缩js
     module.exports.plugins = {
@@ -53,6 +57,6 @@ if (prod) {
               quality: 80
             }
           }
-        }*/
-    }
+        } */
+    };
 }

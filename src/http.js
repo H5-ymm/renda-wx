@@ -1,4 +1,7 @@
 const apiUrl = 'https://a.rsd123.com/wx.php'; // 服务器api地址
+// import wepy from 'wepy';
+// const baseUrl = wepy.$appConfig.baseUrl;
+// console.log(baseUrl);
 const http = (url, params, method) => {
     return new Promise((resolve, reject) => {
         wx.request({

@@ -10,8 +10,8 @@
             <view class="weui-flex between">
               <view class="my-text">头像</view>
               <view class="weui-flex between">
-                <image src="{{head_img}}" wx:if="{{head_img}}" alt="" mode="aspectFit" class="my-head" />
-                <image src="../../images/header.png" wx:else alt="" mode="aspectFit" class="my-head" />
+                <image src="{{head_img}}" wx:if="{{head_img}}" alt="" mode="aspectFill" class="my-head" />
+                <image src="../../images/header.png" wx:else alt="" mode="aspectFill" class="my-head" />
                 <image mode="scaleToFill" src="../../images/right.png" class="page_card_right-icon" />
               </view>
             </view>
@@ -19,7 +19,7 @@
           <view class="page_card_row">
             <view class="weui-flex between">
               <view class="my-text">姓名</view>
-              <view class="my-text-right"> {{userName}}</view>
+              <view class="my-text-right"> {{userName?userName:'-'}}</view>
             </view>
           </view>
           <view class="page_card_row">
@@ -47,26 +47,25 @@
 </template>
 <script>
 import wepy from 'wepy'
-
-//通过继承自wepy.page的类创建页面逻辑
+// 通过继承自wepy.page的类创建页面逻辑
 export default class userInfo extends wepy.page {
   config = {
     navigationBarTitleText: '账户信息'
   }
-  //可用于页面模板绑定的数据
+  // 可用于页面模板绑定的数据
   data = {
     userInfo: {},
     head_img: '',
     wxAddress: ''
   }
   computed = {
-    userName() {
+    userName () {
       let name = wx.getStorageSync('wxInfo')
         ? JSON.parse(wx.getStorageSync('wxInfo')).user_name
         : ''
       return this.userInfo.user_name ? this.userInfo.user_name : name
     },
-    address() {
+    address () {
       return (
         (this.userInfo.provinceName ? this.userInfo.provinceName : '') +
         (this.userInfo.cityName ? this.userInfo.cityName : '') +
@@ -78,7 +77,7 @@ export default class userInfo extends wepy.page {
   methods = {}
 
   //页面的生命周期函数
-  onLoad() {
+  onLoad () {
     if (wx.getStorageSync('userInfo')) {
       this.userInfo = JSON.parse(wx.getStorageSync('userInfo'))
       let wxUserinfo = wx.getStorageSync('wxInfo')

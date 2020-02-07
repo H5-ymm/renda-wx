@@ -4,52 +4,32 @@
 <template>
   <view class="page_botttom page">
     <view class="my-view-header">
-      <image src="../../images/bg.png" class="my-view-header-bg" mode="scaleToFill" alt="">
-        <view class="my-view-userInfo">
-          <view class="my-avatar-box">
-            <image src="{{head_img}}" wx:if="{{head_img}}" alt="" mode="aspectFit" class="my-avatar">
-              <image src="../../images/header.png" wx:else alt="" mode="aspectFit" class="my-avatar">
-          </view>
-          <view class="my-user-name">{{userName}}</view>
-          <view class="my-user-mobile">{{userInfo.mobile}}</view>
+      <image src="../../images/bg.png" class="my-view-header-bg" mode="scaleToFill" alt="" />
+      <view class="my-view-userInfo">
+        <view class="my-avatar-box">
+          <image src="{{head_img}}" wx:if="{{head_img}}" alt="" mode="aspectFill" class="my-avatar" />
+          <image src="../../images/header.png" wx:else alt="" mode="aspectFit" class="my-avatar" />
         </view>
+        <view class="my-user-name">{{userName}}</view>
+        <view class="my-user-mobile">{{userInfo.mobile}}</view>
+      </view>
     </view>
     <view class="page_margin my-view my-view-main">
       <view class="my-view-box">
         <view class="page_card">
-          <view class="page_card_row">
-            <view class="weui-flex between" @tap="viewUserInfo">
-              <view class="weui-flex start">
-                <image src="../../images/icon1.png" alt="" class="my-icon">
-                  <view class="my-text">账户信息</view>
-              </view>
-              <view>
-                <image mode="scaleToFill" src="../../images/right.png" class="page_card_icon" />
-              </view>
-            </view>
-          </view>
-          <view class="page_card_row">
-            <view class="weui-flex between" @tap="viewTeamInfo">
-              <view class="weui-flex start">
-                <image src="../../images/icon3.png" alt="" class="my-icon">
-                  <view class="my-text">团队信息</view>
-              </view>
-              <view>
-                <image mode="scaleToFill" src="../../images/right.png" class="page_card_icon" />
+          <repeat wx:for="{{menus}}" wx:key="index">
+            <view class="page_card_row" @tap="viewInfo({{item}})">
+              <view class="weui-flex between">
+                <view class="weui-flex start">
+                  <image src="{{item.icon}}" alt="" class="my-icon" />
+                  <view class="my-text">{{item.title}}</view>
+                </view>
+                <view>
+                  <image mode="scaleToFill" src="../../images/right.png" class="page_card_icon" />
+                </view>
               </view>
             </view>
-          </view>
-          <view class="page_card_row">
-            <view class="weui-flex between" @tap="viewUserBind">
-              <view class="weui-flex start">
-                <image src="../../images/icon2.png" alt="" class="my-icon">
-                  <view class="my-text">账户绑定</view>
-              </view>
-              <view>
-                <image mode="scaleToFill" src="../../images/right.png" class="page_card_icon" />
-              </view>
-            </view>
-          </view>
+          </repeat>
         </view>
       </view>
     </view>
@@ -63,7 +43,24 @@ export default class my extends wepy.page {
   //可用于页面模板绑定的数据
   data = {
     userInfo: {},
-    head_img: ''
+    head_img: '',
+    menus: [
+      {
+        title: '账户信息',
+        icon: '../../images/icon1.png',
+        url: '/pages/my/userInfo'
+      },
+      {
+        title: '团队信息',
+        icon: '../../images/icon3.png',
+        url: '/pages/my/teamInfo'
+      },
+      {
+        title: '账户绑定',
+        icon: '../../images/icon2.png',
+        url: '/pages/my/userBind'
+      }
+    ]
   }
 
   config = {
@@ -71,24 +68,14 @@ export default class my extends wepy.page {
   }
   //事件处理函数(集中保存在methods对象中)
   methods = {
-    viewUserInfo() {
+    viewInfo (item) {
       wx.navigateTo({
-        url: '/pages/my/userInfo' // 页面 A
-      })
-    },
-    viewTeamInfo() {
-      wx.navigateTo({
-        url: '/pages/my/userInfo' // 页面 A
-      })
-    },
-    viewUserBind() {
-      wx.navigateTo({
-        url: '/pages/my/userBind' // 页面 A
+        url: item.url
       })
     }
   }
   computed = {
-    userName() {
+    userName () {
       let name = wx.getStorageSync('wxInfo')
         ? JSON.parse(wx.getStorageSync('wxInfo')).user_name
         : ''
@@ -96,7 +83,7 @@ export default class my extends wepy.page {
     }
   }
   //页面的生命周期函数
-  onLoad() {
+  onLoad () {
     let uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
     $http.http('/Userinfo/getUserInfo', { uid }).then(res => {
       this.userInfo = res.data || {}

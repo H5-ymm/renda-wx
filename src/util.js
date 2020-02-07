@@ -82,15 +82,15 @@ const getErrorTip = code => {
             obj.subTitle = text;
             break;
         case 6007:
-            obj.title = '您团队审核未通过哦';
+            obj.title = '您的团队审核未通过哦';
             obj.subTitle = text;
             break;
         case 6008:
             obj.title = '团队信息未完善';
-            obj.subTitle = '亲！您的团队信息未完善，请前往 www.rsd123.com 进行团队完善，\n或' + text;
+            obj.subTitle = '亲！您的团队信息未完善，请前往 www.rsd123.com 进行完善，\n或' + text;
             break;
         case 1009:
-            obj.title = '您团队账号被锁定';
+            obj.title = '您的团队账号被锁定';
             obj.subTitle = text;
             break;
         default:

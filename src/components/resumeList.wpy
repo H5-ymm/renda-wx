@@ -6,31 +6,49 @@
         <view class="page_card_row">
           <view class="weui-flex between">
             <view class="page_card_name">{{item.name}}</view>
-            <view class="page_card_status {{'page_card_status'+ item.jobinfo.status}}" wx:if="{{item.jobinfo&&!item.jobinfo.interview_status&&!item.jobinfo.entry_status}}">{{item.jobinfo.status==0?'待审核':item.jobinfo.status==1?'审核通过':'审核未通过'}}</view>
-            <view class="page_card_status {{'page_card_status'+ item.jobinfo.interview_status}}" wx:if="{{item.jobinfo&&!item.jobinfo.entry_status&&item.jobinfo.status==1}}">{{item.jobinfo.interview_status==0?'待审核':item.jobinfo.interview_status==1?'面试通过':item.jobinfo.interview_status==2?'面试未通过':'面试未参加'}}</view>
-            <view class="page_card_status {{'page_card_status'+ item.jobinfo.entry_status}}" wx:if="{{item.jobinfo&&item.jobinfo.interview_status==1}}">{{item.jobinfo.entry_status==0?'待审核':item.jobinfo.entry_status==1?'入职通过':item.jobinfo.entry_status==2?'入职未通过':'入职未参加'}}</view>
+            <view
+              class="page_card_status {{'page_card_status'+ item.jobinfo.status}}"
+              wx:if="{{item.jobinfo&&!item.jobinfo.interview_status}}"
+            >{{item.jobinfo.status==0?'待审核':item.jobinfo.status==1?'审核通过':'审核未通过'}}</view>
+            <view
+              class="page_card_status {{'page_card_status'+ item.jobinfo.interview_status}}"
+              wx:if="{{item.jobinfo&&!item.jobinfo.interview_status&&item.jobinfo.status==1&&item.jobinfo.interview_status}}"
+            >{{item.jobinfo.interview_status==1?'面试通过':item.jobinfo.interview_status==2?'面试未通过':'面试未参加'}}</view>
+            <view
+              class="page_card_status {{'page_card_status'+ item.jobinfo.entry_status}}"
+              wx:if="{{item.jobinfo&&item.jobinfo.interview_status==1&&item.jobinfo.entry_status}}"
+            >{{item.jobinfo.entry_status==1?'入职通过':item.jobinfo.entry_status==2?'入职未通过':'入职未参加'}}</view>
           </view>
           <view class="weui-flex between">
             <view class="text-line weui-flex start">
               <view>谁送给我：</view>
-              <view class="page_card_col1" wx:if="{{item.from_user}}">{{item.from_user?item.from_user : '-'}}</view>
+              <view
+                class="page_card_col1"
+                wx:if="{{item.from_user}}"
+              >{{item.from_user?item.from_user : '-'}}</view>
               <view class="page_card_col1" wx:else>{{item.jobinfo?item.jobinfo.com_name : '-'}}</view>
             </view>
-            <image mode="scaleToFill" src="../images/right.png" class="page_card_icon" />
+            <image mode="scaleToFill" src="../images/right.png" class="page_card_icon"/>
           </view>
           <view class="weui-flex between">
             <view class="weui-flex start weui-flex__item">
               <view>我送给谁：</view>
               <view class="page_card_col1 text-line" wx:if="{{item.to_user}}">{{item.to_user}}</view>
-              <view class="page_card_col1 text-line" wx:else>{{item.jobinfo?item.jobinfo.job_name:'-'}}</view>
+              <view
+                class="page_card_col1 text-line"
+                wx:else
+              >{{item.jobinfo?item.jobinfo.job_name:'-'}}</view>
             </view>
-            <view class="page_card_time" wx:if="{{item.jobinfo}}">{{wxs.dateFormat(item.jobinfo.addtime,'yyyy年MM月dd日')}}</view>
+            <view
+              class="page_card_time"
+              wx:if="{{item.jobinfo}}"
+            >{{wxs.dateFormat(item.jobinfo.addtime,'yyyy年MM月dd日')}}</view>
           </view>
         </view>
       </view>
     </repeat>
     <view wx:if="{{!list.length}}" class="page_list">
-      <image src="../images/noBg.png" class="page_noData" mode="scaleToFill" />
+      <image src="../images/noBg.png" class="page_noData" mode="scaleToFill"/>
       <view class="page_noData_text">暂无数据！</view>
     </view>
   </view>

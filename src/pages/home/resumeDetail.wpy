@@ -34,16 +34,21 @@
           <view class="page_card_row">
             <view class="weui-flex between">
               <view class="my-text  weui-flex__item"> 谁送给我</view>
-              <!-- <view class="my-text-right"> 薛冰心</view> -->
-              <input class="weui-input" data-name="from_user" value="{{form.from_user}}" @input="changeInput" placeholder="请输入送给人" />
+              <input class="weui-input" placeholder-class="placeholder" data-name="from_user" value="{{form.from_user}}" @input="changeInput" placeholder="请输入送给人" />
             </view>
           </view>
           <view class="page_card_row" wx:if="{{type&&form.job_id}}">
             <view class="weui-flex between">
               <view class="my-text  weui-flex__item">简历状态</view>
-              <view class="page_card_status {{'page_card_status'+ form.status}}" wx:if="{{!form.interview_status&&!form.entry_status}}">{{form.status==0?'待审核':form.status==1?'审核通过':'审核未通过'}}</view>
-              <view class="page_card_status {{'page_card_status'+ form.interview_status}}" wx:if="{{!form.entry_status&&form.status==1}}">{{form.interview_status==0?'待审核':form.interview_status==1?'面试通过':form.interview_status==2?'面试未通过':'面试未参加'}}</view>
-              <view class="page_card_status {{'page_card_status'+ form.entry_status}}" wx:if="{{form.interview_status==1}}">{{form.entry_status==0?'待审核':form.entry_status==1?'入职通过':form.entry_status==2?'入职未通过':'入职未参加'}}</view>
+              <view class="page_card_status {{'page_card_status'+ form.status}}" 
+              wx:if="{{!form.interview_status&&!form.entry_status}}">
+              {{form.status==0?'待审核':form.status==1?'审核通过':'审核未通过'}}</view>
+              <view class="page_card_status {{'page_card_status'+ form.interview_status}}" 
+              wx:if="{{!form.entry_status&&form.status==1&&form.interview_status}}">
+              {{form.interview_status==1?'面试通过':form.interview_status==2?'面试未通过':'面试未参加'}}</view>
+              <view class="page_card_status {{'page_card_status'+ form.entry_status}}" 
+              wx:if="{{form.interview_status==1&&form.entry_status}}">
+              {{form.entry_status==1?'入职通过':form.entry_status==2?'入职未通过':'入职未参加'}}</view>
             </view>
           </view>
           <view class="page_card_row">
