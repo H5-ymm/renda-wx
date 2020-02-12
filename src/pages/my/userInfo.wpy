@@ -47,12 +47,10 @@
 </template>
 <script>
 import wepy from 'wepy'
-// 通过继承自wepy.page的类创建页面逻辑
 export default class userInfo extends wepy.page {
   config = {
     navigationBarTitleText: '账户信息'
   }
-  // 可用于页面模板绑定的数据
   data = {
     userInfo: {},
     head_img: '',
@@ -73,10 +71,6 @@ export default class userInfo extends wepy.page {
       )
     }
   }
-  //事件处理函数(集中保存在methods对象中)
-  methods = {}
-
-  //页面的生命周期函数
   onLoad () {
     if (wx.getStorageSync('userInfo')) {
       this.userInfo = JSON.parse(wx.getStorageSync('userInfo'))
@@ -92,3 +86,4 @@ export default class userInfo extends wepy.page {
   }
 }
 </script>
+

@@ -1,5 +1,6 @@
 dist/
 node_modules/
+lib/
 web/style
 sftp-config.json
 log

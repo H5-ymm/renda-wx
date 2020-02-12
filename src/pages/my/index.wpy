@@ -2,45 +2,58 @@
 @import '../../style/user.less';
 </style>
 <template>
-  <view class="page_botttom page">
-    <view class="my-view-header">
-      <image src="../../images/bg.png" class="my-view-header-bg" mode="scaleToFill" alt="" />
-      <view class="my-view-userInfo">
-        <view class="my-avatar-box">
-          <image src="{{head_img}}" wx:if="{{head_img}}" alt="" mode="aspectFill" class="my-avatar" />
-          <image src="../../images/header.png" wx:else alt="" mode="aspectFit" class="my-avatar" />
+  <view class="page-my">
+      <view class="my-view-header">
+        <image src="../../images/bg.png" class="my-view-header-bg" mode="aspectFill" alt="" />
+        <view class="my-view-userInfo">
+          <view class="my-avatar-box">
+            <image src="{{head_img}}" wx:if="{{head_img}}" alt="" mode="aspectFill" class="my-avatar" />
+            <image src="../../images/header.png" wx:else alt="" mode="aspectFit" class="my-avatar" />
+          </view>
+          <view class="my-user-name">{{userName}}</view>
+          <view class="my-user-mobile">{{userInfo.mobile}}</view>
         </view>
-        <view class="my-user-name">{{userName}}</view>
-        <view class="my-user-mobile">{{userInfo.mobile}}</view>
       </view>
-    </view>
-    <view class="page_margin my-view my-view-main">
-      <view class="my-view-box">
-        <view class="page_card">
-          <repeat wx:for="{{menus}}" wx:key="index">
-            <view class="page_card_row" @tap="viewInfo({{item}})">
-              <view class="weui-flex between">
-                <view class="weui-flex start">
-                  <image src="{{item.icon}}" alt="" class="my-icon" />
-                  <view class="my-text">{{item.title}}</view>
-                </view>
-                <view>
-                  <image mode="scaleToFill" src="../../images/right.png" class="page_card_icon" />
+     <view class="view-content">
+      <view class="page_margin my-view my-view-main">
+        <view class="my-view-box">
+          <view class="page_card">
+            <repeat wx:for="{{menus}}" wx:key="index">
+              <view class="page_card_row" @tap="viewInfo({{item}})">
+                <view class="weui-flex between">
+                  <view class="weui-flex start">
+                    <image src="{{item.icon}}" alt="" class="my-icon" />
+                    <view class="my-text">{{item.title}}</view>
+                  </view>
+                  <view>
+                    <image mode="scaleToFill" src="../../images/right.png" class="page_card_icon" />
+                  </view>
                 </view>
               </view>
-            </view>
-          </repeat>
+            </repeat>
+          </view>
         </view>
       </view>
     </view>
+     <tabBarBottom :usertype.sync="usertype" :tabBarIndex.sync="tabBarIndex"></tabBarBottom>
+     <!-- <view @tap="swicthUser">切换身份</view> -->
   </view>
 </template>
 <script>
 import wepy from 'wepy'
-let $http = require('../../http.js')
-//通过继承自wepy.page的类创建页面逻辑
+import { $http } from '@/http.js'
+import { getImgUrl } from '@/util.js'
+import tabBarBottom from '@/components/tabBarBottom'
+import { connect, getStore } from 'wepy-redux'
+import { GETALLUSER } from '@/store/types/user'
+const store = getStore()
+ @connect({
+    loginUser: (state) => state.user.loginUser
+ })
 export default class my extends wepy.page {
-  //可用于页面模板绑定的数据
+  components = {
+    tabBarBottom: tabBarBottom
+  }
   data = {
     userInfo: {},
     head_img: '',
@@ -60,18 +73,29 @@ export default class my extends wepy.page {
         icon: '../../images/icon2.png',
         url: '/pages/my/userBind'
       }
-    ]
+    ],
+    tabBarData: [],
+    usertype: 2,
+    tabBarIndex: 1
   }
-
   config = {
     navigationBarTitleText: '我的'
   }
-  //事件处理函数(集中保存在methods对象中)
   methods = {
-    viewInfo (item) {
+    viewInfo(item) {
       wx.navigateTo({
         url: item.url
       })
+    },
+    swicthUser() {
+      let user = {
+        usertype: 1,
+        uid: wx.getStorageSync('rendaUid')
+      }
+      this.usertype = 1
+      this.$apply()
+      store.dispatch({ type: 'GETALLUSER',payload: user })
+      this.$apply()
     }
   }
   computed = {
@@ -82,17 +106,34 @@ export default class my extends wepy.page {
       return this.userInfo.user_name ? this.userInfo.user_name : name
     }
   }
-  //页面的生命周期函数
-  onLoad () {
+  onLoad() {
+    let list = [
+      {
+        pagePath: '/pages/home/index',
+        text: '列表',
+        selected: true,
+        iconPath: '/images/list.png',
+        selectedIconPath: '/images/list-active.png'
+      },
+      {
+        pagePath: '/pages/my/index',
+        text: '我的',
+        selected: false,
+        iconPath: '/images/my.png',
+        selectedIconPath: '/images/my-active.png'
+      }
+    ]
+    // this.$parent.globalData.tabBar.list = list
+    // this.tabBarData = this.$parent.tabBarClickHandle(1, this)
+    this.$apply()
     let uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
-    $http.http('/Userinfo/getUserInfo', { uid }).then(res => {
+    let wxInfo = wx.getStorageSync('wxInfo')
+    $http('/Userinfo/getUserInfo', { uid }).then(res => {
       this.userInfo = res.data || {}
       if (res.data.head_img) {
-        this.head_img = 'https://a.rsd123.com/' + res.data.head_img
+        this.head_img = getImgUrl(res.data.head_img)
       } else {
-        this.head_img = wx.getStorageSync('wxInfo')
-          ? JSON.parse(wx.getStorageSync('wxInfo')).head_img
-          : ''
+        this.head_img = wxInfo ? wxInfo.head_img : ''
       }
       this.$apply()
       wx.setStorageSync('userInfo', JSON.stringify(this.userInfo))

@@ -1,0 +1,244 @@
+<style lang="less">
+@import '../../style/login.less';
+</style>
+<template>
+  <view class="login_page welcome-page page_botttom">
+    <view class="login-view-box welcome-view-box">
+      <view class="login-view-form welcome-view-form">
+        <image src="../../images/welcomeBg.png" mode="widthFix" class="welcome-view-bg" />
+        <view class="weui-cell_btn weui-flex center login-btn">
+          <button lang='zh_CN' disabled="{{!checked&&!isRead}}" 
+          class="weui-btn_cell weui-btn_cell-gradient {{!checked&&!isRead?'weui-btn_cell-disabled':''}}"
+          @getuserinfo="getUserInfo" open-type="getUserInfo">开始使用</button>
+        </view>
+        <view class="rule-view weui-flex start wrap">
+          <image wx:if="{{!checked}}" src="../../images/check.png" mode="scaleToFill" class="check-icon" @tap="checkedRule({{checked}})" />
+          <image wx:else src="../../images/check1.png" mode="scaleToFill"
+            @tap="checkedRule({{checked}})" class="check-icon" />
+          我已认真阅读并同意<view class="text" @tap="router">《用户协议及隐私政策》</view>和
+          <view class="text" @tap="router">《信息保护政策》</view>
+        </view>
+      </view>
+    </view>
+    <modal :isScaleModal.sync="isModal" 
+    :height.sync="modalHeight" :modalObj.sync="modalObj"></modal>
+    <modalogin :isScaleModal.sync="isLoginModal" :type.sync="type" @handleClose="handleClose" :height.sync="modalLoginHeight" ></modalogin>
+  </view>
+</template>
+<script>
+import wepy from 'wepy'
+import modal from '@/components/modal'
+import modalUser from '@/components/modalUser'
+import { $http } from '@/http.js'
+import { wxToast, wxReLaunch, wxNavigateTo, getErrorTip } from '@/util.js'
+import { connect, getStore } from 'wepy-redux'
+import { getAllUser } from '@/store/actions/user.js'
+const store = getStore()
+ @connect({
+    loginUser: (state) => state.user.loginUser
+ })
+export default class Welcome extends wepy.page {
+  components = {
+    modal: modal,
+    modalogin:modalUser
+  }
+  data = {
+    userInfo: null,
+    isModal: true,
+    modalHeight: 640,
+    modalObj: {
+      title: '',
+      subTitle: '',
+      imgBg: '../../images/modalIcon.png',
+      imgIcon: ''
+    },
+    checked: false,
+    isView: true,
+    authorize: false,
+    isRead: false,
+    isLoginModal:true,
+    type:1,
+    modalLoginHeight: 400,
+    openid: '',
+    code: ''
+  }
+  onLoad (options) {
+    if (options && options.query) {
+      this.checked = options.query
+      this.isRead = true
+    } else {
+      this.isRead = false
+    }
+    this.$apply()
+    wx.getSetting({
+      success: res => {
+        // 没有授权
+        if (!res.authSetting['scope.userInfo']) {
+          this.authorize = false
+          this.openid = this.$parent.getOpenId()
+        } else {
+          this.authorize = true
+          this.openid = wx.getStorageSync('rendaOpenId') || this.$parent.globalData.openid
+          if (!this.openid) {
+            this.openid = this.$parent.getOpenId()
+          }
+          this.checkUserLogin(this.openid)
+        }
+        this.$apply()
+      }
+    })
+  }
+  onShow() {
+    if (!this.isRead) {
+      this.checked = false
+      this.$apply()
+    }
+  }
+  checkUserLogin(openid) {
+    store.dispatch(getAllUser(openid)).then(res => {
+      this.isView = true
+      if (res.payload && res.payload.uid) {
+          this.$parent.globalData.uid = res.payload.uid
+          // userType 1 企业 2 团队
+          this.$apply()
+          wx.setStorageSync('rendaUserType', res.payload.userType)
+          wx.setStorageSync('rendaUid', res.payload.uid)
+          if (!res.payload.usertype) {
+            setTimeout(() => {
+              wxReLaunch('/pages/register/selectUser')
+            }, 300)
+          } else if (res.payload.usertype === 2) {
+            if (res.payload.is_team !== '0') {
+              setTimeout(() => {
+                wxReLaunch('/pages/home/index')
+              }, 300)
+            } else {
+             setTimeout(() => {
+               wxReLaunch('/pages/register/team')
+              }, 300)
+            }
+          }
+          else {
+            wxToast('小程序企业功能待完善，敬请期待！')
+          }
+        } else {
+          this.isLoginModal = false
+          this.$apply()
+        }
+    }).catch(error => {
+      if (error && error.code) {
+        this.code = error.code
+        this.isView = false
+        this.$apply()
+        // if (this.authorize) {
+        //   this.showErrorTip(error.code)
+        // }
+      }
+    })
+  }
+  showErrorTip(code) {
+    let obj = getErrorTip(code)
+    if (code === 6001 || code === 6008) {
+      this.modalHeight = 640
+    } else {
+      this.modalHeight = 560
+    }
+    this.modalObj.title = obj.title
+    this.modalObj.subTitle = obj.subTitle
+    this.isModal = false
+    this.isView = false
+    this.$apply()
+  }
+  getWxPhone(params) {
+    console.log(params)
+    $http('/login/decryptData', params).then(res => {
+      console.log(res)
+      if (res && res.data) {
+        this.getWxPhoneLogin(res.data.phoneNumber)
+      }
+    })
+  }
+  getWxPhoneLogin(phoneNumber) {
+    let params = {
+      tel: phoneNumber,
+      openid: this.openid
+    }
+    $http('/login/is_register_auto', params).then(res => {
+      wx.setStorageSync('rendaUid', res.data.uid)
+      wxReLaunch('/pages/register/selectUser')
+    })
+  }
+  events = {
+    handleOk: () => {
+      this.isModal = true
+      this.$apply()
+    },
+    handleOkLogin: val => {
+      if (val) {
+        if (typeof val === 'object') {
+          this.getWxPhone(val)
+        } else {
+          wxNavigateTo('/pages/login/login')
+        }
+        this.isLoginModal = true
+        this.$apply()
+      }
+    },
+    handleClose: () => {
+      this.isLoginModal = true
+      this.$apply()
+    }
+  }
+  methods = {
+    checkedRule (checked) {
+      this.checked = !this.checked
+      this.isRead = !this.isRead
+      this.$apply()
+      if (this.checked) {
+        wxNavigateTo('/pages/login/rule')
+      } else {
+        this.isRead = false
+      }
+    },
+    router() {
+      wxNavigateTo('/pages/login/rule')
+    },
+    getUserInfo(e) {
+      if (!this.isView) {
+        this.showErrorTip(this.code)
+        return
+      }
+      this.userInfo = e.detail.userInfo
+      if (this.userInfo) {
+        let params = {
+          head_img: this.userInfo.avatarUrl,
+          address: this.userInfo.province + this.userInfo.city,
+          user_name: this.userInfo.nickName
+        }
+        this.$parent.globalData.wxInfo = params
+        wx.setStorageSync('wxInfo', JSON.stringify(params))
+        this.authorize = true
+        this.$apply()
+        if (!this.openid) {
+          this.openid = this.$parent.getOpenId()
+        }
+        this.checkUserLogin(this.openid)
+      } else {
+        wx.showModal({
+          title: '警告',
+          content: '您点击了拒绝授权，将无法进入小程序，请授权之后再进入!!!',
+          showCancel: false,
+          confirmText: '返回授权',
+          success: res => {
+            if (res.confirm) {
+              this.authorize = false
+              this.isLoginModal = true
+              this.$apply()
+            }
+          }
+        })
+      }
+    }
+  }
+}
+</script>

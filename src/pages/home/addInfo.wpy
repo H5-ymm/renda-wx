@@ -127,16 +127,16 @@
 </template>
 <script>
 import wepy from 'wepy'
-import addBaseInfo from '../../components/addBaseInfo'
-import addResume from '../../components/addResume'
-import scanIdCard from '../../components/scanIdCard'
-import actionSheet from '../../components/actionSheet'
-import modal from '../../components/modal'
-let $http = require('../../http.js')
+import addBaseInfo from '@/components/addBaseInfo'
+import addResume from '@/components/addResume'
+import scanIdCard from '@/components/scanIdCard'
+import actionSheet from '@/components/actionSheet'
+import modal from '@/components/modal'
+import { $http } from '@/http.js'
 let lock = false
-//通过继承自wepy.page的类创建页面逻辑
+// 通过继承自wepy.page的类创建页面逻辑
 export default class home extends wepy.page {
-  //可用于页面模板绑定的数据
+  // 可用于页面模板绑定的数据
   components = {
     addBaseInfo: addBaseInfo,
     addResume: addResume,
@@ -182,7 +182,7 @@ export default class home extends wepy.page {
     handleOk: () => {
       this.isModal = true
       this.$apply()
-      wx.switchTab({
+      wx.reLaunch({
         url: '/pages/home/index'
       })
     },
@@ -236,7 +236,7 @@ export default class home extends wepy.page {
       })
     this.$apply()
   }
-  //事件处理函数(集中保存在methods对象中)
+  // 事件处理函数(集中保存在methods对象中)
   methods = {
     changeInput () {
       if (this.stepActive < 3) {
@@ -257,16 +257,16 @@ export default class home extends wepy.page {
   }
   watch = {
     resumeType (val) {
-      if (val == '简历管理') {
+      if (val === '简历管理') {
         this.activeIndex = 0
-      } else if (val == '团队接单') {
+      } else if (val === '团队接单') {
         this.activeIndex = 1
       } else {
         this.activeIndex = 2
       }
     }
   }
-  //页面的生命周期函数
+  // 页面的生命周期函数
   onLoad (options) {
     if (options.query) {
       this.baseInfo = JSON.parse(options.query)

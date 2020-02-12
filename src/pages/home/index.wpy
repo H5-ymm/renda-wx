@@ -2,10 +2,10 @@
 @import '../../style/home.less';
 </style>
 <template>
-  <view class="home-view page_botttom">
+  <view class="home-view">
     <view class="home-view-header"></view>
     <view class="page page_margin">
-      <scroll-view scroll-y="true" style="height:100%" @scrolltolower="searchScrollLower">
+      <scroll-view scroll-y="true" class="view-content" @scrolltolower="searchScrollLower">
         <view class="home-view-box">
           <resumeQuery @changeDate="changeDate"></resumeQuery>
           <resumeCard></resumeCard>
@@ -13,29 +13,34 @@
         </view>
       </scroll-view>
     </view>
-    <view class="home-add-resume" @tap="addResume">
-      <image src="../../images/add.png" class="add-icon" />
-      <view class="home-add-text">添加简历</view>
-    </view>
-    <homeModal :isScaleModal.sync="isModal" @handleOk="handleOk" :height.sync="modalHeight" :modalObj.sync="modalObj"></homeModal>
+      <view class="home-add-resume" @tap="addResume">
+        <image src="../../images/add.png" class="add-icon" />
+        <view class="home-add-text">添加简历</view>
+      </view>
+      <homeModal :isScaleModal.sync="isModal" @handleOk="handleOk" :height.sync="modalHeight" :modalObj.sync="modalObj"></homeModal>
+      <tabBarBottom :usertype.sync="usertype" :tabBarIndex.sync="tabBarIndex"></tabBarBottom>
   </view>
 </template>
 <script>
 import wepy from 'wepy'
-let $http = require('../../http.js')
-let util = require('../../util.js')
-//通过继承自wepy.page的类创建页面逻辑
-import resumeQuery from '../../components/resumeQuery'
-import resumeCard from '../../components/resumeCard'
-import resumeList from '../../components/resumeList'
-import modal from '../../components/modal'
+import { $http } from '@/http.js'
+import resumeQuery from '@/components/resumeQuery'
+import resumeCard from '@/components/resumeCard'
+import resumeList from '@/components/resumeList'
+import modal from '@/components/modal'
+import tabBarBottom from '@/components/tabBarBottom'
+import { connect, getStore } from 'wepy-redux'
+const store = getStore()
+ @connect({
+    loginUser: (state) => state.user.loginUser
+ })
 export default class home extends wepy.page {
-  // 可用于页面模板绑定的数据
   components = {
     resumeQuery: resumeQuery,
     resumeCard: resumeCard,
     resumeList: resumeList,
-    homeModal: modal
+    homeModal: modal,
+    tabBarBottom:tabBarBottom
   }
   data = {
     list: [],
@@ -53,7 +58,10 @@ export default class home extends wepy.page {
       subTitle: '',
       imgBg: '../../images/modalIcon.png',
       imgIcon: ''
-    }
+    },
+    usertype: '',
+    tabBarData: {},
+    tabBarIndex: 0
   }
   events = {
     changeDate: val => {
@@ -85,80 +93,18 @@ export default class home extends wepy.page {
       }
     }
   }
-  getOpenId () {
-    let that = this
-    wx.login({
-      success (res) {
-        if (res.code) {
-          $http
-            .http('/Login/getopenid', { code: res.code })
-            .then(res => {
-              let data = JSON.parse(res.data)
-              that.$parent.globalData.openId = data.openid
-              wx.setStorageSync('rendaOpenId', data.openid)
-              // 没有授权获取openid 跳转登录页面
-              if (!that.authorize) {
-                setTimeout(() => {
-                  wx.redirectTo({
-                    url: '/pages/login/login' // 页面 A
-                  })
-                }, 300)
-              } else {
-                // 有授权，调免登接口 获取uid
-                that.checkUserLogin(data.openid)
-              }
-            })
-            .catch(error => {
-              console.log(error)
-            })
-        } else {
-          console.log('获取失败！' + res.errMsg)
-        }
-      }
-    })
-  }
-  checkUserLogin (openid) {
-    $http
-      .http('/Login/is_loginUser', { openid })
-      .then(res => {
-        if (res.data && res.data.uid) {
-          this.$broadcast('getUid', res.data.uid)
-          this.$parent.globalData.uid = res.data.uid
-          this.params.uid = res.data.uid
-          this.getResumeList()
-          wx.setStorageSync('rendaUid', res.data.uid)
-        } else {
-          setTimeout(() => {
-            wx.redirectTo({
-              url: '/pages/login/login' // 页面 A
-            })
-          }, 300)
-        }
-      })
-      .catch(error => {
-        if (error && error.status) {
-          let obj = util.getErrorTip(error.status.code)
-          if (error.status.code === 6001 || error.status.code === 6008) {
-            this.modalHeight = 640
-          } else {
-            this.modalHeight = 560
-          }
-          this.modalObj.title = obj.title
-          this.modalObj.subTitle = obj.subTitle
-          this.isModal = false
-          this.$apply()
-          return
-        }
-      })
-  }
   getResumeList () {
-    $http.http('/Wxresume/resumelist', this.params).then(res => {
+    $http('/Wxresume/resumelist', this.params).then(res => {
       this.list = res.data.data || []
       this.count = res.data.count
       this.$apply()
     })
   }
   onLoad () {
+    let info = store.getState().user.loginUser
+    this.usertype = info.usertype
+    console.log(this.usertype)
+    this.$apply()
     // 授权成功，缓存没有微信信息
     if (!wx.getStorageSync('wxInfo')) {
       wx.getUserInfo({
@@ -175,32 +121,8 @@ export default class home extends wepy.page {
     }
   }
   onShow () {
-    let that = this
-    let openid = wx.getStorageSync('rendaOpenId')
-    wx.getSetting({
-      success (res) {
-        // 没有授权
-        if (!res.authSetting['scope.userInfo']) {
-          that.authorize = false
-          wx.showToast({
-            icon: 'none',
-            title: '请去登录页面授权登录',
-            duration: 2000
-          })
-          that.$apply()
-          that.getOpenId()
-        } else {
-          // 已经授权
-          that.authorize = true
-          that.$apply()
-          if (openid == '') {
-            that.getOpenId()
-          } else {
-            that.checkUserLogin(openid)
-          }
-        }
-      }
-    })
+    this.params.uid =  wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
+    this.getResumeList()
   }
 }
 </script>

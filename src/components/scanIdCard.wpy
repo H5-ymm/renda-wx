@@ -32,7 +32,6 @@
             <view class="card-text"> 点击开始识别正面（照片面）</view>
             <image @tap="uploadImg" src="../images/cardIcon.png" wx:if="{{!infoImg}}" class="idCard-bg" mode="scaleToFill" />
             <image @tap="uploadImg" src="{{infoImg}}" wx:else class="idCard-bg" mode="aspectFit" />
-            <canvas canvas-id="canvas" style="width:{{cWidth}}px;height:{{cHeight}}px;position: absolute;left:-1000px;top:-1000px;"></canvas>
           </view>
         </view>
       </view>
@@ -44,9 +43,9 @@
 </template>
 <script>
 import wepy from 'wepy'
-let $http = require('../http.js')
+import { $http } from '@/http.js'
 let util = require('../util')
-//通过继承自wepy.page的类创建页面逻辑
+// 通过继承自wepy.page的类创建页面逻辑
 export default class scanIdCard extends wepy.component {
   data = {
     form: {
@@ -62,14 +61,12 @@ export default class scanIdCard extends wepy.component {
     cWidth: '',
     cHeight: ''
   }
-  //事件处理函数(集中保存在methods对象中)
-
   getUrl (infoImg) {
     let params = {
       uid: wx.getStorageSync('rendaUid') || this.$parent.$parent.globalData.uid,
       infoImg
     }
-    $http.http('/Wxresume/ocrIdCard', params).then(res => {
+    $http('/Wxresume/ocrIdCard', params).then(res => {
       let data = res.data
       if (res.status.code == 200) {
         if (!data || (!data.data.name && !data.data.address && !data.data.birthDay)) {
@@ -104,80 +101,6 @@ export default class scanIdCard extends wepy.component {
       }
     })
   }
-  getImg (tempFilePaths) {
-    let that = this
-    $http.uploadFile(tempFilePaths).then(res => {
-      if (res.data && res.data.url) {
-        let imgUrl = 'https://a.rsd123.com/' + res.data.url
-        this.infoImg = imgUrl
-        wx.downloadFile({
-          url: imgUrl,
-          success (res) {
-            wx.getFileSystemManager().readFile({
-              filePath: res.tempFilePath, //选择图片返回的相对路径
-              encoding: 'base64', //编码格式
-              success: res => {
-                //成功的回调
-                that.getUrl(res.data)
-              }
-            })
-          }
-        })
-        this.$apply()
-      } else {
-        wx.showToast({
-          icon: 'none',
-          title: '图片获取失败'
-        })
-      }
-    })
-  }
-  compressImg (photoSrc, ratio = 2) {
-    let that = this
-    return new Promise((resolve, reject) => {
-      wx.getImageInfo({
-        src: photoSrc,
-        success (res) {
-          let canvasWidth = res.width //图片原始长宽
-          let canvasHeight = res.height
-          if (canvasWidth > 120 || canvasHeight > 90) {
-            // 保证宽高在400以内
-            canvasWidth = 300
-            canvasHeight = 200
-            // ratio++
-          }
-          that.cWidth = canvasWidth
-          that.cHeight = canvasHeight + 40
-          //----------绘制图形并取出图片路径--------------
-          var ctx = wx.createCanvasContext('canvas')
-          ctx.drawImage(res.path, 0, 0, canvasWidth, canvasHeight)
-          ctx.draw(
-            false,
-            setTimeout(() => {
-              wx.canvasToTempFilePath(
-                {
-                  canvasId: 'canvas',
-                  destWidth: canvasWidth,
-                  destHeight: canvasHeight,
-                  success: function (res) {
-                    // console.log(res.tempFilePath)//最终图片路径
-                    resolve(res.tempFilePath)
-                  },
-                  fail: function (res) {
-                    console.log(res.errMsg)
-                  }
-                },
-                this
-              )
-            }, 100)
-          )
-        },
-        fail: function (res) {
-          console.log(res.errMsg)
-        }
-      })
-    })
-  }
   methods = {
     uploadImg () {
       wx.chooseImage({
@@ -185,10 +108,10 @@ export default class scanIdCard extends wepy.component {
         success: res => {
           let tempFilePath = res.tempFilePaths[0]
           wx.getFileSystemManager().readFile({
-            filePath: tempFilePath, //选择图片返回的相对路径
-            encoding: 'base64', //编码格式
+            filePath: tempFilePath, // 选择图片返回的相对路径
+            encoding: 'base64', // 编码格式
             success: res => {
-              //成功的回调
+              // 成功的回调
               this.getUrl(res.data)
             },
             fail: error => {

@@ -1,5 +1,5 @@
 <style lang="less">
-@import './style/weui.less';
+@import "./style/weui.less";
 page {
   background-color: @weuiBgColorDefault;
   font-size: 16px;
@@ -8,6 +8,9 @@ page {
 }
 .placeholder {
   color: @weuiPlaceholderColor;
+}
+.view-content {
+  height: calc(100% - 60px);
 }
 .page_margin {
   margin: 24rpx;
@@ -122,13 +125,24 @@ page {
   }
 }
 </style>
-
 <script>
 import wepy from 'wepy';
 import 'wepy-async-function';
+import { setStore } from 'wepy-redux'
+import configStore from './store'
+import { getAllContant } from '@/store/actions/contant.js'
+import { $http } from '@/http.js'
+const store = configStore()
+wepy.store = store
+setStore(store)
 export default class extends wepy.app {
   config = {
     pages: [
+      'pages/login/welcome',
+      'pages/register/companyTeam',
+      'pages/register/selectUser',
+      'pages/register/companyForm',
+      'pages/register/team',
       'pages/home/index',
       'pages/home/resumeDetail',
       'pages/home/addInfo',
@@ -146,25 +160,25 @@ export default class extends wepy.app {
       navigationBarBackgroundColor: '#1890FF',
       backgroundColor: '#1890FF'
     },
-    tabBar: {
-      color: '#999999',
-      selectedColor: '#1890FF',
-      borderStyle: 'white',
-      list: [
-        {
-          pagePath: 'pages/home/index',
-          text: '简历列表',
-          iconPath: './images/list.png',
-          selectedIconPath: './images/list-active.png'
-        },
-        {
-          pagePath: 'pages/my/index',
-          text: '我的',
-          iconPath: './images/my.png',
-          selectedIconPath: './images/my-active.png'
-        }
-      ]
-    },
+    // tabBar: {
+    //   color: '#999999',
+    //   selectedColor: '#1890FF',
+    //   borderStyle: 'white',
+    //   list: [
+    //     {
+    //       pagePath: 'pages/home/index',
+    //       text: '简历列表',
+    //       iconPath: './images/list.png',
+    //       selectedIconPath: './images/list-active.png'
+    //     },
+    //     {
+    //       pagePath: 'pages/my/index',
+    //       text: '我的',
+    //       iconPath: './images/my.png',
+    //       selectedIconPath: './images/my-active.png'
+    //     }
+    //   ]
+    // },
     networkTimeout: {
       request: 10000,
       connectSocket: 10000,
@@ -174,34 +188,36 @@ export default class extends wepy.app {
   };
   onLaunch(options) {
     this.autoUpdate()
+    this.isCheckSession()
+    store.dispatch(getAllContant())
   }
   autoUpdate() {
     var self = this
     // 获取小程序更新机制兼容
     if (wx.canIUse('getUpdateManager')) {
       const updateManager = wx.getUpdateManager()
-      //1. 检查小程序是否有新版本发布
+      // 1. 检查小程序是否有新版本发布
       updateManager.onCheckForUpdate(function (res) {
         // 请求完新版本信息的回调
         if (res.hasUpdate) {
-          //检测到新版本，需要更新，给出提示
+          // 检测到新版本，需要更新，给出提示
           wx.showModal({
             title: '更新提示',
             content: '检测到新版本，是否下载新版本并重启小程序？',
             success: function (res) {
               if (res.confirm) {
-                //2. 用户确定下载更新小程序，小程序下载及更新静默进行
+                // 2. 用户确定下载更新小程序，小程序下载及更新静默进行
                 self.downLoadAndUpdate(updateManager)
               } else if (res.cancel) {
-                //用户点击取消按钮的处理，如果需要强制更新，则给出二次弹窗，如果不需要，则这里的代码都可以删掉了
+                // 用户点击取消按钮的处理，如果需要强制更新，则给出二次弹窗，如果不需要，则这里的代码都可以删掉了
                 wx.showModal({
                   title: '温馨提示~',
                   content: '本次版本更新涉及到新的功能添加，旧版本无法正常访问的哦~',
-                  showCancel: false,//隐藏取消按钮
-                  confirmText: "确定更新",//只保留确定更新按钮
+                  showCancel: false, // 隐藏取消按钮
+                  confirmText: '确定更新', // 只保留确定更新按钮
                   success: function (res) {
                     if (res.confirm) {
-                      //下载新版本，并重新应用
+                      // 下载新版本，并重新应用
                       self.downLoadAndUpdate(updateManager)
                     }
                   }
@@ -220,19 +236,18 @@ export default class extends wepy.app {
     }
   }
   downLoadAndUpdate(updateManager) {
-    var self = this
     wx.showLoading();
-    //静默下载更新小程序新版本
+    // 静默下载更新小程序新版本
     updateManager.onUpdateReady(function () {
       wx.hideLoading()
-      //新的版本已经下载好，调用 applyUpdate 应用新版本并重启
+      // 新的版本已经下载好，调用 applyUpdate 应用新版本并重启
       updateManager.applyUpdate()
     })
     updateManager.onUpdateFailed(function () {
       // 新的版本下载失败
       wx.showModal({
         title: '已经有新版本了哟~',
-        content: '新版本已经上线啦~，请您删除当前小程序，重新搜索打开哟~',
+        content: '新版本已经上线啦~，请您删除当前小程序，重新搜索打开哟~'
       })
     })
   }
@@ -247,7 +262,76 @@ export default class extends wepy.app {
     userInfo: null,
     uid: '',
     openId: '',
-    wxInfo: null
+    wxInfo: null,
+    wxCode: {},
+    list: [
+      {
+        pagePath: '/pages/home/index',
+        text: '简历列表',
+        selected: true,
+        iconPath: '../images/list.png',
+        selectedIconPath: '../images/list-active.png'
+      },
+      {
+        pagePath: '/pages/my/index',
+        text: '我的',
+        selected: false,
+        iconPath: '../images/my.png',
+        selectedIconPath: '../images/my-active.png'
+      }
+    ],
+    tabBar: {
+      color: '#999999',
+      selectedColor: '#1890FF',
+      borderStyle: 'white',
+      list: []
+    }
+    // 处理tabBar中点击, 被点击,将当前的数据对象中 selected 改成true, 其余的就得改成 false;  这里的id是标识, 在
   };
+  tabBarClickHandle(id, that) {
+    let tbList = this.globalData.tabBar.list;
+    tbList.forEach((item, index) => {
+      if (id === index) {
+        tbList[id].selected = true;
+      } else {
+        tbList[index].selected = false;
+      }
+    });
+    that.$apply();
+    return this.globalData.tabBar;
+  }
+  isCheckSession() {
+    wx.checkSession({
+      success: () => {
+        console.log('没有过期')
+      },
+      fail: () => {
+        this.getOpenId()
+      }
+    })
+  }
+  getOpenId() {
+    let that = this
+    wx.login({
+      success(res) {
+        if (res.code) {
+          console.log(res.code)
+          $http('/Login/getopenid', { code: res.code }).then(res => {
+            let data = JSON.parse(res.data)
+            that.globalData.wxCode = data
+            that.globalData.openid = data.openid
+            wx.setStorageSync('session_key', data.session_key)
+            wx.setStorageSync('rendaOpenId', data.openid)
+          }).catch(error => {
+            console.log(error)
+          })
+        } else {
+          console.log(1)
+          console.log('获取失败！' + res.errMsg)
+        }
+      }
+    })
+    return that.globalData.openid
+  }
 }
 </script>

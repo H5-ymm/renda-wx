@@ -1,89 +1,6 @@
 <style lang="less">
-@import '../../style/base/variable/color.less';
-.login_page {
-  .login-view {
-    position: relative;
-    height: 94%;
-  }
-  .login-title {
-    padding: 170rpx 0 80rpx;
-    font-size: 48rpx;
-    width: 100%;
-    color: @weuiTextColorTitle;
-    .login-title-col {
-      font-size: 36rpx;
-      margin-top: 10rpx;
-    }
-  }
-  .login-view-bg {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 90%;
-  }
-  .login-view-box {
-    height: 85%;
-    width: 80%;
-    margin: 0 auto;
-    .login-view-form {
-      width: 100%;
-    }
-  }
-  .weui-cell {
-    margin-bottom: 20px;
-    font-size: 28rpx;
-    position: relative;
-    .weui-cell_label {
-      color: @weuiTextColorDesc;
-      width: 130rpx;
-    }
-    .weui-input {
-      padding: 20rpx 0 16rpx;
-    }
-    .weui-cell_line {
-      margin-right: 30rpx;
-    }
-    .code-btn {
-      position: absolute;
-      top: 20rpx;
-      right: 0;
-      color: @weuiColorPrimary;
-      font-size: 28rpx;
-    }
-  }
-  .weui-cell_btn {
-    &.login-btn {
-      padding: 40rpx 0;
-    }
-    .weui-btn_cell-disabled {
-      color: @weuiBgColorWhite;
-      background: @weuiBgColorPrimary;
-    }
-  }
-
-  .check-icon {
-    font-size: 18px;
-    width: 26rpx;
-    height: 26rpx;
-    margin-right: 10rpx;
-  }
-  .rule-view {
-    font-size: 26rpx;
-    color: @weuiTextColorDesc;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    flex-wrap: wrap;
-    position: relative;
-    z-index: 888;
-    .text {
-      color: @weuiColorPrimary;
-    }
-  }
-}
+@import '../../style/login.less';
 </style>
-
 <template>
   <view class="login_page page_botttom">
     <view class="login-view">
@@ -95,23 +12,24 @@
         </view>
         <view class="login-view-form">
           <view class="weui-cell weui-flex start weui-cell_input page_botttom">
-            <view class="weui-cell_label weui-flex between">+86<label class="weui-cell_line">|</label></view>
-            <input class="weui-input" value="{{form.mobile}}" @input="changeInput" placeholder="输入您的手机号" />
+            <view class="weui-cell_label weui-flex between">
+              +86<label class="weui-cell_line">|</label>
+            </view>
+            <input class="weui-input" value="{{form.tel}}"
+            @input="changeInput" data-name="tel" placeholder="输入您的手机号" />
           </view>
           <view class="weui-cell weui-flex start weui-cell_input page_botttom">
-            <view class="weui-cell_label weui-flex between">验证码<label class="weui-cell_line">|</label></view>
-            <input class="weui-input" value="{{form.code}}" @input="changeInputCode" placeholder="输入验证码" />
-            <text class="code-btn" @tap="getCode">{{sendAuthCode ?'获取验证码':auth_time+'s'}}</text>
+            <view class="weui-cell_label weui-flex between">
+              验证码<label class="weui-cell_line">|</label>
+            </view>
+            <input class="weui-input" value="{{form.code}}"
+             @input="changeInput" data-name="code" placeholder="输入验证码" />
+            <text class="code-btn" @tap="getCode">{{sendAuthCode?'获取验证码':auth_time+'s'}}</text>
           </view>
           <view class="weui-cell_btn weui-flex center login-btn">
-            <button class="weui-btn_cell weui-btn_cell-gradient {{!checked?'weui-btn_cell-disabled':''}}" lang='zh_CN' disabled="{{!checked}}" @getuserinfo="getUserInfo" open-type="getUserInfo">登录</button>
-          </view>
-          <view class="rule-view">
-            <image wx:if="{{!checked}}" src="../../images/check.png" mode="scaleToFill" class="check-icon" @tap="checkedRule({{checked}})" />
-
-            <image wx:else src="../../images/check1.png" mode="scaleToFill" @tap="checkedRule({{checked}})" class="check-icon" />
-            我已认真阅读并同意<view class="text" @tap="router">《用户协议及隐私政策》</view>和
-            <view class="text" @tap="router">《信息保护政策》</view>
+            <button disabled="{{!checked}}"
+            class="weui-btn_cell weui-btn_cell-gradient {{!checked?'weui-btn_cell-disabled':''}}"  
+            @tap="getUserInfo">登录</button>
           </view>
         </view>
       </view>
@@ -121,12 +39,10 @@
 </template>
 <script>
 import wepy from 'wepy'
-import modal from '../../components/modal'
-//通过继承自wepy.page的类创建页面逻辑
-let $http = require('../../http.js')
-let util = require('../../util.js')
+import modal from '@/components/modal'
+import { $http } from '@/http.js'
+import { wxToast, checkMobile, getErrorTip } from '@/util.js'
 export default class Login extends wepy.page {
-  //可用于页面模板绑定的数据
   components = {
     modal: modal
   }
@@ -141,103 +57,63 @@ export default class Login extends wepy.page {
       imgIcon: ''
     },
     form: {
-      mobile: '',
+      tel: '',
       code: '',
       token: ''
     },
-    auth_time: 60, //倒计时
-    sendAuthCode: true, //控制
-    checked: false,
-    authorize: false,
-    isRead: false,
+    auth_time: 60, // 倒计时
+    sendAuthCode: true, // 控制
     auth_timetimer: null
   }
-  getCodeApi () {
-    $http
-      .http('/Login/sendVerification', { mobile: this.form.mobile })
+  computed = {
+    checked() {
+      return this.form.tel && this.form.code
+    }
+  }
+  getCodeApi() {
+    $http('/Login/sendVerification', { mobile: this.form.tel })
       .then(res => {
         this.form.token = res.data.token || ''
       })
   }
-  login () {
-    if (!this.form.mobile) {
-      wx.showToast({
-        title: '请输入手机号码',
-        icon: 'none',
-        duration: 2000
-      })
-      return
-    } else if (!util.checkMobile(this.form.mobile)) {
-      wx.showToast({
-        title: '请输入正确的手机号码',
-        icon: 'none',
-        duration: 2000
-      })
-      return
-    } else if (!this.form.code) {
-      wx.showToast({
-        title: '请输入验证码',
-        icon: 'none',
-        duration: 2000
-      })
-      return
-    }
-    if (!this.checked) {
-      wx.showToast({
-        title: '请先阅读注册协议',
-        icon: 'none',
-        duration: 2000
-      })
-      return
-    }
+  login() {  
     wx.removeStorageSync('auth_time')
     wx.removeStorageSync('sendAuthCode')
-    let openid =
-      wx.getStorageSync('rendaOpenId') || this.$parent.globalData.openId
+    let openid = wx.getStorageSync('rendaOpenId') || this.$parent.globalData.openId
     let params = Object.assign(this.form, { openid })
-    $http
-      .http('/Login/login', params)
-      .then(res => {
-        if (res.status.code == 200) {
-          this.$parent.globalData.uid = res.data.uid
-          wx.setStorageSync('rendaUid', res.data.uid)
-          wx.switchTab({
-            url: '/pages/home/index'
-          })
-        }
-      })
-      .catch(error => {
-        if (error && error.status) {
-          let obj = util.getErrorTip(error.status.code)
-          if (error.status.code === 6001 || error.status.code === 6008) {
-            this.modalHeight = 640
-          } else {
-            this.modalHeight = 560
-          }
-          this.modalObj.title = obj.title
-          this.modalObj.subTitle = obj.subTitle
-          this.isModal = false
-          this.$apply()
-          return
-        }
-      })
-  }
-  onLoad (options) {
-    if (options && options.query) {
-      this.checked = true
-      this.isRead = true
-      this.form = JSON.parse(options.query)
-      if (wx.getStorageSync('sendAuthCode')) {
-        this.auth_time = wx.getStorageSync('auth_time') - 3
-        clearInterval(this.auth_timetimer)
-        this.getTime()
+    $http('/login/is_register_manu', params).then(res => {
+      if (res.status.code == 200) {
+        this.$parent.globalData.uid = res.data.uid
+        wx.setStorageSync('rendaUid', res.data.uid)
+        wx.reLaunch({
+          url: '/pages/home/index'
+        })
       }
-    } else {
-      this.isRead = false
+    })
+    .catch(error => {
+      if (error && error.status) {
+        let obj = getErrorTip(error.status.code)
+        if (error.status.code === 6001 || error.status.code === 6008) {
+          this.modalHeight = 640
+        } else {
+          this.modalHeight = 560
+        }
+        this.modalObj.title = obj.title
+        this.modalObj.subTitle = obj.subTitle
+        this.isModal = false
+        this.$apply()
+      }
+    })
+  }
+  onLoad(options) {
+    if (wx.getStorageSync('sendAuthCode')) {
+      this.auth_time = wx.getStorageSync('auth_time') - 3
+      clearInterval(this.auth_timetimer)
+      this.getTime()
     }
     this.$apply()
   }
-  onShow () {
+  onShow() {
     if (!this.isRead) {
       this.checked = false
       if (wx.getStorageSync('sendAuthCode')) {
@@ -254,7 +130,8 @@ export default class Login extends wepy.page {
       this.$apply()
     }
   }
-  getTime () {
+  getTime() {
+    if (!this.sendAuthCode) return
     this.sendAuthCode = false
     this.auth_timetimer = setInterval(() => {
       this.auth_time--
@@ -269,81 +146,36 @@ export default class Login extends wepy.page {
       }
     }, 1000)
   }
-  onHide () {
+  onHide() {
     clearInterval(this.auth_timetimer)
   }
-  onUnload () {
+  onUnload() {
     clearInterval(this.auth_timetimer)
   }
-  //事件处理函数(集中保存在methods对象中)
   methods = {
-    checkedRule (checked) {
-      this.checked = !checked
-      this.$apply()
-      if (this.checked) {
-        let query = JSON.stringify(this.form)
-        wx.navigateTo({
-          url: '/pages/login/rule?query=' + query // 页面 A
-        })
-      }
+    changeInput(e) {
+      let key = e.target.dataset.name
+      this.form[key] = e.detail.value
     },
-    changeInput (e) {
-      this.form.mobile = e.detail.value
-    },
-    changeInputCode (e) {
-      this.form.code = e.detail.value
-    },
-    router () {
-      let query = JSON.stringify(this.form)
-      wx.navigateTo({
-        url: '/pages/login/rule?query=' + query // 页面 A
-      })
-    },
-    getCode () {
-      if (!this.form.mobile) {
-        wx.showToast({
-          title: '请输入手机号码',
-          icon: 'none',
-          duration: 2000
-        })
-        return
-      } else if (!util.checkMobile(this.form.mobile)) {
-        wx.showToast({
-          title: '请输入正确的手机号码',
-          icon: 'none',
-          duration: 2000
-        })
-        return
-      }
-      this.getCodeApi()
-      this.getTime()
-    },
-    getUserInfo (e) {
-      this.userInfo = e.detail.userInfo
-      if (this.userInfo) {
-        let params = {
-          head_img: this.userInfo.avatarUrl,
-          address: this.userInfo.province + this.userInfo.city,
-          user_name: this.userInfo.nickName
-        }
-        this.$parent.globalData.wxInfo = params
-        wx.setStorageSync('wxInfo', JSON.stringify(params))
-        this.authorize = true
-        if (this.authorize) {
-          this.login()
-        }
+    getCode() {
+      if (!this.form.tel) {
+        wxToast('请输入手机号码')
+      } else if (!checkMobile(this.form.tel)) {
+        wxToast('请输入正确的手机号码')
       } else {
-        wx.showModal({
-          title: '警告',
-          content: '您点击了拒绝授权，将无法进入小程序，请授权之后再进入!!!',
-          showCancel: false,
-          confirmText: '返回授权',
-          success: res => {
-            if (res.confirm) {
-              this.authorize = false
-            }
-          }
-        })
+        this.getCodeApi()
+        this.getTime()
+      }
+    },
+    getUserInfo() {
+      if (!this.form.tel) {
+        wxToast('请输入手机号码')
+      } else if (!checkMobile(this.form.tel)) {
+        wxToast('请输入正确的手机号码')
+      } else if (!this.form.code) {
+        wxToast('请输入验证码')
+      } else {
+        this.login()
       }
     }
   }

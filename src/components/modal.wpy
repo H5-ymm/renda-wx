@@ -16,7 +16,6 @@
   background: rgba(0, 0, 0, 0.5);
   transition: 0.2s;
 }
-
 .modal_box {
   position: fixed;
   z-index: 1001;
@@ -79,9 +78,9 @@
 
 <template>
   <view hidden='{{isScaleModal}}'>
-    <view @tap=" handleClose" wx:if="{{isShow}}" class="modal_mask"></view>
+    <view @tap="handleOk" wx:if="{{isShow}}" class="modal_mask"></view>
     <view class="modal_box transition3s {{ isShow ? 'g_scale1': ''}}" id="modal-box" style="height:{{height}}rpx">
-      <slot></slot>
+      <!-- <slot></slot> -->
       <view class="modal-content">
         <view class="modal-bg">
           <image src="{{modalObj.imgIcon}}" wx:if="{{modalObj.imgIcon}}" class="modal-icon" />
@@ -102,7 +101,6 @@
 </template>
 <script>
 import wepy from 'wepy'
-
 export default class actionSheet extends wepy.component {
   props = {
     isScaleModal: Boolean,
@@ -113,12 +111,6 @@ export default class actionSheet extends wepy.component {
     isShow: false
   }
   methods = {
-    handleClose() {
-      this.isScaleModal = true
-      this.isShow = false
-      this.$apply()
-      this.$emit('handleOk')
-    },
     handleOk() {
       this.isShow = false
       this.$apply()

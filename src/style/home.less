@@ -1,99 +1,112 @@
 @import "./base/variable/color";
 @import "./cell";
+
 .home-view {
-  .home-view-header {
-    background: @weuiColorPrimary;
-    height: 70rpx;
-    width: 100%;
-  }
-  .page {
-    .picker-box {
-      padding: 24rpx 0;
-      width: 100%;
+    .home-view-header {
+        background: @weuiColorPrimary;
+        height: 70rpx;
+        width: 100%;
     }
-    .dateIcon {
-      width: 32rpx;
-      height: 32rpx;
-      line-height: 30rpx;
-      color: @weuiTextColorTitle;
+
+    .scroll {
+        height: calc(100% - 60px);
     }
-    .line {
-      margin: 0 40rpx;
-    }
-    .page_count-card-item {
-      margin-right: 24rpx;
-      padding: 24rpx;
-      &:nth-last-child(1) {
-        margin-right: 0;
-      }
-      &:nth-of-type(2) {
+
+    .page {
+        .picker-box {
+            padding: 24rpx 0;
+            width: 100%;
+        }
+
+        .dateIcon {
+            width: 32rpx;
+            height: 32rpx;
+            line-height: 30rpx;
+            color: @weuiTextColorTitle;
+        }
+
+        .line {
+            margin: 0 40rpx;
+        }
+
+        .page_count-card-item {
+            margin-right: 24rpx;
+            padding: 24rpx;
+
+            &:nth-last-child(1) {
+                margin-right: 0;
+            }
+
+            &:nth-of-type(2) {
+                .page_count-card-col1 {
+                    background: linear-gradient(90deg,
+                            rgba(69, 149, 34, 1),
+                            rgba(175, 232, 78, 1));
+                    box-shadow: 2rpx 3rpx 10rpx 0 rgba(70, 150, 35, 0.3);
+                }
+            }
+
+            &:nth-of-type(3) {
+                .page_count-card-col1 {
+                    background: linear-gradient(90deg,
+                            rgba(219, 20, 69, 1),
+                            rgba(251, 164, 139, 1));
+                    box-shadow: 2rpx 3rpx 10rpx 0 rgba(222, 31, 75, 0.3);
+                }
+            }
+        }
+
         .page_count-card-col1 {
-          background: linear-gradient(
-            90deg,
-            rgba(69, 149, 34, 1),
-            rgba(175, 232, 78, 1)
-          );
-          box-shadow: 2rpx 3rpx 10rpx 0 rgba(70, 150, 35, 0.3);
+            width: 60rpx;
+            height: 60rpx;
+            background: linear-gradient(90deg,
+                    rgba(3, 124, 220, 1),
+                    rgba(36, 186, 247, 1));
+            box-shadow: 2rpx 3rpx 10rpx 0 rgba(76, 110, 194, 0.3);
+            border-radius: 5rpx;
         }
-      }
-      &:nth-of-type(3) {
-        .page_count-card-col1 {
-          background: linear-gradient(
-            90deg,
-            rgba(219, 20, 69, 1),
-            rgba(251, 164, 139, 1)
-          );
-          box-shadow: 2rpx 3rpx 10rpx 0 rgba(222, 31, 75, 0.3);
+
+        .page_count-card-col2 {
+            line-height: 34rpx;
+            margin-left: 20rpx;
+
+            >view {
+                &:nth-of-type(1) {
+                    color: @weuiTextColorLight;
+                    font-size: 22rpx;
+                }
+
+                &:nth-of-type(2) {
+                    color: @weuiTextColorDesc;
+                    font-size: 30rpx;
+                }
+            }
         }
-      }
-    }
-    .page_count-card-col1 {
-      width: 60rpx;
-      height: 60rpx;
-      background: linear-gradient(
-        90deg,
-        rgba(3, 124, 220, 1),
-        rgba(36, 186, 247, 1)
-      );
-      box-shadow: 2rpx 3rpx 10rpx 0 rgba(76, 110, 194, 0.3);
-      border-radius: 5rpx;
-    }
-    .page_count-card-col2 {
-      line-height: 34rpx;
-      margin-left: 20rpx;
-      > view {
-        &:nth-of-type(1) {
-          color: @weuiTextColorLight;
-          font-size: 22rpx;
+
+        .page_card_col1 {
+            color: @weuiTextColorDesc;
+            width: 62%;
         }
-        &:nth-of-type(2) {
-          color: @weuiTextColorDesc;
-          font-size: 30rpx;
+    }
+
+    .home-add-resume {
+        position: fixed;
+        right: 0;
+        bottom: 200rpx;
+        background: @weuiColorPrimary;
+        box-shadow: 0px 4px 4px 0px rgba(0, 92, 200, 0.19), 0px 8px 17px 0px rgba(3, 107, 203, 0.36);
+        border-radius: 44px 0px 0px 44px;
+        color: @weuiBgColorWhite;
+        font-size: 25rpx;
+        width: 144rpx;
+        height: 78rpx;
+        padding: 10rpx;
+        text-align: center;
+        z-index: 222;
+
+        .add-icon {
+            width: 44rpx;
+            height: 44rpx;
         }
-      }
     }
-    .page_card_col1 {
-      color: @weuiTextColorDesc;
-      width: 62%;
-    }
-  }
-  .home-add-resume {
-    position: fixed;
-    right: 0;
-    bottom: 100rpx;
-    background: @weuiColorPrimary;
-    box-shadow:0px 4px 4px 0px rgba(0,92,200,0.19), 0px 8px 17px 0px rgba(3,107,203,0.36);
-    border-radius:44px 0px 0px 44px;
-    color: @weuiBgColorWhite;
-    font-size: 25rpx;
-    width: 144rpx;
-    height: 78rpx;
-    padding: 10rpx;
-    text-align: center;
-    z-index: 222;
-    .add-icon {
-      width: 44rpx;
-      height: 44rpx;
-    }
-  }
 }

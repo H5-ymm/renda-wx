@@ -1,0 +1,108 @@
+<template>
+	<view class="tabBarBox weui-flex center">
+		<!-- 首页 -->
+		<repeat wx:for="{{tabBarList.list}}" wx:key="index">
+			<navigator
+				class="itemView  weui-flex__item"
+				url="{{item.pagePath}}"
+				open-type="redirect"
+				hover-class="none"
+			>
+				<image class="item_icon" src="{{item.selected ? item.selectedIconPath : item.iconPath}}"/>
+				<view class="item_text {{item.selected ? 'c-y' : 'c-gray'}}">{{item.text}}</view>
+	  	</navigator>
+		</repeat>
+	</view>
+</template>
+<script>
+import wepy from 'wepy';
+import { list1, list2 } from '@/base/base'
+export default class tabBar extends wepy.component {
+	// props 接收父组件传递过来的值
+	props = {
+		tabBar: {
+			type: Object,
+			default: {}
+		},
+		usertype: {
+			type: String,
+			default: ''
+		},
+		tabBarIndex: {
+			type: Number,
+			default: 0
+		}
+	}
+	data = {
+    tabBarList: {
+
+		}
+	}
+	onLoad() {
+		this.tabBarList = this.$parent.$parent.tabBarClickHandle(this.tabBarIndex, this);
+		this.$apply()
+	}
+	watch = {
+		usertype(val) {
+			if (val) {
+				if (val === 1) {
+					this.$parent.$parent.globalData.tabBar.list = list1
+				} else {
+					this.$parent.$parent.globalData.tabBar.list = list2
+				}
+				this.tabBarList = this.$parent.$parent.tabBarClickHandle(this.tabBarIndex, this);
+		   
+			} else {
+				this.tabBarList = this.$parent.$parent.tabBarClickHandle(this.tabBarIndex, this);
+			}
+			this.$apply()
+		}
+	}
+	computed = {
+		List() {
+			// let info = store.getState().user.loginUser
+			// let user = info.usertype
+			let arr = []
+			// if (user === 2 ) {
+      //   arr = list1
+			// } else {
+			// 	arr = list2
+			// }
+			return arr
+		}
+	}
+	methods = {
+
+	}
+	event = {}
+}
+</script>
+<style lang="less">
+.tabBarBox {
+  width: 100%;
+  height: 120rpx;
+  background-color: #fff;
+  position: fixed;
+  bottom: 0;
+	z-index: 9999;
+	border-top: 1px solid #eee;
+}
+.itemView {
+	height: 120rpx;
+	width: 100%;
+	text-align: center;
+	padding-top: 6rpx;
+	.item_icon {
+		width:50rpx;
+		height: 50rpx;
+	}
+  .item_text {
+		font-size: 28rpx;
+		color: #999999;
+		text-align: center;
+    &.c-y {
+      color: #1890ff;
+			}
+		}
+}
+</style>

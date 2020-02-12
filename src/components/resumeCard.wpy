@@ -30,35 +30,29 @@
     </view>
   </view>
 </template>
-
 <script>
 import wepy from 'wepy'
-let $http = require('../http.js')
-//通过继承自wepy.page的类创建页面逻辑
+import { $http } from '@/http.js'
 export default class resumeCard extends wepy.component {
-  //可用于页面模板绑定的数据
-  props = {}
   data = {
     resumeTotal: {},
     params: {
       uid: ''
     }
   }
-  //事件处理函数(集中保存在methods对象中)
-  methods = {}
   getCount() {
-    $http.http('/Wxresume/resumecount', this.params).then(res => {
+    $http('/Wxresume/resumecount', this.params).then(res => {
       this.resumeTotal = res.data
       this.$apply()
     })
   }
+  onLoad() {
+    this.params.uid = wx.getStorageSync('rendaUid')
+    this.getCount()
+  }
   events = {
     changeDate: val => {
       this.params = Object.assign(this.params, val)
-      this.getCount()
-    },
-    getUid: val => {
-      this.params.uid = val || wx.getStorageSync('rendaUid')
       this.getCount()
     }
   }

@@ -11,7 +11,7 @@
   width: 24rpx;
   height: 24rpx;
   margin-left: 10rpx;
-  transform: rotate(90deg);
+  // transform: rotate(90deg);
 }
 </style>
 
@@ -50,7 +50,7 @@
         </view>
         <view class="page_card_row">
           <view class="weui-flex between ">
-            <view class="my-text weui-flex__item">住址：</view>
+            <view class="my-text weui-flex__item">户籍地址：</view>
             <input class="weui-input" placeholder-class="placeholder" data-name="address" value="{{form.address}}" @input="changeInput" placeholder="请输入住址" />
             <!-- <view class="my-text-right">仁达网络科技（上海）有限公司</view> -->
           </view>
@@ -94,9 +94,8 @@
 
 <script>
 import wepy from 'wepy'
-
 import districtSelet from './districtSelet'
-let util = require('../util.js')
+import { wxToast, checkMobile } from '@/util.js'
 //通过继承自wepy.page的类创建页面逻辑
 export default class addResume extends wepy.component {
   props = {
@@ -153,7 +152,6 @@ export default class addResume extends wepy.component {
       this.form.cityid = data[1] ? data[1] : 0
     }
   }
-  //事件处理函数(集中保存在methods对象中)
   methods = {
     bindPickerChange(e) {
       this.index = e.detail.value
@@ -169,40 +167,15 @@ export default class addResume extends wepy.component {
     },
     save() {
       if (!this.form.name) {
-        wx.showToast({
-          title: '请输入姓名',
-          icon: 'none',
-          duration: 2000
-        })
-        return
+        wxToast('请输入姓名')
       } else if (!this.form.mobile) {
-        wx.showToast({
-          title: '请输入手机号码',
-          icon: 'none',
-          duration: 2000
-        })
-        return
+        wxToast('请输入手机号码')
       } else if (!util.checkMobile(this.form.mobile)) {
-        wx.showToast({
-          title: '请输入正确的手机号码',
-          icon: 'none',
-          duration: 2000
-        })
-        return
+        wxToast('请输入正确的手机号码')
       } else if (this.form.age && Number(this.form.age) < 16) {
-        wx.showToast({
-          title: '请输入的年龄不小于16',
-          icon: 'none',
-          duration: 2000
-        })
-        return
+        wxToast('请输入的年龄不小于16')
       } else if (this.form.age && Number(this.form.age) > 65) {
-        wx.showToast({
-          title: '请输入的年龄不大于65',
-          icon: 'none',
-          duration: 2000
-        })
-        return
+        wxToast('请输入的年龄不大于65')
       } else {
         if (this.step < 2) {
           this.step = this.step + 1

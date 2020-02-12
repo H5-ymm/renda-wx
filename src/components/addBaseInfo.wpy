@@ -58,7 +58,6 @@
 </template>
 <script>
 import wepy from 'wepy'
-//通过继承自wepy.page的类创建页面逻辑
 export default class addBaseInfo extends wepy.component {
   //可用于页面模板绑定的数据
   props = {
@@ -79,13 +78,13 @@ export default class addBaseInfo extends wepy.component {
     },
     getBaseInfo: val => {
       this.jobName = val.name
-      this.form.from_user = val.name
+      // this.form.from_user = val.name
       this.form.to_user = val.companyName
       this.form.job_id = val.id
       this.resumeType = val.resumeType
     }
   }
-  //事件处理函数(集中保存在methods对象中)
+  // 事件处理函数(集中保存在methods对象中)
   methods = {
     selectType () {
       this.$emit('showActionSheet')
@@ -122,7 +121,5 @@ export default class addBaseInfo extends wepy.component {
       this.$emit('submit', this.form)
     }
   }
-  //页面的生命周期函数
-  onLoad () { }
 }
 </script>

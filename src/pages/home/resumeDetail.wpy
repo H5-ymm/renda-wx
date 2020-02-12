@@ -8,7 +8,7 @@
   width: 24rpx;
   height: 24rpx;
   margin-left: 10rpx;
-  transform: rotate(90deg);
+  // transform: rotate(90deg);
 }
 .weui-cell_btn {
   padding: 20rpx 0;
@@ -57,12 +57,6 @@
               <view class="my-text-right"> {{form.name}}</view>
             </view>
           </view>
-          <!-- <view class="page_card_row">
-            <view class="weui-flex between ">
-              <view class="my-text weui-flex__item"> 身份证号</view>
-              <view class="my-text-right"> 323145199501232561</view>
-            </view>
-          </view> -->
           <view class="page_card_row">
             <view class="weui-flex between ">
               <view class="my-text weui-flex__item"> 手机号</view>
@@ -99,7 +93,7 @@
           </view>
           <view class="page_card_row">
             <view class="weui-flex between ">
-              <view class="my-text weui-flex__item">住址</view>
+              <view class="my-text weui-flex__item">户籍地址</view>
               <input class="weui-input" placeholder-class="placeholder" data-name="address" value="{{form.address}}" @input="changeInput" placeholder="请输入住址" />
             </view>
           </view>
@@ -125,9 +119,8 @@
 </template>
 <script>
 import wepy from 'wepy'
-import districtSelet from '../../components/districtSelet'
-let $http = require('../../http.js')
-//通过继承自wepy.page的类创建页面逻辑
+import districtSelet from '@/components/districtSelet'
+import { $http } from '@/http.js'
 export default class resumeDetail extends wepy.page {
   components = {
     districtSelet: districtSelet
@@ -149,15 +142,15 @@ export default class resumeDetail extends wepy.page {
   }
   updateResume () {
     if (this.checkObj(this.form, this.formTeam)) {
-      wx.switchTab({
+      wx.reLaunch({
         url: '/pages/home/index'
       })
       return
     }
     this.form = Object.assign(this.query, this.form)
-    $http.http('/Wxresume/editruseme', this.form).then(res => {
+    $http('/Wxresume/editruseme', this.form).then(res => {
       if (res.data) {
-        wx.switchTab({
+        wx.reLaunch({
           url: '/pages/home/index'
         })
       } else {
@@ -171,7 +164,7 @@ export default class resumeDetail extends wepy.page {
   }
   getResumeDetail (query) {
     this.type = query.type
-    $http.http('/Wxresume/getresume_recommend', query).then(res => {
+    $http('/Wxresume/getresume_recommend', query).then(res => {
       this.form = res.data
       this.form.from_user = !res.data.from_user ? '' : res.data.from_user
       this.form.to_user = !res.data.to_user ? '' : res.data.to_user

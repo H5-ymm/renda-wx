@@ -57,15 +57,12 @@
 <script>
 import wepy from 'wepy'
 import wxs from '../dateFilter.wxs'
-//通过继承自wepy.page的类创建页面逻辑
 export default class resumeList extends wepy.component {
-  //可用于页面模板绑定的数据
   wxs = { wxs }
   props = {
     list: Array
   }
   data = {}
-  //事件处理函数(集中保存在methods对象中)
   methods = {
     viewDetail(item) {
       let job_id = ''
@@ -74,14 +71,9 @@ export default class resumeList extends wepy.component {
         job_id = item.jobinfo.job_id
         job_type = item.jobinfo.job_type
       }
+      let query = `job_id=${job_id}&resume_id=${item.resume_id}&type=${job_type}`
       wx.navigateTo({
-        url:
-          '/pages/home/resumeDetail?job_id=' +
-          job_id +
-          '&resume_id=' +
-          item.resume_id +
-          '&type=' +
-          job_type // 页面 A
+        url: '/pages/home/resumeDetail?query'
       })
     }
   }

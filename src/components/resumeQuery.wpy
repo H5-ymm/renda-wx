@@ -24,9 +24,7 @@
 <script>
 import wepy from 'wepy'
 let util = require('../util.js')
-//通过继承自wepy.page的类创建页面逻辑
 export default class resumeQuery extends wepy.component {
-  //可用于页面模板绑定的数据
   data = {
     dateStart: '选择开始日期',
     dateEnd: '选择结束日期',
@@ -42,7 +40,6 @@ export default class resumeQuery extends wepy.component {
       }
     }
   }
-  //事件处理函数(集中保存在methods对象中)
   methods = {
     bindDateChange(e) {
       this.dateStart = e.detail.value
@@ -55,7 +52,5 @@ export default class resumeQuery extends wepy.component {
       this.params.endtime = endtime.substr(0, 10)
     }
   }
-  //页面的生命周期函数
-  onLoad() {}
 }
 </script>

@@ -1,5 +1,6 @@
-/* eslint-disable indent */
-/* eslint-disable no-array-constructor */
+// import wepy from 'wepy';
+// console.log(wepy)
+// const baseUrl = wepy.$appConfig.baseUrl;
 const manglingFormatCardNumber = (cardNumber) => {
     if (cardNumber && cardNumber.length > 8) {
         return `${cardNumber.substring(0, 4)} ${'*'
@@ -65,10 +66,8 @@ const getErrorTip = code => {
     let obj = {
         title: '',
         subTitle: ''
-    };
-
+    }
     switch (code) {
-
         case 6001:
             obj.title = '您还没有注册哦';
             obj.subTitle = '亲！您还不是团队成员或企业，请前往 www.rsd123.com 进行注册申请，\n或' + text;
@@ -78,7 +77,7 @@ const getErrorTip = code => {
             obj.subTitle = text;
             break;
         case 6006:
-            obj.title = '您的团队还在审核中哦';
+            obj.title = '审核中需要1-2天';
             obj.subTitle = text;
             break;
         case 6007:
@@ -101,9 +100,90 @@ const getErrorTip = code => {
     }
     return obj;
 };
+const getImgUrl = imgUrl => {
+    // const baseUrl = 'https://a.rsd123.com/';
+    const baseUrl = 'http://tiantianxsg.com:39888/'
+    return baseUrl + imgUrl;
+};
+const compressImg = (photoSrc, ratio = 2) => {
+    let obj = {
+        url: '',
+        cWidth: 0,
+        cHeight: ''
+    }
+    return new Promise((resolve, reject) => {
+        wx.getImageInfo({
+            src: photoSrc,
+            success(res) {
+                let canvasWidth = res.width // 图片原始长宽
+                let canvasHeight = res.height
+                console.log(res)
+                canvasWidth = 220
+                canvasHeight = 200
+                obj.cWidth = canvasWidth + 100
+                obj.cHeight = canvasHeight + 100
+                // ----------绘制图形并取出图片路径--------------
+                var ctx = wx.createCanvasContext('canvas')
+                ctx.drawImage(res.path, 0, 0, canvasWidth, canvasHeight)
+                ctx.draw(
+                    false,
+                    setTimeout(() => {
+                        wx.canvasToTempFilePath({
+                                canvasId: 'canvas',
+                                destWidth: canvasWidth,
+                                destHeight: canvasHeight,
+                                success: function (res) {
+                                    console.log(res.tempFilePath)
+                                    obj.url = res.tempFilePath
+                                    resolve(obj)
+                                },
+                                fail: function (res) {
+                                    console.log(res.errMsg)
+                                }
+                            },
+                            this
+                        )
+                    }, 100)
+                )
+            },
+            fail: function (res) {
+                console.log(res.errMsg)
+            }
+        })
+    })
+}
+const wxToast = title => {
+    return wx.showToast({
+        title: title,
+        icon: 'none',
+        duration: 2000
+    })
+}
+const wxNavigateTo = url => {
+    wx.navigateTo({
+        url: url // 页面 A
+    })
+}
+const wxRedirectTo = url => {
+    wx.redirectTo({
+        url: url // 页面 A
+    })
+}
+const wxReLaunch = url => {
+    wx.reLaunch({
+        url: url // 页面 A
+    })
+}
+
 module.exports = {
     manglingFormatCardNumber: manglingFormatCardNumber,
     validateIdCard: validateIdCard,
     checkMobile: checkMobile,
-    getErrorTip: getErrorTip
+    getErrorTip: getErrorTip,
+    getImgUrl: getImgUrl,
+    wxToast: wxToast,
+    compressImg: compressImg,
+    wxNavigateTo: wxNavigateTo,
+    wxRedirectTo: wxRedirectTo,
+    wxReLaunch: wxReLaunch
 };
