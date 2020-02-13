@@ -15,10 +15,14 @@
         width: 150rpx;
 
         &.my-text-require {
+            position: relative;
+
             &::before {
                 content: '*';
                 color: @weuiColorWarn;
-                margin-right: 6rpx;
+                position: absolute;
+                left: -16rpx;
+                top: 0;
             }
         }
 

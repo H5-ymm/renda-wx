@@ -1,4 +1,4 @@
-import wepy from 'wepy'
+// import wepy from 'wepy'
 // if (wepy.$appConfig) {
 //     baseUrl = wepy.$appConfig.baseUrl
 // }
@@ -6,8 +6,8 @@ import wepy from 'wepy'
 import {
     wxToast
 } from '@/util.js'
-// const baseUrl = 'https://a.rsd123.com/';
-const baseUrl = 'http://tiantianxsg.com:39888/'
+const baseUrl = 'https://a.rsd123.com/';
+// const baseUrl = 'http://tiantianxsg.com:39888/'
 const apiUrl = baseUrl + 'wx.php';
 const http = (url, params, method) => {
     return new Promise((resolve, reject) => {
@@ -27,7 +27,9 @@ const http = (url, params, method) => {
                         resolve(res.data);
                     } else if (res.data.status.code === 1009 || res.data.status.code === 6001 ||
                         res.data.status.code === 6002 || res.data.status.code === 6006 ||
-                        res.data.status.code === 6007) {
+                        res.data.status.code === 6007 ||
+                        res.data.status.code === 6010 ||
+                        res.data.status.code === 6100) {
                         // 需要特殊处理的接口，可以单独列出来返回数据
                         reject(res.data);
                     } else if (url === '/Wxresume/addResume') {

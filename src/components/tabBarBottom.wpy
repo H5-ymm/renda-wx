@@ -58,19 +58,6 @@ export default class tabBar extends wepy.component {
 			this.$apply()
 		}
 	}
-	computed = {
-		List() {
-			// let info = store.getState().user.loginUser
-			// let user = info.usertype
-			let arr = []
-			// if (user === 2 ) {
-      //   arr = list1
-			// } else {
-			// 	arr = list2
-			// }
-			return arr
-		}
-	}
 	methods = {
 
 	}
@@ -80,7 +67,7 @@ export default class tabBar extends wepy.component {
 <style lang="less">
 .tabBarBox {
   width: 100%;
-  height: 120rpx;
+  height: 60px;
   background-color: #fff;
   position: fixed;
   bottom: 0;
@@ -88,7 +75,7 @@ export default class tabBar extends wepy.component {
 	border-top: 1px solid #eee;
 }
 .itemView {
-	height: 120rpx;
+	height: 60px;
 	width: 100%;
 	text-align: center;
 	padding-top: 6rpx;

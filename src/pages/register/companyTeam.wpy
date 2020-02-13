@@ -1,33 +1,7 @@
 <style lang="less">
-@import '../../style/home.less';
-.weui-input {
-	text-align: right;
-	&.weui-textarea {
-		margin: 7rpx 0;
-	}
-}
-.register-view {
-	.weui-cell_btn {
-		margin:60rpx 0 20rpx;
-	}
-	.line {
-		margin-left: 10rpx;
-		color: #333333;
-	}
-}
-.page_down_icon {
-  width: 24rpx;
-  height: 24rpx;
-  margin-left: 10rpx;
-}
-.my-head {
-  width: 88rpx;
-  height: 88rpx;
-  border-radius: 5rpx;
-  margin-right: 10rpx;
-}
+@import "../../style/home.less";
+@import "../../style/form.less";
 </style>
-
 <template>
   <view class="home-view register-view page_margin page__bd">
     <view>
@@ -47,7 +21,7 @@
 						<image mode="scaleToFill" @tap="uploadImg"  src="../../images/right.png"  class="page_down_icon" />
           </view>
         </view>
-    	  <teamCompany></teamCompany>
+    	  <teamCompany @submit="submit"></teamCompany>
 				<view class="page_card_row">
           <view class="weui-flex between">
             <view class="my-text  weui-flex__item my-text-require">{{nameLabel}}：</view>
@@ -58,70 +32,76 @@
 				<view class="page_card_row" wx:if="{{registerType==2}}">
           <view class="weui-flex between">
             <view class="my-text  weui-flex__item my-text-require">申请人身份证号：</view>
-            <input class="weui-input" data-name="idCard" placeholder-class="placeholder" 
-						value="{{form.idCard}}" @input="changeInput" placeholder="请输入申请人身份证号码" />
-          </view>
-        </view>
-				<view class="page_card_row" wx:if="{{registerType==1}}">
-          <view class="weui-flex between">
-            <view class="my-text  weui-flex__item my-text-require">联系人电话：</view>
-            <input class="weui-input" data-name="mobile" placeholder-class="placeholder" 
-						value="{{form.mobile}}" @input="changeInput" placeholder="请输入联系人电话" />
+            <input class="weui-input" data-name="id_card" placeholder-class="placeholder" 
+						value="{{form.id_card}}" @input="changeInput" placeholder="请输入申请人身份证号码" />
           </view>
         </view>
          <view class="page_card_row">
           <view class="weui-flex between">
             <view class="my-text  weui-flex__item my-text-require">{{label}}介绍：</view>
-            <textarea data-name="introduction" placeholder-class="placeholder"
-						 class="weui-input weui-flex__item weui-textarea" value="{{form.introduction}}" @input="changeInput"
-						 placeholder="请输入团队介绍" auto-height />
           </view>
+					 <textarea data-name="introduction" placeholder-class="placeholder"
+						disable-default-padding="true"
+						@linechange="bindlinechange"
+						 class="weui-input weui-textarea" value="{{form.introduction}}" @input="changeInput"
+						 placeholder="请输入团队介绍" maxlength="-1"/>
         </view>
       </view>
     </view>
-    <view class="weui-cell_btn weui-flex center">
-      <button class="weui-btn_cell .weui-btn_primary" @tap="save">完成注册</button>
+    <view class="weui-cell_btn weui-flex center register-btn">
+      <button class="weui-btn_cell weui-btn_primary" @tap="save">完成注册</button>
     </view>
+		 <teamCompanyModal :isScaleModal.sync="isModal" @handleOk="handleOk" :height.sync="modalHeight" :modalObj.sync="modalObj"></teamCompanyModal>
   </view>
 </template>
 <script>
 import wepy from 'wepy'
-import company from '../../components/company'
-import { wxToast, getImgUrl, validateIdCard } from '@/util.js'
+import company from '@/components/company'
+import { wxToast, getImgUrl, validateIdCard, compressImg, getErrorTip } from '@/util.js'
+import modal from '@/components/modal'
 import { $http, uploadFile } from '@/http.js'
 export default class companyForm extends wepy.page {
 	components = {
-		teamCompany: company
+		teamCompany: company,
+		teamCompanyModal: modal
 	}
 	data = {
 		form: {
 			team_name: '',
 			user_name: '',
-      address: '',
-      provinceid: '',
-      cityid: '',
-      three_cityid: '',
-			id_card:'',
-      type: 1,
+			address: '',
+			provinceid: '',
+			cityid: '',
+			three_cityid: '',
+			id_card: '',
+			type: 1,
 			log: '',
 			license_img: '',
 			business_licence: '',
 			industry: '',
 			enterprise: '',
 			scale: '',
-      introduction: '',
-      uid: wx.getStorageSync('rendaUid')
+			introduction: '',
+			uid: wx.getStorageSync('rendaUid')
 		},
 		infoImg: '',
-		registerType:1
+		registerType: 1,
+		modalHeight: 560,
+		modalObj: {
+			title: '',
+			subTitle: '',
+			imgBg: '../../images/modalIcon.png',
+			imgIcon: ''
+		},
+		isModal: true
 	}
 	onLoad(options) {
 		this.registerType = options.query || 2
 		this.$apply()
 	}
 	config = {
-    navigationBarTitleText: '注册' + (this.registerType === 1 ? '企业' : '团队')
-  }
+		navigationBarTitleText: '注册企业团队'
+	}
 	computed = {
 		label() {
 			return this.registerType === 1 ? '企业' : '团队'
@@ -131,18 +111,33 @@ export default class companyForm extends wepy.page {
 		}
 	}
 	events = {
-		selectCity: data => {
-			this.form.provinceid = data[0] ? data[0] : 0
-			this.form.cityid = data[1] ? data[1] : 0
-		},
 		submit: data => {
-			console.log(data)
+			for (let key in data) {
+				for (let val in this.form) {
+					if (val === key) {
+						this.form[val] = data[key]
+					}
+				}
+			}
+			this.form.license_img = data.logo
+			this.form.industry = data.job_id
+			this.form.enterprise = data.com_type
+			this.form.scale = data.com_scale
+			if (data.phone && data.phoneEnd) {
+				this.form.landline = data.phone + '-' + data.phoneEnd
+			}
+		},
+		handleOk() {
+			this.isModal = true
+			this.$apply()
+			wxReLaunch('/pages/login/welcome')
 		}
 	}
 	getImg(tempFilePaths) {
 		uploadFile(tempFilePaths).then(res => {
 			if (res.data && res.data.url) {
 				this.infoImg = getImgUrl(res.data.url)
+				this.form.log = res.data.url
 				this.$apply()
 			} else {
 				wxToast('图片获取失败')
@@ -150,17 +145,32 @@ export default class companyForm extends wepy.page {
 		})
 	}
 	registerTeam() {
-    $http('/login/teamRegister', this.form).then(res => {
-      console.log(res)
-    })
-  }
+		this.form.uid = wx.getStorageSync('rendaUid')
+		$http('/login/teamRegister', this.form).then(res => {
+			if (res.data) {
+				let obj = getErrorTip(6006)
+				this.modalObj.title = obj.title
+				this.modalObj.subTitle = obj.subTitle
+				this.isModal = false
+				this.$apply()
+			} else {
+				wxToast('注册失败')
+			}
+		})
+	}
 	methods = {
+		bindlinechange(e) {
+			console.log(e)
+		},
 		uploadImg() {
 			wx.chooseImage({
 				sizeType: ['compressed'],
 				success: res => {
 					compressImg(res.tempFilePaths[0]).then(res => {
-						this.getImg([res])
+						this.canvasWidth = res.cWidth
+						this.canvasHeight = res.cHeight
+						this.$apply()
+						this.getImg([res.url])
 					})
 				}
 			})
@@ -170,19 +180,20 @@ export default class companyForm extends wepy.page {
 			this.form[key] = e.detail.value
 		},
 		save() {
+			console.log(this.form)
 			if (!this.form.team_name) {
-        wxToast('请输入团队名称')
+				wxToast('请输入团队名称')
 			} else if (!this.form.user_name) {
-        wxToast('请输入姓名')
+				wxToast('请输入姓名')
 			} else if (!this.form.id_card) {
-        wxToast('请输入身份证号码')
-      } else if (validateIdCard(this.form.id_card)) {
-        wxToast('请输入正确的身份证')
-      } else if (!this.form.introduction) {
-        wxToast('请输入团队介绍')
+				wxToast('请输入身份证号码')
+			} else if (!validateIdCard(this.form.id_card)) {
+				wxToast('请输入正确的身份证')
+			} else if (!this.form.introduction) {
+				wxToast('请输入团队介绍')
 			} else {
-        this.registerTeam()
-      }
+				this.registerTeam()
+			}
 		}
 	}
 }

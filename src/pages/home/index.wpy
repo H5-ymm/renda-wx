@@ -103,7 +103,6 @@ export default class home extends wepy.page {
   onLoad () {
     let info = store.getState().user.loginUser
     this.usertype = info.usertype
-    console.log(this.usertype)
     this.$apply()
     // 授权成功，缓存没有微信信息
     if (!wx.getStorageSync('wxInfo')) {

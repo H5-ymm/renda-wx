@@ -14,37 +14,11 @@ const manglingFormatCardNumber = (cardNumber) => {
     return cardNumber
 };
 const validateIdCard = idCard => {
-    // 15位和18位身份证号码的正则表达式
-    var regIdCard = /^(^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$)|(^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])((\d{4})|\d{3}[Xx])$)$/;
+    var idcardReg = /^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$|^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/
     var flag = false;
     // 如果通过该验证，说明身份证格式正确，但准确性还需计算
-    if (regIdCard.test(idCard)) {
-        if (idCard.length === 18) {
-            // eslint-disable-next-line no-array-constructor
-            var idCardWi = new Array(7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2); // 将前17位加权因子保存在数组里
-            var idCardY = new Array(1, 0, 10, 9, 8, 7, 6, 5, 4, 3, 2); // 这是除以11后，可能产生的11位余数、验证码，也保存成数组
-            var idCardWiSum = 0; // 用来保存前17位各自乖以加权因子后的总和
-            for (var i = 0; i < 17; i++) {
-                idCardWiSum += idCard.substring(i, i + 1) * idCardWi[i];
-            }
-            var idCardMod = idCardWiSum % 11; // 计算出校验码所在数组的位置
-            var idCardLast = idCard.substring(17); // 得到最后一位身份证号码
-            // 如果等于2，则说明校验码是10，身份证号码最后一位应该是X
-            if (idCardMod === 2) {
-                if (idCardLast === 'X' || idCardLast === 'x') {
-                    flag = true;
-                } else {
-                    flag = false;
-                }
-            } else {
-                // 用计算出的验证码与最后一位身份证号码匹配，如果一致，说明通过，否则是无效的身份证号码
-                if (idCardLast === idCardY[idCardMod]) {
-                    flag = true;
-                } else {
-                    flag = false;
-                }
-            }
-        }
+    if (idcardReg.test(idCard)) {
+        flag = true;
     } else {
         flag = false;
     }
@@ -77,7 +51,11 @@ const getErrorTip = code => {
             obj.subTitle = text;
             break;
         case 6006:
-            obj.title = '审核中需要1-2天';
+            obj.title = '账号审核中需要1-2工作日';
+            obj.subTitle = text;
+            break;
+        case 6010:
+            obj.title = '账号审核中需要1-2工作日';
             obj.subTitle = text;
             break;
         case 6007:
@@ -101,8 +79,8 @@ const getErrorTip = code => {
     return obj;
 };
 const getImgUrl = imgUrl => {
-    // const baseUrl = 'https://a.rsd123.com/';
-    const baseUrl = 'http://tiantianxsg.com:39888/'
+    const baseUrl = 'https://a.rsd123.com/'
+    // const baseUrl = 'http://tiantianxsg.com:39888/'
     return baseUrl + imgUrl;
 };
 const compressImg = (photoSrc, ratio = 2) => {
@@ -118,7 +96,7 @@ const compressImg = (photoSrc, ratio = 2) => {
                 let canvasWidth = res.width // 图片原始长宽
                 let canvasHeight = res.height
                 console.log(res)
-                canvasWidth = 220
+                canvasWidth = 300
                 canvasHeight = 200
                 obj.cWidth = canvasWidth + 100
                 obj.cHeight = canvasHeight + 100
@@ -160,19 +138,25 @@ const wxToast = title => {
     })
 }
 const wxNavigateTo = url => {
-    wx.navigateTo({
-        url: url // 页面 A
-    })
+    setTimeout(() => {
+        wx.navigateTo({
+            url: url // 页面 A
+        })
+    }, 300)
 }
 const wxRedirectTo = url => {
-    wx.redirectTo({
-        url: url // 页面 A
-    })
+    setTimeout(() => {
+        wx.redirectTo({
+            url: url // 页面 A
+        })
+    }, 300)
 }
 const wxReLaunch = url => {
-    wx.reLaunch({
-        url: url // 页面 A
-    })
+    setTimeout(() => {
+        wx.reLaunch({
+            url: url // 页面 A
+        })
+    }, 300)
 }
 
 module.exports = {

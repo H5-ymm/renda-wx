@@ -77,13 +77,14 @@
 <script>
 import wepy from 'wepy'
 import { $http } from '@/http.js'
+import { getImgUrl } from '@/util.js'
 export default class teamInfo extends wepy.page {
   computed = {
     userName () {
       let name = wx.getStorageSync('wxInfo')
         ? JSON.parse(wx.getStorageSync('wxInfo')).user_name
         : ''
-      return this.userInfo.user_name ? this.userInfo.user_name : name
+      return this.teamInfo.user_name ? this.teamInfo.user_name : name
     }
   }
   data = {
@@ -96,7 +97,7 @@ export default class teamInfo extends wepy.page {
     $http('/userinfo/getteaminfo',{ uid }).then(res => {
       this.teamInfo = res.data || {}
       if (res.data.logo) {
-        this.teamInfo.logo = 'https://a.rsd123.com/' + res.data.logo
+        this.teamInfo.logo = getImgUrl(res.data.logo)
       }
       this.$apply()
     })

@@ -1,5 +1,5 @@
 <style lang="less">
-@import '../../style/user.less';
+@import "../../style/user.less";
 </style>
 <template>
   <view class="page-my">
@@ -47,9 +47,9 @@ import tabBarBottom from '@/components/tabBarBottom'
 import { connect, getStore } from 'wepy-redux'
 import { GETALLUSER } from '@/store/types/user'
 const store = getStore()
- @connect({
-    loginUser: (state) => state.user.loginUser
- })
+@connect({
+  loginUser: (state) => state.user.loginUser
+})
 export default class my extends wepy.page {
   components = {
     tabBarBottom: tabBarBottom
@@ -94,41 +94,23 @@ export default class my extends wepy.page {
       }
       this.usertype = 1
       this.$apply()
-      store.dispatch({ type: 'GETALLUSER',payload: user })
+      store.dispatch({ type: GETALLUSER, payload: user })
       this.$apply()
     }
   }
   computed = {
-    userName () {
+    userName() {
       let name = wx.getStorageSync('wxInfo')
         ? JSON.parse(wx.getStorageSync('wxInfo')).user_name
         : ''
       return this.userInfo.user_name ? this.userInfo.user_name : name
     }
   }
-  onLoad() {
-    let list = [
-      {
-        pagePath: '/pages/home/index',
-        text: '列表',
-        selected: true,
-        iconPath: '/images/list.png',
-        selectedIconPath: '/images/list-active.png'
-      },
-      {
-        pagePath: '/pages/my/index',
-        text: '我的',
-        selected: false,
-        iconPath: '/images/my.png',
-        selectedIconPath: '/images/my-active.png'
-      }
-    ]
-    // this.$parent.globalData.tabBar.list = list
-    // this.tabBarData = this.$parent.tabBarClickHandle(1, this)
-    this.$apply()
+  onShow() {
     let uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
     let wxInfo = wx.getStorageSync('wxInfo')
     $http('/Userinfo/getUserInfo', { uid }).then(res => {
+      console.log(res.data)
       this.userInfo = res.data || {}
       if (res.data.head_img) {
         this.head_img = getImgUrl(res.data.head_img)

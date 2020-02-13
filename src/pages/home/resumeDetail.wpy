@@ -164,6 +164,7 @@ export default class resumeDetail extends wepy.page {
   }
   getResumeDetail (query) {
     this.type = query.type
+    console.log(query)
     $http('/Wxresume/getresume_recommend', query).then(res => {
       this.form = res.data
       this.form.from_user = !res.data.from_user ? '' : res.data.from_user
@@ -234,6 +235,7 @@ export default class resumeDetail extends wepy.page {
   }
   //页面的生命周期函数
   onLoad (options) {
+    console.log(options)
     this.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
     this.query = Object.assign({ uid: this.uid }, options)
   }

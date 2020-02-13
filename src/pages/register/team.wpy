@@ -1,31 +1,7 @@
 <style lang="less">
-@import '../../style/home.less';
-@height: 40;
-.weui-input {
-	text-align: right;
-	&.weui-textarea {
-		margin: 7rpx 0;
-	}
-}
-.register-view {
-	height: 100%;
-}
-.home-view-box {
- height: calc(100% - 120px);
-}
-.page_down_icon {
-  width: 24rpx;
-  height: 24rpx;
-  margin-left: 10rpx;
-}
-.my-head {
-	width: 88rpx;
-	height: 88rpx;
-	border-radius: 5rpx;
-	margin-right: 10rpx;
-}
+@import "../../style/home.less";
+@import "../../style/form.less";
 </style>
-
 <template>
   <view class="home-view register-view page_margin">
     <view class="home-view-box">
@@ -61,7 +37,7 @@
         </view>
         <view class="page_card_row">
           <view class="weui-flex between">
-            <view class="my-text weui-flex__item">性别：</view>
+            <view class="my-text weui-flex__item my-text-require">性别：</view>
             <picker @change="bindPickerChange" value="{{index}}"
               data-name="sex"  range="{{array}}">
               <view class="my-text-right weui-flex between">
@@ -75,7 +51,7 @@
         </view>
 				<view class="page_card_row">
           <view class="weui-flex between">
-            <view class="my-text  weui-flex__item">年龄：</view>
+            <view class="my-text  weui-flex__item my-text-require">年龄：</view>
 						<picker @change="bindPickerChange" data-name="age" 
              value="{{ageIndex}}" range="{{ageList}}">
 							<view class="my-text-right weui-flex between">
@@ -110,18 +86,20 @@
          <view class="page_card_row">
           <view class="weui-flex between">
             <view class="my-text weui-flex__item my-text-require">团队介绍：</view>
-            <textarea data-name="introduction" placeholder-class="placeholder" 
-            class="weui-input weui-flex__item weui-textarea" value="{{form.introduction}}" @input="changeInput"
-						placeholder="请输入团队介绍" auto-height  />
           </view>
+          <textarea data-name="introduction" placeholder-class="placeholder"
+						disable-default-padding="true"
+						@linechange="bindlinechange"
+						 class="weui-input weui-textarea" value="{{form.introduction}}" @input="changeInput"
+						 placeholder="请输入团队介绍" maxlength="-1"/>
         </view>
       </view>
     </view>
-    <view class="weui-cell_btn weui-flex center">
-      <button class="weui-btn_cell .weui-btn_primary" @tap="save">完成注册</button>
+    <view class="weui-cell_btn weui-flex center register-btn">
+      <button class="weui-btn_cell weui-btn_primary" @tap="save">完成注册</button>
     </view>
+    <teamModal :isScaleModal.sync="isModal" @handleOk="handleOk" :height.sync="modalHeight" :modalObj.sync="modalObj"></teamModal>
     <canvas canvas-id="canvas" style="width:{{cWidth}}px;height:{{cHeight}}px;position: absolute;left:-1000px;top:-1000px;"></canvas>
-     <teamModal :isScaleModal.sync="isModal" @handleOk="handleOk" :height.sync="modalHeight" :modalObj.sync="modalObj"></teamModal>
   </view>
 </template>
 <script>
@@ -129,8 +107,8 @@ import wepy from 'wepy'
 import districtSelet from '@/components/districtSelet'
 import modal from '@/components/modal'
 import { $http, uploadFile } from '@/http.js'
-import { wxToast, checkMobile, getImgUrl, validateIdCard, 
-compressImg, wxReLaunch, getErrorTip } from '@/util.js'
+import {  wxToast, checkMobile, getImgUrl, validateIdCard,
+  compressImg, wxReLaunch, getErrorTip} from '@/util.js'
 export default class Team extends wepy.page {
   components = {
     districtSelet: districtSelet,
@@ -153,13 +131,13 @@ export default class Team extends wepy.page {
       provinceid: '',
       cityid: '',
       three_cityid: '',
-			id_card:'',
+      id_card: '',
       type: 2,
       log: '',
       introduction: '',
       uid: wx.getStorageSync('rendaUid')
     },
-		infoImg: '',
+    infoImg: '',
     disabled: true,
     modalHeight: 560,
     modalObj: {
@@ -170,22 +148,30 @@ export default class Team extends wepy.page {
     },
     isModal: true
   }
-	onLoad(){
-		for (let i = 16; i < 46; i++) {
+  onLoad() {
+    for (let i = 16;i < 46;i++) {
       this.ageList.push(i)
     }
-	}
+    
+  }
+  config = {
+    navigationBarTitleText: '个人团队注册'
+  }
   events = {
     selectCity: data => {
       this.form.provinceid = data[0] ? data[0] : 0
       this.form.cityid = data[1] ? data[1] : 0
       this.form.three_cityid = data[2] ? data[2] : 0
+    },
+    handleOk() {
+      this.isModal = true
+      this.$apply()
+      wxReLaunch('/pages/login/welcome')
     }
-	}
-	getImg (tempFilePaths) {
+  }
+  getImg(tempFilePaths) {
     uploadFile(tempFilePaths).then(res => {
       if (res.data && res.data.url) {
-        console.log(res.data.url)
         this.infoImg = getImgUrl(res.data.url)
         this.form.log = res.data.url
         this.$apply()
@@ -195,6 +181,7 @@ export default class Team extends wepy.page {
     })
   }
   registerTeam() {
+    this.form.uid = wx.getStorageSync('rendaUid')
     $http('/login/teamRegister', this.form).then(res => {
       if (res.data) {
         let obj = getErrorTip(6006)
@@ -208,21 +195,16 @@ export default class Team extends wepy.page {
     })
   }
   methods = {
-    handleOk() {
-      this.isModal = true
-      this.$apply()
-    },
-		uploadImg () {
+    uploadImg() {
       wx.chooseImage({
         sizeType: ['compressed'],
         success: res => {
-					compressImg(res.tempFilePaths[0]).then(res => {
-            console.log(res)
+          compressImg(res.tempFilePaths[0]).then(res => {
             this.canvasWidth = res.cWidth
             this.canvasHeight = res.cHeight
             this.$apply()
-						this.getImg([res.url])
-					})
+            this.getImg([res.url])
+          })
         }
       })
     },
@@ -238,7 +220,7 @@ export default class Team extends wepy.page {
       else {
         this.eduIndex = e.detail.value
         this.form[key] = e.detail.value
-      }  
+      }
     },
     changeInput(e) {
       let key = e.currentTarget.dataset.name
@@ -247,15 +229,17 @@ export default class Team extends wepy.page {
     save() {
       if (!this.form.team_name) {
         wxToast('请输入团队名称')
-			} else if (!this.form.user_name) {
+      } else if (!this.form.user_name) {
         wxToast('请输入姓名')
-			} else if (!this.form.id_card) {
+      } else if (!this.form.id_card) {
         wxToast('请输入身份证号码')
-      } else if (validateIdCard(this.form.id_card)) {
+      } else if (!validateIdCard(this.form.id_card)) {
         wxToast('请输入正确的身份证')
-      } else if (!this.form.introduction) {
+      } else if (!this.form.age) {
+        wxToast('请输入年龄')
+      }  else if (!this.form.introduction) {
         wxToast('请输入团队介绍')
-			} else {
+      } else {
         this.registerTeam()
       }
     }

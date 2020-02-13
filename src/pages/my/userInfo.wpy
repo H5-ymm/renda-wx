@@ -47,6 +47,7 @@
 </template>
 <script>
 import wepy from 'wepy'
+import { getImgUrl } from '@/util.js'
 export default class userInfo extends wepy.page {
   config = {
     navigationBarTitleText: '账户信息'
@@ -77,7 +78,7 @@ export default class userInfo extends wepy.page {
       let wxUserinfo = wx.getStorageSync('wxInfo')
       this.wxAddress = wxUserinfo ? JSON.parse(wxUserinfo).address : ''
       if (this.userInfo.head_img) {
-        this.head_img = 'https://a.rsd123.com/' + this.userInfo.head_img
+        this.head_img = getImgUrl(this.userInfo.head_img)
       } else {
         this.head_img = wxUserinfo ? JSON.parse(wxUserinfo).head_img : ''
       }

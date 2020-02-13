@@ -331,9 +331,6 @@ export default class rule extends wepy.page {
   }
   methods = {
     read() {
-      // wx.reLaunch({
-      //   url: '/pages/login/welcome?query=' + this.query // 页面 A
-      // })
       wx.reLaunch({
         url: '/pages/login/welcome?query=true' // 页面 A
       })

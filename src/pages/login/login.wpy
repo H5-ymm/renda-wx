@@ -1,5 +1,5 @@
 <style lang="less">
-@import '../../style/login.less';
+@import "../../style/login.less";
 </style>
 <template>
   <view class="login_page page_botttom">
@@ -41,7 +41,11 @@
 import wepy from 'wepy'
 import modal from '@/components/modal'
 import { $http } from '@/http.js'
-import { wxToast, checkMobile, getErrorTip } from '@/util.js'
+import { wxToast, checkMobile, getErrorTip, wxReLaunch } from '@/util.js'
+import { connect, getStore } from 'wepy-redux'
+import { GETALLUSER } from '@/store/types/user.js'
+import { getAllContant } from '@/store/actions/contant.js'
+const store = getStore()
 export default class Login extends wepy.page {
   components = {
     modal: modal
@@ -76,21 +80,36 @@ export default class Login extends wepy.page {
         this.form.token = res.data.token || ''
       })
   }
-  login() {  
+  checkRouterView(res) {
+    if (res && res.uid) {
+      this.$parent.globalData.uid = res.uid
+      // userType 1 企业 2 团队
+      this.$apply()
+      wx.setStorageSync('rendaUserType', res.userType)
+      wx.setStorageSync('rendaUid', res.uid)
+      if (!res.usertype) {
+        wxReLaunch('/pages/register/selectUser')
+      } else if (res.usertype === 2) {
+        if (res.is_team !== '0') {
+          wxReLaunch('/pages/home/index')
+        } else {
+          wxReLaunch('/pages/register/selectUser?query=1')
+        }
+      }
+      else {
+        wxToast('小程序企业功能待完善，敬请期待！')
+      }
+      store.dispatch(getAllContant())
+    }
+  }
+  login() {
     wx.removeStorageSync('auth_time')
     wx.removeStorageSync('sendAuthCode')
     let openid = wx.getStorageSync('rendaOpenId') || this.$parent.globalData.openId
     let params = Object.assign(this.form, { openid })
     $http('/login/is_register_manu', params).then(res => {
-      if (res.status.code == 200) {
-        this.$parent.globalData.uid = res.data.uid
-        wx.setStorageSync('rendaUid', res.data.uid)
-        wx.reLaunch({
-          url: '/pages/home/index'
-        })
-      }
-    })
-    .catch(error => {
+      this.checkRouterView(res.data)
+    }).catch(error => {
       if (error && error.status) {
         let obj = getErrorTip(error.status.code)
         if (error.status.code === 6001 || error.status.code === 6008) {

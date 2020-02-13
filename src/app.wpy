@@ -111,6 +111,17 @@ page {
     }
   }
 }
+.home-view {
+  .page_card {
+    .page_card_row {
+      padding: 26rpx 0;
+      picker {
+        height: 1.4rem;
+        line-height: 1.4rem;
+      }
+    }
+  }
+}
 .page_list {
   text-align: center;
   .page_noData {
@@ -124,13 +135,18 @@ page {
     margin-left: 20rpx;
   }
 }
+.my-head {
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 5rpx;
+  margin-right: 10rpx;
+}
 </style>
 <script>
 import wepy from 'wepy';
 import 'wepy-async-function';
 import { setStore } from 'wepy-redux'
 import configStore from './store'
-import { getAllContant } from '@/store/actions/contant.js'
 import { $http } from '@/http.js'
 const store = configStore()
 wepy.store = store
@@ -139,8 +155,8 @@ export default class extends wepy.app {
   config = {
     pages: [
       'pages/login/welcome',
-      'pages/register/companyTeam',
       'pages/register/selectUser',
+      'pages/register/companyTeam',
       'pages/register/companyForm',
       'pages/register/team',
       'pages/home/index',
@@ -189,7 +205,6 @@ export default class extends wepy.app {
   onLaunch(options) {
     this.autoUpdate()
     this.isCheckSession()
-    store.dispatch(getAllContant())
   }
   autoUpdate() {
     var self = this
@@ -263,7 +278,7 @@ export default class extends wepy.app {
     uid: '',
     openId: '',
     wxInfo: null,
-    wxCode: {},
+    sessionKey: '',
     list: [
       {
         pagePath: '/pages/home/index',
@@ -318,8 +333,8 @@ export default class extends wepy.app {
           console.log(res.code)
           $http('/Login/getopenid', { code: res.code }).then(res => {
             let data = JSON.parse(res.data)
-            that.globalData.wxCode = data
             that.globalData.openid = data.openid
+            that.globalData.sessionKey = data.session_key
             wx.setStorageSync('session_key', data.session_key)
             wx.setStorageSync('rendaOpenId', data.openid)
           }).catch(error => {

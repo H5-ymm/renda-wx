@@ -75,12 +75,10 @@
   }
 }
 </style>
-
 <template>
   <view hidden='{{isScaleModal}}'>
     <view @tap="handleOk" wx:if="{{isShow}}" class="modal_mask"></view>
     <view class="modal_box transition3s {{ isShow ? 'g_scale1': ''}}" id="modal-box" style="height:{{height}}rpx">
-      <!-- <slot></slot> -->
       <view class="modal-content">
         <view class="modal-bg">
           <image src="{{modalObj.imgIcon}}" wx:if="{{modalObj.imgIcon}}" class="modal-icon" />
@@ -89,7 +87,7 @@
         <view class="modal-title">
           {{modalObj.title}}
         </view>
-        <text selectable='true' decode="{{true}}" class="modal-subTitle" wx:if="{{modalObj.subTitle}}"> {{modalObj.subTitle}}</text>
+        <text selectable='true' decode="{{true}}" class="modal-subTitle" wx:if="{{modalObj.subTitle}}">{{modalObj.subTitle}}</text>
         <view class="weui-cell_btn weui-flex center">
           <button class="weui-btn_cell weui-btn_cell-gradient" @tap="handleOk">我知道啦</button>
         </view>

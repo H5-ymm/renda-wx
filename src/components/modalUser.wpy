@@ -39,16 +39,16 @@
   height: 40rpx;
 }
 .modal-content {
-	// width: 100%;
-	padding: 0 20rpx;
+  // width: 100%;
+  padding: 0 20rpx;
   margin: 10rpx auto;
   line-height: 40rpx;
   .modal-title {
     text-align: center;
     font-size: 36rpx;
-		color: #000000;
-		width: 100%;
-		padding-top: 30rpx;
+    color: #000000;
+    width: 100%;
+    padding-top: 30rpx;
   }
   .login-way {
     margin: 60rpx 0;
@@ -56,14 +56,14 @@
       margin-bottom: 50rpx;
       display: flex;
       padding: 18rpx 32rpx;
-      color: #1890FF;
+      color: #1890ff;
       background: #fff;
-      border: 1px solid #1890FF;
+      border: 1px solid #1890ff;
       font-weight: 400;
       &.weui-btn_cell-gradient {
         border: none;
         color: #fff;
-        background: #1890FF;
+        background: #1890ff;
       }
     }
     .login-icon {
@@ -72,30 +72,29 @@
       margin-right: 20rpx;
     }
   }
-	.card-item {
-		border: none;
-		box-shadow: none;
-		height: 42%;
-		.menu-icon {
-			width: 120rpx;
-			height: 120rpx;
-			margin: 0 auto;
-		}
-		.card-item-title {
-			margin: 10rpx 0;
-			font-size:32rpx;
-		}
-		.card-item-content {
-			height: auto;
-			font-size:26rpx;
-		}
-		.radio-icon {
-			width: 40rpx;
-			height: 40rpx;
-      margin: 20rpx auto;
-      
+  .card-item {
+    border: none;
+    box-shadow: none;
+    height: 42%;
+    .menu-icon {
+      width: 120rpx;
+      height: 120rpx;
+      margin: 0 auto;
     }
-	}
+    .card-item-title {
+      margin: 10rpx 0;
+      font-size: 32rpx;
+    }
+    .card-item-content {
+      height: auto;
+      font-size: 26rpx;
+    }
+    .radio-icon {
+      width: 40rpx;
+      height: 40rpx;
+      margin: 20rpx auto;
+    }
+  }
 }
 </style>
 <template>
@@ -143,74 +142,93 @@
 </template>
 <script>
 import wepy from 'wepy'
+import { $http } from '@/http.js'
 export default class actionSheet extends wepy.component {
   props = {
     isScaleModal: Boolean,
     height: Number,
     modalObj: Object,
-    type:Number
+    type: Number
   }
   data = {
-		isShow: false,
-		menus: [
-			{
-				icon: '/images/user/icon1.png',
-				title: '个人团队',
-				content: '个人身份注册团队'
-			},
-			{
-				icon: '/images/user/icon2.png',
-				title: '企业团队',
-				content: '企业身份注册团队'
-			}
-		],
-		activeIndex:0
+    isShow: false,
+    menus: [
+      {
+        icon: '/images/user/icon1.png',
+        title: '个人团队',
+        content: '个人身份注册团队'
+      },
+      {
+        icon: '/images/user/icon2.png',
+        title: '企业团队',
+        content: '企业身份注册团队'
+      }
+    ],
+    activeIndex: 0,
+    lock: false,
+    sessionKey: ''
+  }
+  getSessionKey(detail) {
+    wx.login({
+      success: res => {
+        if (res.code) {
+          $http('/Login/getopenid', { code: res.code }).
+            then(res => {
+              let data = JSON.parse(res.data)
+              console.log(data)
+              let params = {
+                encryptedData: detail.encryptedData,
+                iv: detail.iv,
+                sessionKey: data.session_key
+              }
+              this.$emit('handleOkLogin', params)
+            }).catch(error => {
+              console.log(error)
+            })
+        } else {
+          console.log('获取失败！' + res.errMsg)
+        }
+      }
+    })
   }
   methods = {
-    bindgetphonenumber(e){
-      if (e.detail.errMsg=='getPhoneNumber:ok') {
-        let sessionKey = wx.getStorageSync('session_key')
-        let params = {
-          encryptedData: e.detail.encryptedData,
-          iv: e.detail.iv,
-          sessionKey: sessionKey
-        }
-        console.log(params)
-        this.$emit('handleOkLogin', params)
+    bindgetphonenumber(e) {
+      if (e.detail.errMsg == 'getPhoneNumber:ok') {
+        this.getSessionKey(e.detail)
       }
       else {
-        this.$emit('handleOkLogin',0)
+        this.$emit('handleOkLogin', 0)
       }
     },
     handleClose() {
       this.isShow = false
       this.$apply()
       this.$emit('handleClose')
-		},
-		selectType(index){
-			this.activeIndex = index
-			this.$apply()
-		},
+    },
+    selectType(index) {
+      this.activeIndex = index
+      this.$apply()
+    },
     handleOk() {
       this.isShow = false
       this.$apply()
       if (this.type) {
         console.log(this.type)
-        this.$emit('handleOkLogin',2)
+        this.$emit('handleOkLogin', 2)
       }
       else {
-        this.$emit('handleOk',this.activeIndex)
+        this.$emit('handleOk', this.activeIndex)
       }
     }
-	}
+  }
   watch = {
     isScaleModal(val) {
       if (!val) {
         this.isShow = true
       } else {
-				this.activeIndex = 0
+        this.activeIndex = 0
         this.isShow = false
-			}
+      }
       this.$apply()
     }
   }

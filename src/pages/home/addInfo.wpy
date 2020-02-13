@@ -133,6 +133,7 @@ import scanIdCard from '@/components/scanIdCard'
 import actionSheet from '@/components/actionSheet'
 import modal from '@/components/modal'
 import { $http } from '@/http.js'
+import { wxReLaunch, wxToast } from '@/util.js'
 let lock = false
 // 通过继承自wepy.page的类创建页面逻辑
 export default class home extends wepy.page {
@@ -182,9 +183,7 @@ export default class home extends wepy.page {
     handleOk: () => {
       this.isModal = true
       this.$apply()
-      wx.reLaunch({
-        url: '/pages/home/index'
-      })
+      wxReLaunch('/pages/home/index')
     },
     submitForm: data => {
       this.stepActive = 3
@@ -193,12 +192,10 @@ export default class home extends wepy.page {
     submit: data => {
       // 发请求
       this.params = Object.assign(this.params, data)
-      if (this.stepActive == 2) {
+      if (this.stepActive === 2) {
         this.resumeInfo = data
-      }
-      if (this.stepActive == 3) {
-        this.params.uid =
-          wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
+      } else if (this.stepActive === 3) {
+        this.params.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
         if (!lock) {
           this.addResume()
         }
@@ -218,20 +215,12 @@ export default class home extends wepy.page {
           this.isModal = false
           this.$apply()
         } else {
-          wx.showToast({
-            icon: 'none',
-            title: '添加失败',
-            duration: 2000
-          })
+          wxToast('添加失败')
         }
       })
       .catch(error => {
         lock = false
-        wx.showToast({
-          icon: 'none',
-          title: error.status.remind,
-          duration: 2000
-        })
+        wxToast(error.status.remind)
         this.stepActive = 3
       })
     this.$apply()
