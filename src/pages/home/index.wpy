@@ -1,5 +1,5 @@
 <style lang="less">
-@import '../../style/home.less';
+@import "../../style/home.less";
 </style>
 <template>
   <view class="home-view">
@@ -29,18 +29,18 @@ import resumeCard from '@/components/resumeCard'
 import resumeList from '@/components/resumeList'
 import modal from '@/components/modal'
 import tabBarBottom from '@/components/tabBarBottom'
-import { connect, getStore } from 'wepy-redux'
-const store = getStore()
- @connect({
-    loginUser: (state) => state.user.loginUser
- })
+// import { connect, getStore } from 'wepy-redux'
+// const store = getStore()
+//  @connect({
+//     loginUser: (state) => state.user.loginUser
+//  })
 export default class home extends wepy.page {
   components = {
     resumeQuery: resumeQuery,
     resumeCard: resumeCard,
     resumeList: resumeList,
     homeModal: modal,
-    tabBarBottom:tabBarBottom
+    tabBarBottom: tabBarBottom
   }
   data = {
     list: [],
@@ -81,28 +81,28 @@ export default class home extends wepy.page {
   }
 
   methods = {
-    addResume () {
+    addResume() {
       wx.navigateTo({
         url: '/pages/home/addInfo' // 页面 A
       })
     },
-    searchScrollLower () {
+    searchScrollLower() {
       if (this.count > this.list.length && this.count > this.params.limit) {
         this.params.limit = this.params.limit + 10
         this.getResumeList()
       }
     }
   }
-  getResumeList () {
+  getResumeList() {
     $http('/Wxresume/resumelist', this.params).then(res => {
       this.list = res.data.data || []
       this.count = res.data.count
       this.$apply()
     })
   }
-  onLoad () {
-    let info = store.getState().user.loginUser
-    this.usertype = info.usertype
+  onLoad() {
+    // let info = store.getState().user.loginUser
+    this.usertype = wx.getStorageSync('rendaUserType')
     this.$apply()
     // 授权成功，缓存没有微信信息
     if (!wx.getStorageSync('wxInfo')) {
@@ -119,8 +119,8 @@ export default class home extends wepy.page {
       })
     }
   }
-  onShow () {
-    this.params.uid =  wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
+  onShow() {
+    this.params.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
     this.getResumeList()
   }
 }

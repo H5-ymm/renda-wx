@@ -1,5 +1,6 @@
 const path = require('path');
 let prod = process.env.NODE_ENV === 'production';
+console.log(process.env.NODE_ENV + '当前环境')
 
 function resolve(dir) {
     return path.join(__dirname, dir)
@@ -24,13 +25,8 @@ module.exports = {
         modules: ['node_modules']
     },
     appConfig: {
-        baseUrl: prod ? 'https://a.rsd123.com/' : 'http://tiantianxsg.com:39888/'
-    },
-    module: {
-        loaders: [{
-            test: /.js$/,
-            loader: 'babel-loader'
-        }]
+        // baseUrl: process.env.NODE_ENV === 'production' ? 'https://a.rsd123.com/' : 'http://tiantianxsg.com:39888/',
+        noPromiseAPI: ['createSelectorQuery']
     },
     compilers: {
         less: {},
@@ -38,18 +34,28 @@ module.exports = {
             sourceMap: true,
             presets: [
                 'es2015',
-                'stage-1'
+                'stage-1',
+                'env'
             ],
             plugins: [
                 'transform-decorators-legacy',
                 'transform-export-extensions',
-                // 'syntax-export-extensions',
-                // 'babel-plugin-transform-class-properties',
+                'syntax-export-extensions',
                 'transform-class-properties',
-                'transform-object-rest-spread'
+                'transform-object-rest-spread',
+                'transform-node-env-inline',
+                ['global-define', {
+                    __NODE_ENV__: process.env.NODE_ENV, // 规定全局变量
+                    __VERSION__: '1.0.0', // 版本号
+                    __TITLE__: 'global-define' // 说明
+                }]
             ]
         }
-    }
+    },
+    loaders: [{
+        test: /.js$/,
+        loader: 'babel-loader'
+    }]
 };
 if (prod) {
     delete module.exports.compilers.babel.sourcesMap;

@@ -158,7 +158,21 @@ const wxReLaunch = url => {
         })
     }, 300)
 }
-
+export const getArray = obj => {
+    let arr = []
+    for (let key in obj) {
+        arr.push(obj[key])
+    }
+    return arr
+}
+export const getKeyValue = obj => {
+    for (let key in obj) {
+        if (key === 'job_array') {
+            obj[key] = getArray(obj[key])
+        }
+    }
+    return obj
+}
 module.exports = {
     manglingFormatCardNumber: manglingFormatCardNumber,
     validateIdCard: validateIdCard,
@@ -169,5 +183,7 @@ module.exports = {
     compressImg: compressImg,
     wxNavigateTo: wxNavigateTo,
     wxRedirectTo: wxRedirectTo,
-    wxReLaunch: wxReLaunch
+    wxReLaunch: wxReLaunch,
+    getArray: getArray,
+    getKeyValue: getKeyValue
 };

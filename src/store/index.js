@@ -1,7 +1,7 @@
 import {
     createStore,
     applyMiddleware
-} from 'redux';
+} from '../lib/redux.js';
 import promiseMiddleware from 'redux-promise';
 import rootReducer from './reducers'
 export default function configStore() {

@@ -1,8 +1,3 @@
-// import wepy from 'wepy'
-// if (wepy.$appConfig) {
-//     baseUrl = wepy.$appConfig.baseUrl
-// }
-// const baseUrl = wepy.$appConfig.baseUrl
 import {
     wxToast
 } from '@/util.js'

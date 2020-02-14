@@ -1,5 +1,5 @@
 <style lang="less">
-@import '../../style/user.less';
+@import "../../style/user.less";
 </style>
 <template>
   <view class="page_botttom page page_margin">
@@ -25,7 +25,7 @@
           <view class="page_card_row">
             <view class="weui-flex between">
               <view class="my-text">手机号码</view>
-              <view class="my-text-right">{{userInfo.mobile}}</view>
+              <view class="my-text-right">{{userInfo.mobile?userInfo.mobile:'--'}}</view>
             </view>
           </view>
           <view class="page_card_row">
@@ -58,13 +58,13 @@ export default class userInfo extends wepy.page {
     wxAddress: ''
   }
   computed = {
-    userName () {
+    userName() {
       let name = wx.getStorageSync('wxInfo')
         ? JSON.parse(wx.getStorageSync('wxInfo')).user_name
         : ''
       return this.userInfo.user_name ? this.userInfo.user_name : name
     },
-    address () {
+    address() {
       return (
         (this.userInfo.provinceName ? this.userInfo.provinceName : '') +
         (this.userInfo.cityName ? this.userInfo.cityName : '') +
@@ -72,7 +72,7 @@ export default class userInfo extends wepy.page {
       )
     }
   }
-  onLoad () {
+  onLoad() {
     if (wx.getStorageSync('userInfo')) {
       this.userInfo = JSON.parse(wx.getStorageSync('userInfo'))
       let wxUserinfo = wx.getStorageSync('wxInfo')

@@ -165,8 +165,8 @@ export default class extends wepy.app {
       'pages/home/list',
       'pages/my/index',
       'pages/my/userInfo',
-      'pages/my/userBind',
       'pages/my/teamInfo',
+      'pages/my/userBind',
       'pages/login/login',
       'pages/login/rule'
     ],

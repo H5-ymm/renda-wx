@@ -85,7 +85,7 @@ export default class Login extends wepy.page {
       this.$parent.globalData.uid = res.uid
       // userType 1 企业 2 团队
       this.$apply()
-      wx.setStorageSync('rendaUserType', res.userType)
+      wx.setStorageSync('rendaUserType', res.usertype)
       wx.setStorageSync('rendaUid', res.uid)
       if (!res.usertype) {
         wxReLaunch('/pages/register/selectUser')

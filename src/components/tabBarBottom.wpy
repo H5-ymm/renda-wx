@@ -34,9 +34,7 @@ export default class tabBar extends wepy.component {
 		}
 	}
 	data = {
-    tabBarList: {
-
-		}
+    tabBarList: {}
 	}
 	onLoad() {
 		this.tabBarList = this.$parent.$parent.tabBarClickHandle(this.tabBarIndex, this);
@@ -58,10 +56,6 @@ export default class tabBar extends wepy.component {
 			this.$apply()
 		}
 	}
-	methods = {
-
-	}
-	event = {}
 }
 </script>
 <style lang="less">

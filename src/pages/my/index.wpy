@@ -11,7 +11,7 @@
             <image src="../../images/header.png" wx:else alt="" mode="aspectFit" class="my-avatar" />
           </view>
           <view class="my-user-name">{{userName}}</view>
-          <view class="my-user-mobile">{{userInfo.mobile}}</view>
+          <view class="my-user-mobile">{{userInfo.mobile?userInfo.mobile:''}}</view>
         </view>
       </view>
      <view class="view-content">
@@ -44,12 +44,6 @@ import wepy from 'wepy'
 import { $http } from '@/http.js'
 import { getImgUrl } from '@/util.js'
 import tabBarBottom from '@/components/tabBarBottom'
-import { connect, getStore } from 'wepy-redux'
-import { GETALLUSER } from '@/store/types/user'
-const store = getStore()
-@connect({
-  loginUser: (state) => state.user.loginUser
-})
 export default class my extends wepy.page {
   components = {
     tabBarBottom: tabBarBottom
@@ -87,16 +81,15 @@ export default class my extends wepy.page {
         url: item.url
       })
     },
-    swicthUser() {
-      let user = {
-        usertype: 1,
-        uid: wx.getStorageSync('rendaUid')
-      }
-      this.usertype = 1
-      this.$apply()
-      store.dispatch({ type: GETALLUSER, payload: user })
-      this.$apply()
-    }
+    // swicthUser() {
+    //   let user = {
+    //     usertype: 1,
+    //     uid: wx.getStorageSync('rendaUid')
+    //   }
+    //   this.usertype = 1
+    //   this.$apply()
+    //   store.dispatch({ type: GETALLUSER, payload: user })
+    // }
   }
   computed = {
     userName() {
@@ -106,16 +99,15 @@ export default class my extends wepy.page {
       return this.userInfo.user_name ? this.userInfo.user_name : name
     }
   }
-  onShow() {
+  onLoad() {
     let uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
     let wxInfo = wx.getStorageSync('wxInfo')
     $http('/Userinfo/getUserInfo', { uid }).then(res => {
-      console.log(res.data)
       this.userInfo = res.data || {}
       if (res.data.head_img) {
         this.head_img = getImgUrl(res.data.head_img)
       } else {
-        this.head_img = wxInfo ? wxInfo.head_img : ''
+        this.head_img = wxInfo ? JSON.parse(wxInfo).head_img : ''
       }
       this.$apply()
       wx.setStorageSync('userInfo', JSON.stringify(this.userInfo))

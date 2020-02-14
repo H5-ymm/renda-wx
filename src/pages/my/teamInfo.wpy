@@ -1,5 +1,5 @@
 <style lang="less">
-@import '../../style/user.less';
+@import "../../style/user.less";
 .page_card_row {
   .my-text {
     flex: 1;
@@ -15,7 +15,7 @@
             <view class="weui-flex between">
               <view class="my-text">团队logo</view>
               <view class="weui-flex between">
-                <image src="{{teamInfo.logo}}" wx:if="{{teamInfo.logo}}" mode="aspectFill" class="my-head" />
+                <image src="{{teamData.logo}}" wx:if="{{teamData.logo}}" mode="aspectFill" class="my-head" />
                 <image src="../../images/header.png" wx:else mode="aspectFit" class="my-head" />
                 <image mode="scaleToFill" src="../../images/right.png" class="page_card_right-icon" />
               </view>
@@ -24,49 +24,49 @@
           <view class="page_card_row">
             <view class="weui-flex between">
               <view class="my-text">团队名称</view>
-              <view class="my-text-right"> {{teamInfo.name}}</view>
+              <view class="my-text-right"> {{teamData.name}}</view>
             </view>
           </view>
           <view class="page_card_row">
             <view class="weui-flex between">
               <view class="my-text">成员数量</view>
-              <view class="my-text-right">{{teamInfo.grade_num}}人</view>
+              <view class="my-text-right">{{teamData.grade_num}}人</view>
             </view>
           </view>
           <view class="page_card_row">
             <view class="weui-flex between">
               <view class="my-text">简历数量</view>
-              <view class="my-text-right">{{teamInfo.export_num}}</view>
+              <view class="my-text-right">{{teamData.export_num}}</view>
             </view>
           </view>
           <view class="page_card_row">
             <view class="weui-flex between">
               <view class="my-text">已入职</view>
-              <view class="my-text-right">{{teamInfo.entry_num}}</view>
+              <view class="my-text-right">{{teamData.entry_num}}</view>
             </view>
           </view>
           <view class="page_card_row">
             <view class="weui-flex between">
               <view class="my-text">所属部门</view>
-              <view class="my-text-right weui-flex__item">{{teamInfo.depart_name}}</view>
+              <view class="my-text-right weui-flex__item">{{teamData.depart_name}}</view>
             </view>
           </view>
           <view class="page_card_row">
             <view class="weui-flex between">
               <view class="my-text">等级</view>
-              <view class="my-text-right weui-flex__item">{{teamInfo.grade_name}}</view>
+              <view class="my-text-right weui-flex__item">{{teamData.grade_name}}</view>
             </view>
           </view>
           <view class="page_card_row">
             <view class="weui-flex between">
               <view class="my-text">直属上级</view>
-              <view class="my-text-right weui-flex__item">{{teamInfo.superiorName?teamInfo.superiorName:'-'}}</view>
+              <view class="my-text-right weui-flex__item">{{teamData.superiorName?teamData.superiorName:'-'}}</view>
             </view>
           </view>
           <view class="page_card_row">
             <view class="weui-flex between">
               <view class="my-text">最近登录时间</view>
-              <view class="my-text-right weui-flex__item">{{teamInfo.logout_time}}</view>
+              <view class="my-text-right weui-flex__item">{{teamData.logout_time}}</view>
             </view>
           </view>
         </view>
@@ -78,35 +78,33 @@
 import wepy from 'wepy'
 import { $http } from '@/http.js'
 import { getImgUrl } from '@/util.js'
-export default class teamInfo extends wepy.page {
-  computed = {
-    userName () {
-      let name = wx.getStorageSync('wxInfo')
-        ? JSON.parse(wx.getStorageSync('wxInfo')).user_name
-        : ''
-      return this.teamInfo.user_name ? this.teamInfo.user_name : name
-    }
-  }
-  data = {
-    teamInfo: {}
-  }
+export default class TeamInfo extends wepy.page {
   config = {
     navigationBarTitleText: '团队信息'
   }
-  getTeamInfo (uid) {
-    $http('/userinfo/getteaminfo',{ uid }).then(res => {
-      this.teamInfo = res.data || {}
+  data = {
+    teamData: {}
+  }
+  computed = {
+    userName() {
+      let name = wx.getStorageSync('wxInfo')
+        ? JSON.parse(wx.getStorageSync('wxInfo')).user_name
+        : ''
+      return this.teamData.user_name ? this.teamData.user_name : name
+    }
+  }
+  getTeamInfoAPi(uid) {
+    $http('/Userinfo/getteaminfo', { uid }).then(res => {
+      this.teamData = res.data || {}
       if (res.data.logo) {
-        this.teamInfo.logo = getImgUrl(res.data.logo)
+        this.teamData.logo = getImgUrl(res.data.logo)
       }
       this.$apply()
     })
   }
-  onLoad () {
+  onLoad() {
     let uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
-    this.getTeamInfo(uid)
+    this.getTeamInfoAPi(uid)
   }
 }
 </script>
-
-

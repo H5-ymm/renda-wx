@@ -158,17 +158,6 @@ export default class Company extends wepy.page {
         flag = false
       }
     }
-    // for (let key in obj) {
-    //   if (this.registerType === 1) {
-    //     if (key !== 'phoneEnd' && key !== 'phone' && key !== 'address' && key === '') {
-    //       flag = false
-    //     }
-    //   } else {
-    //     if (key !== 'phoneEnd' && key !== 'address' && key !== 'phone' && key != 'unified_social' && key === '') {
-    //       flag = false
-    //     }
-    //   }
-    // }
     return flag
   }
   onLoad() {
