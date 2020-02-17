@@ -1,0 +1,85 @@
+<style lang="less">
+@import "../../style/home.less";
+@import "../../style/form.less";
+.input-text-end {
+  margin-left: 10rpx;
+}
+.create-btn {
+  .weui-btn_cell {
+    width: 40%;
+  }
+}
+.weui-input {
+  &.settlement_time_input {
+    width: 100rpx;
+    text-align: center;
+  }
+}
+</style>
+<template>
+  <view class="home-view register-view page_margin">
+    <createForm :typeBtn.sync="typeBtn" @submit="submit" @prePage="prePage"></createForm>
+    <teamModal :isScaleModal.sync="isModal" @handleOk="handleOk" :height.sync="modalHeight" :modalObj.sync="modalObj"></teamModal>
+  </view>
+</template>
+<script>
+import wepy from 'wepy'
+import modal from '@/components/modal'
+import createForm from '@/components/createForm'
+import { $http } from '@/http.js'
+import { wxToast, wxReLaunch, getErrorTip, wxNavigateTo } from '@/util.js'
+export default class ceateList extends wepy.page {
+	components = {
+		teamModal: modal,
+		createForm: createForm
+	}
+	data = {
+		form: {
+			uid: wx.getStorageSync('rendaUid')
+		},
+		modalHeight: 560,
+		modalObj: {
+			title: '发单成功',
+			subTitle: '',
+			imgBg: '../../images/success.png'
+		},
+		isModal: true,
+		preForm: '',
+		typeBtn: 1
+	}
+	config = {
+		navigationBarTitleText: '更多信息'
+	}
+	events = {
+		handleOk() {
+			this.isModal = true
+			this.$apply()
+			wxReLaunch('/pages/login/welcome')
+		},
+		submit: data => {
+			let params = Object.assign(JSON.parse(this.preForm), data, this.form)
+			this.createOrderApi(params)
+		},
+		prePage: () => {
+			wx.setStorageSync('preForm', this.preForm)
+			wxReLaunch('/pages/company/ceateList')
+		}
+	}
+	onLoad(options) {
+		this.preForm = options.query
+	}
+	createOrderApi(params) {
+		$http('/enterpriseinvoice/createInvoice', params).then(res => {
+			if (res.data) {
+				let obj = getErrorTip(6006)
+				this.modalObj.title = obj.title
+				this.modalObj.subTitle = obj.subTitle
+				this.isModal = false
+				this.$apply()
+			} else {
+				wxToast('注册失败')
+			}
+		})
+	}
+}
+</script>

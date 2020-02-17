@@ -11,8 +11,8 @@
               <view class="my-text">头像</view>
               <view class="weui-flex between">
                 <image src="{{head_img}}" wx:if="{{head_img}}" alt="" mode="aspectFill" class="my-head" />
-                <image src="../../images/header.png" wx:else alt="" mode="aspectFill" class="my-head" />
-                <image mode="scaleToFill" src="../../images/right.png" class="page_card_right-icon" />
+                <image src="https://a.rsd123.com/image/images/header.png" wx:else alt="" mode="aspectFill" class="my-head" />
+                <image mode="scaleToFill" src="https://a.rsd123.com/image/images/right.png" class="page_card_right-icon" />
               </view>
             </view>
           </view>

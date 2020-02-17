@@ -1,46 +1,20 @@
 <style lang="less">
 @import "../../style/home.less";
-.weui-input {
-  text-align: right;
-  &.weui-textarea {
-    margin: 7rpx 0;
-  }
-}
-.register-view {
-  .weui-cell_btn {
-    margin: 60rpx 0 20rpx;
-  }
-  .line {
-    margin-left: 10rpx;
-    color: #333333;
-  }
-}
-.page_down_icon {
-  width: 24rpx;
-  height: 24rpx;
-  margin-left: 10rpx;
-}
-.my-head {
-  width: 88rpx;
-  height: 88rpx;
-  border-radius: 5rpx;
-  margin-right: 10rpx;
-}
+@import "../../style/form.less";
 </style>
-
 <template>
   <view class="home-view register-view page_margin page__bd">
     <view>
       <view class="page_card">
         <view class="page_card_row">
           <view class="weui-flex between">
-            <view class="my-text  weui-flex__item my-text-require">{{label}}名称：</view>
-            <input class="weui-input" placeholder-class="placeholder" data-name="name" value="{{form.name}}" @input="changeInput" placeholder="请输入姓名" />
+            <view class="my-text  weui-flex__item my-text-require">企业名称：</view>
+            <input class="weui-input" placeholder-class="placeholder" data-name="com_name" value="{{form.com_name}}" @input="changeInput" placeholder="请输入企业名称" />
           </view>
         </view>
 				<view class="page_card_row">
           <view class="weui-flex between">
-            <view class="my-text  weui-flex__item my-text-require">{{label}}logo：</view>
+            <view class="my-text  weui-flex__item my-text-require">企业logo：</view>
             <image @tap="uploadImg" src="{{infoImg}}" mode="scaleToFill" class="my-head"  wx:if="{{infoImg}}" />
 						<image @tap="uploadImg" src="../../images/default1.png" mode="scaleToFill" class="my-head" 
             wx:else/>
@@ -50,84 +24,74 @@
     	  <teamCompany></teamCompany>
 				<view class="page_card_row">
           <view class="weui-flex between">
-            <view class="my-text  weui-flex__item my-text-require">{{nameLabel}}：</view>
-            <input class="weui-input" placeholder-class="placeholder" data-name="name" 
-						value="{{form.name}}" @input="changeInput" placeholder="请输入{{nameLabel}}" />
+            <view class="my-text  weui-flex__item my-text-require">联系人：</view>
+            <input class="weui-input" placeholder-class="placeholder" data-name="link_man" 
+						value="{{form.link_man}}" @input="changeInput" placeholder="请输入联系人" />
           </view>
         </view>
-				<view class="page_card_row" wx:if="{{registerType==2}}">
-          <view class="weui-flex between">
-            <view class="my-text  weui-flex__item my-text-require">申请人身份证号：</view>
-            <input class="weui-input" data-name="idCard" placeholder-class="placeholder" 
-						value="{{form.idCard}}" @input="changeInput" placeholder="请输入申请人身份证号码" />
-          </view>
-        </view>
-				<view class="page_card_row" wx:if="{{registerType==1}}">
+				<view class="page_card_row">
           <view class="weui-flex between">
             <view class="my-text  weui-flex__item my-text-require">联系人电话：</view>
-            <input class="weui-input" data-name="mobile" placeholder-class="placeholder" 
-						value="{{form.mobile}}" @input="changeInput" placeholder="请输入联系人电话" />
+            <input class="weui-input" data-name="link_phone" placeholder-class="placeholder" 
+						value="{{form.link_phone}}" @input="changeInput" placeholder="请输入联系人电话" />
           </view>
         </view>
          <view class="page_card_row">
           <view class="weui-flex between">
-            <view class="my-text  weui-flex__item my-text-require">{{label}}介绍：</view>
-            <textarea data-name="content" placeholder-class="placeholder"
-						 class="weui-input weui-flex__item weui-textarea" value="{{form.age}}" @input="changeInput"
-						 placeholder="请输入团队介绍" auto-height />
+            <view class="my-text  weui-flex__item my-text-require">企业介绍：</view>
           </view>
+					 <textarea data-name="content" placeholder-class="placeholder"
+						 class="weui-input weui-textarea" value="{{form.content}}" @input="changeInput"
+						 placeholder="请输入企业介绍" auto-height />
         </view>
       </view>
     </view>
-    <view class="weui-cell_btn weui-flex center">
-      <button class="weui-btn_cell .weui-btn_primary" @tap="save">完成注册</button>
+    <view class="weui-cell_btn weui-flex center register-btn">
+      <button class="weui-btn_cell weui-btn_primary" @tap="save">完成注册</button>
     </view>
+		 <companyModal :isScaleModal.sync="isModal" @handleOk="handleOk" :height.sync="modalHeight" :modalObj.sync="modalObj"></companyModal>
   </view>
 </template>
 <script>
 import wepy from 'wepy'
-import company from '../../components/company'
-import { wxToast, checkMobile, getImgUrl, validateIdCard, compressImg } from '@/util.js'
+import company from '@/components/company'
+import modal from '@/components/modal'
+import { wxToast, checkMobile, getImgUrl, validateIdCard, compressImg, getErrorTip } from '@/util.js'
 import { $http, uploadFile } from '@/http.js'
 export default class companyForm extends wepy.page {
 	components = {
-		teamCompany: company
+		teamCompany: company,
+		companyModal: modal
 	}
 	data = {
 		form: {
-			team_name: '',
-			user_name: '',
+			com_name: '',
 			address: '',
 			provinceid: '',
 			cityid: '',
 			three_cityid: '',
 			id_card: '',
-			log: '',
+			logo_url: '',
 			license_img: '',
 			business_licence: '',
-			industry: '',
-			enterprise: '',
-			scale: '',
-			introduction: '',
-			uid: wx.getStorageSync('rendaUid')
+			com_type: '',
+			com_scale: '',
+			com_sort: '',
+			content: '',
+			uid: wx.getStorageSync('rendaUid'),
+			unified_social_credit_code: ''
 		},
 		infoImg: '',
-		registerType: 1
-	}
-	onLoad(options) {
-		this.registerType = options.query || 2
-		this.$apply()
+		modalHeight: 560,
+		modalObj: {
+			title: '',
+			subTitle: '',
+			imgBg: '../../images/modalIcon.png'
+		},
+		isModal: true
 	}
 	config = {
-		navigationBarTitleText: '注册' + (this.registerType === 1 ? '企业' : '团队')
-	}
-	computed = {
-		label() {
-			return this.registerType === 1 ? '企业' : '团队'
-		},
-		nameLabel() {
-			return this.registerType === 1 ? '联系人' : '申请人姓名'
-		}
+		navigationBarTitleText: '注册企业'
 	}
 	events = {
 		selectCity: data => {
@@ -135,19 +99,43 @@ export default class companyForm extends wepy.page {
 			this.form.cityid = data[1] ? data[1] : 0
 		},
 		submit: data => {
-			console.log(data)
+			for (let key in data) {
+				for (let val in this.form) {
+					if (val === key) {
+						this.form[val] = data[key]
+					}
+				}
+			}
+			this.form.license_url = data.logo
+			this.form.com_sort = data.job_id
+			this.form.unified_social_credit_code = data.unified_social
+			if (data.phone && data.phoneEnd) {
+				this.form.link_tel = data.phone + '-' + data.phoneEnd
+			}
 		}
-	}
-	byUserTypeForm(type) {
-
 	}
 	getImg(tempFilePaths) {
 		uploadFile(tempFilePaths).then(res => {
 			if (res.data && res.data.url) {
 				this.infoImg = getImgUrl(res.data.url)
+				this.form.logo_url = res.data.url
 				this.$apply()
 			} else {
 				wxToast('图片获取失败')
+			}
+		})
+	}
+	registerCompany() {
+		this.form.uid = wx.getStorageSync('rendaUid')
+		$http('/login/companyRegister', this.form).then(res => {
+			if (res.data) {
+				let obj = getErrorTip(6006)
+				this.modalObj.title = obj.title
+				this.modalObj.subTitle = obj.subTitle
+				this.isModal = false
+				this.$apply()
+			} else {
+				wxToast('注册失败')
 			}
 		})
 	}
@@ -170,18 +158,16 @@ export default class companyForm extends wepy.page {
 			this.form[key] = e.detail.value
 		},
 		save() {
-			if (!this.form.name) {
-				wxToast('请输入姓名')
-			} else if (!this.form.idCard) {
-				wxToast('请输入身份证号码')
-			} else if (!validateIdCard(this.form.idCard)) {
-				wxToast('请输入正确的身份证')
-			} else if (!this.form.mobile) {
+			if (!this.form.com_name) {
+				wxToast('请输入联系人')
+			} else if (!this.form.link_man) {
+				wxToast('请输入联系人')
+			} else if (!this.form.link_phone) {
 				wxToast('请输入手机号码')
-			} else if (!checkMobile(this.form.mobile)) {
+			} else if (!checkMobile(this.form.link_phone)) {
 				wxToast('请输入正确的手机号码')
 			} else {
-				this.$emit('submit', this.form)
+				this.registerCompany()
 			}
 		}
 	}

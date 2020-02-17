@@ -1,0 +1,49 @@
+
+<template>
+  <view>
+    <repeat wx:for="{{list}}" wx:key="index">
+      <view class="page_card" wx:if="{{list.length}}" @tap="viewDetail({{item}})">
+        <view class="page_card_row">
+          <view class="weui-flex between">
+            <view class="page_card_name">{{item.name}}</view>
+            <view wx:if="{{item.job_status==1}}"
+              class="page_card_receipt_status {{'page_card_receipt_status'+item.status}}" >
+              {{wxs.statusText(item.status)}}
+            </view>
+            <view class="page_card_receipt_status page_card_receipt_status4" wx:else>
+              已下架
+            </view>
+          </view>
+          <view class="weui-flex between">
+            <view class="weui-flex start weui-flex__item">需求人数：{{item.required_number}}</view>
+					  <view class="page_card_time">{{item.ctime}}</view>
+          </view>
+        </view>
+      </view>
+    </repeat>
+    <view wx:if="{{!list.length}}" class="page_list">
+      <image src="https://a.rsd123.com/image/images/noBg.png" class="page_noData" mode="scaleToFill"/>
+      <view class="page_noData_text">暂无数据！</view>
+    </view>
+  </view>
+</template>
+
+<script>
+import wepy from 'wepy'
+import wxs from '../filterWxs/receiptFilter.wxs'
+export default class receiptList extends wepy.component {
+  wxs = { wxs }
+  props = {
+    list: Array
+  }
+  data = {}
+  methods = {
+    viewDetail(item) {
+      console.log(item)
+      wx.navigateTo({
+        url: '/pages/companyView/jobDetail'
+      })
+    }
+  }
+}
+</script>

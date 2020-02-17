@@ -79,8 +79,8 @@ const getErrorTip = code => {
     return obj;
 };
 const getImgUrl = imgUrl => {
-    const baseUrl = 'https://a.rsd123.com/'
-    // const baseUrl = 'http://tiantianxsg.com:39888/'
+    // const baseUrl = 'https://a.rsd123.com/'
+    const baseUrl = 'http://tiantianxsg.com:39888/'
     return baseUrl + imgUrl;
 };
 const compressImg = (photoSrc, ratio = 2) => {
@@ -173,6 +173,67 @@ export const getKeyValue = obj => {
     }
     return obj
 }
+export const weekList = () => {
+    let arr = []
+    for (let i = 1; i < 8; i++) {
+        arr.push(replaceWeek(i))
+    }
+    console.log(arr)
+    return arr
+}
+export const replaceWeek = (number) => {
+    let text = ''
+    switch (number) {
+        case 1:
+            text = '周一'
+            break;
+        case 2:
+            text = '周二'
+            break;
+        case 3:
+            text = '周三'
+            break;
+        case 4:
+            text = '周四'
+            break;
+        case 5:
+            text = '周五'
+            break;
+        case 6:
+            text = '周六'
+            break;
+        case 7:
+            text = '周日'
+            break;
+        default:
+            text = ''
+    }
+    return text
+}
+export const ageList = () => {
+    let arr = []
+    for (let i = 16; i < 65; i++) {
+        arr.push(i)
+    }
+    return arr
+}
+export const rewardTypeText = () => {
+    let text = ''
+    switch (number) {
+        case 1:
+            text = '时'
+            break;
+        case 2:
+            text = '日'
+            break;
+        case 3:
+            text = '月'
+            break;
+        default:
+            text = ''
+    }
+    return '元/人/' + text
+}
 module.exports = {
     manglingFormatCardNumber: manglingFormatCardNumber,
     validateIdCard: validateIdCard,
@@ -185,5 +246,8 @@ module.exports = {
     wxRedirectTo: wxRedirectTo,
     wxReLaunch: wxReLaunch,
     getArray: getArray,
-    getKeyValue: getKeyValue
+    getKeyValue: getKeyValue,
+    weekList: weekList,
+    ageList: ageList,
+    rewardTypeText: rewardTypeText
 };

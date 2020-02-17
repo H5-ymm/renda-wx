@@ -36,11 +36,11 @@
     font-size: 30rpx;
     color: #6a6a6a;
     display: block;
-		height: 188rpx;
-		.card-text {
-			display: block;
-			margin-top: -12rpx;
-		}
+    height: 188rpx;
+    .card-text {
+      display: block;
+      margin-top: -12rpx;
+    }
   }
   .menu-icon-select {
     width: 45rpx;
@@ -86,12 +86,12 @@ export default class selectUser extends wepy.page {
 	data = {
 		menus: [
 			{
-				icon: '../../images/team.png',
+				icon: 'https://a.rsd123.com/image/images/team.png',
 				title: '注册团队',
 				content: '领取接单\n简历管理\n成员管理'
 			},
 			{
-				icon: '../../images/company.png',
+				icon: 'https://a.rsd123.com/image/images/company.png',
 				title: '注册企业',
 				content: '发布招聘\n员工管理'
 			}
@@ -135,12 +135,13 @@ export default class selectUser extends wepy.page {
 			if (this.activeIndex === 0) {
 				this.isModal = false
 				this.$apply()
+				wx.setStorageSync('rendaUserType', 2)
 			}
 			else {
-				wxToast('小程序企业功能待完善，敬请期待！')
-				// wx.navigateTo ({
-				//   url: '/pages/register/companyForm?query=1'// 页面 A
-				// })
+				// wx.setStorageSync('rendaUserType', 1)
+				// wxNavigateTo('/pages/company/ceateList')
+				wxNavigateTo('/pages/register/companyForm')
+				// wxToast('小程序企业功能待完善，敬请期待！')
 			}
 		}
 	}

@@ -28,7 +28,7 @@
               >{{item.from_user?item.from_user : '-'}}</view>
               <view class="page_card_col1" wx:else>{{item.jobinfo?item.jobinfo.com_name : '-'}}</view>
             </view>
-            <image mode="scaleToFill" src="../images/right.png" class="page_card_icon"/>
+            <image mode="scaleToFill" src="https://a.rsd123.com/image/images/right.png" class="page_card_icon"/>
           </view>
           <view class="weui-flex between">
             <view class="weui-flex start weui-flex__item">
@@ -48,7 +48,7 @@
       </view>
     </repeat>
     <view wx:if="{{!list.length}}" class="page_list">
-      <image src="../images/noBg.png" class="page_noData" mode="scaleToFill"/>
+      <image src="https://a.rsd123.com/image/images/noBg.png" class="page_noData" mode="scaleToFill"/>
       <view class="page_noData_text">暂无数据！</view>
     </view>
   </view>
@@ -56,7 +56,7 @@
 
 <script>
 import wepy from 'wepy'
-import wxs from '../dateFilter.wxs'
+import wxs from '../filterWxs/dateFilter.wxs'
 export default class resumeList extends wepy.component {
   wxs = { wxs }
   props = {

@@ -4,11 +4,11 @@
 <template>
   <view class="page-my">
       <view class="my-view-header">
-        <image src="../../images/bg.png" class="my-view-header-bg" mode="aspectFill" alt="" />
+        <image src="https://a.rsd123.com/image/images/bg.png" class="my-view-header-bg" mode="aspectFill" alt="" />
         <view class="my-view-userInfo">
           <view class="my-avatar-box">
             <image src="{{head_img}}" wx:if="{{head_img}}" alt="" mode="aspectFill" class="my-avatar" />
-            <image src="../../images/header.png" wx:else alt="" mode="aspectFit" class="my-avatar" />
+            <image src="https://a.rsd123.com/image/images/header.png" wx:else alt="" mode="aspectFit" class="my-avatar" />
           </view>
           <view class="my-user-name">{{userName}}</view>
           <view class="my-user-mobile">{{userInfo.mobile?userInfo.mobile:''}}</view>
@@ -26,7 +26,7 @@
                     <view class="my-text">{{item.title}}</view>
                   </view>
                   <view>
-                    <image mode="scaleToFill" src="../../images/right.png" class="page_card_icon" />
+                    <image mode="scaleToFill" src="https://a.rsd123.com/image/images/right.png" class="page_card_icon" />
                   </view>
                 </view>
               </view>
@@ -54,17 +54,17 @@ export default class my extends wepy.page {
     menus: [
       {
         title: '账户信息',
-        icon: '../../images/icon1.png',
+        icon: 'https://a.rsd123.com/image/images/icon1.png',
         url: '/pages/my/userInfo'
       },
       {
         title: '团队信息',
-        icon: '../../images/icon3.png',
+        icon: 'https://a.rsd123.com/image/images/icon3.png',
         url: '/pages/my/teamInfo'
       },
       {
         title: '账户绑定',
-        icon: '../../images/icon2.png',
+        icon: 'https://a.rsd123.com/image/images/icon2.png',
         url: '/pages/my/userBind'
       }
     ],

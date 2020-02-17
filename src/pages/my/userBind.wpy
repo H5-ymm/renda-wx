@@ -55,7 +55,7 @@
 <script>
 import wepy from 'wepy'
 import { $http } from '@/http.js'
-import wxs from '../../dateFilter.wxs'
+import wxs from '../../filterWxs/dateFilter.wxs'
 export default class userBind extends wepy.page {
   wxs = { wxs }
   data = {

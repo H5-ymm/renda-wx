@@ -1,0 +1,236 @@
+@import "./weui.less";
+
+page {
+    background-color: @weuiBgColorDefault;
+    font-size: 16px;
+    height: 100%;
+    font-family: -apple-system-font, Helvetica Neue, Helvetica, sans-serif;
+}
+
+.placeholder {
+    color: @weuiPlaceholderColor;
+}
+
+.view-content {
+    height: calc(100% - 60px);
+}
+
+.page_margin {
+    margin: 24rpx;
+}
+
+.login_page {
+    background-color: @weuiBgColorWhite;
+}
+
+.page__hd {
+    padding: 40px;
+}
+
+.page__bd {
+    padding-bottom: 40px;
+}
+
+.page__bd_spacing {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.page__ft {
+    padding-bottom: 10px;
+    text-align: center;
+}
+
+.page__title {
+    text-align: left;
+    font-size: 20px;
+    font-weight: 400;
+}
+
+.page__desc {
+    margin-top: 5px;
+    color: @weuiTextColorDesc;
+    text-align: left;
+    font-size: 14px;
+}
+
+.page_botttom {
+    border-bottom: 1px solid @weuiLineColorLight;
+}
+
+.page_card {
+    box-shadow: 0 2rpx 8rpx 0 rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    padding: 0 24rpx;
+    margin-bottom: 20rpx;
+    background-color: @weuiBgColorWhite;
+    font-size: 30rpx;
+
+    &.modal-page_card {
+        box-shadow: none;
+        border-radius: 0;
+
+        .modal-page_item {
+            height: 44rpx;
+        }
+    }
+
+    .page_card_row {
+        padding: 24rpx 0;
+        line-height: 52rpx;
+        color: @weuiTextColorLight;
+
+        .page_card_name {
+            font-size: 36rpx;
+            color: @weuiTextColorDesc;
+            font-weight: bold;
+        }
+
+        .page_card_time {
+            font-size: 26rpx;
+        }
+
+        .page_card_num {
+            color: @weuiColorWarn;
+        }
+    }
+
+    &.page-card-company {
+        padding: 0 16rpx;
+
+        .page_card_row {
+            line-height: auto;
+
+            .my-info {
+                height: 80rpx;
+
+                .my-text {
+                    height: auto;
+                    line-height: 40rpx;
+                }
+            }
+
+            .page_card_icon {
+                width: 24rpx;
+                height: 24rpx;
+            }
+        }
+    }
+
+    &.page_card_active {
+        background: #f6f9fe;
+
+        .page_card_row {
+            .page_card_name {
+                color: @weuiColorPrimary;
+            }
+        }
+    }
+
+    .page_card_icon {
+        width: 36rpx;
+        height: 36rpx;
+    }
+
+    .page_card_right-icon {
+        width: 32rpx;
+        height: 32rpx;
+    }
+
+    .page_card_receipt_status {
+        font-size: 28rpx;
+        color: @weuiTextColorTips;
+
+        &.page_card_receipt_status2 {
+            color: @weuiColorSuccess;
+        }
+
+        &.page_card_receipt_status3 {
+            color: @weuiColorWarn;
+        }
+
+        &.page_card_receipt_status4 {
+            color: @weuiColorError;
+        }
+
+        &.page_card_receipt_status5 {
+            color: @weuiColorPurple;
+        }
+    }
+
+    .page_card_status {
+        border-radius: 22rpx;
+        background: #deab3f;
+        color: @weuiBgColorWhite;
+        padding: 4rpx 22rpx;
+        line-height: 32rpx;
+        font-size: 24rpx;
+
+        &.page_card_status1 {
+            background: #6ab231;
+        }
+
+        &.page_card_status2 {
+            background: @weuiColorWarn;
+        }
+    }
+}
+
+.home-view {
+    .page_card {
+
+        .page_card_row {
+            padding: 26rpx 0;
+
+            picker {
+                height: 1.4rem;
+                line-height: 1.4rem;
+            }
+        }
+    }
+}
+
+.page_list {
+    text-align: center;
+
+    .page_noData {
+        max-width: 440rpx;
+        height: 245rpx;
+        margin: 300rpx auto 40rpx;
+    }
+
+    .page_noData_text {
+        font-size: 28rpx;
+        color: @weuiTextColorTips;
+        margin-left: 20rpx;
+    }
+}
+
+.my-head {
+    width: 88rpx;
+    height: 88rpx;
+    border-radius: 5rpx;
+    margin-right: 10rpx;
+}
+
+.home-add-resume {
+    position: fixed;
+    right: 0;
+    bottom: 200rpx;
+    background: @weuiColorPrimary;
+    box-shadow: 0px 4px 4px 0px rgba(0, 92, 200, 0.19),
+        0px 8px 17px 0px rgba(3, 107, 203, 0.36);
+    border-radius: 44px 0px 0px 44px;
+    color: @weuiBgColorWhite;
+    font-size: 25rpx;
+    width: 144rpx;
+    height: 78rpx;
+    padding: 10rpx;
+    text-align: center;
+    z-index: 222;
+
+    .add-icon {
+        width: 44rpx;
+        height: 44rpx;
+    }
+}

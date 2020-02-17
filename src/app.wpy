@@ -1,146 +1,5 @@
 <style lang="less">
-@import "./style/weui.less";
-page {
-  background-color: @weuiBgColorDefault;
-  font-size: 16px;
-  height: 100%;
-  font-family: -apple-system-font, Helvetica Neue, Helvetica, sans-serif;
-}
-.placeholder {
-  color: @weuiPlaceholderColor;
-}
-.view-content {
-  height: calc(100% - 60px);
-}
-.page_margin {
-  margin: 24rpx;
-}
-.login_page {
-  background-color: @weuiBgColorWhite;
-}
-.page__hd {
-  padding: 40px;
-}
-.page__bd {
-  padding-bottom: 40px;
-}
-.page__bd_spacing {
-  padding-left: 15px;
-  padding-right: 15px;
-}
-
-.page__ft {
-  padding-bottom: 10px;
-  text-align: center;
-}
-
-.page__title {
-  text-align: left;
-  font-size: 20px;
-  font-weight: 400;
-}
-
-.page__desc {
-  margin-top: 5px;
-  color: @weuiTextColorDesc;
-  text-align: left;
-  font-size: 14px;
-}
-.page_botttom {
-  border-bottom: 1px solid @weuiLineColorLight;
-}
-.page_card {
-  box-shadow: 0 2rpx 8rpx 0 rgba(0, 0, 0, 0.1);
-  border-radius: 5px;
-  padding: 0 24rpx;
-  margin-bottom: 20rpx;
-  background-color: @weuiBgColorWhite;
-  font-size: 30rpx;
-  &.modal-page_card {
-    box-shadow: none;
-    border-radius: 0;
-    .modal-page_item {
-      height: 44rpx;
-    }
-  }
-  .page_card_row {
-    padding: 24rpx 0;
-    line-height: 52rpx;
-    color: @weuiTextColorLight;
-    .page_card_name {
-      font-size: 36rpx;
-      color: @weuiTextColorDesc;
-      font-weight: bold;
-    }
-    .page_card_time {
-      font-size: 26rpx;
-    }
-    .page_card_num {
-      color: @weuiColorWarn;
-    }
-  }
-  &.page_card_active {
-    background: #f6f9fe;
-    .page_card_row {
-      .page_card_name {
-        color: @weuiColorPrimary;
-      }
-    }
-  }
-
-  .page_card_icon {
-    width: 36rpx;
-    height: 36rpx;
-  }
-  .page_card_right-icon {
-    width: 32rpx;
-    height: 32rpx;
-  }
-  .page_card_status {
-    border-radius: 22rpx;
-    background: #deab3f;
-    color: @weuiBgColorWhite;
-    padding: 4rpx 22rpx;
-    line-height: 32rpx;
-    font-size: 24rpx;
-    &.page_card_status1 {
-      background: #6ab231;
-    }
-    &.page_card_status2 {
-      background: @weuiColorWarn;
-    }
-  }
-}
-.home-view {
-  .page_card {
-    .page_card_row {
-      padding: 26rpx 0;
-      picker {
-        height: 1.4rem;
-        line-height: 1.4rem;
-      }
-    }
-  }
-}
-.page_list {
-  text-align: center;
-  .page_noData {
-    max-width: 440rpx;
-    height: 245rpx;
-    margin: 300rpx auto 40rpx;
-  }
-  .page_noData_text {
-    font-size: 28rpx;
-    color: @weuiTextColorTips;
-    margin-left: 20rpx;
-  }
-}
-.my-head {
-  width: 88rpx;
-  height: 88rpx;
-  border-radius: 5rpx;
-  margin-right: 10rpx;
-}
+@import "./style/common.less";
 </style>
 <script>
 import wepy from 'wepy';
@@ -156,6 +15,13 @@ export default class extends wepy.app {
     pages: [
       'pages/login/welcome',
       'pages/register/selectUser',
+      'pages/companyView/index',
+      'pages/companyView/checkReceipt',
+      'pages/companyView/checkTeam',
+      'pages/companyView/teamDetail',
+      'pages/companyView/jobDetail',
+      'pages/companyView/ceateList',
+      'pages/companyView/ceateMoreList',
       'pages/register/companyTeam',
       'pages/register/companyForm',
       'pages/register/team',
@@ -203,8 +69,14 @@ export default class extends wepy.app {
     }
   };
   onLaunch(options) {
+    this.removeData()
     this.autoUpdate()
     this.isCheckSession()
+  }
+  removeData() {
+    wx.removeStorageSync('preForm')
+    wx.removeStorageSync('resumeType');
+    wx.removeStorageSync('sendAuthCode');
   }
   autoUpdate() {
     var self = this
@@ -270,8 +142,6 @@ export default class extends wepy.app {
     super();
     this.use('promisify');
     this.use('requestfix');
-    wx.removeStorageSync('resumeType');
-    wx.removeStorageSync('sendAuthCode');
   }
   globalData = {
     userInfo: null,

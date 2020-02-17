@@ -1,5 +1,5 @@
 <style lang="less">
-@import '../../style/home.less';
+@import "../../style/home.less";
 @height: 40;
 .weui-cell-steps {
   width: 70%;
@@ -63,7 +63,7 @@
 }
 /* 连接线 */
 .steps .step-item ~ .step-item:after {
-  content: '';
+  content: "";
   width: 100%;
   height: 4rpx;
   background-color: #eeeeee;
@@ -96,7 +96,7 @@
           </view>
         </view>
         <view class="weui-cell weui-cell-switch page_card weui-flex wrap center" @tap="changeInput">
-          <image src="../../images/change.png" class="step-icon" />
+          <image src="https://a.rsd123.com/image/images/change.png" class="step-icon" />
           <view class="step-text">更换方式</view>
         </view>
       </view>
@@ -113,7 +113,7 @@
               <view class="my-text weui-flex__item {{activeIndex==index?'my-text-active':''}}">
                 {{item}}
               </view>
-              <image wx:if="{{activeIndex==index}}" src="../../images/selected.png" class="selected" />
+              <image wx:if="{{activeIndex==index}}" src="https://a.rsd123.com/image/images/selected.png" class="selected" />
             </view>
           </view>
         </repeat>
@@ -156,8 +156,7 @@ export default class home extends wepy.page {
     modalObj: {
       title: '添加成功！',
       subTitle: '',
-      imgBg: '../../images/modalBg.png',
-      imgIcon: '../../images/modalIcon1.png'
+      imgBg: 'https://a.rsd123.com/image/images/success.png'
     },
     resumeType: '简历管理',
     isInput: true,
@@ -205,7 +204,7 @@ export default class home extends wepy.page {
     }
   }
   // 添加简历接口
-  addResume () {
+  addResume() {
     lock = true
     $http
       .http('/Wxresume/addResume', this.params)
@@ -227,17 +226,17 @@ export default class home extends wepy.page {
   }
   // 事件处理函数(集中保存在methods对象中)
   methods = {
-    changeInput () {
+    changeInput() {
       if (this.stepActive < 3) {
         this.isInput = !this.isInput
       }
     },
-    selectChange (index, item) {
+    selectChange(index, item) {
       this.activeIndex = index
       this.resumeType = item
       this.$apply()
     },
-    save () {
+    save() {
       this.isScaleModal = true
       this.$apply()
       wx.setStorageSync('resumeType', this.resumeType)
@@ -245,7 +244,7 @@ export default class home extends wepy.page {
     }
   }
   watch = {
-    resumeType (val) {
+    resumeType(val) {
       if (val === '简历管理') {
         this.activeIndex = 0
       } else if (val === '团队接单') {
@@ -256,7 +255,7 @@ export default class home extends wepy.page {
     }
   }
   // 页面的生命周期函数
-  onLoad (options) {
+  onLoad(options) {
     if (options.query) {
       this.baseInfo = JSON.parse(options.query)
       this.resumeType = this.baseInfo.resumeType || '简历管理'

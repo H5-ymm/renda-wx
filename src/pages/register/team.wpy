@@ -143,16 +143,15 @@ export default class Team extends wepy.page {
     modalObj: {
       title: '',
       subTitle: '',
-      imgBg: '../../images/modalIcon.png',
-      imgIcon: ''
+      imgBg: '../../images/modalIcon.png'
     },
     isModal: true
   }
   onLoad() {
-    for (let i = 16;i < 46;i++) {
+    for (let i = 16;i < 66;i++) {
       this.ageList.push(i)
     }
-    
+
   }
   config = {
     navigationBarTitleText: '个人团队注册'
@@ -237,7 +236,7 @@ export default class Team extends wepy.page {
         wxToast('请输入正确的身份证')
       } else if (!this.form.age) {
         wxToast('请输入年龄')
-      }  else if (!this.form.introduction) {
+      } else if (!this.form.introduction) {
         wxToast('请输入团队介绍')
       } else {
         this.registerTeam()

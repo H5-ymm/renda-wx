@@ -4,8 +4,8 @@
     "description": "[WeUI](https://github.com/weui/weui-wxss) 是一套同微信原生视觉体验一致的基础样式库，由微信官方设计团队为微信内网页和微信小程序量身设计，令用户的使用感知更加统一。 这里是 WeUI 在 WePY 中的使用示例。",
     "main": "dist/app.js",
     "scripts": {
-        "dev": "cross-env export NODE_ENV=dev && wepy build --watch",
-        "build": "cross-env export NODE_ENV=production && wepy build --no-cache",
+        "dev": "cross-env NODE_ENV=dev && wepy build --watch",
+        "build": "cross-env NODE_ENV=production && wepy build --no-cache",
         "dev:web": "wepy build --output web",
         "clean": "find ./dist -maxdepth 1 -not -name 'project.config.json' -not -name 'dist' | xargs rm -rf",
         "test": "echo \"Error: no test specified\" && exit 1"

@@ -4,7 +4,7 @@
 <template>
   <view class="login_page welcome-page page_botttom">
     <view class="login-view welcome-view">
-         <image src="../../images/welcome/welcomeBg.png" mode="aspectFill" 
+         <image src="https://a.rsd123.com/image/images/welcome/welcomeBg.png" mode="aspectFill" 
          class="login-view-bg welcome-view-bg" />
       <view class="login-view-box welcome-view-box">
         <view class="welcome-view-form login-view-form">
@@ -14,8 +14,8 @@
           @getuserinfo="getUserInfo" open-type="getUserInfo">开始使用</button>
         </view>
         <view class="rule-view weui-flex start wrap">
-          <image wx:if="{{!checked}}" src="../../images/check.png" mode="scaleToFill" class="check-icon" @tap="checkedRule({{checked}})" />
-          <image wx:else src="../../images/check1.png" mode="scaleToFill"
+          <image wx:if="{{!checked}}" src="https://a.rsd123.com/image/images/check.png" mode="scaleToFill" class="check-icon" @tap="checkedRule({{checked}})" />
+          <image wx:else src="https://a.rsd123.com/image/images/check1.png" mode="scaleToFill"
             @tap="checkedRule({{checked}})" class="check-icon" />
               我已认真阅读并同意<view class="text" @tap="router">《用户协议及隐私政策》</view>和
               <view class="text" @tap="router">《信息保护政策》
@@ -55,8 +55,7 @@ export default class Welcome extends wepy.page {
     modalObj: {
       title: '',
       subTitle: '',
-      imgBg: '../../images/modalIcon.png',
-      imgIcon: ''
+      imgBg: 'https://a.rsd123.com/image/images/success.png'
     },
     checked: false,
     isView: true,
@@ -70,6 +69,7 @@ export default class Welcome extends wepy.page {
     sessionKey: ''
   }
   onLoad(options) {
+    // wxReLaunch('/pages/company/ceateList')
     if (options && options.query) {
       this.checked = options.query
       this.isRead = true
@@ -134,7 +134,13 @@ export default class Welcome extends wepy.page {
           wxReLaunch('/pages/register/selectUser?query=1')
         }
       } else {
-        wxToast('小程序企业功能待完善，敬请期待！')
+        if (res.is_company !== '0') {
+          wxReLaunch('/pages/companyView/index')
+          // wxReLaunch('/pages/company/ceateList')
+        } else {
+          wxReLaunch('/pages/register/companyForm')
+        }
+        // wxToast('小程序企业功能待完善，敬请期待！')
       }
       store.dispatch(getAllContant())
     }

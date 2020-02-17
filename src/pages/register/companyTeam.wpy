@@ -90,8 +90,7 @@ export default class companyForm extends wepy.page {
 		modalObj: {
 			title: '',
 			subTitle: '',
-			imgBg: '../../images/modalIcon.png',
-			imgIcon: ''
+			imgBg: '../../images/modalIcon.png'
 		},
 		isModal: true
 	}

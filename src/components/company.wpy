@@ -6,9 +6,9 @@
 				<view class="my-text  weui-flex__item my-text-require">上传营业执照：</view>
 				<image @tap="uploadImg" src="{{infoImg}}" mode="scaleToFill" class="my-head"  
 				wx:if="{{infoImg}}" />
-        <image @tap="uploadImg" src="../images/default2.png" mode="scaleToFill" class="my-head" 
+        <image @tap="uploadImg" src="https://a.rsd123.com/image/images/default2.png" mode="scaleToFill" class="my-head" 
             wx:else/>
-				<image mode="scaleToFill" @tap="uploadImg"  src="../images/right.png"  class="page_down_icon" />
+				<image mode="scaleToFill" @tap="uploadImg"  src="https://a.rsd123.com/image/images/right.png"  class="page_down_icon" />
 		  </view>
 		</view>
 		<view class="page_card_row">
@@ -33,7 +33,7 @@
 						<view class="{{form.job_id!=''?'':'placeholder'}}">
 							{{form.job_id!=''?job_array[jobIndex]:'请选择从事行业'}}
 						</view>
-						<image mode="scaleToFill" src="../images/down.png" class="page_down_icon" />
+						<image mode="scaleToFill" src="https://a.rsd123.com/image/images/down.png" class="page_down_icon" />
 					</view>
 				</picker>
 			</view>
@@ -48,7 +48,7 @@
 						<view class="{{form.com_type!=''?'':'placeholder'}}">
 							{{form.com_type!=''?com_type[comIndex]:'请选择企业性质'}}
 						</view>
-						<image mode="scaleToFill" src="../images/down.png" class="page_down_icon" />
+						<image mode="scaleToFill" src="https://a.rsd123.com/image/images/down.png" class="page_down_icon" />
 					</view>
 				</picker>
 			</view>
@@ -63,7 +63,7 @@
               class="{{form.com_scale!=''?'':'placeholder'}}">
 							{{form.com_scale!=''?com_scale[comScaleIndex]:'请选择企业规模'}}
 						</view>
-						<image mode="scaleToFill" src="../images/down.png" class="page_down_icon" />
+						<image mode="scaleToFill" src="https://a.rsd123.com/image/images/down.png" class="page_down_icon" />
 					</view>
 				</picker>
 			</view>
@@ -76,7 +76,6 @@
 		</view>
 		<view class="page_card_row">
 			<view class="weui-flex end">
-				<!-- <view class="my-text  weui-flex__item"></view> -->
 				<input class="weui-input" placeholder-class="placeholder" data-name="address" value="{{form.address}}" @input="changeInput" placeholder="请输入详细地址" />
 			</view>
 	  </view>
@@ -128,10 +127,11 @@ export default class Company extends wepy.page {
       phoneEnd: '',
       phone: '',
       unified_social: '',
-      business_licence: ''
+      business_licence: '',
+      jobName: ''
     },
     infoImg: '',
-    registerType: wx.getStorageSync('rendaUserType') || 2,
+    registerType: wx.getStorageSync('rendaUserType') || 1,
     list: [],
     com_type: [],
     com_scale: [],
@@ -144,11 +144,6 @@ export default class Company extends wepy.page {
   watch = {
     form(val) {
       this.$emit('submit', val)
-      console.log(!this.isCheck(val))
-      // if (!this.isCheck(val)) {
-      //   console.log(val)
-      //   this.$emit('submit', val)
-      // }
     }
   }
   isCheck(obj) {
@@ -203,6 +198,7 @@ export default class Company extends wepy.page {
       let key = e.currentTarget.dataset.name
       if (key === 'job_id') {
         this.jobIndex = e.detail.value
+        this.form.jobName = this.job_array[this.jobIndex]
       } else if (key === 'com_type') {
         this.comIndex = e.detail.value
       } else {

@@ -3,7 +3,7 @@
   <view class="page_count-card weui-flex between">
     <view class="weui-flex start weui-flex__item page_card page_count-card-item">
       <view class="page_count-card-col1 weui-flex center">
-        <image mode="scaleToFill" src="../images/homeIcon1.png" class="page_card_icon" />
+        <image mode="scaleToFill" src="https://a.rsd123.com/image/images/homeIcon1.png" class="page_card_icon" />
       </view>
       <view class="page_count-card-col2">
         <view>录入简历</view>
@@ -12,7 +12,7 @@
     </view>
     <view class="weui-flex start weui-flex__item page_card page_count-card-item">
       <view class="page_count-card-col1 weui-flex center">
-        <image mode="scaleToFill" src="../images/homeIcon2.png" class="page_card_icon" />
+        <image mode="scaleToFill" src="https://a.rsd123.com/image/images/homeIcon2.png" class="page_card_icon" />
       </view>
       <view class="page_count-card-col2">
         <view>已通过</view>
@@ -21,7 +21,7 @@
     </view>
     <view class="weui-flex start weui-flex__item page_card page_count-card-item">
       <view class="page_count-card-col1 weui-flex center">
-        <image mode="scaleToFill" src="../images/homeIcon3.png" class="page_card_icon" />
+        <image mode="scaleToFill" src="https://a.rsd123.com/image/images/homeIcon3.png" class="page_card_icon" />
       </view>
       <view class="page_count-card-col2">
         <view>未通过</view>

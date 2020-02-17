@@ -1,5 +1,5 @@
 <style lang="less">
-@import '../style/home.less';
+@import "../style/home.less";
 @height: 40;
 .weui-input {
   text-align: right;
@@ -20,7 +20,7 @@
             <view class="my-text  weui-flex__item my-text-require">简历录入位置：</view>
             <view class="weui-flex between" @tap="selectType">
               <view class="my-text-right">{{resumeType}}</view>
-              <image mode="scaleToFill" src="../images/right.png" class="page_card_right-icon" />
+              <image mode="scaleToFill" src="https://a.rsd123.com/image/images/right.png" class="page_card_right-icon" />
             </view>
           </view>
         </view>
@@ -29,7 +29,7 @@
             <view class="my-text  weui-flex__auto my-text-require">{{resumeType}}</view>
             <view class="weui-flex between">
               <view class="my-text-right">{{jobName?jobName:'请选择岗位名称'}}</view>
-              <image mode="scaleToFill" src="../images/right.png" class="page_card_right-icon" />
+              <image mode="scaleToFill" src="https://a.rsd123.com/image/images/right.png" class="page_card_right-icon" />
             </view>
           </view>
         </view>
@@ -52,7 +52,7 @@
       </view>
     </view>
     <view class="weui-cell_btn weui-flex center">
-      <button class="weui-btn_cell .weui-btn_primary" @tap="submit">下一步</button>
+      <button class="weui-btn_cell weui-btn_primary" @tap="submit">下一步</button>
     </view>
   </view>
 </template>
@@ -86,7 +86,7 @@ export default class addBaseInfo extends wepy.component {
   }
   // 事件处理函数(集中保存在methods对象中)
   methods = {
-    selectType () {
+    selectType() {
       this.$emit('showActionSheet')
       this.jobName = ''
       this.form = {
@@ -95,16 +95,16 @@ export default class addBaseInfo extends wepy.component {
         from_user: ''
       }
     },
-    viewList () {
+    viewList() {
       wx.navigateTo({
         url: '/pages/home/list' // 页面 A
       })
     },
-    changeInput (e) {
+    changeInput(e) {
       let key = e.currentTarget.dataset.name
       this.form[key] = e.detail.value
     },
-    submit () {
+    submit() {
       if (this.resumeType != '简历管理' && !this.form.to_user) {
         return wx.showToast({
           title: '请选择岗位名称',

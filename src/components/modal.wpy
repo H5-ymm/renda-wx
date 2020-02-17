@@ -52,14 +52,6 @@
       height: 237rpx;
       margin: 0 auto;
     }
-    .modal-icon {
-      position: absolute;
-      top: 20%;
-      left: 30%;
-      z-index: 20001;
-      width: 171rpx;
-      height: 171rpx;
-    }
   }
   .modal-title {
     text-align: center;
@@ -81,7 +73,6 @@
     <view class="modal_box transition3s {{ isShow ? 'g_scale1': ''}}" id="modal-box" style="height:{{height}}rpx">
       <view class="modal-content">
         <view class="modal-bg">
-          <image src="{{modalObj.imgIcon}}" wx:if="{{modalObj.imgIcon}}" class="modal-icon" />
           <image src="{{modalObj.imgBg}}" class="modal-img-bg" />
         </view>
         <view class="modal-title">
@@ -92,7 +83,7 @@
           <button class="weui-btn_cell weui-btn_cell-gradient" @tap="handleOk">我知道啦</button>
         </view>
       </view>
-      <image src="../images/close.png" @tap="handleOk" class="close-icon" />
+      <image src="https://a.rsd123.com/image/images/close.png" @tap="handleOk" class="close-icon" />
     </view>
   </view>
 

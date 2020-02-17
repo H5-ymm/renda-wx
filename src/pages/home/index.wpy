@@ -14,10 +14,9 @@
       </scroll-view>
     </view>
       <view class="home-add-resume" @tap="addResume">
-        <image src="../../images/add.png" class="add-icon" />
+        <image src="https://a.rsd123.com/image/images/add.png" class="add-icon" />
         <view class="home-add-text">添加简历</view>
       </view>
-      <homeModal :isScaleModal.sync="isModal" @handleOk="handleOk" :height.sync="modalHeight" :modalObj.sync="modalObj"></homeModal>
       <tabBarBottom :usertype.sync="usertype" :tabBarIndex.sync="tabBarIndex"></tabBarBottom>
   </view>
 </template>
@@ -27,7 +26,6 @@ import { $http } from '@/http.js'
 import resumeQuery from '@/components/resumeQuery'
 import resumeCard from '@/components/resumeCard'
 import resumeList from '@/components/resumeList'
-import modal from '@/components/modal'
 import tabBarBottom from '@/components/tabBarBottom'
 // import { connect, getStore } from 'wepy-redux'
 // const store = getStore()
@@ -39,7 +37,6 @@ export default class home extends wepy.page {
     resumeQuery: resumeQuery,
     resumeCard: resumeCard,
     resumeList: resumeList,
-    homeModal: modal,
     tabBarBottom: tabBarBottom
   }
   data = {
@@ -51,14 +48,6 @@ export default class home extends wepy.page {
     },
     count: 0,
     authorize: true,
-    isModal: true,
-    modalHeight: 560,
-    modalObj: {
-      title: '',
-      subTitle: '',
-      imgBg: '../../images/modalIcon.png',
-      imgIcon: ''
-    },
     usertype: '',
     tabBarData: {},
     tabBarIndex: 0
@@ -68,18 +57,8 @@ export default class home extends wepy.page {
       this.params = Object.assign(this.params, val)
       this.getResumeList()
       this.$broadcast('changeDate', val)
-    },
-    handleOk: () => {
-      this.isModal = true
-      this.$apply()
-      setTimeout(() => {
-        wx.redirectTo({
-          url: '/pages/login/login' // 页面 A
-        })
-      }, 300)
     }
   }
-
   methods = {
     addResume() {
       wx.navigateTo({

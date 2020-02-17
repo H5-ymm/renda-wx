@@ -16,48 +16,60 @@
 
 @import "../../base/fn";
 
-.weui-btn_cell{
+.weui-btn_cell {
     position: relative;
     display: block;
     margin-left: auto;
     margin-right: auto;
     box-sizing: border-box;
-    font-weight:700;
+    font-weight: 700;
     font-size: @weuiBtnFontSize;
     text-align: center;
     text-decoration: none;
     width: 100%;
     color: @weuiBtnFontColor;
     line-height: @weuiBtnCellLineHeight;
-    padding:@weuiBtnCellGap;
+    padding: @weuiBtnCellGap;
+
     &::after {
-      border: none;
+        border: none;
     }
+
     .setTapColor();
     overflow: hidden;
     border-radius: 50rpx;
-    &:active{
-      background-color:@weuiBgColorActive;
+
+    &:active {
+        background-color: @weuiBgColorActive;
+    }
+
+    &.weui-btn_primary_plain {
+        border: 1px solid #1890ff;
+        color: #1890ff;
+        background: #fff;
     }
 }
-.weui-btn_cell__icon{
-  display:inline-block;
-  vertical-align:middle;
-  width:24px;
-  height:24px;
-  margin:-.2em .34em 0 0;
+
+.weui-btn_cell__icon {
+    display: inline-block;
+    vertical-align: middle;
+    width: 24px;
+    height: 24px;
+    margin: -.2em .34em 0 0;
 }
-.weui-btn_cell-default{
-  color:rgba(0,0,0,.9);
+
+.weui-btn_cell-default {
+    color: rgba(0, 0, 0, .9);
 }
-.weui-btn_cell-primary{
-  color:@weuiColorPrimary;
+
+.weui-btn_cell-primary {
+    color: @weuiColorPrimary;
 }
-.weui-btn_cell-warn{
-  color:@weuiColorWarn;
+
+.weui-btn_cell-warn {
+    color: @weuiColorWarn;
 }
+
 .weui-btn_cell-gradient {
-  background:linear-gradient(90deg,rgba(24,144,255,1),rgba(99,185,255,1))
+    background: linear-gradient(90deg, rgba(24, 144, 255, 1), rgba(99, 185, 255, 1))
 }
-
-

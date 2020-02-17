@@ -1,5 +1,5 @@
 <style lang="less">
-@import '../style/home.less';
+@import "../style/home.less";
 @height: 40;
 .weui-input {
   text-align: right;
@@ -30,15 +30,12 @@
         <view class="page_card_row">
           <view class="weui-flex center wrap">
             <view class="card-text"> 点击开始识别正面（照片面）</view>
-            <image @tap="uploadImg" src="../images/cardIcon.png" wx:if="{{!infoImg}}" class="idCard-bg" mode="scaleToFill" />
+            <image @tap="uploadImg" src="https://a.rsd123.com/image/images/cardIcon.png" wx:if="{{!infoImg}}" class="idCard-bg" mode="scaleToFill" />
             <image @tap="uploadImg" src="{{infoImg}}" wx:else class="idCard-bg" mode="aspectFit" />
           </view>
         </view>
       </view>
     </view>
-    <!-- <view class="weui-cell_btn weui-flex center">
-      <button class="weui-btn_cell .weui-btn_primary" @tap="save">下一步</button>
-    </view> -->
   </view>
 </template>
 <script>
@@ -61,7 +58,7 @@ export default class scanIdCard extends wepy.component {
     cWidth: '',
     cHeight: ''
   }
-  getUrl (infoImg) {
+  getUrl(infoImg) {
     let params = {
       uid: wx.getStorageSync('rendaUid') || this.$parent.$parent.globalData.uid,
       infoImg
@@ -102,7 +99,7 @@ export default class scanIdCard extends wepy.component {
     })
   }
   methods = {
-    uploadImg () {
+    uploadImg() {
       wx.chooseImage({
         sizeType: ['compressed'],
         success: res => {
@@ -125,7 +122,7 @@ export default class scanIdCard extends wepy.component {
         }
       })
     },
-    save () {
+    save() {
       if (!this.infoImg) return
       this.$emit('submitForm', this.form)
     }

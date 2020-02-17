@@ -7,7 +7,7 @@
           {{disabled?multiArray[2][multiIndex[2]]:''}}
        </view>
       <view wx:else class="placeholder">请选择地址</view>
-      <image mode="scaleToFill" src="../images/down.png"  class="page_down_icon" />
+      <image mode="scaleToFill" src="https://a.rsd123.com/image/images/down.png"  class="page_down_icon" />
     </view>
   </picker>
 </template>
@@ -18,7 +18,7 @@ let lock = false
 export default class districtSelet extends wepy.component {
   props = {
     address: Array,
-    disabled:Boolean
+    disabled: Boolean
   }
   data = {
     options: [],
@@ -62,7 +62,7 @@ export default class districtSelet extends wepy.component {
       let arr = this.getList(res.data)
       this.codeList[1] = this.getCode(res.data)
       this.multiArray[1] = arr
-      if(this.disabled) {
+      if (this.disabled) {
         this.getAreaList(value)
       }
       if (lock && (this.address && this.address.length)) {
@@ -127,16 +127,16 @@ export default class districtSelet extends wepy.component {
       this.multiIndex[e.detail.column] = e.detail.value
       let cityid = this.codeList[0][this.multiIndex[0]]
       if (e.detail.column == 0) {
-        this.getCityList([cityid,0])
+        this.getCityList([cityid, 0])
         this.multiIndex = [e.detail.value, 0, 0]
       } else if (e.detail.column == 1) {
         this.multiIndex[1] = e.detail.value
-        if(this.disabled) {
+        if (this.disabled) {
           let threid = this.codeList[1][this.multiIndex[1]]
-          this.getAreaList([cityid,threid])
+          this.getAreaList([cityid, threid])
         }
       }
-      else{
+      else {
         this.multiIndex[2] = e.detail.value
       }
       this.$apply()

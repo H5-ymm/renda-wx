@@ -101,7 +101,6 @@
   <view hidden='{{isScaleModal}}'>
     <view @tap=" handleClose" wx:if="{{isShow}}" class="modal_mask"></view>
     <view class="modal_box transition3s {{ isShow ? 'g_scale1': ''}}" id="modal-box" style="height:{{height}}rpx">
-      <!-- <slot></slot> -->
       <view class="modal-content" wx:if="{{!type}}">
         <view class="home-view-box weui-flex between wrap">
           <view class="modal-title ">请选择团队性质 </view>
@@ -110,9 +109,9 @@
 							<image src="{{item.icon}}" alt="" mode="aspectFill" class="menu-icon" />
 							<view class="card-item-title">{{item.title}}</view>
 							<text class="card-item-content" decode="{{true}}">{{item.content}}</text>
-							<image src="../images/user/radio2.png" alt="" mode="aspectFill" 
+							<image src="https://a.rsd123.com/image/images/user/radio2.png" alt="" mode="aspectFill" 
 							wx:if="{{index==activeIndex}}" @tap="selectType({{index}})" class="radio-icon" />
-							<image src="../images/user/radio1.png" @tap="selectType({{index}})" wx:else alt="" mode="aspectFill" class="radio-icon" />
+							<image src="https://a.rsd123.com/image/images/user/radio1.png" @tap="selectType({{index}})" wx:else alt="" mode="aspectFill" class="radio-icon" />
 						</view>
 					</repeat>
 		    </view>
@@ -125,17 +124,17 @@
           <view class="modal-title ">请选择登录/注册方式 </view>
 					<view class="weui-cell_btn weui-flex center wrap login-way">
               <button class="weui-btn_cell weui-flex center weui-btn_cell-gradient"   @getphonenumber="bindgetphonenumber" open-type="getPhoneNumber">
-                <image src="../images/welcome/wx-active.png" alt="" class="login-icon" />
+                <image src="https://a.rsd123.com/image/images/welcome/wx-active.png" alt="" class="login-icon" />
                 <text>微信登录/注册 </text>
               </button>
               <button class="weui-btn_cell weui-flex center" @tap="handleOk">
-                <image src="../images/welcome/phone.png" alt="" class="login-icon" />
+                <image src="https://a.rsd123.com/image/images/welcome/phone.png" alt="" class="login-icon" />
                 <text>手机号登录/注册</text>
              </button>
           </view>
 		    </view>
       </view>
-      <image src="../images/close.png" @tap="handleClose" class="close-icon" />
+      <image src="https://a.rsd123.com/image/images/close.png" @tap="handleClose" class="close-icon" />
     </view>
   </view>
 
@@ -154,12 +153,12 @@ export default class actionSheet extends wepy.component {
     isShow: false,
     menus: [
       {
-        icon: '/images/user/icon1.png',
+        icon: 'https://a.rsd123.com/image/images/user/icon1.png',
         title: '个人团队',
         content: '个人身份注册团队'
       },
       {
-        icon: '/images/user/icon2.png',
+        icon: 'https://a.rsd123.com/image/images/user/icon2.png',
         title: '企业团队',
         content: '企业身份注册团队'
       }

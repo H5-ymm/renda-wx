@@ -5,7 +5,7 @@
       <view class="picker weui-flex between">
         <view class="weui-flex between weui-flex__item">
           <view>{{dateStart}}</view>
-          <image src="../images/dateIcon.png" class="dateIcon" />
+          <image src="https://a.rsd123.com/image/images/dateIcon.png" class="dateIcon" />
         </view>
       </view>
     </picker>
@@ -14,7 +14,7 @@
       <view class="picker weui-flex between">
         <view class="weui-flex between weui-flex__item">
           <view>{{dateEnd}}</view>
-          <image src="../images/dateIcon.png" class="dateIcon" />
+          <image src="https://a.rsd123.com/image/images/dateIcon.png" class="dateIcon" />
         </view>
       </view>
     </picker>
@@ -23,7 +23,6 @@
 
 <script>
 import wepy from 'wepy'
-let util = require('../util.js')
 export default class resumeQuery extends wepy.component {
   data = {
     dateStart: '选择开始日期',

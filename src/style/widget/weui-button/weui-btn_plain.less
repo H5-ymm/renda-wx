@@ -17,13 +17,16 @@
 @import "../../base/fn";
 
 .weui-btn_plain-primary {
-    color: @weuiBtnPlainPrimaryColor;
-    border: 1px solid @weuiBtnPlainPrimaryBorderColor;
+    color: @weuiColorPrimary;
+    border: 1px solid @weuiColorPrimary;
+    background-color: @weuiBgColorWhite;
+
     &:not(.weui-btn_plain-disabled):active {
-        color:@weuiBtnPlainPrimaryActiveColor;
+        color: @weuiBtnPlainPrimaryActiveColor;
         border-color: @weuiBtnPlainPrimaryActiveBorderColor;
-		background-color:rgba(0,0,0,.1);
+        background-color: rgba(0, 0, 0, .1);
     }
+
     &:after {
         border-width: 0;
     }
@@ -32,16 +35,19 @@
 .weui-btn_plain-default {
     color: @weuiBtnPlainDefaultColor;
     border: 1px solid @weuiBtnPlainDefaultBorderColor;
+
     &:not(.weui-btn_plain-disabled):active {
-        color:@weuiBtnPlainDefaultActiveColor;
+        color: @weuiBtnPlainDefaultActiveColor;
         border-color: @weuiBtnPlainDefaultActiveBorderColor;
-		background-color:rgba(0,0,0,.1);
+        background-color: rgba(0, 0, 0, .1);
     }
+
     &:after {
         border-width: 0;
     }
 }
-.weui-btn_plain-disabled{
-    color:rgba(0,0,0,.2);
-    border-color:rgba(0,0,0,.2);
+
+.weui-btn_plain-disabled {
+    color: rgba(0, 0, 0, .2);
+    border-color: rgba(0, 0, 0, .2);
 }
