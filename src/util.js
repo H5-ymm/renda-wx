@@ -1,3 +1,7 @@
+/* eslint-disable prefer-promise-reject-errors */
+/* eslint-disable promise/param-names */
+import promise from "redux-promise";
+
 // import wepy from 'wepy';
 // console.log(wepy)
 // const baseUrl = wepy.$appConfig.baseUrl;
@@ -212,7 +216,7 @@ export const replaceWeek = (number) => {
 }
 export const ageList = () => {
     let arr = []
-    for (let i = 16; i < 65; i++) {
+    for (let i = 16; i < 66; i++) {
         arr.push(i)
     }
     return arr
@@ -234,6 +238,24 @@ export const rewardTypeText = () => {
     }
     return '元/人/' + text
 }
+export const wxShowModal = (title, content, confirmText) => {
+    return new Promise((resove, rejcet) => {
+        wx.showModal({
+            title: title || '操作提示',
+            content: content,
+            confirmText: confirmText,
+            cancelColor: '#666666',
+            confirmColor: '#1890FF',
+            success(res) {
+                if (res.confirm) {
+                    resove()
+                } else if (res.cancel) {
+                    rejcet()
+                }
+            }
+        })
+    })
+}
 module.exports = {
     manglingFormatCardNumber: manglingFormatCardNumber,
     validateIdCard: validateIdCard,
@@ -249,5 +271,6 @@ module.exports = {
     getKeyValue: getKeyValue,
     weekList: weekList,
     ageList: ageList,
-    rewardTypeText: rewardTypeText
+    rewardTypeText: rewardTypeText,
+    wxShowModal: wxShowModal
 };

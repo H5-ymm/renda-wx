@@ -1,0 +1,112 @@
+<style lang="less">
+@import "../style/modal.less";
+@import "../style/form.less";
+.modal-notice_box {
+  &.modal-viewNotice_box {
+    .modal-view-box {
+      padding: 20rpx 0;
+    }
+    padding: 20rpx 0;
+    .modal-row {
+      .modal-col {
+        color: #6a6a6a;
+      }
+    }
+  }
+}
+.modal-row {
+  margin-bottom: 16rpx;
+  .modal-col {
+    border: 1px solid #eee;
+    border-radius: 5rpx;
+    padding: 16rpx 24rpx;
+    margin-top: 10rpx;
+    font-size: 26rpx;
+    .weui-input {
+      text-align: left;
+      &.weui-textarea {
+        margin: 10rpx 0;
+      }
+    }
+  }
+}
+</style>
+<template>
+  <view hidden='{{isScaleModal}}'>
+    <view @tap=" handleClose" wx:if="{{isShow}}" class="modal_mask"></view>
+    <view class="modal_box modal-notice_box modal-viewNotice_box transition3s {{ isShow ? 'g_scale1': ''}}" 
+		style="height:{{height}}rpx">
+      <view class="modal-content">
+				<view class="modal-title">{{title}}</view>
+        <view class="modal-view-box">
+					<view class="modal-row">
+					  <text>面试时间</text>
+						<view class="modal-col">2019-10-29 10:19</view>
+					</view>
+					<view class="modal-row">
+					  <text>面试地址</text>
+						<view class="modal-col">上海市 浦东新区</view>
+						<view class="modal-col">金海路</view>
+					</view>
+					<view class="modal-row">
+					  <text>通知内容</text>
+						<view class="modal-col">
+							<view class="weui-input weui-textarea">
+		             请输入面试通知的内容
+							</view>
+						</view>	
+					</view>
+		    </view>
+        <view class="weui-cell_btn weui-flex center">
+          <button class="weui-btn_cell weui-btn_cell-gradient" @tap="handleOk">我知道了</button>
+        </view>
+      </view>
+      <image src="https://a.rsd123.com/image/images/close.png" @tap="handleClose" class="close-icon" />
+    </view>
+  </view>
+
+</template>
+<script>
+import wepy from 'wepy'
+import { $http } from '@/http.js'
+export default class viewNoticeModal extends wepy.component {
+	props = {
+		isScaleModal: Boolean,
+		height: Number,
+		title: String
+	}
+	data = {
+		isShow: false,
+		form: {}
+	}
+	methods = {
+		handleClose() {
+			this.isShow = false
+			this.$apply()
+			this.$emit('handleClose')
+		},
+		handleOk() {
+			this.isShow = false
+			this.$apply()
+			if (this.type) {
+				console.log(this.type)
+				this.$emit('handleOkLogin', 2)
+			}
+			else {
+				this.$emit('handleOk', this.activeIndex)
+			}
+		}
+	}
+	watch = {
+		isScaleModal(val) {
+			if (!val) {
+				this.isShow = true
+			} else {
+				this.activeIndex = 0
+				this.isShow = false
+			}
+			this.$apply()
+		}
+	}
+}
+</script>

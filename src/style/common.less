@@ -15,6 +15,10 @@ page {
     height: calc(100% - 60px);
 }
 
+.view-detail {
+    height: calc(100% - 100px);
+}
+
 .page_margin {
     margin: 24rpx;
 }
@@ -103,10 +107,35 @@ page {
 
             .my-info {
                 height: 80rpx;
+                position: relative;
 
                 .my-text {
                     height: auto;
                     line-height: 40rpx;
+                }
+
+                .badgeNum {
+                    position: absolute;
+                    top: -6rpx;
+                    left: 126rpx;
+                    text-align: center;
+                    width: 22rpx;
+                    height: 22rpx;
+                    border-radius: 50%;
+                    color: @weuiBgColorWhite;
+                    background: @weuiColorWarn;
+                    font-size: 18rpx;
+                    line-height: 22rpx;
+
+                    &.badgeNum1 {
+                        width: 32rpx;
+                        border-radius: 22rpx;
+                    }
+
+                    &.badgeNum2 {
+                        width: 42rpx;
+                        border-radius: 22rpx;
+                    }
                 }
             }
 
@@ -140,6 +169,10 @@ page {
     .page_card_receipt_status {
         font-size: 28rpx;
         color: @weuiTextColorTips;
+
+        &.page_card_receipt_status1 {
+            color: @weuiColorPrimary;
+        }
 
         &.page_card_receipt_status2 {
             color: @weuiColorSuccess;
@@ -232,5 +265,33 @@ page {
     .add-icon {
         width: 44rpx;
         height: 44rpx;
+    }
+}
+
+.picker-box {
+    padding: 24rpx 0;
+    width: 100%;
+}
+
+.dateIcon {
+    width: 32rpx;
+    height: 32rpx;
+    line-height: 30rpx;
+    color: @weuiTextColorTitle;
+}
+
+.line {
+    margin: 0 40rpx;
+}
+
+.page_down_icon {
+    width: 24rpx;
+    height: 24rpx;
+    margin-left: 10rpx;
+}
+
+.create-btn {
+    .weui-btn_cell {
+        width: 40%;
     }
 }

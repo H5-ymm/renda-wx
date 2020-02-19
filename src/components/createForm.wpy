@@ -167,10 +167,10 @@
     </view>
 		<view class="weui-cell_btn weui-flex between register-btn create-btn" 
 		  wx:if="{{typeBtn==2}}">
-			<button class="weui-btn_cell weui-btn_primary" @tap="prePage">
-				上一步
+			<button class="weui-btn_cell weui-btn_primary" @tap="save">
+				修改
 			</button>
-      <button class="weui-btn_cell weui-btn_primary_plain" @tap="save">
+      <button class="weui-btn_cell weui-btn_primary_plain" @tap="deleteInvice">
 				取消发布
 			</button>
     </view>
@@ -224,6 +224,31 @@ export default class createForm extends wepy.component {
 	}
 	props = {
 		typeBtn: Number
+	}
+	events = {
+		getInvoiceDetail: data => {
+			// duration_time: 0
+			// email: null
+			// is_five_risks: 1
+			// is_fund: 1
+			// link_name: "的飞洒"
+			// reward_money: 80000
+			// reward_money_type: 0
+			// reward_needtime: 0
+			// reward_type: 1
+			// settlement_time: 0
+			// settlement_type: 0
+			// tel: "18777474658"
+			for (let key in this.form) {
+				this.form[key] = data[key]
+			}
+			console.log(this.form)
+			this.index = this.form.is_five_risks ? this.form.is_five_risks - 1 : 0
+			this.fundIndex = this.form.is_fund ? this.form.is_fund - 1 : 0
+			this.rewardIndex = this.form.reward_type ? this.form.reward_type - 1 : 0
+			this.form.email = this.form.email ? this.form.email : ''
+			this.$apply()
+		}
 	}
 	watch = {
 		typeIndex(val) {
@@ -320,6 +345,9 @@ export default class createForm extends wepy.component {
 		prePage() {
 			this.$emit('prePage')
 		},
+		deleteInvice() {
+			this.$emit('deleteInvice')
+		},
 		save() {
 			if (!this.form.reward_type) {
 				wxToast('请选择返利模式')
@@ -341,6 +369,7 @@ export default class createForm extends wepy.component {
 			} else if (!checkMobile(this.form.tel)) {
 				wxToast('请输入正确的联系人电话')
 			} else {
+				console.log(this.form)
 				this.$emit('submit', this.form)
 			}
 		}

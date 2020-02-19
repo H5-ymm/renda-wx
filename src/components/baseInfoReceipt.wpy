@@ -1,10 +1,3 @@
-<style lang="less">
-@import "../../style/home.less";
-@import "../../style/form.less";
-.input-text-end {
-  margin-left: 10rpx;
-}
-</style>
 <template>
   <view class="home-view register-view page_margin">
     <view class="home-view-box">
@@ -134,7 +127,7 @@
 						<view wx:if="{{form.money_type>1}}" class="input-text-end">元/人/{{form.money_type==2?'日':'时'}}</view>
           </view>
         </view>
-        <view class="page_card_row">
+         <view class="page_card_row">
           <view class="weui-flex between">
             <view class="my-text weui-flex__item my-text-require">职位描述：</view>
           </view>
@@ -145,7 +138,7 @@
         </view>
       </view>
     </view>
-    <view class="weui-cell_btn weui-flex center register-btn">
+    <view class="weui-cell_btn weui-flex center register-btn" wx:if="{{typeBtn}}">
       <button class="weui-btn_cell weui-btn_primary" @tap="save">
 				下一步
 			</button>
@@ -163,7 +156,7 @@ const store = getStore()
 @connect({
 	list: (state) => state.contant.list
 })
-export default class ceateList extends wepy.page {
+export default class baseInfoReceipt extends wepy.component {
 	components = {
 		districtSelet: districtSelet
 	}
@@ -204,11 +197,13 @@ export default class ceateList extends wepy.page {
 		isModal: true,
 		money_array: [],
 		job_array: [],
-		edu_type: [],
-		typeBtn: 1
+		edu_type: []
 	}
 	config = {
 		navigationBarTitleText: '基本信息'
+	}
+	props = {
+		typeBtn: Number
 	}
 	onLoad() {
 		let allData = store.getState().contant.list
@@ -223,12 +218,6 @@ export default class ceateList extends wepy.page {
 			this.form = JSON.parse(wx.getStorageSync('preForm'))
 			this.$apply()
 		}
-	}
-	onHide() {
-		console.log(1)
-	}
-	onReady() {
-		console.log(2)
 	}
 	events = {
 		selectCity: data => {

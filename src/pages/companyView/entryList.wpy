@@ -1,0 +1,106 @@
+<style lang="less">
+@import "../../style/home.less";
+</style>
+<template>
+  <view class="home-view">
+    <view class="home-view-header"></view>
+    <view class="page page_margin">
+      <scroll-view scroll-y="true" class="view-content" @scrolltolower="searchScrollLower">
+        <view class="home-view-box">
+          <search @searchValue="searchValue" class="page_card"></search>
+          <entryInvoiceList :list.sync="list" :receiptType.sync="receiptType"></entryInvoiceList>
+        </view>
+      </scroll-view>
+    </view>
+  </view>
+</template>
+<script>
+import wepy from 'wepy'
+import { $http } from '@/http.js'
+import search from '@/components/search'
+import receiptList from '@/components/receiptList'
+export default class entryList extends wepy.page {
+	components = {
+		search: search,
+		entryInvoiceList: receiptList
+	}
+	config = {
+		navigationBarTitleText: '入职名单'
+	}
+	data = {
+		list: [{
+			name: '高薪诚聘销售精英',
+			required_number: 1,
+			ctime: '2020-02-18',
+			status: 1,
+			invoice_status: 0,
+			interview_status: 0,
+			entry_status: 0,
+			job_status: 1,
+			view_time: 0,
+			entry_time: 0
+		},
+		{
+			name: '高薪诚聘销售精英',
+			required_number: 31,
+			ctime: '2020-02-18',
+			status: 1,
+			invoice_status: 1,
+			interview_status: 0,
+			entry_status: 0,
+			job_status: 1,
+			entry_time: 0,
+			view_time: 0
+		},
+		{
+			name: '高薪诚聘销售精英',
+			required_number: 3,
+			invoice_status: 2,
+			interview_status: 0,
+			entry_status: 0,
+			ctime: '2020-02-18',
+			status: 1,
+			job_status: 1,
+			entry_time: 0,
+			view_time: '2020-10-20'
+		}],
+		params: {
+			uid: '',
+			page: 1,
+			limit: 10
+		},
+		count: 0,
+		receiptType: 3
+	}
+	events = {
+		searchValue: val => {
+			this.params = Object.assign(this.params, val)
+			console.log(val)
+		}
+	}
+	methods = {
+		searchScrollLower() {
+			if (this.count > this.list.length && this.count > this.params.limit) {
+				this.params.limit = this.params.limit + 10
+				this.getResumeList()
+			}
+		}
+	}
+	getResumeList() {
+		$http('/Wxresume/resumelist', this.params).then(res => {
+			this.list = res.data.data || []
+			this.count = res.data.count
+			this.$apply()
+		})
+	}
+	onLoad() {
+		// let info = store.getState().user.loginUser
+		this.usertype = wx.getStorageSync('rendaUserType')
+		this.$apply()
+	}
+	onShow() {
+		this.params.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
+		// this.getResumeList()
+	}
+}
+</script>

@@ -107,6 +107,7 @@ const store = getStore()
 @connect({
   list: (state) => state.contant.list
 })
+
 export default class Company extends wepy.page {
   props = {
     resumeInfo: Object

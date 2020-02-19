@@ -41,7 +41,7 @@ export default class ceateList extends wepy.page {
 		modalObj: {
 			title: '发单成功',
 			subTitle: '',
-			imgBg: '../../images/success.png'
+			imgBg: 'https://a.rsd123.com/image/images/success.png'
 		},
 		isModal: true,
 		preForm: '',
@@ -77,7 +77,7 @@ export default class ceateList extends wepy.page {
 				this.isModal = false
 				this.$apply()
 			} else {
-				wxToast('注册失败')
+				wxToast('发单失败')
 			}
 		})
 	}

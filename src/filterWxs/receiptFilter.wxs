@@ -38,7 +38,44 @@ var statusTeamText = function (status) {
     }
     return text
 }
+var statusReceiptText = function (invoice_status, interview_status, entry_status, type) {
+    console.log(invoice_status, interview_status, entry_status, type)
+    var text = ''
+    if (invoice_status == 0) {
+        text = '收集中'
+    } else if (invoice_status == 1) {
+        text = '审核中'
+    } else if (invoice_status == 2) {
+        if (type == 1) {
+            text = '面试开始'
+        } else if (type == 2) {
+            if (interview_status <= 1) {
+                text = '面试开始'
+            } else if (interview_status == 2) {
+                if (!entry_status) {
+                    text = '面试结束'
+                } else if (entry_status == 1) {
+                    text = '入职开始'
+                } else(entry_status == 2) {
+                    text = '入职结束'
+                }
+            }
+        } else {
+            if (entry_status <= 1) {
+                text = '入职开始'
+            } else if (entry_status == 2) {
+                text = '入职结束'
+            } else if (entry_status == 3) {
+                text = '审核入职'
+            } else {
+                text = '审核结束'
+            }
+        }
+    }
+    return text
+}
 module.exports = {
     statusText: statusText,
-    statusTeamText: statusTeamText
+    statusTeamText: statusTeamText,
+    statusReceiptText: statusReceiptText
 }

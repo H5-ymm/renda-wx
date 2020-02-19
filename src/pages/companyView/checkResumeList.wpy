@@ -1,0 +1,288 @@
+<style lang="less">
+@import "../../style/home.less";
+page {
+  overflow: hidden;
+}
+.detail-view {
+  height: 100%;
+  overflow: hidden;
+  .page_margin {
+    margin: 24rpx 24rpx 0;
+  }
+  .header-box {
+    background: #ffffff;
+    height: 90rpx;
+    font-size: 24rpx;
+    padding: 0 26rpx;
+    .search-box {
+      border: 1px solid #eee;
+      width: 23%;
+      height: 48rpx;
+      border-radius: 25rpx;
+      padding: 4rpx 20rpx 0;
+      transition: 1s;
+      .searchIcon {
+        height: 24rpx;
+        width: 26rpx;
+      }
+      .search-input {
+        padding: 0 0 0 10rpx;
+      }
+    }
+  }
+  .view-detail {
+    height: calc(100% - 108px);
+    overflow: auto;
+  }
+  .radio-icon {
+    width: 30rpx;
+    height: 30rpx;
+    margin-right: 20rpx;
+  }
+  .create-btn {
+    height: 100rpx;
+    margin-bottom: 80rpx;
+    &.footer-box {
+      border-top: 1px solid #eee;
+      background: #fff;
+      color: #999999;
+      overflow: hidden;
+      .item-btn {
+        height: 100%;
+        border-right: 1px solid #eee;
+      }
+      .item-col {
+        margin: 0 50rpx 0 30rpx;
+      }
+    }
+  }
+  .page_card_status-resume {
+    .weui-btn_cell {
+      border-radius: 5rpx;
+      padding: 24rpx 10rpx 23rpx;
+      font-weight: 400;
+      font-size: 25rpx;
+      margin-left: 20rpx;
+      border: 1px solid #1890ff;
+    }
+  }
+}
+</style>
+<template>
+  <view class="detail-view">
+		<view class="weui-flex between header-box">
+			<tabBar :tabBarList.sync="tabBarList" 
+			wx:if="{{!isSeachWidth}}"></tabBar>
+			<search class="search-box {{isSeachWidth?'weui-flex__item':''}}" 
+			 @searchValue="searchValue">
+			</search>
+		</view>
+    <view class="page_margin view-detail">	
+			<scroll-view scroll-y="true" height="100%">
+				<companyResumeList 
+				 :list.sync="list" :receiptType.sync="receiptType" 
+				 :isBatch.sync="isBatch" :isCheck.sync="isCheck">
+				</companyResumeList>
+			</scroll-view>
+    </view>
+		<view class="weui-flex center create-btn footer-box" wx:if="{{!isBatch}}">
+			<view class="weui-flex__item item-btn weui-flex center" 
+				@tap="batchHandle">
+				批量操作
+			</view>
+			<view class="weui-flex__item weui-flex center item-btn" 
+				@tap="viewNotice" wx:if="{{receiptType<3}}">
+				{{receiptType==1?'查看面试通知':'查看入职通知'}}
+			</view>
+	  </view>
+		<view class="weui-flex between create-btn footer-box" wx:if="{{isBatch}}">
+			<view class="item-col">
+				<image src="https://a.rsd123.com/image/images/user/radio2.png" wx:if="{{isCheck}}" 
+				@tap="selectResume({{isCheck}})"
+				alt="" mode="aspectFill" class="radio-icon"  />
+			<image src="https://a.rsd123.com/image/images/user/radio1.png" wx:else 
+				@tap="selectResume({{isCheck}})" mode="aspectFill" class="radio-icon" />
+				全选
+			</view>
+			<view 
+				class="page_card_status-resume weui-flex center item-col">
+				<button class="weui-btn_cell  weui-flex__item weui-btn_primary" @tap="prePage">
+					通过
+				</button>
+				<button class="weui-btn_cell weui-flex__item weui-btn_primary_plain" @tap="save">
+					拒绝
+				</button>
+			</view>
+		</view>
+		<viewNoticeModal :isScaleModal.sync="isModal" 
+    :height.sync="modalHeight" :title.sync="title"></viewNoticeModal>
+  </view>
+</template>
+<script>
+import wepy from 'wepy'
+import { $http } from '@/http.js'
+
+import tabBar from '@/components/tabBar'
+import search from '@/components/search'
+import companyResumeList from '@/components/companyResumeList'
+import viewNoticeModal from '@/components/viewNoticeModal'
+export default class checkResumeList extends wepy.page {
+	components = {
+		tabBar: tabBar,
+		search: search,
+		companyResumeList: companyResumeList,
+		viewNoticeModal: viewNoticeModal
+	}
+	data = {
+		tabBarList: [],
+		list: [{
+			name: '杨萌萌',
+			ctime: '2020-02-18',
+			status: 0,
+			job_status: 1,
+			age: 23,
+			sex: '女',
+			education: '本科',
+			citys: '上海市票浦东新区'
+		},
+		{
+			name: '张颖冉',
+			ctime: '2020-02-18',
+			status: 1,
+			job_status: 2,
+			age: 23,
+			sex: '女',
+			education: '本科',
+			citys: '上海市票浦东新区'
+		},
+		{
+			name: '张颖冉',
+			ctime: '2020-02-18',
+			status: 2,
+			job_status: 1,
+			age: 23,
+			sex: '女',
+			education: '本科',
+			citys: '上海市票浦东新区'
+		},
+		{
+			name: '杨啦啦',
+			team_name: '天天团队',
+			ctime: '2020-02-18',
+			status: 4,
+			job_status: 1,
+			age: 23,
+			sex: '女',
+			education: '本科',
+			citys: '上海市票浦东新区'
+		}],
+		params: {
+			uid: '',
+			page: 1,
+			limit: 10
+		},
+		count: 0,
+		isBatch: false,
+		isCheck: false,
+		activeIndex: 0,
+		isSeachWidth: false,
+		isModal: true,
+		modalHeight: 860,
+		title: '查看面试时间',
+		receiptType: 1,
+		statusObj: {}
+	}
+	events = {
+		searchValue: val => {
+			this.params = Object.assign(this.params, val)
+			this.getResumeList()
+		},
+		inputFocus: () => {
+			this.isSeachWidth = true
+			this.$apply()
+		},
+		switchTab: index => {
+			this.activeIndex = index
+			this.getResumeList()
+			this.$apply()
+		}
+	}
+	methods = {
+		batchHandle() {
+			this.isBatch = true
+			this.list = this.checkAll(this.list, false)
+			this.$apply()
+		},
+		viewNotice() {
+			this.isModal = !this.isModal
+			this.$apply()
+		},
+		selectResume(check) {
+			this.isCheck = !check
+			this.list = this.checkAll(this.list, this.isCheck)
+			this.$apply()
+		}
+	}
+	checkAll(list, status) {
+		return list.filter(item => {
+			if (!item.status) {
+				item.disabled = status
+				return item
+			}
+		})
+	}
+	getTabBarList(val) {
+		let arr = []
+		let arr1 = [
+			{ name: '全部简历', num: 0 },
+			{ name: '待审核', num: 0 }]
+		if (val === 1) {
+			arr = [
+				{ name: '已同意', num: 0 },
+				{ name: '已拒绝', num: 0 }]
+		} else if (val === 2) {
+			arr = [
+				{ name: '已通过', num: 0 },
+				{ name: '未通过', num: 0 }]
+		} else {
+			arr = [
+				{ name: '已入职', num: 0 },
+				{ name: '未入职', num: 0 }]
+		}
+		return arr1.concat(arr)
+	}
+	getResumeList() {
+		this.isSeachWidth = false
+		this.list = [{
+			name: '杨啦啦',
+			team_name: '天天团队',
+			ctime: '2020-02-18',
+			status: 4,
+			job_status: 1,
+			age: 23,
+			sex: '女',
+			education: '本科',
+			citys: '上海市票浦东新区'
+		}]
+		this.tabBarList[this.activeIndex].num = this.list.length
+		this.$apply()
+	}
+	getTitle(val) {
+		return val === 1 ? '简历列表' : val === 2 ? '面试审核' : '入职审核'
+	}
+	onLoad(options) {
+		this.receiptType = Number(options.query)
+		this.$apply()
+		wx.setNavigationBarTitle({
+			title: this.getTitle(this.receiptType)
+		})
+	}
+	onShow() {
+		this.params.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
+		this.statusObj = JSON.parse(wx.getStorageSync('statusObj'))
+		console.log(this.statusObj)
+		this.tabBarList = this.getTabBarList(this.receiptType)
+		this.$apply()
+	}
+}
+</script>

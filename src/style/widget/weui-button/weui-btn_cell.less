@@ -31,6 +31,7 @@
     line-height: @weuiBtnCellLineHeight;
     padding: @weuiBtnCellGap;
 
+    // border: 1px solid @weuiColorPrimary;
     &::after {
         border: none;
     }
@@ -44,9 +45,9 @@
     }
 
     &.weui-btn_primary_plain {
-        border: 1px solid #1890ff;
-        color: #1890ff;
-        background: #fff;
+        border: 1px solid @weuiColorPrimary;
+        color: @weuiColorPrimary;
+        background: @weuiBgColorWhite;
     }
 }
 

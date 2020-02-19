@@ -1,0 +1,112 @@
+		
+<style lang="less">
+.page_card_end {
+  line-height: 60rpx;
+  .page_card_time {
+    width: 100%;
+    text-align: right;
+  }
+  .page_card_status-resume {
+    width: 70%;
+    .weui-btn_cell {
+      margin-bottom: 40rpx;
+    }
+  }
+}
+</style>
+<template>
+  <view>
+    <repeat wx:for="{{list}}" wx:key="index">
+      <view class="page_card" wx:if="{{list.length}}">
+        <view class="page_card_row weui-flex between">
+					<view class="weui-flex start">
+						  <view wx:if="{{isBatch}}">
+								<image src="https://a.rsd123.com/image/images/user/radio2.png" alt="" mode="aspectFill" class="radio-icon" @tap="selectResume({{index}})"
+								 wx:if="{{isCheck&&item.disabled}}"/>
+								<image src="https://a.rsd123.com/image/images/user/radio1.png" wx:else @tap="selectResume({{index}})" mode="aspectFill" class="radio-icon" />
+								</view>
+							<view>
+								<view class="page_card_name">{{item.name}}</view>
+								<view class="text-line weui-flex__item">
+									{{item.age}} {{item.sex}} {{item.education}}</view>
+								<view class="text-line weui-flex__item">
+								 {{item.citys||'-'}}
+							  </view>
+					   </view>
+					</view>
+          <view class="weui-flex end wrap page_card_end">			
+						<view class="page_card_status-resume weui-flex between" wx:if="{{!item.status}}">
+							<button class="weui-btn_cell weui-flex__item weui-btn_primary" @tap="handleResume(0)">
+								{{text}}
+							</button>
+							<button class="weui-btn_cell weui-flex__item weui-btn_primary_plain" @tap="handleResume(1)">
+								{{receiptType===1?'拒绝':receiptType===2?'未通过':'未入职'}}
+							</button>
+						</view>
+						<view wx:else>
+								<view wx:if="{{item.status==2}}" class="page_card_receipt_status page_card_receipt_status2">已{{text}}</view>
+								<view wx:else class="page_card_receipt_status page_card_receipt_status3">
+									{{refuseText}}
+								</view>
+						 </view>
+						<view class="page_card_time">{{item.ctime}}</view>
+					</view>
+        </view>
+      </view>
+    </repeat>
+    <view wx:if="{{!list.length}}" class="page_list">
+      <image src="https://a.rsd123.com/image/images/noBg.png" class="page_noData" mode="scaleToFill"/>
+      <view class="page_noData_text">暂无数据！</view>
+    </view>
+  </view>
+</template>
+<script>
+import wepy from 'wepy'
+import wxs from '../filterWxs/dateFilter.wxs'
+export default class companyResumeList extends wepy.component {
+	wxs = { wxs }
+	props = {
+		list: Array,
+		isBatch: Boolean,
+		isCheck: Boolean,
+		receiptType: Number
+	}
+	data = {
+		isCheck: false,
+		isShow: false,
+		activeIndex: -1,
+		refuseText: '',
+		text: ''
+	}
+	watch = {
+		isCheck(val) {
+			if (val) {
+
+			}
+		},
+		receiptType(val) {
+			console.log(val === 3)
+			if (val === 3) {
+				this.text = '入职'
+				this.refuseText = '未入职'
+			} else {
+				this.text = '通过'
+				if (val === 1) {
+					this.refuseText = '已拒绝'
+				} else {
+					this.refuseText = '未通过'
+				}
+			}
+			this.$apply()
+		}
+	}
+	methods = {
+		handleResume(item) {
+
+		},
+		selectResume(item) {
+
+		}
+	}
+}
+</script>

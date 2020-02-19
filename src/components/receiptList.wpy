@@ -6,43 +6,78 @@
         <view class="page_card_row">
           <view class="weui-flex between">
             <view class="page_card_name">{{item.name}}</view>
-            <view wx:if="{{item.job_status==1}}"
-              class="page_card_receipt_status {{'page_card_receipt_status'+item.status}}" >
-              {{wxs.statusText(item.status)}}
+            <view wx:if="{{!receiptType}}">
+              <view wx:if="{{item.job_status==1}}"
+                class="page_card_receipt_status {{'page_card_receipt_status'+item.status}}" >
+                {{wxs.statusText(item.status)}}
+              </view>
+              <view class="page_card_receipt_status page_card_receipt_status4" wx:else>
+                已下架
+              </view>
             </view>
-            <view class="page_card_receipt_status page_card_receipt_status4" wx:else>
-              已下架
+            <view wx:if="{{receiptType}}">
+              <view class="page_card_receipt_status page_card_receipt_status3"
+                wx:if="{{receiptType==1&&!item.view_time}}">
+                未设置面试时间
+              </view>
+              <view class="page_card_receipt_status page_card_receipt_status3"  
+                wx:elif="{{receiptType==2&&!item.entry_time}}">
+                未设置入职时间
+              </view>
+              <view wx:else
+                class="page_card_receipt_status {{'page_card_receipt_status'+item.invoice_status}}">
+                {{wxs.statusReceiptText(item.invoice_status, item.interview_status,item.entry_status, receiptType)}}
+              </view>
             </view>
           </view>
           <view class="weui-flex between">
-            <view class="weui-flex start weui-flex__item">需求人数：{{item.required_number}}</view>
-					  <view class="page_card_time">{{item.ctime}}</view>
+            <view class="weui-flex start weui-flex__item">
+              需求人数：{{item.required_number}}
+            </view>
+					  <view class="page_card_time">{{dateWxs.dateFormat(item.ctime,'yyyy-mm-dd')}}</view>
           </view>
         </view>
       </view>
     </repeat>
     <view wx:if="{{!list.length}}" class="page_list">
-      <image src="https://a.rsd123.com/image/images/noBg.png" class="page_noData" mode="scaleToFill"/>
+      <image src="https://a.rsd123.com/image/images/noBg.png"
+      class="page_noData" mode="scaleToFill"/>
       <view class="page_noData_text">暂无数据！</view>
     </view>
   </view>
 </template>
-
 <script>
 import wepy from 'wepy'
 import wxs from '../filterWxs/receiptFilter.wxs'
+import dateWxs from '../filterWxs/dateFilter.wxs'
 export default class receiptList extends wepy.component {
-  wxs = { wxs }
+  wxs = { wxs, dateWxs }
   props = {
-    list: Array
+    list: Array,
+    receiptType: Number
   }
   data = {}
   methods = {
     viewDetail(item) {
-      console.log(item)
-      wx.navigateTo({
-        url: '/pages/companyView/jobDetail'
-      })
+      if (!this.receiptType) {
+        wx.navigateTo({
+          url: '/pages/companyView/jobDetail'
+        })
+      } else {
+        let obj = {
+          entry_status: item.entry_status,
+          invoice_status: item.invoice_status,
+          interview_status: item.interview_status
+        }
+        wx.setStorageSync('statusObj', JSON.stringify(obj))
+        if (!item.view_time || !item.entry_time) {
+          this.$emit('setTime')
+        } else {
+          wx.navigateTo({
+            url: '/pages/companyView/checkResumeList?query=' + this.receiptType
+          })
+        }
+      }
     }
   }
 }

@@ -17,9 +17,9 @@
             <view class="my-text  weui-flex__item my-text-require">团队logo：</view>
             <image @tap="uploadImg" src="{{infoImg}}" mode="scaleToFill" class="my-head" 
 						 wx:if="{{infoImg}}" />
-             <image @tap="uploadImg" src="../../images/default1.png" mode="scaleToFill" class="my-head" 
+             <image @tap="uploadImg" src=".https://a.rsd123.com/image/images/default1.png" mode="scaleToFill" class="my-head" 
 						 wx:else/>
-						<image mode="scaleToFill" @tap="uploadImg"  src="../../images/right.png"  class="page_down_icon" />
+						<image mode="scaleToFill" @tap="uploadImg"  src="https://a.rsd123.com/image/images/right.png"  class="page_down_icon" />
           </view>
         </view>
 				 <view class="page_card_row">
@@ -44,7 +44,7 @@
                 <view class="{{form.sex?'':'placeholder'}}">
 									{{form.sex?array[index]:'请选择性别'}}
 								</view>
-                <image mode="scaleToFill" src="../../images/down.png" class="page_down_icon" />
+                <image mode="scaleToFill" src="https://a.rsd123.com/image/images/down.png" class="page_down_icon" />
               </view>
             </picker>
           </view>
@@ -58,7 +58,7 @@
 								<view class="{{form.age?'':'placeholder'}}">
 									{{form.age?ageList[ageIndex]:'请选择年龄'}}
 								</view>
-								<image mode="scaleToFill" src="../../images/down.png" class="page_down_icon" />
+								<image mode="scaleToFill" src="https://a.rsd123.com/image/images/down.png" class="page_down_icon" />
 							</view>
 						</picker>
           </view>
@@ -71,7 +71,7 @@
               <view class="my-text-right weui-flex between">
                 <view class="{{form.education?'':'placeholder'}}"> 
                   {{form.education?eduList[eduIndex]:'请选择'}}</view>
-                <image mode="scaleToFill" src="../../images/down.png"  class="page_down_icon" />
+                <image mode="scaleToFill" src="https://a.rsd123.com/image/images/down.png"  class="page_down_icon" />
               </view>
             </picker>
           </view>

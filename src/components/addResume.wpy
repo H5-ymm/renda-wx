@@ -7,12 +7,6 @@
 .add-view {
   height: 76%;
 }
-.page_down_icon {
-  width: 24rpx;
-  height: 24rpx;
-  margin-left: 10rpx;
-  // transform: rotate(90deg);
-}
 </style>
 
 <template>

@@ -1,5 +1,6 @@
  var formatNumber = function (n) {
      n = n.toString()
+     console.log(n[1] ? n : '0' + n)
      return n[1] ? n : '0' + n
  }
 
@@ -13,6 +14,7 @@
      var realDate = getDate(timestamp * 1000);
 
      function timeFormat(num) {
+         console.log(num < 10 ? '0' + num : num)
          return num < 10 ? '0' + num : num;
      }
      var date = [

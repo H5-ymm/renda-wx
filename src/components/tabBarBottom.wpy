@@ -17,7 +17,7 @@
 <script>
 import wepy from 'wepy';
 import { list1, list2 } from '@/base/base'
-export default class tabBar extends wepy.component {
+export default class tabBarBottom extends wepy.component {
 	// props 接收父组件传递过来的值
 	props = {
 		tabBar: {

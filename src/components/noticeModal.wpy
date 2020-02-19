@@ -1,0 +1,145 @@
+<style lang="less">
+@import "../style/modal.less";
+@import "../style/form.less";
+.modal-view-box {
+  padding: 20rpx 0 60rpx;
+  position: relative;
+  .notice-tip {
+    position: absolute;
+    bottom: 20rpx;
+    left: 32rpx;
+    margin-left: -50rpx;
+    margin-right: -40rpx;
+    .tipIcon {
+      width: 22rpx;
+      height: 22rpx;
+      margin-right: 10rpx;
+    }
+    .tip {
+      color: #6a6a6a;
+      font-size: 24rpx;
+    }
+  }
+}
+.create-btn {
+  .weui-btn_cell {
+    width: 46%;
+    border: 1px solid #1890ff;
+  }
+}
+.modal-row {
+  margin-bottom: 16rpx;
+  .modal-col {
+    border: 1px solid #eee;
+    border-radius: 5rpx;
+    padding: 16rpx 24rpx;
+    margin-top: 10rpx;
+    font-size: 26rpx;
+    &.modal-col-input {
+      padding: 10rpx 24rpx;
+      margin-top: 10rpx;
+    }
+    .weui-input {
+      text-align: left;
+      &.weui-textarea {
+        height: 100rpx;
+        line-height: 100rpx;
+        margin: 10rpx 0;
+      }
+    }
+  }
+}
+</style>
+<template>
+  <view hidden='{{isScaleModal}}'>
+    <view @tap=" handleClose" wx:if="{{isShow}}" class="modal_mask"></view>
+    <view class="modal_box modal-notice_box transition3s {{ isShow ? 'g_scale1': ''}}" style="height:{{height}}rpx">
+      <view class="modal-content">
+				<view class="modal-title">选择{{title}}时间</view>
+        <view class="modal-view-box">
+					<view class="modal-row">
+					  <text>{{title}}时间</text>
+						<datePicker></datePicker>
+					</view>
+					<view class="modal-row">
+					  <text>{{title}}地址</text>
+						<districtSelet :address.sync="[]" class="modal-col"></districtSelet>
+						<view class="modal-col modal-col-input">
+							<input class="weui-input" placeholder-class="placeholder" data-name="address" value="{{form.address}}" @input="changeInput" placeholder="请输入详细地址" />
+						</view>
+					</view>
+					<view class="modal-row">
+					  <text>通知内容</text>
+						<view class="modal-col">
+							<textarea data-name="job_content" placeholder-class="placeholder"
+								disable-default-padding="true"
+								class="weui-input weui-textarea" value="{{form.job_content}}" @input="changeInput"
+								placeholder="请输入{{title}}通知的内容" maxlength="1000"/>
+						</view>	
+					</view>
+					<view class="weui-flex start notice-tip">
+						<image src="../images/orderTaking/warn.png" class="tipIcon" />
+						<text class="tip">审核通过简历会直接发送短信通知{{title}}，谨慎操作</text>
+					</view>
+		    </view>
+        <view class="weui-cell_btn weui-flex between create-btn">
+          <button class="weui-btn_cell weui-btn_primary_plain" @tap="handleOk">取消</button>
+					 <button class="weui-btn_cell weui-btn_primary" @tap="handleOk">确定</button>
+        </view>
+      </view>
+      <image src="https://a.rsd123.com/image/images/close.png" @tap="handleClose" class="close-icon" />
+    </view>
+  </view>
+
+</template>
+<script>
+import wepy from 'wepy'
+import { $http } from '@/http.js'
+import datePicker from './datePicker'
+import districtSelet from './districtSelet'
+export default class noticeModal extends wepy.component {
+	props = {
+		isScaleModal: Boolean,
+		height: Number,
+		// modalObj: Object,
+		title: String
+	}
+	components = {
+		datePicker: datePicker,
+		districtSelet: districtSelet
+	}
+	data = {
+		isShow: false,
+		form: {}
+	}
+	methods = {
+		handleClose() {
+			this.isShow = false
+			this.$apply()
+			this.$emit('handleClose')
+		},
+		handleOk() {
+			this.isShow = false
+			this.$apply()
+			if (this.type) {
+				console.log(this.type)
+				this.$emit('handleOkLogin', 2)
+			}
+			else {
+				this.$emit('handleOk', this.activeIndex)
+			}
+		}
+	}
+	watch = {
+		isScaleModal(val) {
+			if (!val) {
+				this.isShow = true
+			} else {
+				this.activeIndex = 0
+				this.isShow = false
+			}
+			this.$apply()
+		}
+	}
+}
+</script>

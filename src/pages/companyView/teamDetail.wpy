@@ -1,23 +1,26 @@
 <style lang="less" scoped>
 @import "../../style/home.less";
 @import "../../style/form.less";
+page {
+  overflow: hidden;
+}
 .detail-view {
   height: 100%;
   overflow: hidden;
-  padding-bottom: 48rpx;
   .home-view-box {
     overflow: auto;
   }
   .create-btn {
-    height: 60px;
+    height: 100rpx;
+    margin-bottom: 80rpx;
   }
 }
 .panel {
   margin-bottom: 20rpx;
   .panel-icon {
     width: 28rpx;
-    height: 29rpx;
-    margin-left: 10rpx;
+    height: 28rpx;
+    margin-left: 30rpx;
   }
   .panel-text {
     color: #999999;
@@ -29,11 +32,11 @@
 <template>
   <!-- <view class="page"> -->
     <view class="detail-view">
-      <view class="home-view-box page_margin view-content">
+      <view class="home-view-box page_margin view-detail">
 				<view>
 					<view class="weui-flex start panel">
 						<image mode="scaleToFill" 
-						src="../../images/teamDetail/icon1.png" class="panel-icon" />
+						src="https://a.rsd123.com/image/images/teamDetail/icon1.png" class="panel-icon" />
 						<view class="panel-text">职位信息</view>
 					</view>
 					<view class="page_card">
@@ -54,7 +57,7 @@
 				<view>
 					<view class="weui-flex start panel">
 						<image mode="scaleToFill" 
-						src="../../images/teamDetail/icon2.png" class="panel-icon" />
+						src="https://a.rsd123.com/image/images/teamDetail/icon2.png" class="panel-icon" />
 						<view class="panel-text">团队信息</view>
 					</view>
 					<view class="page_card">
@@ -107,7 +110,7 @@
 				<view>
 					<view class="weui-flex start panel">
 						<image mode="scaleToFill" 
-						src="../../images/teamDetail/icon3.png" class="panel-icon"/>
+						src="https://a.rsd123.com/image/images/teamDetail/icon3.png" class="panel-icon"/>
 						<view class="panel-text">团队数据</view>
 					</view>
 					<view class="page_card">
@@ -140,7 +143,7 @@
 				<view>
 			  	<view class="weui-flex start panel">
 						<image mode="scaleToFill" 
-						src="../../images/teamDetail/icon4.png" class="panel-icon"/>
+						src="https://a.rsd123.com/image/images/teamDetail/icon4.png" class="panel-icon"/>
 						<view class="panel-text">申请状态</view>
 					</view>
 					<view class="page_card">
@@ -154,10 +157,10 @@
 				</view>
       </view>
       <view class="weui-cell_btn weui-flex center create-btn">
-        <button class="weui-btn_cell weui-btn_primary" @tap="prePage">
+        <button class="weui-btn_cell weui-btn_primary" @tap="agreeTeam">
 					同意
 				</button>
-				<button class="weui-btn_cell weui-btn_primary_plain" @tap="save">
+				<button class="weui-btn_cell weui-btn_primary_plain" @tap="refuseTeam">
 					拒绝
 				</button>
       </view>
@@ -168,6 +171,7 @@
 import wepy from 'wepy'
 import districtSelet from '@/components/districtSelet'
 import { $http } from '@/http.js'
+import { wxShowModal } from '@/util.js'
 export default class teamDetail extends wepy.page {
 	components = {
 		districtSelet: districtSelet
@@ -259,6 +263,13 @@ export default class teamDetail extends wepy.page {
 		changeInput(e) {
 			let key = e.currentTarget.dataset.name
 			this.form[key] = e.detail.value
+		},
+		agreeTeam() {
+			wxShowModal('', '确定团队申请接单', '同意').then(res => {
+				console.log('确定')
+			}).catch(() => {
+				console.log('取消')
+			})
 		},
 		save() {
 			if (this.form.age && Number(this.form.age) < 16) {

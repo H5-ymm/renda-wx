@@ -65,7 +65,7 @@ export default class districtSelet extends wepy.component {
       if (this.disabled) {
         this.getAreaList(value)
       }
-      if (lock && (this.address && this.address.length)) {
+      if (lock && (this.address && this.address.length && !this.address[2])) {
         lock = false
         this.multiIndex = this.codeList.map((val, ind) => {
           let flag = val.indexOf(this.address[ind])
@@ -89,10 +89,14 @@ export default class districtSelet extends wepy.component {
       if (lock && (this.address && this.address.length)) {
         lock = false
         this.multiIndex = this.codeList.map((val, ind) => {
+          console.log(val)
+          console.log(this.address[ind])
           let flag = val.indexOf(this.address[ind])
+          console.log(flag)
           return flag === -1 ? 0 : val.indexOf(this.address[ind])
         })
       }
+      console.log(this.multiIndex)
       this.$apply()
     })
   }

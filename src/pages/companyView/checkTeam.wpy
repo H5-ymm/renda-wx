@@ -7,7 +7,7 @@
     <view class="page page_margin">
       <scroll-view scroll-y="true" class="view-content" @scrolltolower="searchScrollLower">
         <view class="home-view-box">
-          <search @searchValue="searchValue"></search>
+          <search @searchValue="searchValue"  class="page_card"></search>
           <checkTeamList :list.sync="list"></checkTeamList>
         </view>
       </scroll-view>
@@ -25,41 +25,7 @@ export default class checkTeam extends wepy.page {
 		checkTeamList: checkTeamList
 	}
 	data = {
-		list: [{
-			name: '高薪诚聘销售精英',
-			team_name: '天天团队',
-			ctime: '2020-02-18',
-			status: 0,
-			job_status: 1
-		},
-		{
-			name: '高薪诚聘销售精英',
-			team_name: '天天团队',
-			ctime: '2020-02-18',
-			status: 1,
-			job_status: 2
-		},
-		{
-			name: '高薪诚聘销售精英',
-			team_name: '天天团队',
-			ctime: '2020-02-18',
-			status: 2,
-			job_status: 1
-		},
-		{
-			name: '高薪诚聘销售精英',
-			team_name: '天天团队',
-			ctime: '2020-02-18',
-			status: 3,
-			job_status: 1
-		},
-		{
-			name: '高薪诚聘销售精英',
-			team_name: '天天团队',
-			ctime: '2020-02-18',
-			status: 4,
-			job_status: 1
-		}],
+		list: [],
 		params: {
 			uid: '',
 			page: 1,
@@ -70,9 +36,13 @@ export default class checkTeam extends wepy.page {
 		tabBarData: {},
 		tabBarIndex: 0
 	}
+	config = {
+		navigationBarTitleText: '审核团队'
+	}
 	events = {
 		searchValue: val => {
-			this.params = Object.assign(this.params, val)
+			this.params = Object.assign(this.params, { keyWord: val })
+			this.getInvoiceList()
 			console.log(val)
 		}
 	}
@@ -80,39 +50,20 @@ export default class checkTeam extends wepy.page {
 		searchScrollLower() {
 			if (this.count > this.list.length && this.count > this.params.limit) {
 				this.params.limit = this.params.limit + 10
-				this.getResumeList()
+				this.getInvoiceList()
 			}
 		}
 	}
-	getResumeList() {
-		$http('/Wxresume/resumelist', this.params).then(res => {
+	getInvoiceList() {
+		$http('/company/applyInvoiceList', this.params).then(res => {
 			this.list = res.data.data || []
 			this.count = res.data.count
 			this.$apply()
 		})
 	}
-	onLoad() {
-		// let info = store.getState().user.loginUser
-		this.usertype = wx.getStorageSync('rendaUserType')
-		this.$apply()
-		// 授权成功，缓存没有微信信息
-		if (!wx.getStorageSync('wxInfo')) {
-			wx.getUserInfo({
-				success: res => {
-					let params = {
-						head_img: res.userInfo.avatarUrl,
-						address: res.userInfo.province + res.userInfo.city,
-						user_name: res.userInfo.nickName
-					}
-					this.$parent.globalData.wxInfo = params
-					wx.setStorageSync('wxInfo', JSON.stringify(params))
-				}
-			})
-		}
-	}
 	onShow() {
 		this.params.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
-		// this.getResumeList()
+		this.getInvoiceList()
 	}
 }
 </script>

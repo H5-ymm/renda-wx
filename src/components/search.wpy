@@ -1,16 +1,23 @@
 
 <style lang="less">
-.weui-input {
-  &.search-input {
-    padding: 26rpx;
+.weui-cell {
+  .weui-input {
+    &.search-input {
+			padding: 26rpx;
+			text-align: left;
+    }
+  }
+  .searchIcon {
+    width: 33rpx;
   }
 }
 </style>
 
 <template>
-  <view class="weui-cell weui-flex start page_card">
-		<image src="../images/search.png" class="dateIcon" />
-    <input class="weui-input search-input" @input='inputBind' confirm-type="search" value="{{name}}" placeholder="搜索"/>
+  <view class="weui-cell weui-flex start">
+		<image src="https://a.rsd123.com/image/images/search.png" class="dateIcon searchIcon" />
+    <input class="weui-input search-input" @input='inputBind' confirm-type="search" @focus="inputFocus"
+		value="{{name}}" placeholder="搜索"/>
   </view>
 </template>
 
@@ -22,9 +29,11 @@ export default class search extends wepy.component {
 	}
 	methods = {
 		inputBind(e) {
-			console.log(e)
 			this.name = e.detail.value
 			this.$emit('searchValue', this.name)
+		},
+		inputFocus() {
+			this.$emit('inputFocus')
 		}
 	}
 }

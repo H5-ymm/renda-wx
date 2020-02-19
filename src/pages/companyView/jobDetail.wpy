@@ -44,7 +44,7 @@
         <view class="page_card_row">
           <view class="weui-flex between">
             <view class="my-text  weui-flex__item my-text-require">所在地区：</view>
-            <districtSelet @selectCity="selectCity" :address.sync="[]"
+            <districtSelet @selectCity="selectCity" :address.sync="address"
             :disabled.sync="disabled"></districtSelet>
           </view>
         </view>
@@ -208,7 +208,8 @@ export default class ceateList extends wepy.page {
 		money_array: [],
 		job_array: [],
 		edu_type: [],
-		typeBtn: 2
+		typeBtn: 2,
+		address: []
 	}
 	config = {
 		navigationBarTitleText: '基本信息'
@@ -218,7 +219,9 @@ export default class ceateList extends wepy.page {
 		for (let key in allData) {
 			this[key] = allData[key]
 		}
+		this.typeBtn = 2
 		this.ageArray = [ageList(), ageList()]
+		this.getInvoiceDetail()
 		this.$apply()
 	}
 	onShow() {
@@ -226,12 +229,6 @@ export default class ceateList extends wepy.page {
 			this.form = JSON.parse(wx.getStorageSync('preForm'))
 			this.$apply()
 		}
-	}
-	onHide() {
-		console.log(1)
-	}
-	onReady() {
-		console.log(2)
 	}
 	events = {
 		selectCity: data => {
@@ -245,9 +242,41 @@ export default class ceateList extends wepy.page {
 			wxReLaunch('/pages/login/welcome')
 		}
 	}
-	registerTeam() {
+	getInvoiceDetail() {
+		let id = 1
+		$http('/enterpriseinvoice/selectInvoiceInfo', { id }).then(res => {
+			console.log(res)
+			this.form = res.data
+			this.form.job_content = this.form.job_content.replace('/<br>/g', '')
+			this.jobIndex = this.form.job_type - 1
+			let arr = ageList()
+			arr.forEach((item, i) => {
+				if (item == this.form.min_age) {
+					this.ageIndex[0] = i
+				}
+				if (item == this.form.max_age) {
+					this.ageIndex[1] = i
+				}
+			})
+			if (this.form.money_type == 1) {
+				this.moneyIndex = this.form.money ? this.form.money - 1 : 0
+			} else {
+				this.form.money = this.form.money
+			}
+			this.form.moneyTypeIndex = this.form.money_type ? this.form.money_type - 1 : 0
+			this.address = [
+				this.form.provinceid + '',
+				this.form.cityid + '',
+				this.form.three_cityid + ''
+			]
+			this.$broadcast('getInvoiceDetail', this.form)
+			this.$apply()
+		})
+	}
+	// 修改发单接口
+	updateInvoice() {
 		this.form.uid = wx.getStorageSync('rendaUid')
-		$http('/login/teamRegister', this.form).then(res => {
+		$http('/enterpriseinvoice/updateInvoice', this.form).then(res => {
 			if (res.data) {
 				let obj = getErrorTip(6006)
 				this.modalObj.title = obj.title
