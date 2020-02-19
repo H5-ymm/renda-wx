@@ -1,5 +1,5 @@
 <style lang="less">
-@import '../../style/home.less';
+@import "../../style/home.less";
 @height: 40;
 .weui-cell-steps {
   width: 70%;
@@ -63,7 +63,7 @@
 }
 /* 连接线 */
 .steps .step-item ~ .step-item:after {
-  content: '';
+  content: "";
   width: 100%;
   height: 4rpx;
   background-color: #eeeeee;
@@ -188,12 +188,15 @@ export default class home extends wepy.page {
     submitForm: data => {
       this.stepActive = 3
       this.resumeInfo = data
+      console.log(data)
     },
     submit: data => {
       // 发请求
       this.params = Object.assign(this.params, data)
+      console.log(data)
       if (this.stepActive === 2) {
         this.resumeInfo = data
+        this.stepActive = this.stepActive + 1
       } else if (this.stepActive === 3) {
         this.params.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
         if (!lock) {
@@ -205,10 +208,9 @@ export default class home extends wepy.page {
     }
   }
   // 添加简历接口
-  addResume () {
+  addResume() {
     lock = true
-    $http
-      .http('/Wxresume/addResume', this.params)
+    $http('/Wxresume/addResume', this.params)
       .then(res => {
         lock = false
         if (res.data) {
@@ -227,17 +229,17 @@ export default class home extends wepy.page {
   }
   // 事件处理函数(集中保存在methods对象中)
   methods = {
-    changeInput () {
+    changeInput() {
       if (this.stepActive < 3) {
         this.isInput = !this.isInput
       }
     },
-    selectChange (index, item) {
+    selectChange(index, item) {
       this.activeIndex = index
       this.resumeType = item
       this.$apply()
     },
-    save () {
+    save() {
       this.isScaleModal = true
       this.$apply()
       wx.setStorageSync('resumeType', this.resumeType)
@@ -245,7 +247,7 @@ export default class home extends wepy.page {
     }
   }
   watch = {
-    resumeType (val) {
+    resumeType(val) {
       if (val === '简历管理') {
         this.activeIndex = 0
       } else if (val === '团队接单') {
@@ -256,7 +258,7 @@ export default class home extends wepy.page {
     }
   }
   // 页面的生命周期函数
-  onLoad (options) {
+  onLoad(options) {
     if (options.query) {
       this.baseInfo = JSON.parse(options.query)
       this.resumeType = this.baseInfo.resumeType || '简历管理'

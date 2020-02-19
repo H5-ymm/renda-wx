@@ -30,7 +30,7 @@
           <view class="page_card_row">
             <view class="weui-flex between">
               <view class="my-text">成员数量</view>
-              <view class="my-text-right">{{teamData.grade_num}}人</view>
+              <view class="my-text-right">{{teamData.number?teamData.number:0}}人</view>
             </view>
           </view>
           <view class="page_card_row">
