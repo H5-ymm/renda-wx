@@ -50,7 +50,7 @@
     .modal-img-bg {
       width: 100%;
       height: 237rpx;
-      margin: 0 auto;
+      margin: -20rpx auto 0;
     }
   }
   .modal-title {
@@ -74,7 +74,7 @@
     <view class="modal_box transition3s {{ isShow ? 'g_scale1': ''}}" id="modal-box" style="height:{{height}}rpx">
       <view class="modal-content">
         <view class="modal-bg">
-          <image src="{{modalObj.imgBg}}" class="modal-img-bg" mode="scaleToFill"/>
+          <image src="{{modalObj.imgBg}}" mode="aspectFill" class="modal-img-bg" />
         </view>
         <view class="modal-title">
           {{modalObj.title}}

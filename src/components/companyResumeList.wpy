@@ -5,12 +5,18 @@
   .page_card_time {
     width: 100%;
     text-align: right;
-  }
+	}
   .page_card_status-resume {
-    width: 70%;
+		width: 70%;
+		.page_card_status-item {
+			width: 100%;
+		}
     .weui-btn_cell {
       margin-bottom: 40rpx;
-    }
+		}
+		.page_card_receipt_status {
+			text-align: center;
+		}
   }
 }
 </style>
@@ -28,28 +34,33 @@
 							<view>
 								<view class="page_card_name">{{item.name}}</view>
 								<view class="text-line weui-flex__item">
-									{{item.age}} {{item.sex}} {{item.education}}</view>
+									{{item.age}}岁 {{item.sex==1?'男':'女'}} {{item.education}}</view>
 								<view class="text-line weui-flex__item">
 								 {{item.citys||'-'}}
 							  </view>
 					   </view>
 					</view>
-          <view class="weui-flex end wrap page_card_end">			
-						<view class="page_card_status-resume weui-flex between" wx:if="{{!item.status}}">
-							<button class="weui-btn_cell weui-flex__item weui-btn_primary" @tap="handleResume(0)">
-								{{text}}
-							</button>
-							<button class="weui-btn_cell weui-flex__item weui-btn_primary_plain" @tap="handleResume(1)">
-								{{receiptType===1?'拒绝':receiptType===2?'未通过':'未入职'}}
-							</button>
-						</view>
-						<view wx:else>
-								<view wx:if="{{item.status==2}}" class="page_card_receipt_status page_card_receipt_status2">已{{text}}</view>
-								<view wx:else class="page_card_receipt_status page_card_receipt_status3">
-									{{refuseText}}
+          <view class="weui-flex end wrap page_card_end">	
+						<view wx:if="{{isShowBtn}}" class="page_card_status-resume">
+							<view class="page_card_status-item weui-flex between"
+								wx:if="{{(receiptType==1&&!item.status)||(receiptType==2&&!item.interview_status)||(receiptType==3&&!item.entry_status)}}">
+									<button class="weui-btn_cell weui-flex__item weui-btn_primary"
+									@tap="handleResume({{item}},1)">
+										{{text}}
+									</button>
+									<button class="weui-btn_cell weui-flex__item weui-btn_primary_plain" @tap="handleResume({{item}},2)">
+										{{receiptType===1?'拒绝':receiptType===2?'未通过':'未入职'}}
+									</button>
+						    </view>
+						  	<view wx:else>
+									<view 
+									wx:if="{{item.status==1||item.interview_status==1||item.entry_status}}" class="page_card_receipt_status page_card_receipt_status2">已{{text}}</view>
+									<view wx:else class="page_card_receipt_status page_card_receipt_status3">
+										{{refuseText}}
 								</view>
-						 </view>
-						<view class="page_card_time">{{item.ctime}}</view>
+							</view>
+						</view>
+						<view class="page_card_time">{{item.addtime}}</view>
 					</view>
         </view>
       </view>
@@ -75,10 +86,18 @@ export default class companyResumeList extends wepy.component {
 		isCheck: false,
 		isShow: false,
 		refuseText: '',
-		text: ''
+		text: '',
+    isShowBtn: true
 	}
 	onLoad() {
-    this.getText(this.receiptType)
+		this.getText(this.receiptType)
+  	let statusObj = JSON.parse(wx.getStorageSync('statusObj'))
+		if (this.receiptType === 2&&!statusObj.view_time) {
+			this.isShowBtn = false
+		}
+		if (this.receiptType === 3&&!statusObj.entry_time&&tstatusObj.interview_status==1) {
+			this.isShowBtn = false
+		} 
 	}
 	getText(val) {
 		if (val === 3) {
@@ -102,8 +121,13 @@ export default class companyResumeList extends wepy.component {
 		}
 	}
 	methods = {
-		handleResume(item) {
-
+		handleResume(item, status) {
+			let query = {
+				uid: wx.getStorageSync('rendaUid'),
+				id: item.id,
+				status
+			}
+      this.$emit('handleResume', query)
 		},
 		selectResume(item) {
 

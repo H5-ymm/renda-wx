@@ -2,23 +2,24 @@
 @import "../../style/home.less";
 </style>
 <template>
-  <view class="home-view">
-    <view class="home-view-header"></view>
-    <view class="page page_margin">
-      <scroll-view scroll-y="true" class="view-content" @scrolltolower="searchScrollLower">
-        <view class="home-view-box">
-          <search @searchValue="searchValue"  class="page_card"></search>
-          <checkTeamList :list.sync="newList"></checkTeamList>
-        </view>
-      </scroll-view>
-    </view>
-  </view>
+	<view class="home-view">
+		<view class="home-view-header"></view>
+		<view class="page page_margin">
+			<scroll-view scroll-y="true" class="view-content" @scrolltolower="searchScrollLower">
+				<view class="home-view-box">
+					<search @searchValue="searchValue" class="page_card"></search>
+					<checkTeamList :list.sync="newList"></checkTeamList>
+				</view>
+			</scroll-view>
+		</view>
+	</view>
 </template>
 <script>
 import wepy from 'wepy'
 import { $http } from '@/http.js'
 import search from '@/components/search'
 import checkTeamList from '@/components/checkTeamList'
+import { getList } from '@/util.js'
 export default class checkTeam extends wepy.page {
 	components = {
 		search: search,
@@ -38,17 +39,14 @@ export default class checkTeam extends wepy.page {
 	}
 	events = {
 		searchValue: val => {
-			this.params = Object.assign(this.params, { keyWord: val })
+			console.log(val)
+			this.params = Object.assign(this.params, { keyword: val })
 			this.getInvoiceList()
 		}
 	}
 	computed = {
 		newList() {
-			return this.list.map(item => {
-				console.log(item.ctime)
-				item.ctime = item.ctime ? $moment.unix(item.ctime).format('YYYY-MM-DD') : ''
-				return item
-			})
+			return getList(this.list, 'addtime')
 		}
 	}
 	methods = {

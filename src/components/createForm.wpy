@@ -74,7 +74,7 @@
 				  	</view>    
           </view>
         </view>
-				<view class="page_card_row" wx:if="{{form.reward_type}}">
+				<view class="page_card_row" wx:if="{{form.reward_type&&form.reward_type!=4}}">
           <view class="weui-flex between">
             <view class="my-text  weui-flex__item my-text-require">结算方式：</view>
 						<picker wx:if="{{form.reward_type==1}}" @change="bindPickerChange" data-name="reward_money_type" value="{{rewardTypeIndex}}" 

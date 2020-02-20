@@ -1,10 +1,4 @@
-/* eslint-disable prefer-promise-reject-errors */
-/* eslint-disable promise/param-names */
-import promise from "redux-promise";
-
-// import wepy from 'wepy';
-// console.log(wepy)
-// const baseUrl = wepy.$appConfig.baseUrl;
+import $moment from 'moment';
 const manglingFormatCardNumber = (cardNumber) => {
     if (cardNumber && cardNumber.length > 8) {
         return `${cardNumber.substring(0, 4)} ${'*'
@@ -162,14 +156,14 @@ const wxReLaunch = url => {
         })
     }, 300)
 }
-export const getArray = obj => {
+const getArray = obj => {
     let arr = []
     for (let key in obj) {
         arr.push(obj[key])
     }
     return arr
 }
-export const getKeyValue = obj => {
+const getKeyValue = obj => {
     for (let key in obj) {
         if (key === 'job_array') {
             obj[key] = getArray(obj[key])
@@ -177,15 +171,14 @@ export const getKeyValue = obj => {
     }
     return obj
 }
-export const weekList = () => {
+const weekList = () => {
     let arr = []
     for (let i = 1; i < 8; i++) {
         arr.push(replaceWeek(i))
     }
-    console.log(arr)
     return arr
 }
-export const replaceWeek = (number) => {
+const replaceWeek = (number) => {
     let text = ''
     switch (number) {
         case 1:
@@ -214,14 +207,14 @@ export const replaceWeek = (number) => {
     }
     return text
 }
-export const ageList = () => {
+const ageList = () => {
     let arr = []
     for (let i = 16; i < 66; i++) {
         arr.push(i)
     }
     return arr
 }
-export const rewardTypeText = () => {
+const rewardTypeText = () => {
     let text = ''
     switch (number) {
         case 1:
@@ -238,7 +231,7 @@ export const rewardTypeText = () => {
     }
     return '元/人/' + text
 }
-export const wxShowModal = (title, content, confirmText) => {
+const wxShowModal = (title, content, confirmText) => {
     return new Promise((resove, rejcet) => {
         wx.showModal({
             title: title || '操作提示',
@@ -254,6 +247,17 @@ export const wxShowModal = (title, content, confirmText) => {
                 }
             }
         })
+    })
+}
+const getList = (list, key) => {
+    return list.map(item => {
+        let flag
+        let reg = /^[0-9]+.?[0-9]*$/
+        if (item[key] && reg.test(item[key])) {
+            flag = true
+        }
+        item[key] = flag ? $moment.unix(item[key]).format('YYYY-MM-DD') : item[key]
+        return item
     })
 }
 module.exports = {
@@ -272,5 +276,6 @@ module.exports = {
     weekList: weekList,
     ageList: ageList,
     rewardTypeText: rewardTypeText,
-    wxShowModal: wxShowModal
+    wxShowModal: wxShowModal,
+    getList: getList
 };

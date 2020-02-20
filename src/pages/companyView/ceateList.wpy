@@ -260,7 +260,10 @@ export default class ceateList extends wepy.page {
 		bindPickerChange(e) {
 			let key = e.currentTarget.dataset.name
 			let value = e.detail.value
-			if (key === 'money_type') {
+			if (key === 'job_type') {
+				this.jobIndex = value
+				this.form[key] = Number(value) + 1
+			} else if (key === 'money_type') {
 				this.moneyTypeIndex = value
 				this.form[key] = Number(value) + 1
 			} else if (key === 'sex') {
@@ -281,6 +284,7 @@ export default class ceateList extends wepy.page {
 				this.form[key] = Number(value) + 1
 			} else {
 				this.eduIndex = value
+				console.log(this.eduIndex)
 				this.form[key] = value
 			}
 			this.$apply()

@@ -1,51 +1,50 @@
 
 <template>
-   <view class="page_card_row">
-				<view class="weui-flex between">
-					<view class="page_card_name">
-						 <view>{{itemValue.name||itemValue.jobName}}</view>
-	           <view class="badgeNum" 
-							wx:if="{{!item.com_isread}}">New</view>
+  <view class="page_card_row weui-flex between">
+		<view class="weui-flex__item">
+			<view class="weui-flex between">
+				<view class="page_card_name">
+					<view>{{itemValue.name||itemValue.jobName}}</view>
+					<view class="badgeNum" wx:if="{{!item.com_isread&&!receiptType}}">
+					  New
 					</view>
-					<view wx:if="{{!receiptType}}">
-						<view wx:if="{{itemValue.job_status==1}}"
-							class="page_card_receipt_status {{'page_card_receipt_status'+itemValue.status}}" >
-							{{wxs.statusText(itemValue.status)}}
+				</view>
+				<view wx:if="{{!receiptType}}">
+					<view wx:if="{{itemValue.job_status==1}}"
+						class="page_card_receipt_status {{'page_card_receipt_status'+itemValue.status}}" >
+						{{wxs.statusText(itemValue.status)}}
+					</view>
+					<view class="page_card_receipt_status page_card_receipt_status4" wx:else>
+						已下架
+					</view>
+				</view>
+				<view wx:if="{{receiptType}}">
+					<view class="page_card_receipt_status page_card_receipt_status3"
+						wx:if="{{receiptType==1&&!itemValue.view_time}}">
+						未设置面试时间
+					</view>
+					<view class="page_card_receipt_status page_card_receipt_status3"  
+						wx:elif="{{receiptType==2&&itemValue.interview_status>1&&!itemValue.entry_time}}">
+						未设置入职时间
+					</view>
+					<view wx:else
+						class="page_card_receipt_status {{'page_card_receipt_status'+(!itemValue.interview_status&&!itemValue.entry_status?itemValue.invoice_status:itemValue.entry_status?itemValue.interview_status:itemValue.entry_status)}}">
+						<view wx:if="{{receiptType==1}}">
+							{{!itemValue.invoice_status?'收集中':itemValue.invoice_status==1?'审核中':'面试开始'}} 
 						</view>
-						<view class="page_card_receipt_status page_card_receipt_status4" wx:else>
-							已下架
+						<view wx:if="{{receiptType==2&&itemValue.interview_status<=1}}">
+							面试开始
+						</view>
+						<view wx:if="{{receiptType==2&&itemValue.interview_status>=2}}">
+						{{!itemValue.entry_status?'面试结束':itemValue.entry_status==1?'入职开始':'入职结束'}} 
+						</view>
+						<view wx:if="{{receiptType==3&&itemValue.entry_status<=1}}">
+							入职开始
+						</view>
+						<view wx:if="{{receiptType==3&&itemValue.entry_status>1}}">
+						{{itemValue.entry_status==2?'入职结束':itemValue.entry_status==3?'审核入职':'审核结束'}} 
 						</view>
 					</view>
-					<view wx:if="{{receiptType}}">
-						<view class="page_card_receipt_status page_card_receipt_status3"
-							wx:if="{{receiptType==1&&!itemValue.view_time}}">
-							未设置面试时间
-						</view>
-						<view class="page_card_receipt_status page_card_receipt_status3"  
-							wx:elif="{{receiptType==2&&!itemValue.entry_time}}">
-							未设置入职时间
-						</view>
-						<!-- <view wx:else
-							class="page_card_receipt_status {{'page_card_receipt_status'+itemValue.invoice_status}}">
-							{{wxs.statusReceiptText(itemValue.invoice_status, itemValue.interview_status,itemValue.entry_status, receiptType)}} -->
-							 <view wx:else
-							class="page_card_receipt_status {{'page_card_receipt_status'+itemValue.invoice_status}}">
-						  <view wx:if="{{receiptType==1}}">
-								{{!itemValue.invoice_status?'收集中':itemValue.invoice_status==1?'审核中':'面试开始'}} 
-							</view>
-							<view wx:if="{{receiptType==2&&itemValue.interview_status<=1}}">
-						  	面试开始
-							</view>
-						 <view wx:if="{{receiptType==2&&itemValue.interview_status==2}}">
-						  {{!itemValue.entry_status?'面试结束':itemValue.entry_status==1?'入职开始':'入职结束'}} 
-							</view>
-							<view wx:if="{{receiptType==3&&itemValue.entry_status<=1}}">
-								入职开始
-							</view>
-							<view wx:if="{{receiptType==3&&itemValue.entry_status>1}}">
-							{{itemValue.entry_status==2?'入职结束':itemValue.entry_status==3?'审核入职':'审核结束'}} 
-							</view>
-						</view>
 					</view>
 				</view>
 				<view class="weui-flex between">
@@ -54,18 +53,19 @@
 					</view>
 					<view class="page_card_time">{{itemValue.addtime||itemValue.ctime}}</view>
 				</view>
-			</view>
-  </view>
+		  </view>
+			<image mode="scaleToFill" class="weui-flex__item" src="https://a.rsd123.com/image/images/right.png" class="page_down_icon"/>
+		</view>
+</view>
 </template>
 <script>
 import wepy from 'wepy'
 import wxs from '../filterWxs/receiptFilter.wxs'
-import dateWxs from '../filterWxs/dateFilter.wxs'
 export default class receiptItem extends wepy.component {
 	props = {
 		itemValue: Object
 	}
-	wxs = { wxs, dateWxs }
+	wxs = { wxs }
 	data = {
 		receiptType: 0
 	}

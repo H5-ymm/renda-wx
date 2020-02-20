@@ -5,7 +5,7 @@
 	<view class="home-view">
 		<view class="home-view-header"></view>
 		<view class="page page_margin">
-			<scroll-view scroll-y="true" class="view-content" @scrolltolower="searchScrollLower">
+			<scroll-view scroll-y="true" height="100%" @scrolltolower="searchScrollLower">
 				<view class="home-view-box">
 					<search @searchValue="searchValue" class="page_card"></search>
 					<receiptList :list.sync="newList" :receiptType.sync="receiptType"></receiptList>
@@ -19,7 +19,8 @@ import wepy from 'wepy'
 import { $http } from '@/http.js'
 import search from '@/components/search'
 import receiptList from '@/components/receiptList'
-import $moment from 'moment';
+import $moment from 'moment'
+import { wxToast, getList } from '@/util.js'
 export default class checkReceipt extends wepy.page {
 	components = {
 		search: search,
@@ -47,11 +48,20 @@ export default class checkReceipt extends wepy.page {
 	}
 	computed = {
 		newList() {
-			return this.list.map(item => {
-				item.addtime = item.addtime ? $moment.unix(item.addtime).format('YYYY-MM-DD') : ''
-				return item
-			})
+			return getList(this.list, 'ctime')
 		}
+	}
+	onShow() {
+		this.params.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
+		this.getReceiptList()
+	}
+	getReceiptList() {
+		this.list = []
+		$http('/company/companyReceiptList', this.params).then(res => {
+			this.list = res.data.data || []
+			this.count = res.data.count
+			this.$apply()
+		})
 	}
 	methods = {
 		searchScrollLower() {
@@ -60,17 +70,6 @@ export default class checkReceipt extends wepy.page {
 				this.getReceiptList()
 			}
 		}
-	}
-	getReceiptList() {
-		$http('/company/companyReceiptList', this.params).then(res => {
-			this.list = res.data.data || []
-			this.count = res.data.count
-			this.$apply()
-		})
-	}
-	onShow() {
-		this.params.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
-		this.getReceiptList()
 	}
 }
 </script>

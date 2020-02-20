@@ -47,14 +47,22 @@ export default class receiptList extends wepy.component {
         let obj = {
           entry_status: item.entry_status,
           invoice_status: item.invoice_status,
-          interview_status: item.interview_status
+          interview_status: item.interview_status,
+          view_time: item.view_time,
+          entry_time: item.entry_time
         }
         wx.setStorageSync('statusObj', JSON.stringify(obj))
-        if (!item.view_time || (item.invoice_status==2&&!item.entry_time)) {
-          this.$emit('setTime', item.id)
+        if (!item.view_time || (item.interview_status>1&&!item.entry_time)) {
+          if (this.receiptType < 3 ) {
+            this.$emit('setTime', item.id)
+          } else {
+            wx.navigateTo({
+              url: '/pages/companyView/checkResumeList?query=' + this.receiptType+'&job_id='+ item.id
+            })
+          }
         } else {
           wx.navigateTo({
-            url: '/pages/companyView/checkResumeList?query=' + this.receiptType
+            url: '/pages/companyView/checkResumeList?query=' + this.receiptType+'&job_id='+ item.id
           })
         }
       }

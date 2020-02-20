@@ -41,18 +41,18 @@
         <view class="modal-view-box">
 					<view class="modal-row">
 					  <text>面试时间</text>
-						<view class="modal-col">2019-10-29 10:19</view>
+						<view class="modal-col">{{form.time}}</view>
 					</view>
 					<view class="modal-row">
 					  <text>面试地址</text>
-						<view class="modal-col">上海市 浦东新区</view>
-						<view class="modal-col">金海路</view>
+						<view class="modal-col"> {{form.address}}</view>
+						<view class="modal-col"> {{form.detailAddress}}</view>
 					</view>
 					<view class="modal-row">
 					  <text>通知内容</text>
 						<view class="modal-col">
 							<view class="weui-input weui-textarea">
-		             请输入面试通知的内容
+		             {{form.content}}
 							</view>
 						</view>	
 					</view>
@@ -69,11 +69,13 @@
 <script>
 import wepy from 'wepy'
 import { $http } from '@/http.js'
+import $moment from 'moment'
 export default class viewNoticeModal extends wepy.component {
 	props = {
 		isScaleModal: Boolean,
 		height: Number,
-		title: String
+		title: String,
+		timeInfo: Object
 	}
 	data = {
 		isShow: false,
@@ -88,16 +90,21 @@ export default class viewNoticeModal extends wepy.component {
 		handleOk() {
 			this.isShow = false
 			this.$apply()
-			if (this.type) {
-				console.log(this.type)
-				this.$emit('handleOkLogin', 2)
-			}
-			else {
-				this.$emit('handleOk', this.activeIndex)
-			}
+      this.$emit('handleClose')
 		}
 	}
 	watch = {
+		timeInfo(val) {
+			if (val&&val.content) {
+				this.form.time = $moment.unix(val.time).format('YYYY-MM-DD HH:mm')
+				let arr = val.content.split('&')
+				this.form.content = arr[1]
+				let address = arr[0].split('/')
+				this.form.address = address[0]
+				this.form.detailAddress = address[1]
+				this.$apply()
+			}
+		},
 		isScaleModal(val) {
 			if (!val) {
 				this.isShow = true

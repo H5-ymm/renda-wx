@@ -21,8 +21,7 @@ import { $http } from '@/http.js'
 import search from '@/components/search'
 import receiptList from '@/components/receiptList'
 import noticeModal from '@/components/noticeModal'
-import { wxToast, wxReLaunch, wxShowModal } from '@/util.js'
-import $moment from 'moment';
+import { wxToast, wxReLaunch, wxShowModal, getList } from '@/util.js'
 export default class resumeSiftings extends wepy.page {
 	components = {
 		search: search,
@@ -46,37 +45,27 @@ export default class resumeSiftings extends wepy.page {
 	getTitle(val) {
 		return val === 1 ? '简历初筛' : val === 2 ? '面试结果' : '入职名单'
 	}
-	getList(val) {
+	getJobList() {
 		this.list = []
-		this.$apply()
-		if (val === 1) {
-			this.getResumeList()
-		} else if (val === 2) {
-			this.getResumeList()
-		} else {
-			this.getResumeList()
-		}
-	}
-	getResumeList() {
-		$http('/company/CompanyResumeList', this.params).then(res => {
+		$http(this.urlApi, this.params).then(res => {
 			this.list = res.data.data || []
 			this.count = res.data.count
 			this.$apply()
 		})
 	}
+	// 设置面试和入职时间
 	setDate(data) {
-		console.log(data)
 		let params = {
 			uid: this.params.uid,
 			job_id: this.job_id,
 			time: data.time,
 			content: data.content
 		}
-		$http('/company/editInterviewTime', params).then(res => {
+		$http(this.timeUrlApi, params).then(res => {
 			if (res.data) {
 				this.isModal = true
 				this.$apply()
-				this.getList(this.receiptType)
+				this.getJobList()
 			} else {
 				wxToast('设置时间失败')
 			}
@@ -84,27 +73,34 @@ export default class resumeSiftings extends wepy.page {
 	}
 	onLoad(options) {
 		this.receiptType = Number(options.query)
+		if (options.jobId) {
+			this.params.jobId = options.jobId
+		}
 		this.$apply()
 		wx.setNavigationBarTitle({
 			title: this.getTitle(this.receiptType)
 		})
 	}
-	computed = {
-		newList() {
-			return this.list.map(item => {
-				item.addtime = item.addtime ? $moment.unix(item.addtime).format('YYYY-MM-DD') : ''
-				return item
-			})
-		}
-	}
 	onShow() {
 		this.params.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
-		this.getList(this.receiptType)
+		this.getJobList()
+	}
+	computed = {
+		newList() {
+			return getList(this.list, 'addtime')
+		},
+		// 获取简历初筛，面试名单，入职名单列表url
+		urlApi() {
+			return this.receiptType === 1 ? '/company/CompanyResumeList' : this.receiptType === 2 ? '/company/invoiceInterviewList' : '/company/entryInvoiceList'
+		},
+		timeUrlApi() {
+			return this.receiptType === 1 ? '/company/editInterviewTime' : '/company/editEntryTime'
+		}
 	}
 	events = {
 		searchValue: val => {
 			this.params = Object.assign(this.params, { job_name: val })
-			this.getList(this.receiptType)
+			this.getJobList()
 		},
 		setTime: data => {
 			this.job_id = data
@@ -124,7 +120,7 @@ export default class resumeSiftings extends wepy.page {
 		searchScrollLower() {
 			if (this.count > this.list.length && this.count > this.params.limit) {
 				this.params.limit = this.params.limit + 10
-				this.getList(this.receiptType)
+				this.getJobList()
 			}
 		}
 	}
