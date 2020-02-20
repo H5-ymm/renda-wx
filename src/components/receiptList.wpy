@@ -23,10 +23,7 @@ export default class receiptList extends wepy.component {
     receiptItem: receiptItem
   }
   props = {
-    list: {
-      type: Array,
-      default: []
-    },
+    list: Array,
     receiptType: {
       type: Number,
       default: 0
@@ -53,10 +50,8 @@ export default class receiptList extends wepy.component {
           interview_status: item.interview_status
         }
         wx.setStorageSync('statusObj', JSON.stringify(obj))
-        console.log(item.view_time)
-        console.log(item.entry_time)
-        if (!item.view_time || !item.entry_time) {
-          this.$emit('setTime')
+        if (!item.view_time || (item.invoice_status==2&&!item.entry_time)) {
+          this.$emit('setTime', item.id)
         } else {
           wx.navigateTo({
             url: '/pages/companyView/checkResumeList?query=' + this.receiptType

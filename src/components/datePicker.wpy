@@ -27,9 +27,8 @@
 </template>
 <script>
 import wepy from 'wepy'
-import wxs from '../filterWxs/dateFilter.wxs'
+import $moment from 'moment';
 export default class datePicker extends wepy.component {
-	wxs = { wxs }
 	data = {
 		dateValue: '请选择日期',
 		timeValue: '请选择时间',
@@ -43,18 +42,18 @@ export default class datePicker extends wepy.component {
 		params(val) {
 			if (val.date !== '' && val.time !== '') {
 				let newDate = val.date + ' ' + val.time
-				console.log(newDate)
 				newDate = newDate + ''
 				let date = new Date(newDate).getTime() + ''
-				console.log(date)
 				date = date.substr(0, 10)
-				this.$emit('changeDate', date)
+				console.log(date)
+				this.$emit('setDate', date)
 			}
 		}
 	}
 	onLoad() {
-		let time = new Date().getTime()
-		// console.log(wxs.dateFormat(time, 'yyyy/MM/dd'))
+		this.dateValue = $moment().add(1, 'days').format('YYYY-MM-DD')
+		this.params.date = this.dateValue
+    this.startValue = this.dateValue
 		this.$apply()
 	}
 	methods = {
@@ -64,7 +63,6 @@ export default class datePicker extends wepy.component {
 			this.$apply()
 		},
 		timeChange(e) {
-			console.log(e)
 			this.timeValue = e.detail.value
 			this.params.time = e.detail.value
 			this.$apply()

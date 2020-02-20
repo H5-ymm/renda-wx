@@ -3,12 +3,12 @@
 </style>
 <script>
 import wepy from 'wepy';
+import moment from 'moment';
 import 'wepy-async-function';
 import { setStore } from 'wepy-redux'
 import configStore from './store'
 import { $http } from '@/http.js'
 const store = configStore()
-wepy.store = store
 setStore(store)
 export default class extends wepy.app {
   config = {

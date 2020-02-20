@@ -16,7 +16,7 @@
           </view>
           <view class="weui-flex between">
             <view class="weui-flex start weui-flex__item">{{item.name}}</view>
-					  <view class="page_card_time">{{item.ctime}}</view>
+					  <view class="page_card_time">{{item.addtime}}</view>
           </view>
         </view>
       </view>
@@ -39,9 +39,8 @@ export default class checkTeamtList extends wepy.component {
   data = {}
   methods = {
     viewDetail(item) {
-      console.log(item)
       wx.navigateTo({
-        url: '/pages/companyView/teamDetail'
+        url: '/pages/companyView/teamDetail?query=' + JSON.stringify(item)
       })
     }
   }

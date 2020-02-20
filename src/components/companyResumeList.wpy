@@ -74,30 +74,31 @@ export default class companyResumeList extends wepy.component {
 	data = {
 		isCheck: false,
 		isShow: false,
-		activeIndex: -1,
 		refuseText: '',
 		text: ''
+	}
+	onLoad() {
+    this.getText(this.receiptType)
+	}
+	getText(val) {
+		if (val === 3) {
+			this.text = '入职'
+			this.refuseText = '未入职'
+		} else {
+			this.text = '通过'
+			if (val === 1) {
+				this.refuseText = '已拒绝'
+			} else {
+				this.refuseText = '未通过'
+			}
+		}
+		this.$apply()
 	}
 	watch = {
 		isCheck(val) {
 			if (val) {
 
 			}
-		},
-		receiptType(val) {
-			console.log(val === 3)
-			if (val === 3) {
-				this.text = '入职'
-				this.refuseText = '未入职'
-			} else {
-				this.text = '通过'
-				if (val === 1) {
-					this.refuseText = '已拒绝'
-				} else {
-					this.refuseText = '未通过'
-				}
-			}
-			this.$apply()
 		}
 	}
 	methods = {

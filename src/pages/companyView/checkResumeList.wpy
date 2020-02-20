@@ -265,22 +265,20 @@ export default class checkResumeList extends wepy.page {
 				{ name: '已入职', num: 0 },
 				{ name: '未入职', num: 0 }]
 		}
+		this.getList()
 		return arr1.concat(arr)
 	}
-	getResumeList() {
+	getCheckList() {
+		$http('/company/auditResumeList', this.params).then(res => {
+			this.list = res.data.data || []
+			this.tabBarList[this.activeIndex].num = this.list.length
+			this.count = res.data.count
+			this.$apply()
+		})
+	}
+	getList(val) {
 		this.isSeachWidth = false
-		this.list = [{
-			name: '杨啦啦',
-			team_name: '天天团队',
-			ctime: '2020-02-18',
-			status: 4,
-			job_status: 1,
-			age: 23,
-			sex: '女',
-			education: '本科',
-			citys: '上海市票浦东新区'
-		}]
-		this.tabBarList[this.activeIndex].num = this.list.length
+		this.getCheckList()
 		this.$apply()
 	}
 	getTitle(val) {
@@ -296,7 +294,6 @@ export default class checkResumeList extends wepy.page {
 	onShow() {
 		this.params.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
 		this.statusObj = JSON.parse(wx.getStorageSync('statusObj'))
-		console.log(this.statusObj)
 		this.tabBarList = this.getTabBarList(this.receiptType)
 		this.$apply()
 	}

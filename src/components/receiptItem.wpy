@@ -2,7 +2,11 @@
 <template>
    <view class="page_card_row">
 				<view class="weui-flex between">
-					<view class="page_card_name">{{itemValue.name}}</view>
+					<view class="page_card_name">
+						 <view>{{itemValue.name||itemValue.jobName}}</view>
+	           <view class="badgeNum" 
+							wx:if="{{!item.com_isread}}">New</view>
+					</view>
 					<view wx:if="{{!receiptType}}">
 						<view wx:if="{{itemValue.job_status==1}}"
 							class="page_card_receipt_status {{'page_card_receipt_status'+itemValue.status}}" >
@@ -48,7 +52,7 @@
 					<view class="weui-flex start weui-flex__item">
 						需求人数：{{itemValue.required_number}}
 					</view>
-					<view class="page_card_time">{{dateWxs.dateFormat(itemValue.ctime,'yyyy-mm-dd')}}</view>
+					<view class="page_card_time">{{itemValue.addtime||itemValue.ctime}}</view>
 				</view>
 			</view>
   </view>
@@ -59,10 +63,7 @@ import wxs from '../filterWxs/receiptFilter.wxs'
 import dateWxs from '../filterWxs/dateFilter.wxs'
 export default class receiptItem extends wepy.component {
 	props = {
-		itemValue: {
-			type: Object,
-			default: {}
-		}
+		itemValue: Object
 	}
 	wxs = { wxs, dateWxs }
 	data = {
@@ -70,7 +71,6 @@ export default class receiptItem extends wepy.component {
 	}
 	onLoad() {
 		this.receiptType = Number(wx.getStorageSync('receiptType'))
-		console.log(this.receiptType)
 		this.$apply()
 	}
 }

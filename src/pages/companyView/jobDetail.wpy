@@ -246,7 +246,24 @@ export default class ceateList extends wepy.page {
 		submit: data => {
 			this.form = Object.assign(this.form, data)
 			this.save()
+		},
+		deleteInvice: ()=>{
+			let params = {
+				uid: this.form.uid,
+				id: this.form.id
+			}
+			wxShowModal('', '确定删除团队申请记录', '确定').then(res => {
+				this.deleteReceiptShelf(params)
+			}).catch(() => {
+				console.log('取消')
+			})
 		}
+	}
+ deleteReceiptShelf(params) {
+		$http('/company/delReceiptShelf', params).then(res => {
+			wxToast('删除成功')
+			wxReLaunch('/pages/companyView/checkReceipt')
+		})
 	}
 	getInvoiceDetail() {
 		$http('/enterpriseinvoice/selectInvoiceInfo', { id: this.id }).then(res => {

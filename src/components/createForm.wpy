@@ -107,11 +107,11 @@
 						<view class="weui-flex end">
 							 <input class="weui-input" 
 							 placeholder-class="placeholder" placeholder="请输入持续时长"
-						   value="{{form.duration_time}}" @input="changeInput" data-name="settlement_time"   />
-							 <image mode="scaleToFill" @tap="viewTip(1)" src="https://a.rsd123.com/image/images/tip.png" class="page_down_icon" />
+						   value="{{form.duration_time}}" @input="changeInput" data-name="duration_time"   />
 							 <view class="input-text-end" wx:if="{{form.reward_money_type}}">
 								 {{wxs.rewardTimeText(form.reward_money_type)}}
 								</view>
+								<image mode="scaleToFill" @tap="viewTip(1)" src="https://a.rsd123.com/image/images/tip.png" class="page_down_icon" />
 				  	</view>    
           </view>
         </view>

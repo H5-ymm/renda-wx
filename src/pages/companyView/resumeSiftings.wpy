@@ -2,26 +2,27 @@
 @import "../../style/home.less";
 </style>
 <template>
-  <view class="home-view">
-    <view class="home-view-header"></view>
-    <view class="page page_margin">
-      <scroll-view scroll-y="true" class="view-content" @scrolltolower="searchScrollLower">
-        <view class="home-view-box">
-          <search @searchValue="searchValue"  class="weui-cell weui-flex start page_card"></search>
-          <receiptAllList :list.sync="list" :receiptType.sync="receiptType"></receiptAllList>
-        </view>
-      </scroll-view>
-    </view>
-		<noticeModal :isScaleModal.sync="isModal" 
-    :height.sync="modalHeight" :title.sync="title"></noticeModal>
-  </view>
+	<view class="home-view">
+		<view class="home-view-header"></view>
+		<view class="page page_margin">
+			<scroll-view scroll-y="true" class="view-content" @scrolltolower="searchScrollLower">
+				<view class="home-view-box">
+					<search @searchValue="searchValue" class="weui-cell weui-flex start page_card"></search>
+					<receiptAllList :list.sync="newList" :receiptType.sync="receiptType" @setTime="setTime"></receiptAllList>
+				</view>
+			</scroll-view>
+		</view>
+		<noticeModal :isScaleModal.sync="isModal" :height.sync="modalHeight" :title.sync="title"></noticeModal>
+	</view>
 </template>
 <script>
 import wepy from 'wepy'
-// import { $http } from '@/http.js'
+import { $http } from '@/http.js'
 import search from '@/components/search'
 import receiptList from '@/components/receiptList'
 import noticeModal from '@/components/noticeModal'
+import { wxToast, wxReLaunch, wxShowModal } from '@/util.js'
+import $moment from 'moment';
 export default class resumeSiftings extends wepy.page {
 	components = {
 		search: search,
@@ -39,92 +40,91 @@ export default class resumeSiftings extends wepy.page {
 		receiptType: 0,
 		isModal: true,
 		modalHeight: 900,
-		title: ''
+		title: '',
+		job_id: ''
 	}
 	getTitle(val) {
 		return val === 1 ? '简历初筛' : val === 2 ? '面试结果' : '入职名单'
 	}
 	getList(val) {
-		let arr = []
+		this.list = []
+		this.$apply()
 		if (val === 1) {
-			arr = [{
-				name: '高薪诚聘销售精英',
-				required_number: 1,
-				ctime: 1579185467,
-				status: 1,
-				invoice_status: 1,
-				interview_status: 0,
-				entry_status: 0,
-				job_status: 1,
-				view_time: 0,
-				entry_time: 0
-			}
-			]
+			this.getResumeList()
 		} else if (val === 2) {
-			arr = [{
-				name: '高薪诚聘销售精英',
-				required_number: 1,
-				ctime: 1579185467,
-				status: 1,
-				invoice_status: 2,
-				interview_status: 0,
-				entry_status: 0,
-				job_status: 1,
-				view_time: 1579185467,
-				entry_time: 0
-			}]
+			this.getResumeList()
 		} else {
-			arr = [{
-				name: '高薪诚聘销售精英',
-				required_number: 1,
-				ctime: '2020-02-18',
-				status: 1,
-				invoice_status: 2,
-				interview_status: 3,
-				entry_status: 0,
-				job_status: 1,
-				view_time: 1579185467,
-				entry_time: 1579185467
-			}]
+			this.getResumeList()
 		}
-		return arr
 	}
 	getResumeList() {
-		// $http('/Wxresume/resumelist', this.params).then(res => {
-		// 	this.list = res.data.data || []
-		// 	this.count = res.data.count
-		// 	this.$apply()
-		// })
+		$http('/company/CompanyResumeList', this.params).then(res => {
+			this.list = res.data.data || []
+			this.count = res.data.count
+			this.$apply()
+		})
+	}
+	setDate(data) {
+		console.log(data)
+		let params = {
+			uid: this.params.uid,
+			job_id: this.job_id,
+			time: data.time,
+			content: data.content
+		}
+		$http('/company/editInterviewTime', params).then(res => {
+			if (res.data) {
+				this.isModal = true
+				this.$apply()
+				this.getList(this.receiptType)
+			} else {
+				wxToast('设置时间失败')
+			}
+		})
 	}
 	onLoad(options) {
 		this.receiptType = Number(options.query)
-		this.list = this.getList(this.receiptType)
 		this.$apply()
 		wx.setNavigationBarTitle({
 			title: this.getTitle(this.receiptType)
 		})
 	}
+	computed = {
+		newList() {
+			return this.list.map(item => {
+				item.addtime = item.addtime ? $moment.unix(item.addtime).format('YYYY-MM-DD') : ''
+				return item
+			})
+		}
+	}
 	onShow() {
 		this.params.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
-		// this.list = this.getList(this.receiptType)
-		// this.$apply()
+		this.getList(this.receiptType)
 	}
 	events = {
 		searchValue: val => {
-			this.params = Object.assign(this.params, val)
-			console.log(val)
+			this.params = Object.assign(this.params, { job_name: val })
+			this.getList(this.receiptType)
 		},
-		setTime: () => {
+		setTime: data => {
+			this.job_id = data
 			this.isModal = !this.isModal
 			this.title = this.receiptType === 1 ? '面试' : '入职'
 			this.$apply()
+		},
+		handleClose: () => {
+			this.isModal = true
+			this.$apply()
+		},
+		setAllTime: data => {
+			this.setDate(data)
 		}
 	}
 	methods = {
 		searchScrollLower() {
 			if (this.count > this.list.length && this.count > this.params.limit) {
 				this.params.limit = this.params.limit + 10
-				// this.getResumeList()
+				this.getList(this.receiptType)
 			}
 		}
 	}

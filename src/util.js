@@ -243,7 +243,7 @@ export const wxShowModal = (title, content, confirmText) => {
         wx.showModal({
             title: title || '操作提示',
             content: content,
-            confirmText: confirmText,
+            confirmText: confirmText || '确定',
             cancelColor: '#666666',
             confirmColor: '#1890FF',
             success(res) {

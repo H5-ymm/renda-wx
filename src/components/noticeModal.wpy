@@ -36,7 +36,7 @@
     margin-top: 10rpx;
     font-size: 26rpx;
     &.modal-col-input {
-      padding: 10rpx 24rpx;
+      padding: 14rpx 24rpx;
       margin-top: 10rpx;
     }
     .weui-input {
@@ -59,11 +59,12 @@
         <view class="modal-view-box">
 					<view class="modal-row">
 					  <text>{{title}}时间</text>
-						<datePicker></datePicker>
+						<datePicker @setDate="setDate"></datePicker>
 					</view>
 					<view class="modal-row">
 					  <text>{{title}}地址</text>
-						<districtSelet :address.sync="[]" class="modal-col"></districtSelet>
+						<districtSelet :address.sync="[]" @selectCityText="selectCityText"
+						:disabled.sync="disabled" class="modal-col"></districtSelet>
 						<view class="modal-col modal-col-input">
 							<input class="weui-input" placeholder-class="placeholder" data-name="address" value="{{form.address}}" @input="changeInput" placeholder="请输入详细地址" />
 						</view>
@@ -71,9 +72,9 @@
 					<view class="modal-row">
 					  <text>通知内容</text>
 						<view class="modal-col">
-							<textarea data-name="job_content" placeholder-class="placeholder"
+							<textarea data-name="content" placeholder-class="placeholder"
 								disable-default-padding="true"
-								class="weui-input weui-textarea" value="{{form.job_content}}" @input="changeInput"
+								class="weui-input weui-textarea" value="{{form.content}}" @input="changeInput"
 								placeholder="请输入{{title}}通知的内容" maxlength="1000"/>
 						</view>	
 					</view>
@@ -83,7 +84,7 @@
 					</view>
 		    </view>
         <view class="weui-cell_btn weui-flex between create-btn">
-          <button class="weui-btn_cell weui-btn_primary_plain" @tap="handleOk">取消</button>
+          <button class="weui-btn_cell weui-btn_primary_plain" @tap="handleClose">取消</button>
 					 <button class="weui-btn_cell weui-btn_primary" @tap="handleOk">确定</button>
         </view>
       </view>
@@ -94,14 +95,12 @@
 </template>
 <script>
 import wepy from 'wepy'
-import { $http } from '@/http.js'
 import datePicker from './datePicker'
 import districtSelet from './districtSelet'
 export default class noticeModal extends wepy.component {
 	props = {
 		isScaleModal: Boolean,
 		height: Number,
-		// modalObj: Object,
 		title: String
 	}
 	components = {
@@ -110,9 +109,29 @@ export default class noticeModal extends wepy.component {
 	}
 	data = {
 		isShow: false,
-		form: {}
+		form: {
+			content:'',
+			address: '',
+			time: ''
+		},
+		address: '',
+		disabled: true
+	}
+	events = {
+		setDate: data => {
+			console.log(data)
+			this.form.time = data
+		},
+		selectCityText: data => {
+			console.log(data)
+      this.address = data
+		}
 	}
 	methods = {
+		changeInput(e) {
+		  let key = e.currentTarget.dataset.name
+			this.form[key] = e.detail.value
+		},
 		handleClose() {
 			this.isShow = false
 			this.$apply()
@@ -121,13 +140,16 @@ export default class noticeModal extends wepy.component {
 		handleOk() {
 			this.isShow = false
 			this.$apply()
-			if (this.type) {
-				console.log(this.type)
-				this.$emit('handleOkLogin', 2)
-			}
-			else {
-				this.$emit('handleOk', this.activeIndex)
-			}
+			let params = {
+        time: this.form.time,
+        content:
+          this.address +
+          '/' +
+          this.form.address +
+          '&' +
+          this.form.content
+      }
+			this.$emit('setAllTime', params)
 		}
 	}
 	watch = {
@@ -135,7 +157,6 @@ export default class noticeModal extends wepy.component {
 			if (!val) {
 				this.isShow = true
 			} else {
-				this.activeIndex = 0
 				this.isShow = false
 			}
 			this.$apply()

@@ -17,10 +17,15 @@
 }
 </style>
 <template>
-  <view class="home-view register-view page_margin">
-    <createForm :typeBtn.sync="typeBtn" @submit="submit" @prePage="prePage"></createForm>
-    <teamModal :isScaleModal.sync="isModal" @handleOk="handleOk" :height.sync="modalHeight" :modalObj.sync="modalObj"></teamModal>
-  </view>
+	<view class="home-view register-view page_margin">
+		<createForm :typeBtn.sync="typeBtn" @submit="submit" @prePage="prePage"></createForm>
+		<teamModal
+			:isScaleModal.sync="isModal"
+			@handleOk="handleOk"
+			:height.sync="modalHeight"
+			:modalObj.sync="modalObj"
+		></teamModal>
+	</view>
 </template>
 <script>
 import wepy from 'wepy'
@@ -37,7 +42,7 @@ export default class ceateList extends wepy.page {
 		form: {
 			uid: wx.getStorageSync('rendaUid')
 		},
-		modalHeight: 560,
+		modalHeight: 460,
 		modalObj: {
 			title: '发单成功',
 			subTitle: '',
@@ -54,7 +59,8 @@ export default class ceateList extends wepy.page {
 		handleOk() {
 			this.isModal = true
 			this.$apply()
-			wxReLaunch('/pages/login/welcome')
+			wx.setStorageSync('receiptType', 0)
+			wxReLaunch('/pages/companyView/checkReceipt')
 		},
 		submit: data => {
 			let params = Object.assign(JSON.parse(this.preForm), data, this.form)
@@ -71,9 +77,6 @@ export default class ceateList extends wepy.page {
 	createOrderApi(params) {
 		$http('/enterpriseinvoice/createInvoice', params).then(res => {
 			if (res.data) {
-				let obj = getErrorTip(6006)
-				this.modalObj.title = obj.title
-				this.modalObj.subTitle = obj.subTitle
 				this.isModal = false
 				this.$apply()
 			} else {

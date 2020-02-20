@@ -57,11 +57,12 @@
     text-align: center;
     font-size: 36rpx;
     color: #000000;
+    margin: 24rpx 0;
   }
   .modal-subTitle {
     text-align: center;
     color: #999999;
-    margin: 24rpx 0;
+    margin-bottom:24rpx;
     font-size: 26rpx;
     display: inline-block;
   }
@@ -73,7 +74,7 @@
     <view class="modal_box transition3s {{ isShow ? 'g_scale1': ''}}" id="modal-box" style="height:{{height}}rpx">
       <view class="modal-content">
         <view class="modal-bg">
-          <image src="{{modalObj.imgBg}}" class="modal-img-bg" />
+          <image src="{{modalObj.imgBg}}" class="modal-img-bg" mode="scaleToFill"/>
         </view>
         <view class="modal-title">
           {{modalObj.title}}
