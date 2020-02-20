@@ -47,7 +47,9 @@ const http = (url, params, method) => {
                 wxToast('网络失败')
                 reject(error);
             }
-        });
+        }).onHeadersReceived(function (res) {
+            console.log("onHeadersReceived")
+        })
     });
 };
 const uploadFile = (tempFilePaths) => {

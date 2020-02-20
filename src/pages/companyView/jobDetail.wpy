@@ -209,12 +209,14 @@ export default class ceateList extends wepy.page {
 		job_array: [],
 		edu_type: [],
 		typeBtn: 2,
-		address: []
+		address: [],
+		id: ''
 	}
 	config = {
 		navigationBarTitleText: '基本信息'
 	}
-	onLoad() {
+	onLoad(options) {
+		this.id = options.query
 		let allData = store.getState().contant.list
 		for (let key in allData) {
 			this[key] = allData[key]
@@ -240,12 +242,14 @@ export default class ceateList extends wepy.page {
 			this.isModal = true
 			this.$apply()
 			wxReLaunch('/pages/login/welcome')
+		},
+		submit: data => {
+			this.form = Object.assign(this.form, data)
+			this.save()
 		}
 	}
 	getInvoiceDetail() {
-		let id = 1
-		$http('/enterpriseinvoice/selectInvoiceInfo', { id }).then(res => {
-			console.log(res)
+		$http('/enterpriseinvoice/selectInvoiceInfo', { id: this.id }).then(res => {
 			this.form = res.data
 			this.form.job_content = this.form.job_content.replace('/<br>/g', '')
 			this.jobIndex = this.form.job_type - 1
@@ -263,7 +267,7 @@ export default class ceateList extends wepy.page {
 			} else {
 				this.form.money = this.form.money
 			}
-			this.form.moneyTypeIndex = this.form.money_type ? this.form.money_type - 1 : 0
+			this.moneyTypeIndex = this.form.money_type ? this.form.money_type - 1 : 0
 			this.address = [
 				this.form.provinceid + '',
 				this.form.cityid + '',
@@ -274,19 +278,38 @@ export default class ceateList extends wepy.page {
 		})
 	}
 	// 修改发单接口
-	updateInvoice() {
-		this.form.uid = wx.getStorageSync('rendaUid')
-		$http('/enterpriseinvoice/updateInvoice', this.form).then(res => {
+	updateInvoice(params) {
+		$http('/enterpriseinvoice/updateInvoice', params).then(res => {
 			if (res.data) {
-				let obj = getErrorTip(6006)
-				this.modalObj.title = obj.title
-				this.modalObj.subTitle = obj.subTitle
-				this.isModal = false
-				this.$apply()
+				wxReLaunch('/pages/companyView/checkReceipt')
 			} else {
-				wxToast('注册失败')
+				wxToast('修改失败')
 			}
 		})
+	}
+	save() {
+		if (!this.form.name) {
+			wxToast('请输入职位名称')
+		} else if (this.form.job_type === '') {
+			wxToast('请选择职位类别')
+		} else if (!this.form.required_number) {
+			wxToast('请输入需求人数')
+		} else if (!this.form.provinceid) {
+			wxToast('请选择地区')
+		} else if (!this.form.min_age && !this.form.max_age) {
+			wxToast('请选择年龄')
+		} else if (!this.form.money_type) {
+			wxToast('请选择薪资类型')
+		} else if (this.form.money === '') {
+			wxToast('请设置薪资')
+		} else if (!this.form.job_content) {
+			wxToast('请输入职位描述')
+		} else if (this.form.job_content.length < 30) {
+			wxToast('职位描述不少于30个字')
+		} else {
+			this.form.uid = wx.getStorageSync('rendaUid')
+			this.updateInvoice(this.form)
+		}
 	}
 	methods = {
 		bindPickerChange(e) {
@@ -347,30 +370,6 @@ export default class ceateList extends wepy.page {
 		changeInput(e) {
 			let key = e.currentTarget.dataset.name
 			this.form[key] = e.detail.value
-		},
-		save() {
-			if (!this.form.name) {
-				wxToast('请输入职位名称')
-			} else if (this.form.job_type === '') {
-				wxToast('请选择职位类别')
-			} else if (!this.form.required_number) {
-				wxToast('请输入需求人数')
-			} else if (!this.form.provinceid) {
-				wxToast('请选择地区')
-			} else if (!this.form.min_age && !this.form.max_age) {
-				wxToast('请选择年龄')
-			} else if (!this.form.money_type) {
-				wxToast('请选择薪资类型')
-			} else if (this.form.money === '') {
-				wxToast('请设置薪资')
-			} else if (!this.form.job_content) {
-				wxToast('请输入职位描述')
-			} else if (this.form.job_content.length < 30) {
-				wxToast('职位描述不少于30个字')
-			} else {
-				let query = JSON.stringify(this.form)
-				wxNavigateTo('/pages/company/ceateMoreList?query=' + query)
-			}
 		}
 	}
 }

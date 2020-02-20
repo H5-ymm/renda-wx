@@ -337,7 +337,7 @@ export default class ceateList extends wepy.page {
 				wxToast('职位描述不少于30个字')
 			} else {
 				let query = JSON.stringify(this.form)
-				wxNavigateTo('/pages/company/ceateMoreList?query=' + query)
+				wxNavigateTo('/pages/companyView/ceateMoreList?query=' + query)
 			}
 		}
 	}

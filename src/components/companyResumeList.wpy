@@ -62,9 +62,9 @@
 </template>
 <script>
 import wepy from 'wepy'
-import wxs from '../filterWxs/dateFilter.wxs'
+// import wxs from '../filterWxs/dateFilter.wxs'
 export default class companyResumeList extends wepy.component {
-	wxs = { wxs }
+	// wxs = { wxs } 
 	props = {
 		list: Array,
 		isBatch: Boolean,

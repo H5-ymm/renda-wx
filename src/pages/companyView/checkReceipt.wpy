@@ -31,7 +31,7 @@ export default class checkReceipt extends wepy.page {
 			uid: '',
 			page: 1,
 			limit: 10,
-			keyword: ''
+			name: ''
 		},
 		count: 0,
 		receiptType: 0
@@ -41,7 +41,7 @@ export default class checkReceipt extends wepy.page {
 	}
 	events = {
 		searchValue: val => {
-			this.params = Object.assign(this.params, { keyword: val })
+			this.params = Object.assign(this.params, { name: val })
 			this.getReceiptList()
 		}
 	}

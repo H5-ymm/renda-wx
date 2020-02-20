@@ -51,7 +51,7 @@ var statusReceiptText = function (invoice_status, interview_status, entry_status
         } else if (type == 2) {
             if (interview_status <= 1) {
                 text = '面试开始'
-            } else if (interview_status == 2) {
+            } else(interview_status == 2) {
                 if (!entry_status) {
                     text = '面试结束'
                 } else if (entry_status == 1) {
@@ -71,6 +71,8 @@ var statusReceiptText = function (invoice_status, interview_status, entry_status
                 text = '审核结束'
             }
         }
+    } else {
+        text = ''
     }
     return text
 }

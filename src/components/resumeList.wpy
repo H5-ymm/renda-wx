@@ -1,7 +1,7 @@
 
 <template>
   <view>
-    <repeat wx:for="{{list}}" wx:key="index">
+    <repeat for="{{list}}" key="index">
       <view class="page_card" wx:if="{{list.length}}" @tap="viewDetail({{item}})">
         <view class="page_card_row">
           <view class="weui-flex between">

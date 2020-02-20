@@ -39,7 +39,25 @@ var rewardTimeText = function (number) {
     }
     return text
 }
+var rewardText = function (number) {
+    var text = ''
+    switch (number) {
+        case 1:
+            text = '日'
+            break;
+        case 2:
+            text = '周'
+            break;
+        case 3:
+            text = '月'
+            break;
+        default:
+            text = ''
+    }
+    return text
+}
 module.exports = {
     rewardTypeText: rewardTypeText,
-    rewardTimeText: rewardTimeText
+    rewardTimeText: rewardTimeText,
+    rewardText: rewardText
 }

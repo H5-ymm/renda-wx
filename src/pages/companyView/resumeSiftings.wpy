@@ -8,7 +8,7 @@
       <scroll-view scroll-y="true" class="view-content" @scrolltolower="searchScrollLower">
         <view class="home-view-box">
           <search @searchValue="searchValue"  class="weui-cell weui-flex start page_card"></search>
-          <receiptList :list.sync="list" :receiptType.sync="receiptType"></receiptList>
+          <receiptAllList :list.sync="list" :receiptType.sync="receiptType"></receiptAllList>
         </view>
       </scroll-view>
     </view>
@@ -25,7 +25,7 @@ import noticeModal from '@/components/noticeModal'
 export default class resumeSiftings extends wepy.page {
 	components = {
 		search: search,
-		receiptList: receiptList,
+		receiptAllList: receiptList,
 		noticeModal: noticeModal
 	}
 	data = {
@@ -50,7 +50,7 @@ export default class resumeSiftings extends wepy.page {
 			arr = [{
 				name: '高薪诚聘销售精英',
 				required_number: 1,
-				ctime: '2020-02-18',
+				ctime: 1579185467,
 				status: 1,
 				invoice_status: 1,
 				interview_status: 0,
@@ -64,13 +64,13 @@ export default class resumeSiftings extends wepy.page {
 			arr = [{
 				name: '高薪诚聘销售精英',
 				required_number: 1,
-				ctime: '2020-02-18',
+				ctime: 1579185467,
 				status: 1,
 				invoice_status: 2,
 				interview_status: 0,
 				entry_status: 0,
 				job_status: 1,
-				view_time: '2012-10-10',
+				view_time: 1579185467,
 				entry_time: 0
 			}]
 		} else {
@@ -83,8 +83,8 @@ export default class resumeSiftings extends wepy.page {
 				interview_status: 3,
 				entry_status: 0,
 				job_status: 1,
-				view_time: '2019-10-10',
-				entry_time: '2019-10-10'
+				view_time: 1579185467,
+				entry_time: 1579185467
 			}]
 		}
 		return arr
@@ -98,6 +98,7 @@ export default class resumeSiftings extends wepy.page {
 	}
 	onLoad(options) {
 		this.receiptType = Number(options.query)
+		this.list = this.getList(this.receiptType)
 		this.$apply()
 		wx.setNavigationBarTitle({
 			title: this.getTitle(this.receiptType)
@@ -105,8 +106,8 @@ export default class resumeSiftings extends wepy.page {
 	}
 	onShow() {
 		this.params.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
-		this.list = this.getList(this.receiptType)
-		this.$apply()
+		// this.list = this.getList(this.receiptType)
+		// this.$apply()
 	}
 	events = {
 		searchValue: val => {

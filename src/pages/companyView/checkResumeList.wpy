@@ -85,7 +85,8 @@ page {
 				</companyResumeList>
 			</scroll-view>
     </view>
-		<view class="weui-flex center create-btn footer-box" wx:if="{{!isBatch}}">
+	  <view wx:if="{{!statusObj.invoice_status||!statusObj.interview_status||!statusObj.interview_status}}">
+				<view class="weui-flex center create-btn footer-box" wx:if="{{!isBatch}}">
 			<view class="weui-flex__item item-btn weui-flex center" 
 				@tap="batchHandle">
 				批量操作
@@ -114,6 +115,22 @@ page {
 				</button>
 			</view>
 		</view>
+		<view wx:if="{{statusObj.invoice_status ==1||!statusObj.interview_status==1}}">
+	    <view 
+			wx:if="{{!statusObj.entry_status}}"
+				class="page_card_status-resume weui-flex center item-col">
+				<button class="weui-btn_cell  weui-flex__item weui-btn_primary" @tap="prePage">
+					提前结束面试
+				</button>
+			</view>
+			<view 
+				class="page_card_status-resume weui-flex center item-col">
+				<button class="weui-btn_cell  weui-flex__item weui-btn_primary" @tap="prePage">
+					提前结束入职
+				</button>
+			</view>
+		</view>
+		</view>
 		<viewNoticeModal :isScaleModal.sync="isModal" 
     :height.sync="modalHeight" :title.sync="title"></viewNoticeModal>
   </view>
@@ -121,7 +138,6 @@ page {
 <script>
 import wepy from 'wepy'
 import { $http } from '@/http.js'
-
 import tabBar from '@/components/tabBar'
 import search from '@/components/search'
 import companyResumeList from '@/components/companyResumeList'

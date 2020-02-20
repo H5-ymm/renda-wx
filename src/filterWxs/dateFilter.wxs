@@ -14,7 +14,6 @@
      var realDate = getDate(timestamp * 1000);
 
      function timeFormat(num) {
-         console.log(num < 10 ? '0' + num : num)
          return num < 10 ? '0' + num : num;
      }
      var date = [

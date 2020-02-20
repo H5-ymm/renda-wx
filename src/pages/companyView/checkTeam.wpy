@@ -31,10 +31,7 @@ export default class checkTeam extends wepy.page {
 			page: 1,
 			limit: 10
 		},
-		count: 0,
-		usertype: '',
-		tabBarData: {},
-		tabBarIndex: 0
+		count: 0
 	}
 	config = {
 		navigationBarTitleText: '审核团队'
@@ -43,7 +40,6 @@ export default class checkTeam extends wepy.page {
 		searchValue: val => {
 			this.params = Object.assign(this.params, { keyWord: val })
 			this.getInvoiceList()
-			console.log(val)
 		}
 	}
 	methods = {

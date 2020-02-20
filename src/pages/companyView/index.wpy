@@ -113,10 +113,18 @@ export default class Index extends wepy.page {
 	}
 	methods = {
 		viewInfo(item) {
+			if (item.url.indexOf('checkReceipt') > -1) {
+				wx.setStorageSync('receiptType', 0)
+			}
+			if (item.url.indexOf('resumeSiftings') > -1) {
+				let receiptType = item.url.split('=')[1]
+				wx.setStorageSync('receiptType', receiptType)
+			}
 			wxNavigateTo(item.url)
 		},
 		createOrderTaking() {
-			wxNavigateTo('/pages/company/ceateList')
+			console.log(2)
+			wxNavigateTo('/pages/companyView/ceateList')
 		}
 	}
 	onShow() {
