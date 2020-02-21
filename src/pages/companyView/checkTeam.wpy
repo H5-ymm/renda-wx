@@ -39,7 +39,6 @@ export default class checkTeam extends wepy.page {
 	}
 	events = {
 		searchValue: val => {
-			console.log(val)
 			this.params = Object.assign(this.params, { keyword: val })
 			this.getInvoiceList()
 		}

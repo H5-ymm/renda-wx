@@ -22,11 +22,13 @@
 </template>
 <script>
 import wepy from 'wepy'
+import $moment from 'moment'
 import { $http } from '@/http.js'
 import resumeQuery from '@/components/resumeQuery'
 import resumeCard from '@/components/resumeCard'
 import resumeList from '@/components/resumeList'
 import tabBarBottom from '@/components/tabBarBottom'
+import { wxShowModal, wxReLaunch, wxNavigateTo } from '@/util.js'
 // import { connect, getStore } from 'wepy-redux'
 // const store = getStore()
 //  @connect({
@@ -61,9 +63,7 @@ export default class home extends wepy.page {
   }
   methods = {
     addResume() {
-      wx.navigateTo({
-        url: '/pages/home/addInfo' // 页面 A
-      })
+      wxNavigateTo('/pages/home/addInfo')
     },
     searchScrollLower() {
       if (this.count > this.list.length && this.count > this.params.limit) {
@@ -82,24 +82,10 @@ export default class home extends wepy.page {
   onLoad() {
     // let info = store.getState().user.loginUser
     this.usertype = wx.getStorageSync('rendaUserType')
+    this.params.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
     this.$apply()
-    // 授权成功，缓存没有微信信息
-    if (!wx.getStorageSync('wxInfo')) {
-      wx.getUserInfo({
-        success: res => {
-          let params = {
-            head_img: res.userInfo.avatarUrl,
-            address: res.userInfo.province + res.userInfo.city,
-            user_name: res.userInfo.nickName
-          }
-          this.$parent.globalData.wxInfo = params
-          wx.setStorageSync('wxInfo', JSON.stringify(params))
-        }
-      })
-    }
   }
   onShow() {
-    this.params.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
     this.getResumeList()
   }
 }

@@ -42,7 +42,7 @@ import wepy from 'wepy'
 import modal from '@/components/modal'
 import { $http } from '@/http.js'
 import { wxToast, checkMobile, getErrorTip, wxReLaunch } from '@/util.js'
-import { connect, getStore } from 'wepy-redux'
+import { getStore } from 'wepy-redux'
 import { GETALLUSER } from '@/store/types/user.js'
 import { getAllContant } from '@/store/actions/contant.js'
 const store = getStore()
@@ -51,7 +51,6 @@ export default class Login extends wepy.page {
     modal: modal
   }
   data = {
-    userInfo: null,
     isModal: true,
     modalHeight: 640,
     modalObj: {

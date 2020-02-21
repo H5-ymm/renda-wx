@@ -3,8 +3,8 @@
 .weui-cell {
   .weui-input {
     &.search-input {
-			padding: 26rpx;
-			text-align: left;
+      padding: 26rpx;
+      text-align: left;
     }
   }
   .searchIcon {
@@ -16,7 +16,7 @@
 <template>
   <view class="weui-cell weui-flex start">
 		<image src="https://a.rsd123.com/image/images/search.png" class="dateIcon searchIcon" />
-    <input class="weui-input search-input" @input='inputBind' confirm-type="search" @focus="inputFocus"
+    <input class="weui-input weui-flex__item search-input" @input='inputBind' confirm-type="search" @focus="inputFocus"
 		value="{{name}}" placeholder="搜索"/>
   </view>
 </template>

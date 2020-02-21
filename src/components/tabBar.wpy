@@ -13,7 +13,7 @@
     background: #1890ff;
     height: 4rpx;
     width: 98rpx;
-    transition: 1s;
+    transition: 0.7s;
     &.line0 {
       left: 10rpx;
     }
@@ -51,22 +51,22 @@
 <script>
 import wepy from 'wepy';
 export default class tabBar extends wepy.component {
-	// props 接收父组件传递过来的值
-	props = {
-		tabBarList: {
-			type: Array,
-			default: []
-		}
-	}
-	data = {
-		activeIndex: 0
-	}
-	methods = {
-		switchTab(index) {
-			this.activeIndex = index
-			this.$emit('switchTab', this.activeIndex)
-			this.$apply()
-		}
-	}
+  // props 接收父组件传递过来的值
+  props = {
+    tabBarList: {
+      type: Array,
+      default: []
+    }
+  }
+  data = {
+    activeIndex: 0
+  }
+  methods = {
+    switchTab(index) {
+      this.activeIndex = index
+      this.$emit('switchTab', this.activeIndex)
+      this.$apply()
+    }
+  }
 }
 </script>

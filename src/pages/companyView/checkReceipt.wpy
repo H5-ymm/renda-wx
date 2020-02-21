@@ -19,8 +19,7 @@ import wepy from 'wepy'
 import { $http } from '@/http.js'
 import search from '@/components/search'
 import receiptList from '@/components/receiptList'
-import $moment from 'moment'
-import { wxToast, getList } from '@/util.js'
+import { getList } from '@/util.js'
 export default class checkReceipt extends wepy.page {
 	components = {
 		search: search,

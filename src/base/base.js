@@ -1,23 +1,23 @@
 export const list1 = [{
-        pagePath: '/pages/company/index',
+        pagePath: '/pages/companyView/index',
         text: '发单管理',
         selected: true,
-        iconPath: '/images/orderTaking/list-active.png',
+        iconPath: '/images/orderTaking/list.png',
         selectedIconPath: '/images/orderTaking/list-active.png'
     },
     {
-        pagePath: '/pages/my/index',
+        pagePath: '/pages/companyView/staffManage',
         text: '员工管理',
         selected: false,
         iconPath: '/images/orderTaking/staff.png',
-        selectedIconPath: '/images/orderTaking/staff.png'
+        selectedIconPath: '/images/orderTaking/staff-active.png'
     },
     {
-        pagePath: '/pages/my/index',
+        pagePath: '/pages/companyView/userCenter',
         text: '个人中心',
         selected: false,
         iconPath: '/images/orderTaking/my.png',
-        selectedIconPath: '/images/orderTaking/my.png'
+        selectedIconPath: '/images/orderTaking/my-active.png'
     }
 ]
 export const list2 = [{

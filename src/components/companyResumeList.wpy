@@ -1,35 +1,51 @@
 		
 <style lang="less">
+.resume-list {
+  .page_card_row {
+    line-height: 40rpx;
+    .page_card_name {
+      font-size: 32rpx;
+      margin-bottom: 8rpx;
+    }
+    .text-line {
+      font-size: 26rpx;
+    }
+  }
+}
 .page_card_end {
-  line-height: 60rpx;
   .page_card_time {
     width: 100%;
     text-align: right;
-	}
+    font-size: 22rpx;
+    color: #999;
+  }
   .page_card_status-resume {
-		width: 70%;
-		.page_card_status-item {
-			width: 100%;
-		}
+    width: 70%;
+    .page_card_status-item {
+      width: 100%;
+    }
     .weui-btn_cell {
       margin-bottom: 40rpx;
-		}
-		.page_card_receipt_status {
-			text-align: center;
-		}
+    }
+    .page_card_receipt_status {
+      text-align: center;
+    }
+  }
+  .page_card_status-text {
+    height: 80rpx;
   }
 }
 </style>
 <template>
-  <view>
+  <view class="resume-list">
     <repeat wx:for="{{list}}" wx:key="index">
       <view class="page_card" wx:if="{{list.length}}">
         <view class="page_card_row weui-flex between">
 					<view class="weui-flex start">
 						  <view wx:if="{{isBatch}}">
-								<image src="https://a.rsd123.com/image/images/user/radio2.png" alt="" mode="aspectFill" class="radio-icon" @tap="selectResume({{index}})"
-								 wx:if="{{isCheck&&item.disabled}}"/>
-								<image src="https://a.rsd123.com/image/images/user/radio1.png" wx:else @tap="selectResume({{index}})" mode="aspectFill" class="radio-icon" />
+								<image src="https://a.rsd123.com/image/images/user/radio2.png" alt="" mode="aspectFill" class="radio-icon" @tap="selectResume({{item}},{{index}})"
+								 wx:if="{{item.disabled}}"/>
+								<image src="https://a.rsd123.com/image/images/user/radio1.png" wx:else @tap="selectResume({{item}},{{index}})" mode="aspectFill" class="radio-icon" />
 								</view>
 							<view>
 								<view class="page_card_name">{{item.name}}</view>
@@ -52,9 +68,9 @@
 										{{receiptType===1?'拒绝':receiptType===2?'未通过':'未入职'}}
 									</button>
 						    </view>
-						  	<view wx:else>
+						  	<view wx:else class="page_card_status-text weui-flex center-start">
 									<view 
-									wx:if="{{item.status==1||item.interview_status==1||item.entry_status}}" class="page_card_receipt_status page_card_receipt_status2">已{{text}}</view>
+									wx:if="{{item.status==1||item.interview_status==1||item.entry_status==1}}" class="page_card_receipt_status page_card_receipt_status2">已{{text}}</view>
 									<view wx:else class="page_card_receipt_status page_card_receipt_status3">
 										{{refuseText}}
 								</view>
@@ -73,9 +89,7 @@
 </template>
 <script>
 import wepy from 'wepy'
-// import wxs from '../filterWxs/dateFilter.wxs'
 export default class companyResumeList extends wepy.component {
-	// wxs = { wxs } 
 	props = {
 		list: Array,
 		isBatch: Boolean,
@@ -87,17 +101,18 @@ export default class companyResumeList extends wepy.component {
 		isShow: false,
 		refuseText: '',
 		text: '',
-    isShowBtn: true
+		isShowBtn: true,
+		resumeList: []
 	}
 	onLoad() {
 		this.getText(this.receiptType)
-  	let statusObj = JSON.parse(wx.getStorageSync('statusObj'))
-		if (this.receiptType === 2&&!statusObj.view_time) {
+		let statusObj = JSON.parse(wx.getStorageSync('statusObj'))
+		if (this.receiptType === 2 && !statusObj.view_time) {
 			this.isShowBtn = false
 		}
-		if (this.receiptType === 3&&!statusObj.entry_time&&tstatusObj.interview_status==1) {
+		if (this.receiptType === 3 && !statusObj.entry_time && tstatusObj.interview_status == 1) {
 			this.isShowBtn = false
-		} 
+		}
 	}
 	getText(val) {
 		if (val === 3) {
@@ -114,9 +129,9 @@ export default class companyResumeList extends wepy.component {
 		this.$apply()
 	}
 	watch = {
-		isCheck(val) {
+		list(val) {
 			if (val) {
-
+				this.resumeList = val
 			}
 		}
 	}
@@ -127,10 +142,21 @@ export default class companyResumeList extends wepy.component {
 				id: item.id,
 				status
 			}
-      this.$emit('handleResume', query)
+			this.$emit('handleResume', query)
 		},
-		selectResume(item) {
-
+		selectResume(item, index) {
+			let arr = []
+			item.disabled = !item.disabled
+			this.$apply()
+			if (arr.indexOf(item.id) === -1) {
+				arr.push(item.id)
+			} else {
+				let ret = arr.findIndex(v => {
+					return v == item.id
+				})
+				arr.splice(ret, 1)
+			}
+			this.$emit('selectResume', Array.from(new Set(arr)))
 		}
 	}
 }

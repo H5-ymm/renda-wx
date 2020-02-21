@@ -249,14 +249,15 @@ const wxShowModal = (title, content, confirmText) => {
         })
     })
 }
-const getList = (list, key) => {
+const getList = (list, key, formatType) => {
+    let type = formatType || 'YYYY-MM-DD'
     return list.map(item => {
         let flag
         let reg = /^[0-9]+.?[0-9]*$/
         if (item[key] && reg.test(item[key])) {
             flag = true
         }
-        item[key] = flag ? $moment.unix(item[key]).format('YYYY-MM-DD') : item[key]
+        item[key] = flag ? $moment.unix(item[key]).format(type) : item[key]
         return item
     })
 }

@@ -49,8 +49,8 @@
     margin: 10rpx auto;
     .modal-img-bg {
       width: 100%;
-      height: 237rpx;
-      margin: -20rpx auto 0;
+      height: 277rpx;
+      margin: -40rpx auto 0;
     }
   }
   .modal-title {
@@ -62,9 +62,13 @@
   .modal-subTitle {
     text-align: center;
     color: #999999;
-    margin-bottom:24rpx;
+    margin-bottom: 24rpx;
     font-size: 26rpx;
     display: inline-block;
+  }
+  .weui-cell_btn {
+    width: 80%;
+    margin: 0 auto;
   }
 }
 </style>

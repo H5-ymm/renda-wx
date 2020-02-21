@@ -69,7 +69,6 @@ export default class Welcome extends wepy.page {
     sessionKey: ''
   }
   onLoad(options) {
-    // wxReLaunch('/pages/company/ceateList')
     if (options && options.query) {
       this.checked = options.query
       this.isRead = true
@@ -136,11 +135,9 @@ export default class Welcome extends wepy.page {
       } else {
         if (res.is_company !== '0') {
           wxReLaunch('/pages/companyView/index')
-          // wxReLaunch('/pages/company/ceateList')
         } else {
           wxReLaunch('/pages/register/companyForm')
         }
-        // wxToast('小程序企业功能待完善，敬请期待！')
       }
       store.dispatch(getAllContant())
     }
@@ -182,7 +179,6 @@ export default class Welcome extends wepy.page {
           this.isLoginModal = false
         }
         this.code = error.status.code
-        // this.isView = false
         this.$apply()
         this.showErrorTip(this.code)
       }

@@ -1,6 +1,9 @@
 <style lang="less">
 @import "../style/home.less";
 @import "../style/form.less";
+.register-btn {
+  margin: 60rpx 0;
+}
 </style>
 <template>
   <view>
@@ -107,10 +110,12 @@
 						<view class="weui-flex end">
 							 <input class="weui-input" 
 							 placeholder-class="placeholder" placeholder="请输入持续时长"
-						   value="{{form.duration_time}}" @input="changeInput" data-name="duration_time"   />
-							 <view class="input-text-end" wx:if="{{form.reward_money_type}}">
-								 {{wxs.rewardTimeText(form.reward_money_type)}}
+						   value="{{form.duration_time}}" @input="changeInput"
+							  data-name="duration_time"/>
+							  <view class="input-text-end" wx:if="{{form.reward_money_type<4}}">
+							   {{	wxs.rewardTimeText(form.reward_money_type)}}
 								</view>
+								<view class="input-text-end" wx:else>天</view>
 								<image mode="scaleToFill" @tap="viewTip(1)" src="https://a.rsd123.com/image/images/tip.png" class="page_down_icon" />
 				  	</view>    
           </view>
@@ -121,10 +126,11 @@
 						<view class="weui-flex end">
 							 <input class="weui-input" 
 							 placeholder-class="placeholder" placeholder="请输入可返利的入职周期"
-						   value="{{form.reward_needtime}}" @input="changeInput" data-name="reward_needtime"   />
-							  <view class="input-text-end" wx:if="{{form.reward_money_type}}">
-								 {{wxs.rewardTimeText(form.reward_money_type)}}
+						   value="{{form.reward_needtime}}" @input="changeInput" data-name="reward_needtime" />
+							  <view class="input-text-end" wx:if="{{form.reward_money_type<4}}">
+							   {{	wxs.rewardTimeText(form.reward_money_type)}}
 								</view>
+								<view class="input-text-end" wx:else>天	</view>
 							  <image mode="scaleToFill" @tap="viewTip(2)" src="https://a.rsd123.com/image/images/tip.png" class="page_down_icon" />
 				  	</view>    
           </view>
@@ -170,9 +176,8 @@
 			<button class="weui-btn_cell weui-btn_primary" @tap="save">
 				修改
 			</button>
-      <button class="weui-btn_cell weui-btn_primary_plain" @tap="deleteInvice">
-				取消发布
-			</button>
+      <button class="weui-btn_cell weui-btn_primary_plain" 
+			@tap="deleteInvice">取消发布</button>
     </view>
   </view>
 </template>
@@ -207,7 +212,6 @@ export default class createForm extends wepy.component {
 			[]
 		],
 		moneyTypeIndex: [0, 0, 0], // 结算方式
-		ageIndex: 0, // 年龄
 		rewardIndex: 0, // 返利模式
 		rewardTypeIndex: 0, // 返利模式为月的结算方式
 		weekList, // 周
@@ -215,7 +219,8 @@ export default class createForm extends wepy.component {
 		job_array: [],
 		typeIndex: 0,
 		index: 0, // 五险,
-		fundIndex: 0 // 公积金
+		fundIndex: 0, // 公积金
+		isEdit: false
 	}
 	computed = {
 		rewardType() {
@@ -227,25 +232,21 @@ export default class createForm extends wepy.component {
 	}
 	events = {
 		getInvoiceDetail: data => {
-			// duration_time: 0
-			// email: null
-			// is_five_risks: 1
-			// is_fund: 1
-			// link_name: "的飞洒"
-			// reward_money: 80000
-			// reward_money_type: 0
-			// reward_needtime: 0
-			// reward_type: 1
-			// settlement_time: 0
-			// settlement_type: 0
-			// tel: "18777474658"
+			this.isEdit = true
 			for (let key in this.form) {
 				this.form[key] = data[key]
 			}
-			console.log(this.form)
 			this.index = this.form.is_five_risks ? this.form.is_five_risks - 1 : 0
 			this.fundIndex = this.form.is_fund ? this.form.is_fund - 1 : 0
 			this.rewardIndex = this.form.reward_type ? this.form.reward_type - 1 : 0
+			if (this.form.reward_type==1) {
+	      this.rewardTypeIndex = this.form.reward_money_type ? this.form.reward_money_type - 1 : 0
+			} else {
+				this.typeIndex = this.form.reward_money_type - 1
+				this.moneyTypeIndex[0] = this.form.reward_money_type - 1
+				this.moneyTypeIndex[1] = this.form.settlement_type - 1
+				this.moneyTypeIndex[2] = this.form.settlement_time - 1
+			}
 			this.form.email = this.form.email ? this.form.email : ''
 			this.$apply()
 		}
@@ -285,7 +286,7 @@ export default class createForm extends wepy.component {
 			if (index === 1) {
 				wxToast(`持续天数为空时，默认为1${this.rewardType}`)
 			} else {
-				wxToast(`入职时间为空是，默认工作1${this.rewardType}返利1${this.rewardType}`)
+				wxToast(`入职时间为空时，默认工作1${this.rewardType}返利1${this.rewardType}`)
 			}
 		},
 		bindPickerChange(e) {
@@ -313,12 +314,18 @@ export default class createForm extends wepy.component {
 			this.moneyTypeIndex = e.detail.value
 			let reward_money_type = Number(this.moneyTypeIndex[0]) + 1
 			let settlement_type = Number(this.moneyTypeIndex[1]) + 1
+			if (reward_money_type > 1) {
+				this.form.settlement_time = Number(this.moneyTypeIndex[1]) + 1
+			}
 			this.form.reward_money_type = reward_money_type
 			this.form.settlement_type = settlement_type
 			this.$apply()
 		},
 		bindMultiPickerColumnChange(e) {
 			this.moneyTypeIndex[e.detail.column] = e.detail.value
+			this.form.duration_time = ''
+			this.form.settlement_time = ''
+			this.form.reward_needtime = ''
 			let index = this.moneyTypeIndex[0]
 			if (e.detail.column == 0) {
 				this.typeIndex = index
@@ -333,9 +340,14 @@ export default class createForm extends wepy.component {
 			this.$apply()
 		},
 		cancelPickerChange(e) {
-			this.moneyTypeIndex = [0, 0, 0]
-			this.form.reward_money_type = ''
-			this.typeIndex = 0
+			if (!this.isEdit) {
+				this.moneyTypeIndex = [0, 0, 0]
+				this.form.reward_money_type = ''
+				this.typeIndex = 0
+				this.form.duration_time = ''
+				this.form.settlement_time = ''
+				this.form.reward_needtime = ''
+			}
 			this.$apply()
 		},
 		changeInput(e) {

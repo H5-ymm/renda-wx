@@ -5,8 +5,15 @@
 			<view class="weui-flex between">
 				<view class="page_card_name">
 					<view>{{itemValue.name||itemValue.jobName}}</view>
-					<view class="badgeNum" wx:if="{{!item.com_isread&&!receiptType}}">
+					<view class="badgeNum badgeNum3" wx:if="{{!itemValue.com_isread&&!receiptType}}">
 					  New
+					</view>
+				  <view wx:if="{{itemValue.noeReade&&receiptType}}">
+						<view class="badgeNum" wx:if="{{itemValue.noeReade<10}}" >
+					    {{itemValue.noeReade}}
+					  </view>
+						<view class="badgeNum badgeNum1" wx:if="{{itemValue.noeReade>10&&itemValue.noeReade<100}}">{{itemValue.noeReade}}</view>
+							<view class="badgeNum badgeNum2" wx:if="{{itemValue.noeReade>10&&itemValue.noeReade>100}}">99+</view>
 					</view>
 				</view>
 				<view wx:if="{{!receiptType}}">
@@ -19,16 +26,8 @@
 					</view>
 				</view>
 				<view wx:if="{{receiptType}}">
-					<view class="page_card_receipt_status page_card_receipt_status3"
-						wx:if="{{receiptType==1&&!itemValue.view_time}}">
-						未设置面试时间
-					</view>
-					<view class="page_card_receipt_status page_card_receipt_status3"  
-						wx:elif="{{receiptType==2&&itemValue.interview_status>1&&!itemValue.entry_time}}">
-						未设置入职时间
-					</view>
-					<view wx:else
-						class="page_card_receipt_status {{'page_card_receipt_status'+(!itemValue.interview_status&&!itemValue.entry_status?itemValue.invoice_status:itemValue.entry_status?itemValue.interview_status:itemValue.entry_status)}}">
+					<view
+						class="page_card_receipt_status {{'page_card_receipt_status'+(!itemValue.interview_status&&!itemValue.entry_status?itemValue.invoice_status:!itemValue.entry_status?itemValue.interview_status:itemValue.entry_status)}}">
 						<view wx:if="{{receiptType==1}}">
 							{{!itemValue.invoice_status?'收集中':itemValue.invoice_status==1?'审核中':'面试开始'}} 
 						</view>
@@ -51,7 +50,25 @@
 					<view class="weui-flex start weui-flex__item">
 						需求人数：{{itemValue.required_number}}
 					</view>
-					<view class="page_card_time">{{itemValue.addtime||itemValue.ctime}}</view>
+					<view class="page_card_time" wx:if="{{!receiptType}}">{{itemValue.addtime||itemValue.ctime}}</view>
+					<view class="page_card_receipt_status page_card_receipt_status3"
+						wx:if="{{receiptType==1&&!itemValue.view_time}}">
+						未设置面试时间
+					</view>
+					<view class="page_card_receipt_status page_card_receipt_status3"  
+						wx:elif="{{receiptType==2&&itemValue.interview_status<=1&&!itemValue.entry_time}}">
+						未设置入职时间
+					</view>
+					<view wx:else>
+						<view class="page_card_time" wx:if="{{receiptType==1}}">
+							筛选通过 :
+							{{itemValue.examineNum}}</view>
+						<view class="page_card_time" wx:if="{{receiptType==2}}">
+							{{itemValue.interview_status>2?'面试通过 : '+ itemValue.interviewNum:'筛选通过 : '+   itemValue.examineNum}}
+						</view>
+						<view class="page_card_time" wx:if="{{receiptType==3}}">
+								{{itemValue.entry_status>2?'入职通过 : '+ itemValue.entryNum:'面试通过 : '+  itemValue.interviewNum}}</view>
+					</view>
 				</view>
 		  </view>
 			<image mode="scaleToFill" class="weui-flex__item" src="https://a.rsd123.com/image/images/right.png" class="page_down_icon"/>

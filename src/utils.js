@@ -1,6 +1,5 @@
 global.Object = Object
 global.Array = Array
-global.Buffer = Buffer
 global.DataView = DataView
 global.Date = Date
 global.Error = Error

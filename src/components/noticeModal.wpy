@@ -39,6 +39,9 @@
       padding: 14rpx 24rpx;
       margin-top: 10rpx;
     }
+    &.weui-textarea {
+      width: 90%;
+    }
     .weui-input {
       text-align: left;
       &.weui-textarea {
@@ -71,12 +74,10 @@
 					</view>
 					<view class="modal-row">
 					  <text>通知内容</text>
-						<view class="modal-col">
-							<textarea data-name="content" placeholder-class="placeholder"
-								disable-default-padding="true"
-								class="weui-input weui-textarea" value="{{form.content}}" @input="changeInput"
-								placeholder="请输入{{title}}通知的内容" maxlength="1000"/>
-						</view>	
+						<textarea data-name="content" placeholder-class="placeholder"
+							disable-default-padding="true"
+							class="weui-input weui-textarea modal-col" value="{{form.content}}" @input="changeInput"
+							placeholder="请输入{{title}}通知的内容" maxlength="-1"/>
 					</view>
 					<view class="weui-flex start notice-tip">
 						<image src="../images/orderTaking/warn.png" class="tipIcon" />
@@ -110,7 +111,7 @@ export default class noticeModal extends wepy.component {
 	data = {
 		isShow: false,
 		form: {
-			content:'',
+			content: '',
 			address: '',
 			time: ''
 		},
@@ -119,17 +120,15 @@ export default class noticeModal extends wepy.component {
 	}
 	events = {
 		setDate: data => {
-			console.log(data)
 			this.form.time = data
 		},
 		selectCityText: data => {
-			console.log(data)
-      this.address = data
+			this.address = data
 		}
 	}
 	methods = {
 		changeInput(e) {
-		  let key = e.currentTarget.dataset.name
+			let key = e.currentTarget.dataset.name
 			this.form[key] = e.detail.value
 		},
 		handleClose() {
@@ -141,14 +140,14 @@ export default class noticeModal extends wepy.component {
 			this.isShow = false
 			this.$apply()
 			let params = {
-        time: this.form.time,
-        content:
-          this.address +
-          '/' +
-          this.form.address +
-          '&' +
-          this.form.content
-      }
+				time: this.form.time,
+				content:
+					this.address +
+					'/' +
+					this.form.address +
+					'&' +
+					this.form.content
+			}
 			this.$emit('setAllTime', params)
 		}
 	}

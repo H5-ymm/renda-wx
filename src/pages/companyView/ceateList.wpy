@@ -284,7 +284,6 @@ export default class ceateList extends wepy.page {
 				this.form[key] = Number(value) + 1
 			} else {
 				this.eduIndex = value
-				console.log(this.eduIndex)
 				this.form[key] = value
 			}
 			this.$apply()

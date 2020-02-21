@@ -27,7 +27,8 @@
 </template>
 <script>
 import wepy from 'wepy'
-import $moment from 'moment';
+import $moment from 'moment'
+import { wxToast } from '@/util.js'
 export default class datePicker extends wepy.component {
 	data = {
 		dateValue: '请选择日期',
@@ -45,7 +46,6 @@ export default class datePicker extends wepy.component {
 				newDate = newDate + ''
 				let date = new Date(newDate).getTime() + ''
 				date = date.substr(0, 10)
-				console.log(date)
 				this.$emit('setDate', date)
 			}
 		}
@@ -58,8 +58,13 @@ export default class datePicker extends wepy.component {
 	}
 	methods = {
 		bindDateChange(e) {
-			this.dateValue = e.detail.value
-			this.params.date = e.detail.value
+			let date = e.detail.value
+			if (date.valueOf()-this.startValue.valueOf()<0) {
+				this.dateValue = this.startValue
+        return wxToast('请选择大于当天的时间')
+			}
+			this.dateValue = date
+			this.params.date = date
 			this.$apply()
 		},
 		timeChange(e) {

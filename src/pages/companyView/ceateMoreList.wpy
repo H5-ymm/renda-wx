@@ -33,6 +33,7 @@ import modal from '@/components/modal'
 import createForm from '@/components/createForm'
 import { $http } from '@/http.js'
 import { wxToast, wxReLaunch, getErrorTip, wxNavigateTo } from '@/util.js'
+let lock = false
 export default class ceateList extends wepy.page {
 	components = {
 		teamModal: modal,
@@ -60,21 +61,24 @@ export default class ceateList extends wepy.page {
 			this.isModal = true
 			this.$apply()
 			wx.setStorageSync('receiptType', 0)
-			wxReLaunch('/pages/companyView/checkReceipt')
+			wxNavigateTo('/pages/companyView/checkReceipt')
 		},
 		submit: data => {
 			let params = Object.assign(JSON.parse(this.preForm), data, this.form)
-			this.createOrderApi(params)
+			if (!lock) {
+				this.createOrderApi(params)
+			}
 		},
 		prePage: () => {
 			wx.setStorageSync('preForm', this.preForm)
-			wxReLaunch('/pages/company/ceateList')
+			wxReLaunch('/pages/companyView/ceateList')
 		}
 	}
 	onLoad(options) {
 		this.preForm = options.query
 	}
 	createOrderApi(params) {
+		lock = true
 		$http('/enterpriseinvoice/createInvoice', params).then(res => {
 			if (res.data) {
 				this.isModal = false

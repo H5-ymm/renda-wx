@@ -1,0 +1,28 @@
+<style lang="less">
+@import "../../style/home.less";
+</style>
+<template>
+	<view class="home-view">
+		<view class="page_list view-content">
+      <image src="https://a.rsd123.com/image/images/noBg.png" class="page_noData" mode="scaleToFill"/>
+      <view class="page_noData_text">敬请期待！</view>
+    </view>
+		<tabBarBottom :usertype.sync="usertype" :tabBarIndex.sync="tabBarIndex"></tabBarBottom>
+	</view>
+</template>
+<script>
+import wepy from 'wepy'
+import tabBarBottom from '@/components/tabBarBottom'
+export default class userCenter extends wepy.page {
+	components = {
+		tabBarBottom: tabBarBottom
+	}
+	config = {
+		navigationBarTitleText: '个人中心'
+	}
+	data = {
+		usertype: '1',
+		tabBarIndex: 2
+	}
+}
+</script>

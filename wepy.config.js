@@ -1,7 +1,7 @@
 const path = require('path');
-// if (!process.env.NODE_ENV) {
-//     process.env.NODE_ENV = 'production'
-// }
+if (!process.env.NODE_ENV) {
+    process.env.NODE_ENV = 'production'
+}
 let prod = process.env.NODE_ENV === 'production';
 console.log(process.env.NODE_ENV + '当前环境')
 

@@ -42,7 +42,7 @@
 <script>
 import wepy from 'wepy'
 import { $http } from '@/http.js'
-import { getImgUrl, wxNavigateTo, getArray } from '@/util.js'
+import { wxNavigateTo } from '@/util.js'
 import tabBarBottom from '@/components/tabBarBottom'
 export default class Index extends wepy.page {
 	components = {
@@ -102,12 +102,6 @@ export default class Index extends wepy.page {
 			this.menus[2].badgeNum = res.data.resumeNum
 			this.menus[3].badgeNum = res.data.interviewNum
 			this.menus[4].badgeNum = res.data.entryNum
-			// console.log(res.data)
-			// let data = getArray(res.data)
-			// console.log(data)
-			// this.menus.forEach((item, i) => {
-			// 	item.badgeNum = data[i]
-			// })
 			this.$apply()
 		})
 	}
@@ -123,7 +117,6 @@ export default class Index extends wepy.page {
 			wxNavigateTo(item.url)
 		},
 		createOrderTaking() {
-			console.log(2)
 			wxNavigateTo('/pages/companyView/ceateList')
 		}
 	}
