@@ -7,7 +7,7 @@
     <view class="modal_box transition3s {{ isShow ? 'g_scale1': ''}}" id="modal-box" style="height:{{height}}rpx">
       <view class="modal-content" wx:if="{{!type}}">
         <view class="home-view-box weui-flex between wrap">
-          <view class="modal-title ">请选择团队性质 </view>
+          <view class="modal-title ">请选择团队性质</view>
 					<repeat wx:for="{{menus}}" wx:key="index">
 						<view class="card-item weui-flex between wrap">
 							<image src="{{item.icon}}" alt="" mode="aspectFill" class="menu-icon" />
@@ -19,13 +19,13 @@
 						</view>
 					</repeat>
 		    </view>
-        <view class="weui-cell_btn weui-flex center">
+        <view class="weui-cell_btn weui-flex center user-btn">
           <button class="weui-btn_cell weui-btn_cell-gradient" @tap="handleOk">确定</button>
         </view>
       </view>
       <view class="modal-content" wx:if="{{type}}">
         <view class="home-view-box weui-flex between wrap">
-          <view class="modal-title ">请选择登录/注册方式 </view>
+          <view class="modal-title">请选择登录/注册方式 </view>
 					<view class="weui-cell_btn weui-flex center wrap login-way">
               <button class="weui-btn_cell weui-flex center weui-btn_cell-gradient"   @getphonenumber="bindgetphonenumber" open-type="getPhoneNumber">
                 <image src="https://a.rsd123.com/image/images/welcome/wx-active.png" alt="" class="login-icon" />
@@ -45,7 +45,7 @@
 <script>
 import wepy from 'wepy'
 import { $http } from '@/http.js'
-export default class actionSheet extends wepy.component {
+export default class modalUser extends wepy.component {
   props = {
     isScaleModal: Boolean,
     height: Number,

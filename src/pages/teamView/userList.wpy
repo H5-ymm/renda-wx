@@ -46,6 +46,8 @@ page {
 				</view>
 	  	</view>
 		</view>
+		<modalAddUser :isScaleModal.sync="isModal" @handleClose="handleClose" @handleOk="handleOk" 
+		:height.sync="modalHeight" ></modalAddUser>
   </view>
 </template>
 <script>
@@ -53,11 +55,13 @@ import wepy from 'wepy'
 import { $http } from '@/http.js'
 import search from '@/components/search'
 import teamUser from '@/components/teamUser'
+import modalAddUser from '@/components/modalAddUser'
 import { getList, wxNavigateTo, wxShowModal, wxToast, wxReLaunch } from '@/util'
 export default class userList extends wepy.page {
 	components = {
 		search: search,
-		teamUser: teamUser
+		teamUser: teamUser,
+		modalAddUser: modalAddUser
 	}
 	data = {
 		tabBarList: [],
@@ -75,8 +79,8 @@ export default class userList extends wepy.page {
 		isCheck: false,
 		activeIndex: 0,
 		isSeachWidth: false,
+		modalHeight: 520,
 		isModal: true,
-		modalHeight: 860,
 		title: '查看面试时间',
 		receiptType: 1,
 		statusObj: {},
@@ -86,7 +90,8 @@ export default class userList extends wepy.page {
 		check: false
 	}
 	onLoad(options) {
-
+		this.isModal = false
+		this.$apply()
 	}
 	onShow() {
 	

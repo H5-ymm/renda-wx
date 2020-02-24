@@ -129,7 +129,9 @@ export default class userInfo extends wepy.page {
 	config = {
 		navigationBarTitleText: '成员详情'
 	}
+
 	onLoad(options) {
+
 		// this.id = options.query
 		// this.getInvoiceDetail()
 	}
