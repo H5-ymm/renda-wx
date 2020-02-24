@@ -107,8 +107,7 @@ const store = getStore()
 @connect({
   list: (state) => state.contant.list
 })
-
-export default class Company extends wepy.page {
+export default class Company extends wepy.component {
   props = {
     resumeInfo: Object
   }
@@ -140,7 +139,10 @@ export default class Company extends wepy.page {
     comIndex: 0,
     comScaleIndex: 0,
     jobIndex: 0,
-    disabled: true
+    disabled: true,
+    cWidth: 0,
+    cHeight: 0
+
   }
   watch = {
     form(val) {
@@ -188,8 +190,8 @@ export default class Company extends wepy.page {
         sizeType: ['compressed'],
         success: res => {
           compressImg(res.tempFilePaths[0]).then(res => {
-            this.canvasWidth = res.cWidth
-            this.canvasHeight = res.cHeight
+            this.cWidth = res.cWidth
+            this.cHeight = res.cHeight
             this.getImg([res.url])
           })
         }

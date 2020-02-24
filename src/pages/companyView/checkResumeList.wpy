@@ -265,7 +265,9 @@ export default class checkResumeList extends wepy.page {
 				this.isCheck = true
 				this.$apply()
 			}
-			this.id = data.join(',')
+			if (data.length) {
+        this.id = data.join(',')
+			}	
 		}
 	}
 	auditResumeRecommend(params) {
@@ -301,6 +303,7 @@ export default class checkResumeList extends wepy.page {
 				if (this.receiptType === 2) {
 					this.statusObj.interview_status = 2
 				}
+				this.$apply()
 				wx.setStorageSync('receiptType', this.receiptType)
 				wx.setStorageSync('statusObj', JSON.stringify(this.statusObj))
 				wxReLaunch('/pages/companyView/resumeSiftings?query=' + this.receiptType)
@@ -326,7 +329,9 @@ export default class checkResumeList extends wepy.page {
 					return item.id
 				}
 			})
-			this.id = arr.join(',')
+			if (arr.length) {
+				this.id = arr.join(',')
+			}
 			this.$apply()
 		},
 		overView() {
@@ -414,7 +419,6 @@ export default class checkResumeList extends wepy.page {
 					content: res.data.entry_comtent
 				}
 			}
-			console.log(query)
 			this.timeInfo = query
 			this.isModal = !this.isModal
 			this.$apply()
@@ -423,8 +427,9 @@ export default class checkResumeList extends wepy.page {
 	getCheckList() {
 		$http(this.urlApi, this.params).then(res => {
 			this.list = res.data.data || []
-			this.check = this.checkStatus(this.list, this.receiptType)
-			console.log(this.check)
+			if (this.receiptType) {
+        this.check = this.checkStatus(this.list, this.receiptType)
+			}			
 			this.tabBarList[this.activeIndex].num = this.list.length
 			this.count = res.data.count
 			this.$apply()

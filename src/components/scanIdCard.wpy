@@ -1,6 +1,5 @@
 <style lang="less">
 @import "../style/home.less";
-@height: 40;
 .weui-input {
   text-align: right;
 }
@@ -41,7 +40,6 @@
 <script>
 import wepy from 'wepy'
 import { $http } from '@/http.js'
-let util = require('../util')
 // 通过继承自wepy.page的类创建页面逻辑
 export default class scanIdCard extends wepy.component {
   data = {

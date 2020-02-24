@@ -38,10 +38,9 @@
           </view>
 		    </view>
       </view>
-      <image src="https://a.rsd123.com/image/images/close.png" @tap="handleClose" class="close-icon" />
+      <image src="https://a.rsd123.com/image/images/close.png" @tap="handleClose" class="close-icon"/>
     </view>
   </view>
-
 </template>
 <script>
 import wepy from 'wepy'
@@ -78,7 +77,6 @@ export default class actionSheet extends wepy.component {
           $http('/Login/getopenid', { code: res.code }).
             then(res => {
               let data = JSON.parse(res.data)
-              console.log(data)
               let params = {
                 encryptedData: detail.encryptedData,
                 iv: detail.iv,
@@ -116,7 +114,6 @@ export default class actionSheet extends wepy.component {
       this.isShow = false
       this.$apply()
       if (this.type) {
-        console.log(this.type)
         this.$emit('handleOkLogin', 2)
       }
       else {

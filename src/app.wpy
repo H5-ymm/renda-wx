@@ -3,7 +3,6 @@
 </style>
 <script>
 import wepy from 'wepy';
-import moment from 'moment';
 import './utils.js'
 import 'lodash'
 import 'wepy-async-function';

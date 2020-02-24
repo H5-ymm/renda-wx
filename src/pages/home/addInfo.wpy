@@ -206,8 +206,7 @@ export default class home extends wepy.page {
   // 添加简历接口
   addResume() {
     lock = true
-    $http
-      .http('/Wxresume/addResume', this.params)
+    $http('/Wxresume/addResume', this.params)
       .then(res => {
         lock = false
         if (res.data) {

@@ -80,7 +80,7 @@ export default class my extends wepy.page {
       wx.navigateTo({
         url: item.url
       })
-    },
+    }
     // swicthUser() {
     //   let user = {
     //     usertype: 1,

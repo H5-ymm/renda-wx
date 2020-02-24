@@ -56,7 +56,7 @@ export default class Login extends wepy.page {
     modalObj: {
       title: '',
       subTitle: '',
-      imgBg: 'https://a.rsd123.com/image/images/success.png'
+      imgBg: 'https://a.rsd123.com/image/images/modalIcon.png'
     },
     form: {
       tel: '',

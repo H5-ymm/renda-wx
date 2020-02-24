@@ -42,7 +42,6 @@
           </view>
 					 <textarea data-name="introduction" placeholder-class="placeholder"
 						disable-default-padding="true"
-						@linechange="bindlinechange"
 						 class="weui-input weui-textarea" value="{{form.introduction}}" @input="changeInput"
 						 placeholder="请输入团队介绍" maxlength="-1"/>
         </view>
@@ -92,7 +91,9 @@ export default class companyForm extends wepy.page {
 			subTitle: '',
 			imgBg: '../../images/modalIcon.png'
 		},
-		isModal: true
+		isModal: true,
+		canvasWidth: 0,
+		canvasHeight: 0
 	}
 	onLoad(options) {
 		this.registerType = options.query || 2
@@ -158,9 +159,6 @@ export default class companyForm extends wepy.page {
 		})
 	}
 	methods = {
-		bindlinechange(e) {
-			console.log(e)
-		},
 		uploadImg() {
 			wx.chooseImage({
 				sizeType: ['compressed'],
@@ -179,7 +177,6 @@ export default class companyForm extends wepy.page {
 			this.form[key] = e.detail.value
 		},
 		save() {
-			console.log(this.form)
 			if (!this.form.team_name) {
 				wxToast('请输入团队名称')
 			} else if (!this.form.user_name) {

@@ -72,17 +72,17 @@ export default class resumeSiftings extends wepy.page {
 		})
 	}
 	onLoad(options) {
-		this.receiptType = Number(options.query)
 		if (options.jobId) {
 			this.params.jobId = options.jobId
 		}
-		this.$apply()
+		this.receiptType = Number(options.query)
 		wx.setNavigationBarTitle({
 			title: this.getTitle(this.receiptType)
 		})
+		this.params.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
+		this.$apply()
 	}
 	onShow() {
-		this.params.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
 		this.getJobList()
 	}
 	computed = {

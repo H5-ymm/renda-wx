@@ -1,67 +1,3 @@
-<template>
-	<view class="tabBarBox weui-flex center">
-		<!-- 首页 -->
-		<repeat wx:for="{{tabBarList.list}}" wx:key="index">
-			<navigator
-				class="itemView  weui-flex__item"
-				url="{{item.pagePath}}"
-				open-type="redirect"
-				hover-class="none"
-			>
-				<image class="item_icon" src="{{item.selected ? item.selectedIconPath : item.iconPath}}"/>
-				<view class="item_text {{item.selected ? 'c-y' : 'c-gray'}}">{{item.text}}</view>
-	  	</navigator>
-		</repeat>
-	</view>
-</template>
-<script>
-import wepy from 'wepy';
-import { list1, list2 } from '@/base/base'
-export default class tabBarBottom extends wepy.component {
-	// props 接收父组件传递过来的值
-	props = {
-		tabBar: {
-			type: Object,
-			default: {}
-		},
-		usertype: {
-			type: String,
-			default: '0'
-		},
-		tabBarIndex: {
-			type: Number,
-			default: 0
-		}
-	}
-	data = {
-		tabBarList: {}
-	}
-	onLoad() {
-		this.geTabBar(this.usertype)
-	}
-	geTabBar(val) {
-		let type = val ? val : wx.getStorageSync('UserType')
-		if (type === '1') {
-			this.$parent.$parent.globalData.tabBar.list = list1
-		} else {
-			this.$parent.$parent.globalData.tabBar.list = list2
-		}
-		this.tabBarList = this.$parent.$parent.tabBarClickHandle(this.tabBarIndex, this);
-		this.$apply()
-	}
-	watch = {
-		usertype(val) {
-			console.log(val)
-			if (val) {
-				this.geTabBar(val)
-			} else {
-				this.tabBarList = this.$parent.$parent.tabBarClickHandle(this.tabBarIndex, this);
-			}
-			this.$apply()
-		}
-	}
-}
-</script>
 <style lang="less">
 .tabBarBox {
   width: 100%;
@@ -91,3 +27,62 @@ export default class tabBarBottom extends wepy.component {
   }
 }
 </style>
+<template>
+	<view class="tabBarBox weui-flex center">
+		<!-- 首页 -->
+		<repeat wx:for="{{tabBarList.list}}" wx:key="index">
+			<navigator class="itemView  weui-flex__item"
+				url="{{item.pagePath}}"
+				open-type="redirect"
+				hover-class="none">
+				<image class="item_icon" src="{{item.selected ? item.selectedIconPath : item.iconPath}}"/>
+				<view class="item_text {{item.selected ? 'c-y' : 'c-gray'}}">
+					{{item.text}}
+				</view>
+	  	</navigator>
+		</repeat>
+	</view>
+</template>
+<script>
+import wepy from 'wepy';
+import { list1, list2 } from '@/base/base'
+export default class tabBarBottom extends wepy.component {
+	// props 接收父组件传递过来的值
+	props = {
+		usertype: {
+			type: String,
+			default: '0'
+		},
+		tabBarIndex: {
+			type: Number,
+			default: 0
+		}
+	}
+	data = {
+		tabBarList: {}
+	}
+	onLoad() {
+		this.geTabBar(this.usertype)
+	}
+	geTabBar(val) {
+		let type = val ? val : wx.getStorageSync('UserType')
+		if (type === '1') {
+			this.$parent.$parent.globalData.tabBar.list = list1
+		} else {
+			this.$parent.$parent.globalData.tabBar.list = list2
+		}
+		this.tabBarList = this.$parent.$parent.tabBarClickHandle(this.tabBarIndex, this);
+		this.$apply()
+	}
+	watch = {
+		usertype(val) {
+			if (val) {
+				this.geTabBar(val)
+			} else {
+				this.tabBarList = this.$parent.$parent.tabBarClickHandle(this.tabBarIndex, this);
+			}
+			this.$apply()
+		}
+	}
+}
+</script>

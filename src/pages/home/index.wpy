@@ -22,13 +22,12 @@
 </template>
 <script>
 import wepy from 'wepy'
-import $moment from 'moment'
 import { $http } from '@/http.js'
 import resumeQuery from '@/components/resumeQuery'
 import resumeCard from '@/components/resumeCard'
 import resumeList from '@/components/resumeList'
 import tabBarBottom from '@/components/tabBarBottom'
-import { wxShowModal, wxReLaunch, wxNavigateTo } from '@/util.js'
+import { wxNavigateTo } from '@/util.js'
 // import { connect, getStore } from 'wepy-redux'
 // const store = getStore()
 //  @connect({

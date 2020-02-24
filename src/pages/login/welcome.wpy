@@ -55,7 +55,7 @@ export default class Welcome extends wepy.page {
     modalObj: {
       title: '',
       subTitle: '',
-      imgBg: 'https://a.rsd123.com/image/images/success.png'
+      imgBg: 'https://a.rsd123.com/image/images/modalIcon.png'
     },
     checked: false,
     isView: true,

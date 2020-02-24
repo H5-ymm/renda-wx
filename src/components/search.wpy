@@ -12,7 +12,6 @@
   }
 }
 </style>
-
 <template>
   <view class="weui-cell weui-flex start">
 		<image src="https://a.rsd123.com/image/images/search.png" class="dateIcon searchIcon" />

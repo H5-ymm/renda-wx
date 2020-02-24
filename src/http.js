@@ -17,7 +17,7 @@ const http = (url, params, method) => {
             success: function (res) {
                 // 接口访问正常返回数据
                 if (res.statusCode === 200) {
-                    // 1. 操作成功返回数据,原则上只针对服务器端返回成功的状态（如本例中为000000）
+                    // 操作成功返回数据,原则上只针对服务器端返回成功的状态（如本例中为000000）
                     if (res.data.status.code === 200) {
                         resolve(res.data);
                     } else if (res.data.status.code === 1009 || res.data.status.code === 6001 ||
@@ -48,7 +48,7 @@ const http = (url, params, method) => {
                 reject(error);
             }
         }).onHeadersReceived(function (res) {
-            console.log("onHeadersReceived")
+            console.log('onHeadersReceived')
         })
     });
 };

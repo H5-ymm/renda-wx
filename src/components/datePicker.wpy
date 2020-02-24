@@ -59,8 +59,9 @@ export default class datePicker extends wepy.component {
 	methods = {
 		bindDateChange(e) {
 			let date = e.detail.value
-			if (date.valueOf()-this.startValue.valueOf()<0) {
+			if ($moment(date).valueOf() - $moment(this.startValue).valueOf() < 0) {
 				this.dateValue = this.startValue
+				this.params.date = this.startValue
         return wxToast('请选择大于当天的时间')
 			}
 			this.dateValue = date
