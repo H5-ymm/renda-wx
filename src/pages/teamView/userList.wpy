@@ -1,0 +1,100 @@
+<style lang="less">
+@import "../../style/home.less";
+page {
+  overflow: hidden;
+}
+.detail-view {
+  height: 100%;
+  overflow: hidden;
+  .page_margin {
+    margin: 24rpx 24rpx 0;
+  }
+  .header-box-team {
+    margin: -24rpx 24rpx 0;
+  }
+  .view-team {
+    height: calc(100% - 168px);
+    overflow: auto;
+  }
+  .only-btn {
+    height: 100rpx;
+		.only-btn-item {
+			margin: 0 30rpx;
+		}
+  }
+}
+</style>
+<template>
+  <view class="detail-view home-view">
+		<view class="home-view-header"></view>
+		<view class="header-box-team">
+			<search class="weui-cell weui-flex start page_card" 
+			 @searchValue="searchValue">
+			</search>
+		</view>
+    <view class="page_margin view-team">	
+			<scroll-view scroll-y="true" height="100%">
+				<teamUser :list.sync="list"></teamUser>
+			</scroll-view>
+    </view>
+		 <view class="weui-flex between only-btn">
+				<view 
+					class="weui-flex center weui-flex__item only-btn-item">
+					<button class="weui-btn_cell  weui-flex__item weui-btn_primary" @tap="overView">
+						添加成员
+					</button>
+				</view>
+	  	</view>
+		</view>
+  </view>
+</template>
+<script>
+import wepy from 'wepy'
+import { $http } from '@/http.js'
+import search from '@/components/search'
+import teamUser from '@/components/teamUser'
+import { getList, wxNavigateTo, wxShowModal, wxToast, wxReLaunch } from '@/util'
+export default class userList extends wepy.page {
+	components = {
+		search: search,
+		teamUser: teamUser
+	}
+	data = {
+		tabBarList: [],
+		list: [{
+			name: '用英语'
+		}],
+		params: {
+			uid: '',
+			page: 1,
+			limit: 500,
+			status: ''
+		},
+		count: 0,
+		isBatch: false,
+		isCheck: false,
+		activeIndex: 0,
+		isSeachWidth: false,
+		isModal: true,
+		modalHeight: 860,
+		title: '查看面试时间',
+		receiptType: 1,
+		statusObj: {},
+		job_id: '',
+		timeInfo: {},
+		id: '',
+		check: false
+	}
+	onLoad(options) {
+
+	}
+	onShow() {
+	
+	}
+	events = {
+		
+	}
+	methods = {
+	}
+}
+</script>

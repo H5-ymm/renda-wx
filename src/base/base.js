@@ -22,10 +22,10 @@ export const list1 = [{
 ]
 export const list2 = [{
         pagePath: '/pages/home/index',
-        text: '简历列表',
+        text: '首页',
         selected: true,
-        iconPath: '/images/list.png',
-        selectedIconPath: '/images/list-active.png'
+        iconPath: '/images/team/home.png',
+        selectedIconPath: '/images/team/home-active.png'
     },
     {
         pagePath: '/pages/my/index',

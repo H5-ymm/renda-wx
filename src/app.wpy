@@ -14,6 +14,9 @@ setStore(store)
 export default class extends wepy.app {
   config = {
     pages: [
+      'pages/teamView/index',
+      'pages/teamView/userList',
+      'pages/teamView/userInfo',
       'pages/login/welcome',
       'pages/register/selectUser',
       'pages/companyView/index',

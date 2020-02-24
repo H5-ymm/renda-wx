@@ -1,0 +1,45 @@
+
+<template>
+  <view>
+    <view wx:if="{{list.length}}">
+      <repeat for="{{list}}" key="index" item="rItem">
+        <view class="page_card" @tap="viewDetail({{rItem}})">
+					<view class="page_card_row weui-flex between">
+						<view class="weui-flex__item">
+							<view class="weui-flex between">
+								<view class="page_card_name">杨萌萌</view>
+								<view class="page_card_col1">销售部</view>
+							</view>
+							<view class="weui-flex between">
+								<view class="text-line weui-flex start">18337806563</view>
+								<view class="page_card_col1">组员</view>
+							</view>
+						</view>
+					  <image mode="scaleToFill" class="weui-flex__item" src="https://a.rsd123.com/image/images/right.png" class="page_down_icon"/>
+					</view>
+			  </view>
+      </repeat>
+    </view>
+    <view wx:else class="page_list">
+      <image src="https://a.rsd123.com/image/images/noBg.png"
+      class="page_noData" mode="scaleToFill"/>
+      <view class="page_noData_text">暂无数据！</view>
+    </view>
+  </view>
+</template>
+<script>
+import wepy from 'wepy'
+import { wxToast, wxNavigateTo } from '@/util.js'
+export default class teamUser extends wepy.component {
+  props = {
+    list: Array
+  }
+  methods = {
+    viewDetail(item) {
+			wx.navigateTo({
+				url: '/pages/teamView/userInfo' 
+			}) 
+		}
+	}
+}
+</script>

@@ -1,0 +1,183 @@
+<style lang="less">
+@import "../../style/home.less";
+.input-text-end {
+  margin-left: 10rpx;
+}
+.detail-view {
+  height: 100%;
+  overflow: hidden;
+  .home-view-box {
+    overflow: auto;
+    .weui-textarea {
+      text-align: left;
+      line-height: 32rpx;
+      margin-top: 10rpx;
+    }
+  }
+  .register-btn {
+    height: 100rpx;
+    margin-bottom: 80rpx;
+    .weui-btn_cell {
+      margin: 0 24rpx;
+    }
+  }
+  .radio-group {
+    .radio {
+      margin-left: 10rpx;
+      font-size: 26rpx;
+    }
+  }
+}
+</style>
+<template>
+	<view class="detail-view">
+		<view class="home-view-box page_margin view-detail">
+			<view class="page_card">
+				<view class="page_card_row">
+					<view class="weui-flex between">
+						<view class="my-text weui-flex__item">姓名</view>
+						<view class="my-text-right">杨萌萌</view>
+					</view>
+				</view>
+				<view class="page_card_row">
+					<view class="weui-flex between">
+						<view class="my-text weui-flex__item">身份证</view>
+						<view class="my-text-right">410333333333</view>
+					</view>
+				</view>
+				<view class="page_card_row">
+					<view class="weui-flex between">
+						<view class="my-text weui-flex__item">手机号</view>
+						<view class="my-text-right">183332838</view>
+					</view>
+				</view>
+			</view>
+			<view class="page_card">
+				<view class="page_card_row">
+					<view class="weui-flex between">
+						<view class="my-text weui-flex__item">学历</view>
+						<view class="my-text-right">高中</view>
+					</view>
+				</view>
+				<view class="page_card_row">
+					<view class="weui-flex between">
+						<view class="my-text weui-flex__item">所在地区</view>
+						<view class="my-text-right">单独的</view>
+					</view>
+				</view>
+				<view class="page_card_row">
+					<view class="weui-flex between">
+						<view class="my-text weui-flex__item">详细地址</view>
+						<view class="my-text-right">单独的</view>
+					</view>
+				</view>
+			</view>
+			<view class="page_card">
+				<view class="page_card_row">
+					<view class="weui-flex between">
+						<view class="my-text weui-flex__item">当前职位</view>
+						<view class="my-text-right">京津冀</view>
+					</view>
+				</view>
+				<view class="page_card_row">
+					<view class="weui-flex between">
+						<view class="my-text weui-flex__item">部门</view>
+						<view class="my-text-right">{{form.tel}}</view>
+					</view>
+				</view>
+				<view class="page_card_row">
+					<view class="weui-flex between">
+						<view class="my-text weui-flex__item">当前状态</view>
+						<view class="my-text-right">
+							<radio-group class="radio-group" bindchange="radioChange">
+								<radio
+									class="radio"
+									wx:for-items="{{items}}"
+									color="#1890FF"
+									wx:key="name"
+									value="{{item.name}}"
+									checked="{{item.checked}}"
+								>
+									<text>{{item.value}}</text>
+								</radio>
+							</radio-group>
+						</view>
+					</view>
+				</view>
+			</view>
+		</view>
+		<view class="weui-cell_btn weui-flex between register-btn">
+			<button class="weui-btn_cell weui-btn_primary" @tap="handleShelf">保存</button>
+		</view>
+	</view>
+</template>
+<script>
+import wepy from 'wepy'
+import { $http } from '@/http.js'
+import { wxToast, wxReLaunch, wxShowModal } from '@/util.js'
+import wxs from '../../filterWxs/rewaryFilter.wxs'
+export default class userInfo extends wepy.page {
+	wxs = { wxs }
+	data = {
+		form: {},
+		id: '',
+		items: [
+			{ name: 'USA', value: '美国' },
+			{ name: 'CHN', value: '中国', checked: 'true' },
+		]
+	}
+	config = {
+		navigationBarTitleText: '成员详情'
+	}
+	onLoad(options) {
+		// this.id = options.query
+		// this.getInvoiceDetail()
+	}
+	getInvoiceDetail() {
+		$http('/receipt/invoiceInfo', { id: this.id }).then(res => {
+			this.form = res.data
+			this.form.job_content = this.form.job_content.replace('/<br>/g', '')
+			this.$apply()
+		})
+	}
+	setReceiptShelf(params) {
+		$http('/company/companyReceiptShelf', params).then(res => {
+			this.form.job_status = params.job_status
+			this.$apply()
+			wxToast('操作成功')
+		})
+	}
+	deleteReceiptShelf(params) {
+		$http('/company/delReceiptShelf', params).then(res => {
+			wxToast('删除成功')
+			wxReLaunch('/pages/companyView/checkReceipt')
+		})
+	}
+	methods = {
+		handleShelf() {
+			let params = {
+				uid: this.form.uid,
+				id: this.form.id,
+				job_status: this.form.job_status == 1 ? 2 : 1
+			}
+			let text = this.form.job_status == 1 ? '下架' : '上架'
+			wxShowModal('', `确定${text}的申请单子`).then(res => {
+				this.setReceiptShelf(params)
+			}).catch(() => {
+				console.log('取消')
+			})
+		},
+		handleDelete() {
+			let params = {
+				uid: wx.getStorageSync('rendaUid'),
+				id: this.form.id
+			}
+			wxShowModal('', '确定删除团队申请记录', '确定').then(res => {
+				this.deleteReceiptShelf(params)
+			}).catch(() => {
+				console.log('取消')
+			})
+		}
+	}
+}
+</script>
