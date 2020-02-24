@@ -9,6 +9,8 @@
       .my-avatar-box {
         height: 180rpx;
         width: 180rpx;
+        position: relative;
+        z-index: 222;
         .my-avatar {
           width: 100%;
           height: 100%;
@@ -18,6 +20,8 @@
       .team-info-row {
         margin-left: 20rpx;
         line-height: 70rpx;
+        position: relative;
+        z-index: 222;
         .my-user-name {
           font-size: 40rpx;
         }
