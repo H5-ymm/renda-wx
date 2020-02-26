@@ -69,6 +69,12 @@ export default class Welcome extends wepy.page {
     sessionKey: ''
   }
   onLoad(options) {
+    console.log(options)
+    // wx.getLaunchOptionsSync({
+    //   success: res=> {
+    //     console.log(res)
+    //   }
+    // })
     if (options && options.query) {
       this.checked = options.query
       this.isRead = true
@@ -128,7 +134,7 @@ export default class Welcome extends wepy.page {
         wxReLaunch('/pages/register/selectUser')
       } else if (res.usertype === 2) {
         if (res.is_team !== '0') {
-          wxReLaunch('/pages/home/index')
+          wxReLaunch('/pages/teamView/index')
         } else {
           wxReLaunch('/pages/register/selectUser?query=1')
         }

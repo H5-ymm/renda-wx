@@ -17,10 +17,10 @@ page {
     overflow: auto;
   }
   .only-btn {
-    height: 100rpx;
-		.only-btn-item {
-			margin: 0 30rpx;
-		}
+    height: 120rpx;
+    .only-btn-item {
+      margin: 0 30rpx;
+    }
   }
 }
 </style>
@@ -33,21 +33,23 @@ page {
 			</search>
 		</view>
     <view class="page_margin view-team">	
-			<scroll-view scroll-y="true" height="100%">
+			<scroll-view scroll-y="true" @scrolltolower="searchScrollLower" style="height: 100%;">
 				<teamUser :list.sync="list"></teamUser>
 			</scroll-view>
     </view>
 		 <view class="weui-flex between only-btn">
 				<view 
 					class="weui-flex center weui-flex__item only-btn-item">
-					<button class="weui-btn_cell  weui-flex__item weui-btn_primary" @tap="overView">
+					<button class="weui-btn_cell  weui-flex__item weui-btn_primary" @tap="addUser">
 						添加成员
 					</button>
 				</view>
 	  	</view>
 		</view>
 		<modalAddUser :isScaleModal.sync="isModal" @handleClose="handleClose" @handleOk="handleOk" 
-		:height.sync="modalHeight" ></modalAddUser>
+		:title.sync= "title"
+		:height.sync="modalHeight" :type.sync="type" 
+		:imgUrl.sync="qrCode"></modalAddUser>
   </view>
 </template>
 <script>
@@ -56,7 +58,7 @@ import { $http } from '@/http.js'
 import search from '@/components/search'
 import teamUser from '@/components/teamUser'
 import modalAddUser from '@/components/modalAddUser'
-import { getList, wxNavigateTo, wxShowModal, wxToast, wxReLaunch } from '@/util'
+import { getList, wxNavigateTo, wxShowModal, wxToast, wxReLaunch, getImgUrl } from '@/util'
 export default class userList extends wepy.page {
 	components = {
 		search: search,
@@ -65,9 +67,7 @@ export default class userList extends wepy.page {
 	}
 	data = {
 		tabBarList: [],
-		list: [{
-			name: '用英语'
-		}],
+		list: [],
 		params: {
 			uid: '',
 			page: 1,
@@ -75,31 +75,88 @@ export default class userList extends wepy.page {
 			status: ''
 		},
 		count: 0,
-		isBatch: false,
-		isCheck: false,
 		activeIndex: 0,
 		isSeachWidth: false,
 		modalHeight: 520,
 		isModal: true,
-		title: '查看面试时间',
-		receiptType: 1,
-		statusObj: {},
-		job_id: '',
-		timeInfo: {},
+		title: '请选择添加方式',
 		id: '',
-		check: false
+		params: {
+			uid: '',
+			page: 1,
+			limit: 10
+		},
+		qrCode: '',
+		type: 0
+	}
+	config = {
+		navigationBarTitleText: '成员列表'
 	}
 	onLoad(options) {
-		this.isModal = false
-		this.$apply()
+		this.params.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
+	}
+	getUserList() {
+		$http('/userinfo/teamUserList', this.params).then(res => {
+			this.list = res.data.data || []
+			this.count = res.data.count
+			this.$apply()
+		})
 	}
 	onShow() {
-	
+		this.getUserList()
+	}
+	createQrcode() {
+		let params = {
+			scene: this.uid,
+			page: 'pages/login/welcome',
+			width: 300
+		}
+		$http('/login/get_qrcode', params).then(res => {
+			if (res.data) {
+				this.type = 1
+				this.isModal = false
+				this.qrCode = getImgUrl(res.data)
+				this.$apply()
+			}
+		})
 	}
 	events = {
-		
+		searchValue: val => {
+			this.params = Object.assign(this.params, { keyword: val })
+			this.getUserList()
+		},
+		handleOk: data => {
+			if (data === 0) {
+				this.isModal = true
+				wxNavigateTo('/pages/teamView/userInfo')
+			} else {
+				this.activeIndex = data
+				this.createQrcode()
+			}
+		}
+	}
+	onShareAppMessage(res) {
+		console.log(res.from === 'button')
+		if (res.from === 'button') {
+
+		}
+		return {
+			title: '转发',
+			imageUrl: this.qrCode,
+			path: '/pages/login/welcome?uid=' + this.uid
+		}
 	}
 	methods = {
+		addUser() {
+			this.isModal = !this.isModal
+			this.$apply()
+		},
+		searchScrollLower() {
+			if (this.count > this.list.length && this.count > this.params.limit) {
+				this.params.limit = this.params.limit + 10
+				this.getUserList()
+			}
+		}
 	}
 }
 </script>

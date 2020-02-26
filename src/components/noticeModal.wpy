@@ -80,7 +80,7 @@
 							placeholder="请输入{{title}}通知的内容" maxlength="-1"/>
 					</view>
 					<view class="weui-flex start notice-tip">
-						<image src="../images/orderTaking/warn.png" class="tipIcon" />
+						<image src="https://a.rsd123.com/image/images/orderTaking/warn.png" class="tipIcon" />
 						<text class="tip">审核通过简历会直接发送短信通知{{title}}，谨慎操作</text>
 					</view>
 		    </view>

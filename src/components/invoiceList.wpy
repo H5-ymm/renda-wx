@@ -1,0 +1,124 @@
+		
+<style lang="less">
+.resume-list {
+  .page_card_row {
+    line-height: 40rpx;
+    .page_card_name {
+      font-size: 32rpx;
+      margin-bottom: 6rpx;
+    }
+    .text-line {
+      font-size: 26rpx;
+    }
+  }
+}
+.page_card_end {
+  .page_card_time {
+    width: 100%;
+    text-align: right;
+    font-size: 22rpx;
+    color: #999;
+    margin-right: 8rpx;
+  }
+  .weui-btn_cell {
+    margin-bottom: 40rpx;
+    border-radius: 5rpx;
+    font-size: 25rpx;
+    padding: 26rpx 18rpx;
+  }
+  .page_card_status-text {
+    height: 80rpx;
+  }
+}
+</style>
+<template>
+  <view class="resume-list">
+    <repeat wx:for="{{list}}" wx:key="index">
+      <view class="page_card" wx:if="{{list.length}}">
+        <view class="page_card_row weui-flex between">
+					<view class="weui-flex start">
+						  <view wx:if="{{isBatch}}">
+								<image src="https://a.rsd123.com/image/images/user/radio2.png" alt="" mode="aspectFill" class="radio-icon" @tap="selectResume({{item}},{{index}})"
+								 wx:if="{{item.disabled}}"/>
+								<image src="https://a.rsd123.com/image/images/user/radio1.png" wx:else @tap="selectResume({{item}},{{index}})" mode="aspectFill" class="radio-icon" />
+								</view>
+							<view>
+								<view class="page_card_name">{{item.name}}</view>
+								<view class="text-line weui-flex__item">
+									{{item.age}}岁 {{item.sex==1?'男':'女'}} {{item.education}}</view>
+								<view class="text-line weui-flex__item">
+								 {{item.citys||'-'}}
+							  </view>
+					   </view>
+					</view>
+          <view class="weui-flex end wrap page_card_end">		
+						<view class="page_card_status-text">
+							<button class="weui-btn_cell weui-flex__item weui-btn_primary"
+							@tap="handleResume({{item}},1)">
+								推荐岗位
+							</button>
+						</view>
+						<view class="page_card_time">已推荐: 23</view>
+					</view>
+        </view>
+      </view>
+    </repeat>
+    <view wx:if="{{!list.length}}" class="page_list">
+      <image src="https://a.rsd123.com/image/images/noBg.png" class="page_noData" mode="scaleToFill"/>
+      <view class="page_noData_text">暂无数据！</view>
+    </view>
+  </view>
+</template>
+<script>
+import wepy from 'wepy'
+export default class companyResumeList extends wepy.component {
+	props = {
+		list: Array,
+		isBatch: Boolean,
+		isCheck: Boolean,
+		receiptType: Number
+	}
+	data = {
+		isCheck: false,
+		isShow: false,
+		refuseText: '',
+		text: '',
+		isShowBtn: true,
+		resumeList: []
+	}
+	onLoad() {
+
+	}
+	watch = {
+		list(val) {
+			if (val) {
+				this.resumeList = val
+			}
+		}
+	}
+	methods = {
+		handleResume(item, status) {
+			let query = {
+				uid: wx.getStorageSync('rendaUid'),
+				id: item.id,
+				status
+			}
+			this.$emit('handleResume', query)
+		},
+		selectResume(item, index) {
+			let arr = []
+			item.disabled = !item.disabled
+			this.$apply()
+			if (arr.indexOf(item.id) === -1) {
+				arr.push(item.id)
+			} else {
+				let ret = arr.findIndex(v => {
+					return v === item.id
+				})
+				arr.splice(ret, 1)
+			}
+			this.$emit('selectResume', Array.from(new Set(arr)))
+		}
+	}
+}
+</script>

@@ -21,7 +21,7 @@ export const list1 = [{
     }
 ]
 export const list2 = [{
-        pagePath: '/pages/home/index',
+        pagePath: '/pages/teamView/index',
         text: '首页',
         selected: true,
         iconPath: '/images/team/home.png',

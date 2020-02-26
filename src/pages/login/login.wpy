@@ -89,7 +89,7 @@ export default class Login extends wepy.page {
         wxReLaunch('/pages/register/selectUser')
       } else if (res.usertype === 2) {
         if (res.is_team !== '0') {
-          wxReLaunch('/pages/home/index')
+          wxReLaunch('/pages/teamView/index')
         } else {
           wxReLaunch('/pages/register/selectUser?query=1')
         }

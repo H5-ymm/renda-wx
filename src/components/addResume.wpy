@@ -1,6 +1,5 @@
 <style lang="less">
 @import "../style/home.less";
-@height: 40;
 .weui-input {
   text-align: right;
 }
@@ -26,6 +25,12 @@
           </view>
         </view>
         <view class="page_card_row">
+					<view class="weui-flex between">
+						<view class="my-text weui-flex__item my-text-require">身份证</view>
+						 <input class="weui-input" placeholder-class="placeholder" data-name="id_card" value="{{form.id_card}}" disabled="{{id!=''}}" @input="changeInput" placeholder="请输入身份证" />
+					</view>
+				</view>
+        <view class="page_card_row">
           <view class="weui-flex between">
             <view class="my-text weui-flex__item">性别：</view>
             <picker @change="bindPickerChange" value="{{index}}" range="{{array}}">
@@ -49,7 +54,7 @@
             <picker @change="eduPickerChange" value="{{eduIndex}}" range="{{eduList}}">
               <view class="my-text-right weui-flex between">
                 <view class="{{eduList[eduIndex]?'':'placeholder'}}"> {{eduList[eduIndex]?eduList[eduIndex]:'请选择'}}</view>
-                <image mode="scaleToFill" src="https://a.rsd123.com/image/images/right.png" class="page_down_icon" />
+                <image mode="scaleToFill" src="https://a.rsd123.com/image/images/down.png" class="page_down_icon" />
               </view>
             </picker>
           </view>
@@ -83,7 +88,7 @@
 <script>
 import wepy from 'wepy'
 import districtSelet from './districtSelet'
-import { wxToast, checkMobile } from '@/util.js'
+import { wxToast, checkMobile, validateIdCard } from '@/util.js'
 export default class addResume extends wepy.component {
   props = {
     resumeInfo: Object
@@ -159,7 +164,11 @@ export default class addResume extends wepy.component {
         wxToast('请输入手机号码')
       } else if (!checkMobile(this.form.mobile)) {
         wxToast('请输入正确的手机号码')
-      } else if (this.form.age && Number(this.form.age) < 16) {
+      } else if (!this.form.id_card) {
+        wxToast('请输入身份证号码')
+      } else if (!validateIdCard(this.form.id_card)) {
+        wxToast('请输入正确的身份证')
+			} else if (this.form.age && Number(this.form.age) < 16) {
         wxToast('请输入的年龄不小于16')
       } else if (this.form.age && Number(this.form.age) > 65) {
         wxToast('请输入的年龄不大于65')

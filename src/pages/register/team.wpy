@@ -17,7 +17,7 @@
             <view class="my-text  weui-flex__item my-text-require">团队logo：</view>
             <image @tap="uploadImg" src="{{infoImg}}" mode="scaleToFill" class="my-head" 
 						 wx:if="{{infoImg}}" />
-             <image @tap="uploadImg" src=".https://a.rsd123.com/image/images/default1.png" mode="scaleToFill" class="my-head" 
+             <image @tap="uploadImg" src="https://a.rsd123.com/image/images/default1.png" mode="scaleToFill" class="my-head" 
 						 wx:else/>
 						<image mode="scaleToFill" @tap="uploadImg"  src="https://a.rsd123.com/image/images/right.png"  class="page_down_icon" />
           </view>
