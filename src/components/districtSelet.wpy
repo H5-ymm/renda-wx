@@ -113,6 +113,7 @@ export default class districtSelet extends wepy.component {
   }
   methods = {
     bindMultiPickerChange(e) {
+      console.log(e)
       this.multiIndex = e.detail.value
       this.codeList.forEach((item, index) => {
         this.options[index] = item[this.multiIndex[index]]
@@ -121,10 +122,12 @@ export default class districtSelet extends wepy.component {
       })
       if (this.options.length) {
         this.$emit('selectCity', this.options)
-        let addressValue = this.multiArray[0][this.multiIndex[0]] +
-         this.multiArray[1][this.multiIndex[1]] +
-         this.multiArray[2][this.multiIndex[2]]
-         this.$emit('selectCityText', addressValue)
+        if (this.multiArray[2]) {
+          let addressValue = this.multiArray[0][this.multiIndex[0]] +
+          this.multiArray[1][this.multiIndex[1]] +
+          this.multiArray[2][this.multiIndex[2]]
+          this.$emit('selectCityText', addressValue)
+        }
       }
     },
     bindMultiPickerColumnChange(e) {

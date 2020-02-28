@@ -1,21 +1,40 @@
 
+<style lang="less">
+.page_card_status-item {
+  .weui-btn_cell {
+    border-radius: 5rpx;
+    font-size: 25rpx;
+    padding: 26rpx 12rpx;
+  }
+}
+</style>
+
 <template>
   <view>
     <repeat for="{{list}}" key="index">
       <view class="page_card" wx:if="{{list.length}}" @tap="viewDetail({{item}})">
-        <view class="page_card_row">
+        <view class="page_card_row weui-flex between">
+        <view class="weui-flex__item">
           <view class="weui-flex between">
             <view class="page_card_name">{{item.name}}</view>
+             <view
+              class="page_card_status-item"
+              wx:if="{{!item.jobinfo}}">
+              	<button class="weui-btn_cell weui-flex__item weui-btn_primary"
+									@tap.stop="applyResume({{item}})">
+									推荐岗位
+									</button>
+              </view>
             <view
-              class="page_card_status {{'page_card_status'+ item.jobinfo.status}}"
+              class="page_card_receipt_status {{'page_card_receipt_status'+ item.jobinfo.status}}"
               wx:if="{{item.jobinfo&&!item.jobinfo.interview_status}}"
             >{{item.jobinfo.status==0?'待审核':item.jobinfo.status==1?'审核通过':'审核未通过'}}</view>
             <view
-              class="page_card_status {{'page_card_status'+ item.jobinfo.interview_status}}"
+              class="page_card_receipt_status {{'page_card_receipt_status'+ item.jobinfo.interview_status}}"
               wx:if="{{item.jobinfo&&!item.jobinfo.interview_status&&item.jobinfo.status==1&&item.jobinfo.interview_status}}"
             >{{item.jobinfo.interview_status==1?'面试通过':item.jobinfo.interview_status==2?'面试未通过':'面试未参加'}}</view>
             <view
-              class="page_card_status {{'page_card_status'+ item.jobinfo.entry_status}}"
+              class="page_card_receipt_status {{'page_card_receipt_status'+ item.jobinfo.entry_status}}"
               wx:if="{{item.jobinfo&&item.jobinfo.interview_status==1&&item.jobinfo.entry_status}}"
             >{{item.jobinfo.entry_status==1?'入职通过':item.jobinfo.entry_status==2?'入职未通过':'入职未参加'}}</view>
           </view>
@@ -28,7 +47,6 @@
               >{{item.from_user?item.from_user : '-'}}</view>
               <view class="page_card_col1" wx:else>{{item.jobinfo?item.jobinfo.com_name : '-'}}</view>
             </view>
-            <image mode="scaleToFill" src="https://a.rsd123.com/image/images/right.png" class="page_card_icon"/>
           </view>
           <view class="weui-flex between">
             <view class="weui-flex start weui-flex__item">
@@ -44,6 +62,8 @@
               wx:if="{{item.jobinfo}}"
             >{{wxs.dateFormat(item.jobinfo.addtime,'yyyy年MM月dd日')}}</view>
           </view>
+         </view>
+          <image mode="scaleToFill" src="https://a.rsd123.com/image/images/right.png" class="page_down_icon"/>
         </view>
       </view>
     </repeat>
@@ -64,6 +84,9 @@ export default class resumeList extends wepy.component {
   }
   data = {}
   methods = {
+    applyResume(item) {
+      this.$emit('applyResume', item)
+    },
     viewDetail(item) {
       let job_id = ''
       let job_type = ''

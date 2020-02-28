@@ -63,6 +63,12 @@
             </view>
           </view>
           <view class="page_card_row">
+            <view class="weui-flex between ">
+              <view class="my-text weui-flex__item">身份证</view>
+              <input class="weui-input" placeholder-class="placeholder" data-name="mobile" value="{{form.id_card}}" @input="changeInput" placeholder="请输入手机号" />
+            </view>
+          </view>
+          <view class="page_card_row">
             <view class="weui-flex between">
               <view class="my-text weui-flex__item">性别</view>
               <picker @change="bindPickerChange" value="{{index}}" range="{{array}}">

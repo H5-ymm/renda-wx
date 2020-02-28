@@ -27,16 +27,8 @@
 	<view class="detail-view">
 		<jobTemplate :form.sync="form"></jobTemplate>
 		<view class="weui-cell_btn weui-flex between register-btn">
-			<button
-				class="weui-btn_cell weui-btn_primary {{form.job_status==1?'weui-btn_primary_plain':''}}"
-				wx:if="{{form.status==2}}"
-				@tap="handleShelf"
-			>{{form.job_status==1?'下架':'上架'}}</button>
-			<button
-				class="weui-btn_cell weui-btn_primary_plain"
-				wx:if="{{form.status!=2||form.job_status==2}}"
-				@tap="handleDelete"
-			>删除</button>
+			<button class="weui-btn_cell weui-btn_primary_plain" @tap="handleDelete">分配</button>
+			<!-- <button class="weui-btn_cell weui-btn_primary_plain" @tap="handleDelete">推荐岗位</button> -->
 		</view>
 	</view>
 </template>
@@ -45,7 +37,7 @@ import wepy from 'wepy'
 import { $http } from '@/http.js'
 import { wxToast, wxReLaunch, wxShowModal } from '@/util.js'
 import jobTemplate from '@/components/jobTemplate'
-export default class viewJob extends wepy.page {
+export default class teamJobDetail extends wepy.page {
 	components = {
 		jobTemplate: jobTemplate
 	}

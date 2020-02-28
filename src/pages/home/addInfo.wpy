@@ -79,7 +79,7 @@
   width: 44rpx;
   height: 44rpx;
 }
-.weui-cell_btn {
+.save-btn{
   padding-top: 40rpx;
 }
 </style>
@@ -117,7 +117,7 @@
             </view>
           </view>
         </repeat>
-        <view class="weui-cell_btn weui-flex center">
+        <view class="weui-cell_btn weui-flex center save-btn">
           <button class="weui-btn_cell .weui-btn_primary" @tap="save">确定</button>
         </view>
       </view>
@@ -193,6 +193,7 @@ export default class home extends wepy.page {
       this.params = Object.assign(this.params, data)
       if (this.stepActive === 2) {
         this.resumeInfo = data
+        this.stepActive = this.stepActive + 1
       } else if (this.stepActive === 3) {
         this.params.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
         if (!lock) {

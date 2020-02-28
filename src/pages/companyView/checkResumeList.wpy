@@ -91,7 +91,7 @@ page {
 			</search>
 		</view>
     <view class="page_margin view-detail">	
-			<scroll-view scroll-y="true" height="100%">
+			<scroll-view scroll-y="true" style="height:100%" >
 				<companyResumeList 
 				 :list.sync="newList" :receiptType.sync="receiptType" 
 				 :isBatch.sync="isBatch" :isCheck.sync="isCheck" @handleResume="handleResume">

@@ -1,0 +1,94 @@
+<style lang="less">
+@import "../../../style/home.less";
+page {
+  overflow: hidden;
+}
+.home-view {
+  height: 100%;
+  overflow: hidden;
+  .person-list {
+    overflow: hidden;
+  }
+  .content-box {
+    overflow: auto;
+  }
+  .footer-box {
+    height: 110rpx;
+  }
+}
+</style>
+<template>
+	<view class="home-view page page_margin">
+		<view class="view-content person-list">
+			<scroll-view scroll-y="true" style="height:100%" class="content-box">
+				<selectPerson :list.sync="newList"></selectPerson>
+			</scroll-view>
+		</view>
+		<view class="weui-cell_btn weui-flex between footer-box">
+			<button class="weui-btn_cell weui-btn_primary" @tap="handleDelete">确定分配</button>
+		</view>
+	</view>
+</template>
+<script>
+import wepy from 'wepy'
+import { $http } from '@/http.js'
+// import search from '@/components/search'
+import selectPerson from '@/components/selectPerson'
+import { getList, wxNavigateTo, wxShowModal, wxToast, wxReLaunch } from '@/util'
+export default class allocationPerson extends wepy.page {
+	components = {
+		// search: search,
+		selectPerson: selectPerson
+	}
+	data = {
+		list: [{
+			name: '杨萌萌', id: 1
+		}, {
+			name: '杨萌萌', id: 2
+		}, {
+			name: '杨萌萌', id: 3
+		}, {
+			name: '杨萌萌', id: 4
+		}, {
+			name: '杨萌萌', id: 5
+		}, {
+			name: '杨萌萌', id: 6
+		}],
+		params: {
+			uid: '',
+			page: 1,
+			limit: 500,
+			status: ''
+		},
+		count: 0
+	}
+	computed = {
+		newList() {
+			return this.checkAll(this.list, false)
+		}
+	}
+	checkAll(list, status) {
+		return list.filter(item => {
+			item.disabled = status
+			return item
+		})
+	}
+	config = {
+		navigationBarTitleText: '分配接单'
+	}
+	onLoad(options) {
+
+	}
+	onShow() {
+		this.params.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
+		this.$apply()
+	}
+	events = {
+		selectUser: val => {
+			console.log(val)
+		}
+	}
+	methods = {
+	}
+}
+</script>

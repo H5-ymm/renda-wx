@@ -46,14 +46,15 @@ page {
 			</search>
 		</view>
     <view class="page_margin view-content">
-      <scroll-view scroll-y="true" height="100%" @scrolltolower="searchScrollLower">
-        <resumeList :list.sync="list"></resumeList>
+      <scroll-view scroll-y="true"  style="height:100%" @scrolltolower="searchScrollLower">
+        <resumeList :list.sync="list" @applyResume="applyResume"></resumeList>
       </scroll-view>
     </view>
       <view class="home-add-resume" @tap="addResume">
         <image src="https://a.rsd123.com/image/images/add.png" class="add-icon" />
         <view class="home-add-text">添加简历</view>
       </view>
+      <selectModal :isScaleModal.sync="isSelectModal" :menus.sync="menus" :title.sync="modalTitle" ></selectModal>
   </view>
 </template>
 <script>
@@ -62,12 +63,14 @@ import { $http } from '@/http.js'
 import resumeList from '@/components/resumeList'
 import tabBar from '@/components/tabBar'
 import search from '@/components/search'
+import selectModal from '@/components/selectModal'
 import { wxNavigateTo } from '@/util.js'
 export default class home extends wepy.page {
   components = {
     tabBar: tabBar,
     search: search,
-    resumeList: resumeList
+    resumeList: resumeList,
+    selectModal: selectModal
   }
   data = {
     list: [],
@@ -84,6 +87,18 @@ export default class home extends wepy.page {
     count: 0,
     activeIndex: 0,
     isSeachWidth: false,
+    isSelectModal: true,
+    modalTitle: '请选择岗位性质',
+    menus: [
+    {
+        icon: '../../images/modal/icon3.png',
+        title: '内部发单',
+      },
+      {
+        icon: '../../images/modal/icon4.png',
+        title: '团队接单'
+      }
+    ]
   }
   events = {
     searchValue: val => {
@@ -92,6 +107,10 @@ export default class home extends wepy.page {
     },
     inputFocus: () => {
       this.isSeachWidth = true
+      this.$apply()
+    },
+    applyResume: data => {
+      this.isSelectModal = false
       this.$apply()
     }
   }

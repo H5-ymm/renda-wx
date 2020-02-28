@@ -165,7 +165,7 @@ const store = getStore()
 @connect({
 	list: (state) => state.contant.list
 })
-export default class ceateList extends wepy.page {
+export default class jobDetail extends wepy.page {
 	components = {
 		districtSelet: districtSelet,
 		updateForm: createForm
