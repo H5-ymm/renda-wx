@@ -161,6 +161,7 @@ export default class extends wepy.app {
       'pages/register/team',
       'pages/home/index',
       'pages/home/resumeDetail',
+      'pages/home/qrCodeResume',
       'pages/home/addInfo',
       'pages/home/list',
       'pages/my/index',
@@ -205,6 +206,24 @@ export default class extends wepy.app {
   onLaunch(options) {
     this.autoUpdate()
     this.isCheckSession()
+  }
+  onShow(options) {
+    console.log(options)
+    wx.removeStorageSync('rendaUidQrcode');
+    let str = ''
+    let uid = ''
+    if (options.scene) {
+      if (typeof options.scene != 'number') {
+        let arr = str.splite('?')
+        uid = arr[1]
+      }
+      wx.setStorageSync('rendaUidQrcode', uid)
+      this.globalData.uid = uid
+    }
+    if (options.query && options.query.uid) {
+      wx.setStorageSync('rendaUidQrcode', options.query.uid)
+      this.globalData.uid = options.query.uid
+    }
   }
   autoUpdate() {
     var self = this
@@ -272,6 +291,7 @@ export default class extends wepy.app {
     this.use('requestfix');
     wx.removeStorageSync('resumeType');
     wx.removeStorageSync('sendAuthCode');
+    wx.removeStorageSync('rendaUidQrcode');
   }
   globalData = {
     userInfo: null,

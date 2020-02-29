@@ -136,7 +136,7 @@ import { $http } from '@/http.js'
 import { wxReLaunch, wxToast } from '@/util.js'
 let lock = false
 // 通过继承自wepy.page的类创建页面逻辑
-export default class home extends wepy.page {
+export default class addInfo extends wepy.page {
   // 可用于页面模板绑定的数据
   components = {
     addBaseInfo: addBaseInfo,

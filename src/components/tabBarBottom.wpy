@@ -20,10 +20,6 @@ import { list1, list2 } from '@/base/base'
 export default class tabBar extends wepy.component {
 	// props 接收父组件传递过来的值
 	props = {
-		tabBar: {
-			type: Object,
-			default: {}
-		},
 		usertype: {
 			type: String,
 			default: ''
@@ -34,7 +30,7 @@ export default class tabBar extends wepy.component {
 		}
 	}
 	data = {
-    tabBarList: {}
+		tabBarList: {}
 	}
 	onLoad() {
 		this.tabBarList = this.$parent.$parent.tabBarClickHandle(this.tabBarIndex, this);
@@ -49,7 +45,7 @@ export default class tabBar extends wepy.component {
 					this.$parent.$parent.globalData.tabBar.list = list2
 				}
 				this.tabBarList = this.$parent.$parent.tabBarClickHandle(this.tabBarIndex, this);
-		   
+
 			} else {
 				this.tabBarList = this.$parent.$parent.tabBarClickHandle(this.tabBarIndex, this);
 			}
@@ -65,25 +61,25 @@ export default class tabBar extends wepy.component {
   background-color: #fff;
   position: fixed;
   bottom: 0;
-	z-index: 9999;
-	border-top: 1px solid #eee;
+  z-index: 9999;
+  border-top: 1px solid #eee;
 }
 .itemView {
-	height: 60px;
-	width: 100%;
-	text-align: center;
-	padding-top: 6rpx;
-	.item_icon {
-		width:50rpx;
-		height: 50rpx;
-	}
+  height: 60px;
+  width: 100%;
+  text-align: center;
+  padding-top: 6rpx;
+  .item_icon {
+    width: 50rpx;
+    height: 50rpx;
+  }
   .item_text {
-		font-size: 28rpx;
-		color: #999999;
-		text-align: center;
+    font-size: 28rpx;
+    color: #999999;
+    text-align: center;
     &.c-y {
       color: #1890ff;
-			}
-		}
+    }
+  }
 }
 </style>

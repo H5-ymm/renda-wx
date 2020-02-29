@@ -17,8 +17,9 @@
         <image src="../../images/add.png" class="add-icon" />
         <view class="home-add-text">添加简历</view>
       </view>
-      <homeModal :isScaleModal.sync="isModal" @handleOk="handleOk" :height.sync="modalHeight" :modalObj.sync="modalObj"></homeModal>
+      <homeModal :isScaleModal.sync="isModal" @handleOk="handleOk" :height.sync="modalHeight" :type.sync="type" :modalObj.sync="modalObj" :imgUrl.sync="qrCode"></homeModal>
       <tabBarBottom :usertype.sync="usertype" :tabBarIndex.sync="tabBarIndex"></tabBarBottom>
+      <selectModal :isScaleModal.sync="isSelectModal" :menus.sync="menus" @selectOk="selectOk" :title.sync="modalTitle" ></selectModal>
   </view>
 </template>
 <script>
@@ -29,18 +30,16 @@ import resumeCard from '@/components/resumeCard'
 import resumeList from '@/components/resumeList'
 import modal from '@/components/modal'
 import tabBarBottom from '@/components/tabBarBottom'
-// import { connect, getStore } from 'wepy-redux'
-// const store = getStore()
-//  @connect({
-//     loginUser: (state) => state.user.loginUser
-//  })
+import selectModal from '@/components/selectModal'
+import { getImgUrl } from '@/util.js'
 export default class home extends wepy.page {
   components = {
     resumeQuery: resumeQuery,
     resumeCard: resumeCard,
     resumeList: resumeList,
     homeModal: modal,
-    tabBarBottom: tabBarBottom
+    tabBarBottom: tabBarBottom,
+    selectModal: selectModal
   }
   data = {
     list: [],
@@ -61,7 +60,21 @@ export default class home extends wepy.page {
     },
     usertype: '',
     tabBarData: {},
-    tabBarIndex: 0
+    tabBarIndex: 0,
+    isSelectModal: true,
+    modalTitle: '请选择简历方式',
+    menus: [
+      {
+        icon: '../../images/modal/icon1.png',
+        title: '手动添加',
+      },
+      {
+        icon: '../../images/modal/icon2.png',
+        title: '二维码添加'
+      }
+    ],
+    qrCode: '',
+    type: 0
   }
   events = {
     changeDate: val => {
@@ -69,22 +82,62 @@ export default class home extends wepy.page {
       this.getResumeList()
       this.$broadcast('changeDate', val)
     },
-    handleOk: () => {
+    handleOk: (imgUl) => {
+      if (imgUl) {
+        this.qrCode = imgUl
+      } else {
+        setTimeout(() => {
+          wx.redirectTo({
+            url: '/pages/login/login' // 页面 A
+          })
+        }, 300)
+      }
       this.isModal = true
       this.$apply()
-      setTimeout(() => {
-        wx.redirectTo({
-          url: '/pages/login/login' // 页面 A
+    },
+    selectOk: val => {
+      console.log(val)
+      if (val === 0) {
+        wx.navigateTo({
+          url: '/pages/home/addInfo' // 页面 A
         })
-      }, 300)
+      } else {
+        this.createQrcode()
+      }
+    }
+  }
+  createQrcode() {
+    let params = {
+      scene: 'uid?=' + this.params.uid,
+      page: 'pages/home/qrCodeResume',
+      width: 300
+    }
+    $http('/login/get_qrcode', params).then(res => {
+      if (res.data) {
+        this.type = 1
+        this.isModal = !this.isModal
+        this.qrCode = getImgUrl(res.data)
+        this.$apply()
+        console.log(this.qrCode)
+      }
+    })
+  }
+
+  onShareAppMessage(res) {
+    if (res.from === 'button') {
+
+    }
+    return {
+      title: '转发',
+      imageUrl: this.qrCode,
+      path: '/pages/home/qrCodeResume?uid=' + this.params.uid
     }
   }
 
   methods = {
     addResume() {
-      wx.navigateTo({
-        url: '/pages/home/addInfo' // 页面 A
-      })
+      this.isSelectModal = !this.isSelectModal
+      this.$apply()
     },
     searchScrollLower() {
       if (this.count > this.list.length && this.count > this.params.limit) {
@@ -101,7 +154,6 @@ export default class home extends wepy.page {
     })
   }
   onLoad() {
-    // let info = store.getState().user.loginUser
     this.usertype = wx.getStorageSync('rendaUserType')
     this.$apply()
     // 授权成功，缓存没有微信信息
