@@ -1,0 +1,194 @@
+<style lang="less">
+@import "../../../style/home.less";
+page {
+  overflow: hidden;
+}
+.detail-view {
+  height: 100%;
+  overflow: hidden;
+  .page_margin {
+    margin: 24rpx 24rpx 0;
+  }
+  .header-box-team {
+    margin: -24rpx 24rpx 0;
+  }
+  .view-team {
+    height: calc(100% - 168px);
+    overflow: auto;
+  }
+  .only-btn {
+    height: 120rpx;
+    .only-btn-item {
+      margin: 0 30rpx;
+    }
+  }
+}
+</style>
+<template>
+  <view class="detail-view home-view">
+    <view class="page_margin view-detail">	
+			<scroll-view scroll-y="true" @scrolltolower="searchScrollLower" style="height: 100%;">
+				<userSettingList @settingRole="settingRole" :list.sync="list"></userSettingList>
+			</scroll-view>
+    </view>
+		 <view class="weui-flex between only-btn">
+				<view 
+					class="weui-flex center weui-flex__item only-btn-item">
+					<button class="weui-btn_cell  weui-flex__item weui-btn_primary" @tap="addDep">
+						确定
+					</button>
+				</view>
+	  	</view>
+		</view>
+		<picker wx:if="{{isPicker}}"   mode="multiSelector" @change="bindMultiPickerChange" 
+				@cancel="cancelPickerChange" @columnchange="bindMultiPickerColumnChange" range="{{depList}}" value="{{depIndex}}" >
+				<view class="my-text-right weui-flex between">
+					<view wx:if="{{depId!=''}}">
+						{{depList[0][depIndex[0]]}}
+						{{depList[1][depIndex[1]]}}
+					</view>
+					<view class="placeholder" wx:else>请选择</view>
+					<image mode="scaleToFill" src="https://a.rsd123.com/image/images/down.png" class="page_down_icon" />
+				</view>
+			</picker>
+  </view>
+</template>
+<script>
+import wepy from 'wepy'
+import { $http } from '@/http.js'
+import userSettingList from '@/components/userSettingList'
+import { getList, wxNavigateTo, wxShowModal, wxToast, wxReLaunch, getImgUrl } from '@/util'
+export default class department extends wepy.page {
+	components = {
+		userSettingList: userSettingList
+	}
+	data = {
+		list: [],
+		count: 0,
+		params: {
+			uid: '',
+			page: 1,
+			limit: 10,
+			departId: '',
+			gradeId: ''
+		},
+		jobList: [],
+		depList: [],
+		depId: '',
+		isPicker: false,
+		depIndex: [0, 0]
+	}
+	config = {
+		navigationBarTitleText: '人员调整'
+	}
+	onLoad(options) {
+		this.depId = options.query
+		this.params.departId = options.query
+		this.params.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
+	}
+	getAdjustmentList() {
+		$http('/team/adjustmentList', this.params).then(res => {
+			this.list = res.data.data || []
+			this.count = res.data.count
+			this.$apply()
+		})
+	}
+	getDepartmenList() {
+		$http('/team/departmentRoleList', { uid: this.params.uid }).then(res => {
+			let list = res.data || []
+			if (this.userTeamType == 1) {
+				this.depList[0] = list
+				if (this.depList.length) {
+					this.depId = this.depList[0].id
+				} else {
+					this.depId = ''
+				}
+			} else {
+				this.depId = wx.getStorageSync('rendaDradeId')
+				this.depList[0] = this.getCurrentDepList(list, this.depId)
+			}
+			this.depList[1] = this.getArr(this.depList[0], this.depId)
+			// this.form.grade_id = this.jobList[1].id
+			this.$apply()
+		})
+	}
+	getCurrentDepList(array) {
+		let arr = []
+		array.filter(item => {
+			if (item.id == this.depId) {
+				arr.push(item)
+			}
+		})
+		return arr
+	}
+	getArr(arr, id) {
+		let newArr = []
+		arr.forEach(item => {
+			if (item.id == id) {
+				newArr = item.child
+			}
+		})
+		return newArr
+	}
+	onShow() {
+		this.getAdjustmentList()
+	}
+	createQrcode() {
+		let params = {
+			scene: this.uid,
+			page: 'pages/login/welcome',
+			width: 300
+		}
+		$http('/login/get_qrcode', params).then(res => {
+			if (res.data) {
+				this.type = 1
+				this.isModal = false
+				this.qrCode = getImgUrl(res.data)
+				this.$apply()
+			}
+		})
+	}
+	events = {
+		settingRole: val => {
+			this.isPicker = true
+			this.$apply()
+			console.log(val)
+		}
+	}
+	methods = {
+		bindMultiPickerChange(e) {
+			this.depIndex = e.detail.value
+			let reward_money_type = Number(this.depIndex[0]) + 1
+			let settlement_type = Number(this.depIndex[1]) + 1
+			this.$apply()
+		},
+		bindMultiPickerColumnChange(e) {
+			this.depIndex[e.detail.column] = e.detail.value
+			let index = this.depIndex[0]
+			if (e.detail.column == 0) {
+				this.depIndex = [e.detail.value, 0, 0]
+			} else if (e.detail.column == 1) {
+				this.depIndex[1] = e.detail.value
+			}
+			else {
+				this.depIndex[2] = e.detail.value
+			}
+			this.$apply()
+		},
+		cancelPickerChange(e) {
+			this.depIndex = [0, 0, 0]
+			this.$apply()
+		},
+		addDep() {
+			this.isModal = !this.isModal
+			this.$apply()
+		},
+		searchScrollLower() {
+			if (this.count > this.list.length && this.count > this.params.limit) {
+				this.params.limit = this.params.limit + 10
+				this.getUserList()
+			}
+		}
+	}
+}
+</script>

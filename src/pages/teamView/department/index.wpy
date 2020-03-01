@@ -1,5 +1,5 @@
 <style lang="less">
-@import "../../style/home.less";
+@import "../../../style/home.less";
 page {
   overflow: hidden;
 }
@@ -34,85 +34,83 @@ page {
 		</view>
     <view class="page_margin view-team">	
 			<scroll-view scroll-y="true" @scrolltolower="searchScrollLower" style="height: 100%;">
-				<teamUser :list.sync="list"></teamUser>
+				<depList :list.sync="list" @delDepart="delDepart"></depList>
 			</scroll-view>
     </view>
 		 <view class="weui-flex between only-btn">
 				<view 
 					class="weui-flex center weui-flex__item only-btn-item">
-					<button class="weui-btn_cell  weui-flex__item weui-btn_primary" @tap="addUser">
-						添加成员
+					<button class="weui-btn_cell  weui-flex__item weui-btn_primary" @tap="addDep">
+						添加部门
 					</button>
 				</view>
 	  	</view>
 		</view>
-		<modalAddUser :isScaleModal.sync="isModal" @handleClose="handleClose" @handleOk="handleOk" 
-		:title.sync= "title"
-		:height.sync="modalHeight" :type.sync="type" 
-		:imgUrl.sync="qrCode"></modalAddUser>
+		<formModal :isScaleModal.sync="isModal" @handleClose="handleClose" @handleOk="handleOk" 
+		:title.sync= "title"></formModal>
   </view>
 </template>
 <script>
 import wepy from 'wepy'
 import { $http } from '@/http.js'
 import search from '@/components/search'
-import teamUser from '@/components/teamUser'
-import modalAddUser from '@/components/modalAddUser'
+import depList from '@/components/depList'
+import formModal from '@/components/formModal'
 import { getList, wxNavigateTo, wxShowModal, wxToast, wxReLaunch, getImgUrl } from '@/util'
-export default class userList extends wepy.page {
+export default class department extends wepy.page {
 	components = {
 		search: search,
-		teamUser: teamUser,
-		modalAddUser: modalAddUser
+		depList: depList,
+		formModal: formModal
 	}
 	data = {
-		tabBarList: [],
 		list: [],
-		count: 0,
-		activeIndex: 0,
-		isSeachWidth: false,
-		modalHeight: 520,
-		isModal: true,
-		title: '请选择添加方式',
-		id: '',
 		params: {
 			uid: '',
 			page: 1,
 			limit: 10
 		},
-		qrCode: '',
-		type: 0
+		count: 0,
+		isModal: true
 	}
 	config = {
-		navigationBarTitleText: '成员列表'
+		navigationBarTitleText: '部门列表'
 	}
 	onLoad(options) {
 		this.params.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
 	}
 	getUserList() {
-		$http('/userinfo/teamUserList', this.params).then(res => {
+		$http('/team/departmentList', this.params).then(res => {
 			this.list = res.data.data || []
 			this.count = res.data.count
 			this.$apply()
 		})
 	}
-	onShow() {
-		this.getUserList()
-	}
-	createQrcode() {
-		let params = {
-			scene: this.uid,
-			page: 'pages/login/welcome',
-			width: 300
-		}
-		$http('/login/get_qrcode', params).then(res => {
+	delDepartment() {
+		let params = {}
+		$http('/team/delDepartment', params).then(res => {
 			if (res.data) {
-				this.type = 1
-				this.isModal = false
-				this.qrCode = getImgUrl(res.data)
-				this.$apply()
+				wxToast('删除成功')
+				this.getUserList()
+			} else {
+				wxToast('删除失败')
 			}
 		})
+	}
+	addTeamDepartment(params) {
+		$http('/team/addTeamDepartment', params).then(res => {
+			if (res.data) {
+				this.isModal = !this.isModal
+				this.$apply()
+				wxToast('添加成功')
+				this.getUserList()
+			} else {
+				wxToast('添加失败')
+			}
+		})
+	}
+	onShow() {
+		this.getUserList()
 	}
 	events = {
 		searchValue: val => {
@@ -120,28 +118,25 @@ export default class userList extends wepy.page {
 			this.getUserList()
 		},
 		handleOk: data => {
-			if (data === 0) {
-				this.isModal = true
-				wxNavigateTo('/pages/teamView/userInfo')
+			if (!data.depart_name) {
+				return wxToast('请输入部门名称')
+			} else if (!data.user_id) {
+				return wxToast('请选择部门经理')
 			} else {
-				this.activeIndex = data
-				this.createQrcode()
+				let params = Object.assign({ uid: this.params.uid }, data)
+				this.addTeamDepartment(params)
 			}
-		}
-	}
-	onShareAppMessage(res) {
-		console.log(res.from === 'button')
-		if (res.from === 'button') {
-
-		}
-		return {
-			title: '转发',
-			imageUrl: this.qrCode,
-			path: '/pages/login/welcome?uid=' + this.uid
+		},
+		delDepart: val => {
+			wxShowModal('', '确定删除该部门吗？', '确定').then(res => {
+				this.delDepartment()
+			}).catch(() => {
+				console.log('取消')
+			})
 		}
 	}
 	methods = {
-		addUser() {
+		addDep() {
 			this.isModal = !this.isModal
 			this.$apply()
 		},

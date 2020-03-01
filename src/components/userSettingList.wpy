@@ -1,0 +1,53 @@
+
+<style lang="less">
+.page_card_status-item {
+  .weui-btn_cell {
+    border-radius: 5rpx;
+    font-size: 25rpx;
+    padding: 26rpx 12rpx;
+    border: 1px solid #1890ff;
+    margin-left: 10rpx;
+  }
+}
+</style>
+<template>
+  <view>
+    <repeat for="{{list}}" key="index">
+      <view class="page_card" wx:if="{{list.length}}" @tap="settingRole({{item}})">
+        <view class="page_card_row weui-flex between">
+        <view class="weui-flex__item">
+          <view class="weui-flex between">
+            <view class="page_card_name">销售部</view>
+             <view class="page_card_status-item weui-flex between">
+              	jj
+              </view>
+          </view>
+          <view class="weui-flex between">
+            <view class="page_card_col1 text-line">18933589865</view>
+            <view class="page_card_time">成员</view>
+          </view>
+         </view>
+          <image mode="scaleToFill" src="https://a.rsd123.com/image/images/down.png" class="page_down_icon"/>
+        </view>
+      </view>
+    </repeat>
+    <view wx:if="{{!list.length}}" class="page_list">
+      <image src="https://a.rsd123.com/image/images/noBg.png" class="page_noData" mode="scaleToFill"/>
+      <view class="page_noData_text">暂无数据！</view>
+    </view>
+  </view>
+</template>
+<script>
+import wepy from 'wepy'
+export default class userSettingList extends wepy.component {
+	props = {
+		list: Array
+	}
+	data = {}
+	methods = {
+		settingRole(item) {
+			this.$emit('settingRole', item)
+		}
+	}
+}
+</script>

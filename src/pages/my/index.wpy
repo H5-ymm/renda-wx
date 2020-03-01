@@ -17,25 +17,28 @@
      <view class="view-content">
       <view class="page_margin my-view my-view-main">
         <view class="my-view-box">
-          <view class="page_card">
-            <repeat wx:for="{{menus}}" wx:key="index">
-              <view class="page_card_row" @tap="viewInfo({{item}})">
-                <view class="weui-flex between">
-                  <view class="weui-flex start">
-                    <image src="{{item.icon}}" alt="" class="my-icon" />
-                    <view class="my-text">{{item.title}}</view>
-                  </view>
-                  <view>
-                    <image mode="scaleToFill" src="https://a.rsd123.com/image/images/right.png" class="page_card_icon" />
+          <repeat wx:for="{{menus}}" wx:key="index">
+            <view class="page_card">
+              <repeat wx:for="{{item.child}}" wx:key="index" wx:for-item="newitem">
+                <view class="page_card_row" @tap="viewInfo({{newitem}})">
+                  <view class="weui-flex between">
+                    <view class="weui-flex start">
+                      <image src="{{newitem.icon}}" alt="" class="my-icon" />
+                      <view class="my-text">{{newitem.title}}</view>
+                    </view>
+                    <view>
+                      <image mode="scaleToFill" src="https://a.rsd123.com/image/images/right.png" class="page_card_icon" />
+                    </view>
                   </view>
                 </view>
-              </view>
-            </repeat>
-          </view>
+              </repeat>
+            </view>
+           </repeat>
         </view>
       </view>
     </view>
      <tabBarBottom :usertype.sync="usertype" :tabBarIndex.sync="tabBarIndex"></tabBarBottom>
+      <selectModal :isScaleModal.sync="isSelectModal" :menus.sync="menusModal" :title.sync="modalTitle" ></selectModal>
      <!-- <view @tap="swicthUser">切换身份</view> -->
   </view>
 </template>
@@ -44,52 +47,81 @@ import wepy from 'wepy'
 import { $http } from '@/http.js'
 import { getImgUrl } from '@/util.js'
 import tabBarBottom from '@/components/tabBarBottom'
+import selectModal from '@/components/selectModal'
 export default class my extends wepy.page {
   components = {
-    tabBarBottom: tabBarBottom
+    tabBarBottom: tabBarBottom,
+    selectModal: selectModal
   }
   data = {
     userInfo: {},
     head_img: '',
     menus: [
       {
-        title: '账户信息',
-        icon: 'https://a.rsd123.com/image/images/icon1.png',
-        url: '/pages/my/userInfo'
+        child: [
+          {
+            title: '账户信息',
+            icon: 'https://a.rsd123.com/image/images/icon1.png',
+            url: '/pages/my/userInfo'
+          },
+          {
+            title: '账户绑定',
+            icon: 'https://a.rsd123.com/image/images/icon2.png',
+            url: '/pages/my/userBind'
+          }
+        ]
       },
       {
-        title: '团队信息',
-        icon: 'https://a.rsd123.com/image/images/icon3.png',
-        url: '/pages/my/teamInfo'
+        child: [{
+          title: '团队信息',
+          icon: 'https://a.rsd123.com/image/images/icon3.png',
+          url: '/pages/my/teamInfo'
+        },
+        {
+          title: '部门管理',
+          icon: '../../images/icon5.png',
+          url: '/pages/teamView/department/index'
+        }
+        ]
       },
       {
-        title: '账户绑定',
-        icon: 'https://a.rsd123.com/image/images/icon2.png',
-        url: '/pages/my/userBind'
+        child: [{
+          title: '切换账号',
+          icon: '../../images/icon6.png',
+          url: '/pages/my/userBind'
+        }]
       }
     ],
     tabBarData: [],
     usertype: 2,
-    tabBarIndex: 1
+    tabBarIndex: 1,
+    isSelectModal: true,
+    modalTitle: '切换身份',
+    menusModal: [
+      {
+        icon: 'https://a.rsd123.com/image/images/team.png',
+        title: '团队账户',
+      },
+      {
+        icon: 'https://a.rsd123.com/image/images/company.png',
+        title: '企业账户'
+      }
+    ]
   }
   config = {
     navigationBarTitleText: '我的'
   }
   methods = {
     viewInfo(item) {
-      wx.navigateTo({
-        url: item.url
-      })
+      if (item.title === '切换账号') {
+        this.isSelectModal = false
+        this.$apply()
+      } else {
+        wx.navigateTo({
+          url: item.url
+        })
+      }
     }
-    // swicthUser() {
-    //   let user = {
-    //     usertype: 1,
-    //     uid: wx.getStorageSync('rendaUid')
-    //   }
-    //   this.usertype = 1
-    //   this.$apply()
-    //   store.dispatch({ type: GETALLUSER, payload: user })
-    // }
   }
   computed = {
     userName() {

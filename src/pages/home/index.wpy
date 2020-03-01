@@ -34,13 +34,35 @@ page {
     height: calc(100% - 108px);
     overflow: auto;
   }
+  .status-row {
+    position: absolute;
+    top: 90rpx;
+    left: 28%;
+    background: #fff;
+    z-index: 233;
+    .status-item {
+      width: 220rpx;
+      height: 58rpx;
+      color: #6a6a6a;
+      font-size: 26rpx;
+      border-radius: 5rpx;
+      overflow: hidden;
+      text-align: center;
+      line-height: 58rpx;
+      border-bottom: 1px solid #eee;
+      &.status-item-active {
+        background: #1890ff;
+        color: #fff;
+      }
+    }
+  }
 }
 </style>
 <template>
   <view class="home-view detail-view">
         <view class="weui-flex between header-box">
           <tabBar :tabBarList.sync="tabBarList" 
-          wx:if="{{!isSeachWidth}}"></tabBar>
+          wx:if="{{!isSeachWidth}}" @switchTab="switchTab"></tabBar>
           <search class="search-box {{isSeachWidth?'weui-flex__item':''}}" 
 			   @searchValue="searchValue">
 			</search>
@@ -55,6 +77,11 @@ page {
         <view class="home-add-text">添加简历</view>
       </view>
       <selectModal :isScaleModal.sync="isSelectModal" :menus.sync="menus" :title.sync="modalTitle" ></selectModal>
+      <view class="status-row" wx:if="{{isStatus}}">
+         <repeat wx:for="{{statusList}}" wx:key="index">
+            <view class="status-item {{statusIndex==index?'status-item-active':''}}" @tap="selectStatus({{item}},{{index}})">{{item.label}}</view>
+          </repeat>
+      </view>
   </view>
 </template>
 <script>
@@ -84,13 +111,31 @@ export default class home extends wepy.page {
       page: 1,
       limit: 10
     },
+    statusList: [
+      {
+        label: '初筛已通过',
+        value: 1
+      },
+      {
+        label: '面试已通过',
+        value: 2
+      },
+      {
+        label: '(内)出筛已通过',
+        value: 1
+      },
+      {
+        label: '(外)出筛已通过',
+        value: 1
+      }
+    ],
     count: 0,
     activeIndex: 0,
     isSeachWidth: false,
     isSelectModal: true,
     modalTitle: '请选择岗位性质',
     menus: [
-    {
+      {
         icon: '../../images/modal/icon3.png',
         title: '内部发单',
       },
@@ -98,7 +143,9 @@ export default class home extends wepy.page {
         icon: '../../images/modal/icon4.png',
         title: '团队接单'
       }
-    ]
+    ],
+    statusIndex: 0,
+    isStatus: false
   }
   events = {
     searchValue: val => {
@@ -112,6 +159,14 @@ export default class home extends wepy.page {
     applyResume: data => {
       this.isSelectModal = false
       this.$apply()
+    },
+    switchTab: val => {
+      if (val === 2) {
+        this.isStatus = true
+        this.$apply()
+      } else {
+        this.getResumeList()
+      }
     }
   }
   methods = {
@@ -123,12 +178,19 @@ export default class home extends wepy.page {
         this.params.limit = this.params.limit + 10
         this.getResumeList()
       }
+    },
+    selectStatus(item, index) {
+      this.statusIndex = index
+      this.getResumeList()
+      this.$apply()
+      console.log(item)
     }
   }
   getResumeList() {
     $http('/Wxresume/resumelist', this.params).then(res => {
       this.list = res.data.data || []
       this.count = res.data.count
+      this.isStatus = false
       this.$apply()
     })
   }

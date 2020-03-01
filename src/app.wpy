@@ -21,6 +21,8 @@ export default class extends wepy.app {
       'pages/teamView/internalInvoice/allocationPerson',
       'pages/teamView/orderManage/index',
       'pages/teamView/orderManage/list',
+      'pages/teamView/department/index',
+      'pages/teamView/department/userSetting',
       'pages/teamView/userList',
       'pages/teamView/userInfo',
       'pages/register/selectUser',
