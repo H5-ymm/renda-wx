@@ -70,11 +70,6 @@ export default class Welcome extends wepy.page {
   }
   onLoad(options) {
     console.log(options)
-    // wx.getLaunchOptionsSync({
-    //   success: res=> {
-    //     console.log(res)
-    //   }
-    // })
     if (options && options.query) {
       this.checked = options.query
       this.isRead = true
