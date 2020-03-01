@@ -70,8 +70,6 @@ export default class Welcome extends wepy.page {
     sessionKey: ''
   }
   onLoad(options) {
-    console.log(wx.getStorageSync('rendaUidQrcode'))
-    // if (wx.getStorageSync('rendaUidQrcode')) return
     if (options && options.query) {
       this.checked = options.query
       this.isRead = true
@@ -178,7 +176,6 @@ export default class Welcome extends wepy.page {
           this.isLoginModal = false
         }
         this.code = error.status.code
-        // this.isView = false
         this.$apply()
         this.showErrorTip(this.code)
       }
