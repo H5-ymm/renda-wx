@@ -1,57 +1,83 @@
 <style lang="less">
-@import "../../../style/home.less";
-page {
-  overflow: hidden;
-}
-.detail-view {
-  height: 100%;
-  overflow: hidden;
-  .page_margin {
-    margin: 24rpx 24rpx 0;
+@import '../../../style/home.less';
+// .detail-view {
+//   height: 100%;
+//   overflow: auto;
+//   .page_margin {
+//     margin: 24rpx 24rpx 0;
+//   }
+//   .only-btn {
+//     height: 120rpx;
+//     .only-btn-item {
+//       margin: 0 30rpx;
+//     }
+//   }
+// }
+.picker {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  z-index: 33;
+  height: 420rpx;
+  background: #fff;
+  width: 100%;
+  .picker-btn {
+    height: 80rpx;
+    border-bottom: 1px solid #eee;
+    padding: 0 24rpx;
+    color: #6a6a6a;
+    .ok-btn {
+      color: #07c160;
+    }
   }
-  .header-box-team {
-    margin: -24rpx 24rpx 0;
-  }
-  .view-team {
-    height: calc(100% - 168px);
-    overflow: auto;
-  }
-  .only-btn {
-    height: 120rpx;
-    .only-btn-item {
-      margin: 0 30rpx;
+  .picker-view {
+    text-align: center;
+    width: 100%;
+    height: 300rpx;
+    .picker-view-item {
+      line-height: 80rpx;
     }
   }
 }
 </style>
 <template>
-  <view class="detail-view home-view">
-    <view class="page_margin view-detail">	
-			<scroll-view scroll-y="true" @scrolltolower="searchScrollLower" style="height: 100%;">
-				<userSettingList @settingRole="settingRole" :list.sync="list"></userSettingList>
-			</scroll-view>
-    </view>
-		 <view class="weui-flex between only-btn">
-				<view 
-					class="weui-flex center weui-flex__item only-btn-item">
-					<button class="weui-btn_cell  weui-flex__item weui-btn_primary" @tap="addDep">
-						确定
-					</button>
+	<view class="home-view page_margin">
+		<!-- <view class="page_margin"> -->
+		<scroll-view scroll-y="true" @scrolltolower="searchScrollLower" style="height: 100%;">
+			<userSettingList @settingRole="settingRole" :list.sync="list"></userSettingList>
+		</scroll-view>
+		<!-- </view> -->
+		<!-- <view class="weui-flex between only-btn">
+			<view class="weui-flex center weui-flex__item only-btn-item">
+				<button class="weui-btn_cell  weui-flex__item weui-btn_primary" @tap="addDep">
+					确定
+				</button>
+			</view>
+		</view> -->
+		<!-- </view> -->
+		<view class="picker" wx:if="{{isPicker}}">
+			<view class="weui-flex between picker-btn">
+				<view class="weui-flex center" @tap="selectClose">
+					取消
 				</view>
-	  	</view>
+				<view class="weui-flex center ok-btn" @tap="selectOk">
+					确定
+				</view>
+			</view>
+			<picker-view class="picker-view" indicator-style="height: 40px;" value="{{depIndex}}" @change="bindChange">
+				<picker-view-column>
+					<repeat wx:for="{{depList}}" wx:key="index">
+						<view class="picker-view-item">{{item.depart_name}}</view>
+					</repeat>
+				</picker-view-column>
+				<picker-view-column>
+					<repeat wx:for="{{jobList}}" wx:key="index">
+						<view class="picker-view-item">{{item.grade_name}}</view>
+					</repeat>
+				</picker-view-column>
+			</picker-view>
 		</view>
-		<picker wx:if="{{isPicker}}"   mode="multiSelector" @change="bindMultiPickerChange" 
-				@cancel="cancelPickerChange" @columnchange="bindMultiPickerColumnChange" range="{{depList}}" value="{{depIndex}}" >
-				<view class="my-text-right weui-flex between">
-					<view wx:if="{{depId!=''}}">
-						{{depList[0][depIndex[0]]}}
-						{{depList[1][depIndex[1]]}}
-					</view>
-					<view class="placeholder" wx:else>请选择</view>
-					<image mode="scaleToFill" src="https://a.rsd123.com/image/images/down.png" class="page_down_icon" />
-				</view>
-			</picker>
-  </view>
+	</view>
 </template>
 <script>
 import wepy from 'wepy'
@@ -76,43 +102,58 @@ export default class department extends wepy.page {
 		depList: [],
 		depId: '',
 		isPicker: false,
-		depIndex: [0, 0]
+		depIndex: [0, 0],
+		userId: '',
+		gradeId: ''
 	}
 	config = {
 		navigationBarTitleText: '人员调整'
 	}
-	onLoad(options) {
-		this.depId = options.query
-		this.params.departId = options.query
-		this.params.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
-	}
-	getAdjustmentList() {
+	getAdjustmentList () {
 		$http('/team/adjustmentList', this.params).then(res => {
 			this.list = res.data.data || []
 			this.count = res.data.count
 			this.$apply()
 		})
 	}
-	getDepartmenList() {
-		$http('/team/departmentRoleList', { uid: this.params.uid }).then(res => {
-			let list = res.data || []
-			if (this.userTeamType == 1) {
-				this.depList[0] = list
-				if (this.depList.length) {
-					this.depId = this.depList[0].id
-				} else {
-					this.depId = ''
-				}
-			} else {
-				this.depId = wx.getStorageSync('rendaDradeId')
-				this.depList[0] = this.getCurrentDepList(list, this.depId)
+	// 团队成员角色调整
+	editTeamUserRole (params) {
+		$http('/team/editTeamUserRole', params).then(res => {
+			if (res.data) {
+				wxToast('人员调整成功')
 			}
-			this.depList[1] = this.getArr(this.depList[0], this.depId)
-			// this.form.grade_id = this.jobList[1].id
+			this.isPicker = false
+			this.$broadcast('editSuccess')
+			this.getAdjustmentList()
 			this.$apply()
 		})
 	}
-	getCurrentDepList(array) {
+	getDepartmenList () {
+		$http('/team/departmentRoleList', { uid: this.params.uid }).then(res => {
+			let list = res.data || []
+			this.depList = list
+			this.depIndex[0] = this.getIndex(this.depList, this.depId)
+			if (!this.depId) {
+				this.depId = this.depList[0].id
+			}
+			this.jobList = this.getArr(this.depList, this.depId)
+			this.depIndex[1] = this.getIndex(this.jobList, this.gradeId)
+			console.log(this.jobList)
+			console.log(this.gradeId)
+			console.log(this.getIndex(this.jobList, this.gradeId))
+			this.$apply()
+		})
+	}
+	getIndex (list, id) {
+		let ind = 0
+		list.forEach((item, index) => {
+			if (item.id == id) {
+				ind = index
+			}
+		})
+		return ind
+	}
+	getCurrentDepList (array) {
 		let arr = []
 		array.filter(item => {
 			if (item.id == this.depId) {
@@ -121,7 +162,7 @@ export default class department extends wepy.page {
 		})
 		return arr
 	}
-	getArr(arr, id) {
+	getArr (arr, id) {
 		let newArr = []
 		arr.forEach(item => {
 			if (item.id == id) {
@@ -130,63 +171,49 @@ export default class department extends wepy.page {
 		})
 		return newArr
 	}
-	onShow() {
-		this.getAdjustmentList()
+	onLoad (options) {
+		this.params.departId = options.query
+		this.params.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
 	}
-	createQrcode() {
-		let params = {
-			scene: this.uid,
-			page: 'pages/login/welcome',
-			width: 300
-		}
-		$http('/login/get_qrcode', params).then(res => {
-			if (res.data) {
-				this.type = 1
-				this.isModal = false
-				this.qrCode = getImgUrl(res.data)
-				this.$apply()
-			}
-		})
+	onShow () {
+		this.getAdjustmentList()
 	}
 	events = {
 		settingRole: val => {
 			this.isPicker = true
+			this.depId = val.depart_id
+			this.userId = val.uid
+			this.gradeId = val.grade_id
 			this.$apply()
-			console.log(val)
+			this.getDepartmenList()
 		}
 	}
 	methods = {
-		bindMultiPickerChange(e) {
+		bindChange (e) {
 			this.depIndex = e.detail.value
-			let reward_money_type = Number(this.depIndex[0]) + 1
-			let settlement_type = Number(this.depIndex[1]) + 1
-			this.$apply()
 		},
-		bindMultiPickerColumnChange(e) {
-			this.depIndex[e.detail.column] = e.detail.value
-			let index = this.depIndex[0]
-			if (e.detail.column == 0) {
-				this.depIndex = [e.detail.value, 0, 0]
-			} else if (e.detail.column == 1) {
-				this.depIndex[1] = e.detail.value
+		selectClose () {
+			this.isPicker = false
+			this.$apply()
+			this.$broadcast('editSuccess')
+		},
+		selectOk () {
+			this.gradeId = this.jobList[this.depIndex[1]].id
+			let params = {
+				gradeId: this.gradeId,
+				uid: this.params.uid,
+				userId: this.userId
 			}
-			else {
-				this.depIndex[2] = e.detail.value
-			}
-			this.$apply()
+			this.editTeamUserRole(params)
 		},
-		cancelPickerChange(e) {
-			this.depIndex = [0, 0, 0]
-			this.$apply()
-		},
-		addDep() {
+		addDep () {
 			this.isModal = !this.isModal
 			this.$apply()
 		},
-		searchScrollLower() {
+		searchScrollLower () {
 			if (this.count > this.list.length && this.count > this.params.limit) {
 				this.params.limit = this.params.limit + 10
-				this.getUserList()
+				this.getAdjustmentList()
 			}
 		}
 	}

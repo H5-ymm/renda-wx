@@ -1,38 +1,37 @@
 
+
 <style lang="less">
-.page_card_status-item {
-  .weui-btn_cell {
-    border-radius: 5rpx;
-    font-size: 25rpx;
-    padding: 26rpx 12rpx;
-    border: 1px solid #1890ff;
-    margin-left: 10rpx;
+.page_down_icon {
+  transition: 1s;
+  &.page_down_iconActive {
+    transform: rotate(180deg);
   }
 }
 </style>
+
 <template>
   <view>
     <repeat for="{{list}}" key="index">
-      <view class="page_card" wx:if="{{list.length}}" @tap="settingRole({{item}})">
+      <view class="page_card" wx:if="{{list.length}}" @tap="settingRole({{item}},{{index}})">
         <view class="page_card_row weui-flex between">
-        <view class="weui-flex__item">
-          <view class="weui-flex between">
-            <view class="page_card_name">销售部</view>
-             <view class="page_card_status-item weui-flex between">
-              	jj
+          <view class="weui-flex__item">
+            <view class="weui-flex between">
+              <view class="page_card_name page_card_name1">{{item.user_name?item.user_name:userName}}</view>
+              <view class="page_card_name page_card_name1">
+                {{item.depart_name||'-'}}
               </view>
+            </view>
+            <view class="weui-flex between">
+              <view class="page_card_col1 text-line">{{item.mobile||'-'}}</view>
+              <view class="page_card_time">{{item.grade_name||'-'}}</view>
+            </view>
           </view>
-          <view class="weui-flex between">
-            <view class="page_card_col1 text-line">18933589865</view>
-            <view class="page_card_time">成员</view>
-          </view>
-         </view>
-          <image mode="scaleToFill" src="https://a.rsd123.com/image/images/down.png" class="page_down_icon"/>
+          <image mode="scaleToFill" wx:if="{{item.uid!=uid||item.grade_num<3}}" src="https://a.rsd123.com/image/images/down.png" class="page_down_icon {{activeIndex==index?'page_down_iconActive':''}}" />
         </view>
       </view>
     </repeat>
     <view wx:if="{{!list.length}}" class="page_list">
-      <image src="https://a.rsd123.com/image/images/noBg.png" class="page_noData" mode="scaleToFill"/>
+      <image src="https://a.rsd123.com/image/images/noBg.png" class="page_noData" mode="scaleToFill" />
       <view class="page_noData_text">暂无数据！</view>
     </view>
   </view>
@@ -40,14 +39,32 @@
 <script>
 import wepy from 'wepy'
 export default class userSettingList extends wepy.component {
-	props = {
-		list: Array
-	}
-	data = {}
-	methods = {
-		settingRole(item) {
-			this.$emit('settingRole', item)
-		}
-	}
+  props = {
+    list: Array
+  }
+  data = {
+    userName: '',
+    uid: '',
+    activeIndex: -1
+  }
+  onLoad () {
+    this.uid = wx.getStorageSync('rendaUid') || this.$parent.$parent.globalData.uid
+    let name = wx.getStorageSync('wxInfo')
+      ? JSON.parse(wx.getStorageSync('wxInfo')).user_name
+      : ''
+    this.userName = name
+  }
+  events = {
+    editSuccess: () => {
+      this.activeIndex = -1
+    }
+  }
+  methods = {
+    settingRole (item, index) {
+      if (item.uid == this.uid || item.grade_num < 3) return
+      this.activeIndex = index
+      this.$emit('settingRole', item)
+    }
+  }
 }
 </script>

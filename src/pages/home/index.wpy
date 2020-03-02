@@ -1,5 +1,5 @@
 <style lang="less">
-@import "../../style/home.less";
+@import '../../style/home.less';
 page {
   overflow: hidden;
 }
@@ -60,28 +60,26 @@ page {
 </style>
 <template>
   <view class="home-view detail-view">
-        <view class="weui-flex between header-box">
-          <tabBar :tabBarList.sync="tabBarList" 
-          wx:if="{{!isSeachWidth}}" @switchTab="switchTab"></tabBar>
-          <search class="search-box {{isSeachWidth?'weui-flex__item':''}}" 
-			   @searchValue="searchValue">
-			</search>
-		</view>
+    <view class="weui-flex between header-box">
+      <tabBar :tabBarList.sync="tabBarList" wx:if="{{!isSeachWidth}}" @switchTab="switchTab"></tabBar>
+      <search class="search-box {{isSeachWidth?'weui-flex__item':''}}" @searchValue="searchValue">
+      </search>
+    </view>
     <view class="page_margin view-content">
-      <scroll-view scroll-y="true"  style="height:100%" @scrolltolower="searchScrollLower">
+      <scroll-view scroll-y="true" style="height:100%" @scrolltolower="searchScrollLower">
         <resumeList :list.sync="list" @applyResume="applyResume"></resumeList>
       </scroll-view>
     </view>
-      <view class="home-add-resume" @tap="addResume">
-        <image src="https://a.rsd123.com/image/images/add.png" class="add-icon" />
-        <view class="home-add-text">添加简历</view>
-      </view>
-      <selectModal :isScaleModal.sync="isSelectModal" :menus.sync="menus" :title.sync="modalTitle" ></selectModal>
-      <view class="status-row" wx:if="{{isStatus}}">
-         <repeat wx:for="{{statusList}}" wx:key="index">
-            <view class="status-item {{statusIndex==index?'status-item-active':''}}" @tap="selectStatus({{item}},{{index}})">{{item.label}}</view>
-          </repeat>
-      </view>
+    <view class="home-add-resume" @tap="addResume">
+      <image src="https://a.rsd123.com/image/images/add.png" class="add-icon" />
+      <view class="home-add-text">添加简历</view>
+    </view>
+    <selectModal :isScaleModal.sync="isSelectModal" :menus.sync="menus" :title.sync="modalTitle"></selectModal>
+    <view class="status-row" wx:if="{{isStatus}}">
+      <repeat wx:for="{{statusList}}" wx:key="index">
+        <view class="status-item {{statusIndex==index?'status-item-active':''}}" @tap="selectStatus({{item}},{{index}})">{{item.label}}</view>
+      </repeat>
+    </view>
   </view>
 </template>
 <script>
@@ -157,7 +155,7 @@ export default class home extends wepy.page {
       this.$apply()
     },
     applyResume: data => {
-      this.isSelectModal = false
+      this.isSelectModal = !this.isSelectModal
       this.$apply()
     },
     switchTab: val => {
@@ -170,23 +168,23 @@ export default class home extends wepy.page {
     }
   }
   methods = {
-    addResume() {
+    addResume () {
       wxNavigateTo('/pages/home/addInfo')
     },
-    searchScrollLower() {
+    searchScrollLower () {
       if (this.count > this.list.length && this.count > this.params.limit) {
         this.params.limit = this.params.limit + 10
         this.getResumeList()
       }
     },
-    selectStatus(item, index) {
+    selectStatus (item, index) {
       this.statusIndex = index
       this.getResumeList()
       this.$apply()
       console.log(item)
     }
   }
-  getResumeList() {
+  getResumeList () {
     $http('/Wxresume/resumelist', this.params).then(res => {
       this.list = res.data.data || []
       this.count = res.data.count
@@ -194,10 +192,10 @@ export default class home extends wepy.page {
       this.$apply()
     })
   }
-  onLoad() {
+  onLoad () {
     this.params.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
   }
-  onShow() {
+  onShow () {
     this.getResumeList()
   }
 }

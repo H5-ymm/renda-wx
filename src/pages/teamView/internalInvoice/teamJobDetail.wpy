@@ -1,5 +1,5 @@
 <style lang="less">
-@import "../../style/home.less";
+@import '../../../style/home.less';
 .input-text-end {
   margin-left: 10rpx;
 }
@@ -48,32 +48,32 @@ export default class teamJobDetail extends wepy.page {
 	config = {
 		navigationBarTitleText: '发单详情'
 	}
-	onLoad(options) {
+	onLoad (options) {
 		this.id = options.query
 		this.getInvoiceDetail()
 	}
-	getInvoiceDetail() {
+	getInvoiceDetail () {
 		$http('/receipt/invoiceInfo', { id: this.id }).then(res => {
 			this.form = res.data
 			this.form.job_content = this.form.job_content.replace('/<br>/g', '')
 			this.$apply()
 		})
 	}
-	setReceiptShelf(params) {
+	setReceiptShelf (params) {
 		$http('/company/companyReceiptShelf', params).then(res => {
 			this.form.job_status = params.job_status
 			this.$apply()
 			wxToast('操作成功')
 		})
 	}
-	deleteReceiptShelf(params) {
+	deleteReceiptShelf (params) {
 		$http('/company/delReceiptShelf', params).then(res => {
 			wxToast('删除成功')
 			wxReLaunch('/pages/companyView/checkReceipt')
 		})
 	}
 	methods = {
-		handleShelf() {
+		handleShelf () {
 			let params = {
 				uid: this.form.uid,
 				id: this.form.id,
@@ -86,7 +86,7 @@ export default class teamJobDetail extends wepy.page {
 				console.log('取消')
 			})
 		},
-		handleDelete() {
+		handleDelete () {
 			let params = {
 				uid: wx.getStorageSync('rendaUid'),
 				id: this.form.id

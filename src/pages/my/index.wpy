@@ -1,21 +1,21 @@
 <style lang="less">
-@import "../../style/user.less";
+@import '../../style/user.less';
 </style>
 <template>
   <view class="page-my">
-      <view class="my-view-header">
-        <image src="https://a.rsd123.com/image/images/bg.png" class="my-view-header-bg" mode="aspectFill" alt="" />
-        <view class="my-view-userInfo">
-          <view class="my-avatar-box">
-            <image src="{{head_img}}" wx:if="{{head_img}}" alt="" mode="aspectFill" class="my-avatar" />
-            <image src="https://a.rsd123.com/image/images/header.png" wx:else alt="" mode="aspectFit" class="my-avatar" />
-          </view>
-          <view class="my-user-name">{{userName}}</view>
-          <view class="my-user-mobile">{{userInfo.mobile?userInfo.mobile:''}}</view>
+    <view class="my-view-header">
+      <image src="https://a.rsd123.com/image/images/bg.png" class="my-view-header-bg" mode="aspectFill" alt="" />
+      <view class="my-view-userInfo">
+        <view class="my-avatar-box">
+          <image src="{{head_img}}" wx:if="{{head_img}}" alt="" mode="aspectFill" class="my-avatar" />
+          <image src="https://a.rsd123.com/image/images/header.png" wx:else alt="" mode="aspectFit" class="my-avatar" />
         </view>
+        <view class="my-user-name">{{userName}}</view>
+        <view class="my-user-mobile">{{userInfo.mobile?userInfo.mobile:''}}</view>
       </view>
-     <view class="view-content">
-      <view class="page_margin my-view my-view-main">
+    </view>
+    <view class="view-content">
+      <view class="page_margin my-view">
         <view class="my-view-box">
           <repeat wx:for="{{menus}}" wx:key="index">
             <view class="page_card">
@@ -33,13 +33,13 @@
                 </view>
               </repeat>
             </view>
-           </repeat>
+          </repeat>
         </view>
       </view>
     </view>
-     <tabBarBottom :usertype.sync="usertype" :tabBarIndex.sync="tabBarIndex"></tabBarBottom>
-      <selectModal :isScaleModal.sync="isSelectModal" :menus.sync="menusModal" :title.sync="modalTitle" ></selectModal>
-     <!-- <view @tap="swicthUser">切换身份</view> -->
+    <tabBarBottom :usertype.sync="usertype" :tabBarIndex.sync="tabBarIndex"></tabBarBottom>
+    <selectModal :isScaleModal.sync="isSelectModal" :menus.sync="menusModal" :title.sync="modalTitle"></selectModal>
+    <!-- <view @tap="swicthUser">切换身份</view> -->
   </view>
 </template>
 <script>
@@ -112,7 +112,7 @@ export default class my extends wepy.page {
     navigationBarTitleText: '我的'
   }
   methods = {
-    viewInfo(item) {
+    viewInfo (item) {
       if (item.title === '切换账号') {
         this.isSelectModal = false
         this.$apply()
@@ -124,14 +124,14 @@ export default class my extends wepy.page {
     }
   }
   computed = {
-    userName() {
+    userName () {
       let name = wx.getStorageSync('wxInfo')
         ? JSON.parse(wx.getStorageSync('wxInfo')).user_name
         : ''
       return this.userInfo.user_name ? this.userInfo.user_name : name
     }
   }
-  onLoad() {
+  onLoad () {
     let uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
     let wxInfo = wx.getStorageSync('wxInfo')
     $http('/Userinfo/getUserInfo', { uid }).then(res => {
