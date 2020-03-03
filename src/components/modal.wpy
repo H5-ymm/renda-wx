@@ -102,7 +102,6 @@
             </navigator>
         </view>
       </view>
-      <image src="https://a.rsd123.com/image/images/close.png" @tap="handleOk" class="close-icon" />
        <view wx:else class="modal-content modal-content-qrcode">
          <image src="{{imgUrl}}" @longpress="saveImg" class="qrcode-img"/>
           <view class="weui-cell_btn weui-flex center user-btn">

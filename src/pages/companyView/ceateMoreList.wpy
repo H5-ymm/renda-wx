@@ -57,7 +57,7 @@ export default class ceateList extends wepy.page {
 		navigationBarTitleText: '更多信息'
 	}
 	events = {
-		handleOk() {
+		handleOk: val => {
 			this.isModal = true
 			this.$apply()
 			wx.setStorageSync('receiptType', 0)

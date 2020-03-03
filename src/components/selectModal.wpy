@@ -38,7 +38,7 @@ export default class selectModal extends wepy.component {
 		isScaleModal: Boolean,
 		height: {
 			type: Number,
-			default: 500
+			default: 540
 		},
 		menus: Array,
 		title: String
