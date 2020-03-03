@@ -58,6 +58,12 @@
           </view>
           <view class="page_card_row">
             <view class="weui-flex between ">
+              <view class="my-text weui-flex__item">身份证号码</view>
+              <input class="weui-input" placeholder-class="placeholder" data-name="id_card" value="{{form.id_card}}" @input="changeInput" placeholder="请输入身份证号码" />
+            </view>
+          </view>
+          <view class="page_card_row">
+            <view class="weui-flex between ">
               <view class="my-text weui-flex__item"> 手机号</view>
               <input class="weui-input" placeholder-class="placeholder" data-name="mobile" value="{{form.mobile}}" @input="changeInput" placeholder="请输入手机号" />
             </view>
@@ -116,6 +122,12 @@
               <districtSelet @selectCity="selectCity" :address.sync="address"></districtSelet>
             </view>
           </view>
+           <view class="page_card_row">
+            <view class="weui-flex between">
+              <view class="my-text  weui-flex__item"></view>
+               <input class="weui-input" placeholder-class="placeholder" data-name="household_address" value="{{form.household_address}}" @input="changeInput" placeholder="请输入详细住址" />
+            </view>
+          </view>
         </view>
       </view>
       <view class="weui-cell_btn weui-flex center">
@@ -171,9 +183,9 @@ export default class resumeDetail extends wepy.page {
   }
   getResumeDetail(query) {
     this.type = query.type
-    console.log(query)
     $http('/Wxresume/getresume_recommend', query).then(res => {
       this.form = res.data
+      console.log(this.form)
       this.form.from_user = !res.data.from_user ? '' : res.data.from_user
       this.form.to_user = !res.data.to_user ? '' : res.data.to_user
       this.form.age = !res.data.age ? '' : res.data.age

@@ -50,7 +50,12 @@ export default class scanIdCard extends wepy.component {
       age: '',
       education: 0,
       sex: 1,
+<<<<<<< HEAD
       id_card: ''
+=======
+      id_card: '',
+      household_address: ''
+>>>>>>> resume_dev
     },
     infoImg: '',
     tempFilePaths: [],

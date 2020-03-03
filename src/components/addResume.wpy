@@ -4,7 +4,12 @@
   text-align: right;
 }
 .add-view {
-  height: 76%;
+  height: 80%;
+}
+.page_down_icon {
+  width: 24rpx;
+  height: 24rpx;
+  margin-left: 10rpx;
 }
 </style>
 
@@ -16,6 +21,12 @@
           <view class="weui-flex between">
             <view class="my-text  weui-flex__item my-text-require"> 姓名：</view>
             <input class="weui-input" placeholder-class="placeholder" data-name="name" value="{{form.name}}" @input="changeInput" placeholder="请输入姓名" />
+          </view>
+        </view>
+        <view class="page_card_row">
+          <view class="weui-flex between">
+            <view class="my-text  weui-flex__item my-text-require">身份证号码：</view>
+            <input class="weui-input" placeholder-class="placeholder" data-name="id_card" value="{{form.id_card}}" @input="changeInput" placeholder="请输入身份证号码" />
           </view>
         </view>
         <view class="page_card_row">
@@ -77,10 +88,19 @@
             <districtSelet @selectCity="selectCity" :disabled.sync="disabled" :address.sync="[]"></districtSelet>
           </view>
         </view>
+        <view class="page_card_row">
+          <view class="weui-flex between">
+            <view class="my-text  weui-flex__item"></view>
+            <input class="weui-input" data-name="household_address" placeholder-class="placeholder" value="{{form.household_address}}" @input="changeInput" placeholder="请输入详细住址" />
+          </view>
+        </view>
+        
       </view>
     </view>
     <view class="weui-cell_btn weui-flex center">
+     
       <button class="weui-btn_cell .weui-btn_primary" @tap="save">{{step==1?'下一步':'保存'}}</button>
+    
     </view>
   </view>
 </template>
@@ -91,7 +111,11 @@ import districtSelet from './districtSelet'
 import { wxToast, checkMobile, validateIdCard } from '@/util.js'
 export default class addResume extends wepy.component {
   props = {
-    resumeInfo: Object
+    resumeInfo: Object,
+    stepActive: {
+      type: Number,
+      default: 1
+    }
   }
   components = {
     districtSelet: districtSelet
@@ -112,7 +136,8 @@ export default class addResume extends wepy.component {
       desired_position: '',
       provinceid: '',
       cityid: '',
-      id_card: ''
+      id_card: '',
+      household_address: ''
     },
     step: 1,
     disabled: false
@@ -133,11 +158,19 @@ export default class addResume extends wepy.component {
           sex: '1',
           desired_position: '',
           provinceid: '',
-          cityid: ''
+          cityid: '',
+          id_card: ''
         }
         this.index = 0
       }
       this.$apply()
+    },
+    stepActive(val) {
+      if (val) {
+        this.step = val
+        console.log(this.step)
+        this.$apply()
+      }
     }
   }
   events = {
@@ -162,6 +195,10 @@ export default class addResume extends wepy.component {
     save() {
       if (!this.form.name) {
         wxToast('请输入姓名')
+      } else if (!this.form.id_card) {
+        wxToast('请输入身份证')
+      } else if (!validateIdCard(this.form.id_card)) {
+        wxToast('请输入正确的身份证')
       } else if (!this.form.mobile) {
         wxToast('请输入手机号码')
       } else if (!checkMobile(this.form.mobile)) {
@@ -170,7 +207,7 @@ export default class addResume extends wepy.component {
         wxToast('请输入身份证号码')
       } else if (!validateIdCard(this.form.id_card)) {
         wxToast('请输入正确的身份证')
-			} else if (this.form.age && Number(this.form.age) < 16) {
+      } else if (this.form.age && Number(this.form.age) < 16) {
         wxToast('请输入的年龄不小于16')
       } else if (this.form.age && Number(this.form.age) > 65) {
         wxToast('请输入的年龄不大于65')

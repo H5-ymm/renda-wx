@@ -1,5 +1,5 @@
 <style lang="less">
-@import '../../style/home.less';
+@import "../../style/home.less";
 page {
   overflow: hidden;
 }
@@ -70,31 +70,35 @@ page {
         <resumeList :list.sync="list" @applyResume="applyResume"></resumeList>
       </scroll-view>
     </view>
-    <view class="home-add-resume" @tap="addResume">
-      <image src="https://a.rsd123.com/image/images/add.png" class="add-icon" />
-      <view class="home-add-text">添加简历</view>
-    </view>
-    <selectModal :isScaleModal.sync="isSelectModal" :menus.sync="menus" :title.sync="modalTitle"></selectModal>
     <view class="status-row" wx:if="{{isStatus}}">
       <repeat wx:for="{{statusList}}" wx:key="index">
         <view class="status-item {{statusIndex==index?'status-item-active':''}}" @tap="selectStatus({{item}},{{index}})">{{item.label}}</view>
       </repeat>
     </view>
+      <view class="home-add-resume" @tap="addResume">
+        <image src="../../images/add.png" class="add-icon" />
+        <view class="home-add-text">添加简历</view>
+      </view>
+      <homeModal :isScaleModal.sync="isModal" @handleOk="handleOk" :height.sync="modalHeight" :type.sync="type" :modalObj.sync="modalObj" :imgUrl.sync="qrCode"></homeModal>
+      <tabBarBottom :usertype.sync="usertype" :tabBarIndex.sync="tabBarIndex"></tabBarBottom>
+      <selectModal :isScaleModal.sync="isSelectModal" :menus.sync="menus" @selectOk="selectOk" :title.sync="modalTitle" ></selectModal>
   </view>
 </template>
 <script>
 import wepy from 'wepy'
 import { $http } from '@/http.js'
 import resumeList from '@/components/resumeList'
-import tabBar from '@/components/tabBar'
-import search from '@/components/search'
+import modal from '@/components/modal'
+import tabBarBottom from '@/components/tabBarBottom'
 import selectModal from '@/components/selectModal'
-import { wxNavigateTo } from '@/util.js'
+import { getImgUrl } from '@/util.js'
 export default class home extends wepy.page {
   components = {
     tabBar: tabBar,
     search: search,
     resumeList: resumeList,
+    homeModal: modal,
+    tabBarBottom: tabBarBottom,
     selectModal: selectModal
   }
   data = {
@@ -143,7 +147,21 @@ export default class home extends wepy.page {
       }
     ],
     statusIndex: 0,
-    isStatus: false
+    isStatus: false,
+    authorize: true,
+    isModal: true,
+    modalHeight: 560,
+    modalObj: {
+      title: '',
+      subTitle: '',
+      imgBg: '../../images/modalIcon.png',
+      imgIcon: ''
+    },
+    usertype: '',
+    tabBarData: {},
+    tabBarIndex: 0,
+    qrCode: '',
+    type: 0
   }
   events = {
     searchValue: val => {
@@ -156,6 +174,17 @@ export default class home extends wepy.page {
     },
     applyResume: data => {
       this.isSelectModal = !this.isSelectModal
+      this.modalTitle = '请选择岗位方式'
+      this.menus = [
+        {
+          icon: '../../images/modal/icon3.png',
+          title: '内部发单',
+        },
+        {
+          icon: '../../images/modal/icon4.png',
+          title: '企业接单'
+        }
+      ]
       this.$apply()
     },
     switchTab: val => {
@@ -165,26 +194,84 @@ export default class home extends wepy.page {
       } else {
         this.getResumeList()
       }
+    },
+    handleOk: (imgUl) => {
+      if (imgUl) {
+        this.qrCode = imgUl
+      } else {
+        setTimeout(() => {
+          wx.redirectTo({
+            url: '/pages/login/login' // 页面 A
+          })
+        }, 300)
+      }
+      this.isModal = true
+      this.$apply()
+    },
+    selectOk: val => {
+      if (val === 0) {
+        wx.navigateTo({
+          url: '/pages/home/addInfo' // 页面 A
+        })
+      } else {
+        this.createQrcode()
+      }
+    }
+  }
+  createQrcode() {
+    let params = {
+      scene: 'uid?=' + this.params.uid,
+      page: 'pages/home/qrCodeResume',
+      width: 300
+    }
+    $http('/login/get_qrcode', params).then(res => {
+      if (res.data) {
+        this.type = 1
+        this.isModal = !this.isModal
+        this.qrCode = getImgUrl(res.data)
+        this.$apply()
+        console.log(this.qrCode)
+      }
+    })
+  }
+
+  onShareAppMessage(res) {
+    return {
+      title: '转发',
+      imageUrl: this.qrCode,
+      path: '/pages/home/qrCodeResume?uid=' + this.params.uid
     }
   }
   methods = {
-    addResume () {
-      wxNavigateTo('/pages/home/addInfo')
+    addResume() {
+      this.isSelectModal = !this.isSelectModal
+      this.modalTitle = '请选择简历方式'
+      this.menus = [
+        {
+          icon: '../../images/modal/icon1.png',
+          title: '手动添加',
+        },
+        {
+          icon: '../../images/modal/icon2.png',
+          title: '二维码添加'
+        }
+      ]
+      this.$apply()
     },
-    searchScrollLower () {
+    searchScrollLower() {
       if (this.count > this.list.length && this.count > this.params.limit) {
         this.params.limit = this.params.limit + 10
         this.getResumeList()
       }
     },
-    selectStatus (item, index) {
+    selectStatus(item, index) {
       this.statusIndex = index
       this.getResumeList()
       this.$apply()
       console.log(item)
     }
   }
-  getResumeList () {
+  getResumeList() {
     $http('/Wxresume/resumelist', this.params).then(res => {
       this.list = res.data.data || []
       this.count = res.data.count
@@ -192,10 +279,12 @@ export default class home extends wepy.page {
       this.$apply()
     })
   }
-  onLoad () {
+  onLoad() {
+    this.usertype = wx.getStorageSync('rendaUserType')
     this.params.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
+    this.$apply()
   }
-  onShow () {
+  onShow() {
     this.getResumeList()
   }
 }

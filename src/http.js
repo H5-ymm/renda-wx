@@ -35,6 +35,8 @@ const http = (url, params, method) => {
                                 url: '/pages/login/login' // 页面 A
                             });
                         }, 300)
+                    } else if (res.data.status.code === 3058) {
+                        reject(res.data);
                     } else {
                         let remind = res.data.status.remind ? res.data.status.remind : '没有信息'
                         wxToast(remind)
