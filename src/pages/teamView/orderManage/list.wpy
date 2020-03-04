@@ -88,7 +88,27 @@ export default class orderList extends wepy.page {
 	computed = {
 		// 获取简历初筛，面试名单，入职名单列表url
 		urlApi() {
-			return this.receiptType === 1 ? '/company/CompanyResumeList' : this.receiptType === 2 ? '/company/invoiceInterviewList' : '/company/entryInvoiceList'
+			let url = ''
+			switch (this.receiptType) {
+				case 0:
+					url = '/apply/applyList'
+					break;
+				case 1:
+					url = '/company/CompanyResumeList'
+					break;
+				case 2:
+					url = '/company/CompanyResumeList'
+					break;
+				case 3:
+					url = '/company/invoiceInterviewList'
+					break;
+				case 4:
+					url = '/company/entryInvoiceList'
+					break;
+				default:
+					url = ''
+			}
+			return url
 		},
 		timeUrlApi() {
 			return this.receiptType === 1 ? '/company/editInterviewTime' : '/company/editEntryTime'

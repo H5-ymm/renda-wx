@@ -1,5 +1,5 @@
 <style lang="less">
-@import '../../../style/home.less';
+@import "../../../style/home.less";
 </style>
 <template>
 	<view class="home-view">
@@ -8,7 +8,7 @@
 			<scroll-view scroll-y="true" style="height:100%">
 				<view class="home-view-box">
 					<search @searchValue="searchValue" class="weui-cell weui-flex start page_card"></search>
-					<invoiceList :list.sync="newList" :receiptType.sync="receiptType" @handleResume="handleResume">
+					<invoiceList :list.sync="newList" :recommendType.sync="recommendType" @handleResume="handleResume">
 					</invoiceList>
 				</view>
 			</scroll-view>
@@ -42,35 +42,29 @@ export default class checkResumeList extends wepy.page {
 		isModal: true,
 		modalHeight: 860,
 		title: '查看面试时间',
-		receiptType: 1,
+		recommendType: 1,
 		statusObj: {},
 		job_id: '',
 		timeInfo: {},
 		id: '',
 	}
 	computed = {
-		newList () {
+		newList() {
 			return getList(this.list, 'addtime')
 		}
 	}
 	config = {
 		navigationBarTitleText: '内部发单'
 	}
-	onLoad (options) {
+	onLoad(options) {
 		this.params.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
-		this.receiptType = options.query
-		// this.job_id = 1
-		// if (this.receiptType === 1) {
-		// 	this.params.job_id = 1
-		// } else {
-		// 	this.params.jobId = 1
-		// }
+		this.recommendType = options.query
 		this.$apply()
 		wx.setNavigationBarTitle({
-			title: this.getTitle(this.receiptType)
+			title: this.getTitle(this.recommendType)
 		})
 	}
-	onShow () {
+	onShow() {
 		this.statusObj = {}
 		this.getList()
 		this.$apply()
@@ -88,14 +82,14 @@ export default class checkResumeList extends wepy.page {
 			this.auditResumeRecommend(data)
 		}
 	}
-	auditResumeRecommend (params) {
+	auditResumeRecommend(params) {
 		$http(this.checkUrlAPI, params).then(res => {
 			if (res.data) {
 				if (this.isCheck || this.check) {
-					if (this.receiptType === 1) {
+					if (this.recommendType === 1) {
 						this.statusObj.invoice_status = 4
 					}
-					if (this.receiptType === 2) {
+					if (this.recommendType === 2) {
 						this.statusObj.interview_status = 4
 					}
 					this.isBatch = false
@@ -108,50 +102,50 @@ export default class checkResumeList extends wepy.page {
 			}
 		})
 	}
-	overInterview () {
+	overInterview() {
 		let params = {
 			jobId: this.job_id,
 			uid: this.params.uid
 		}
 		$http(this.overViewAndEntry, params).then(res => {
 			if (res.data) {
-				if (this.receiptType === 1) {
+				if (this.recommendType === 1) {
 					this.statusObj.invoice_status = 2
 				}
-				if (this.receiptType === 2) {
+				if (this.recommendType === 2) {
 					this.statusObj.interview_status = 2
 				}
 				this.$apply()
-				wx.setStorageSync('receiptType', this.receiptType)
+				wx.setStorageSync('recommendType', this.recommendType)
 				wx.setStorageSync('statusObj', JSON.stringify(this.statusObj))
-				// wxReLaunch('/pages/companyView/resumeSiftings?query=' + this.receiptType)
+				// wxReLaunch('/pages/companyView/resumeSiftings?query=' + this.recommendType)
 			} else {
 				wxToast('操作失败')
 			}
 		})
 	}
 	methods = {
-		viewNotice () {
+		viewNotice() {
 			this.viewTimeInfo()
 		},
-		overView () {
-			let text = this.receiptType === 1 ? '面试' : '入职'
+		overView() {
+			let text = this.recommendType === 1 ? '面试' : '入职'
 			wxShowModal('', `确定提前结束${text}`).then(res => {
 				this.overInterview()
 			}).catch(() => {
 				console.log('取消')
 			})
 		},
-		viewEntry () {
-			wx.setStorageSync('receiptType', 3)
+		viewEntry() {
+			wx.setStorageSync('recommendType', 3)
 			wxNavigateTo('/pages/companyView/resumeSiftings?query=3&jobId=' + this.job_id)
 		}
 	}
-	getTotal (arr) {
+	getTotal(arr) {
 		let params = {
 			uid: this.params.uid,
 			job_id: this.job_id,
-			type: this.receiptType
+			type: this.recommendType
 		}
 		$http('/company/getAuditResumeNum', params).then(res => {
 			if (res.data) {
@@ -164,10 +158,10 @@ export default class checkResumeList extends wepy.page {
 		})
 	}
 	// 查看面试和入职时间
-	viewTimeInfo () {
+	viewTimeInfo() {
 		$http('/company/selectInterviewEntryInfo', { id: this.job_id }).then(res => {
 			let query = {}
-			if (this.receiptType === 1) {
+			if (this.recommendType === 1) {
 				query = {
 					time: res.data.view_time,
 					content: res.data.content
@@ -183,28 +177,28 @@ export default class checkResumeList extends wepy.page {
 			this.$apply()
 		})
 	}
-	getGeportOrderList () {
+	getGeportOrderList() {
 		$http('/Wxresume/reportOrderList', this.params).then(res => {
 			this.list = res.data.data || []
 			this.count = res.data.count
 			this.$apply()
 		})
 	}
-	getInternalInvoiceList () {
+	getInternalInvoiceList() {
 		$http('/Wxresume/internalInvoiceList', this.params).then(res => {
 			this.list = res.data.data || []
 			this.count = res.data.count
 			this.$apply()
 		})
 	}
-	getList () {
-		if (this.receiptType == 1) {
+	getList() {
+		if (this.recommendType == 1) {
 			this.getGeportOrderList()
 		} else {
 			this.getInternalInvoiceList()
 		}
 	}
-	checkStatus (list, type) {
+	checkStatus(list, type) {
 		let status = ''
 		if (type === 1) {
 			status = 'status'
@@ -217,7 +211,7 @@ export default class checkResumeList extends wepy.page {
 			return item[status]
 		})
 	}
-	getTitle (val) {
+	getTitle(val) {
 		return val == 1 ? '团队接单' : '内部发单'
 	}
 }

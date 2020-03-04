@@ -1,5 +1,5 @@
 <style lang="less">
-@import '../../../style/user.less';
+@import "../../../style/user.less";
 </style>
 <template>
 	<view class="page-my">
@@ -44,7 +44,7 @@ export default class orderManage extends wepy.page {
 		navigationBarTitleText: '接单管理'
 	}
 	computed = {
-		menus () {
+		menus() {
 			let arr = []
 			let arr1 = [{
 				title: '简历初筛',
@@ -72,14 +72,14 @@ export default class orderManage extends wepy.page {
 					title: '申请接单',
 					subTitle: '已申请接单的审核情况',
 					icon: '../../../images/orderTaking/icon6.png',
-					url: '/pages/companyView/checkReceipt',
+					url: '/pages/teamView/orderManage/list?query=0',
 					badgeNum: 0
 				},
 				{
 					title: '接单分配',
 					subTitle: '已确定合作企业接单',
 					icon: '../../../images/orderTaking/icon7.png',
-					url: '/pages/companyView/checkTeam',
+					url: '/pages/teamView/orderManage/list?query=1',
 					badgeNum: 0
 				}]
 			} else
@@ -97,7 +97,7 @@ export default class orderManage extends wepy.page {
 			return arr.concat(arr1)
 		}
 	}
-	getUnreadNum () {
+	getUnreadNum() {
 		let uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
 		$http('/apply/getStatistics', { uid }).then(res => {
 			this.menus[0].badgeNum = res.data.teamInvoiceNum
@@ -109,7 +109,7 @@ export default class orderManage extends wepy.page {
 		})
 	}
 	methods = {
-		viewInfo (item) {
+		viewInfo(item) {
 			if (item.url.indexOf('checkReceipt') > -1) {
 				wx.setStorageSync('receiptType', 0)
 			}
@@ -119,14 +119,14 @@ export default class orderManage extends wepy.page {
 			}
 			wxNavigateTo(item.url)
 		},
-		createOrderTaking () {
+		createOrderTaking() {
 			wxNavigateTo('/pages/companyView/ceateList')
 		}
 	}
-	onLoad () {
+	onLoad() {
 		this.userTeamType = wx.getStorageSync('rendaUserTeamType')
 	}
-	onShow () {
+	onShow() {
 		this.getUnreadNum()
 	}
 }

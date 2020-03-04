@@ -41,9 +41,9 @@
 							<view>
 								<view class="page_card_name">{{item.job_name}}</view>
 								<view class="text-line weui-flex__item">
-									{{receiptType==1?item.com_name:item.company_name}}</view>
+									{{recommendType==1?item.com_name:item.company_name}}</view>
 								<view class="text-line weui-flex__item">
-									需求人数:{{receiptType==1?item.required_number:item.number}}人
+									需求人数:{{recommendType==1?item.required_number:item.number}}人
 								</view>
 							</view>
 							<view class="weui-flex end wrap page_card_end">
@@ -71,7 +71,7 @@ import wepy from 'wepy'
 export default class companyResumeList extends wepy.component {
 	props = {
 		list: Array,
-		receiptType: Number
+		recommendType: Number
 	}
 	data = {
 		isCheck: false,
@@ -81,18 +81,18 @@ export default class companyResumeList extends wepy.component {
 		isShowBtn: true,
 		resumeList: []
 	}
-	onLoad () {
+	onLoad() {
 
 	}
 	watch = {
-		list (val) {
+		list(val) {
 			if (val) {
 				this.resumeList = val
 			}
 		}
 	}
 	methods = {
-		handleJob (item, status) {
+		handleJob(item, status) {
 			let query = {
 				uid: wx.getStorageSync('rendaUid'),
 				id: item.id,
@@ -100,7 +100,7 @@ export default class companyResumeList extends wepy.component {
 			}
 			this.$emit('handleJob', query)
 		},
-		selectJob (item) {
+		selectJob(item) {
 			wx.redirectTo({
 				url: '/pages/teamView/internalInvoice/teamJobDetail?query=' + item.job_id // 页面 A
 			})
