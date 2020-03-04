@@ -1,34 +1,33 @@
 <style lang="less">
-@import "../style/modal.less";
+@import '../style/modal.less';
 .footer-btn {
   width: 86%;
   margin: 0 auto;
 }
 </style>
 <template>
-  <view hidden='{{isScaleModal}}'>
-    <view @tap=" handleClose" wx:if="{{isShow}}" class="modal_mask"></view>
-    <view class="modal_box transition3s {{ isShow ? 'g_scale1': ''}}" id="modal-box" style="height:{{height}}rpx">
-      <view class="modal-content">
-        <view class="home-view-box weui-flex between wrap">
-          <view class="modal-title ">{{title}} </view>
+	<view hidden='{{isScaleModal}}'>
+		<view @tap=" handleClose" wx:if="{{isShow}}" class="modal_mask"></view>
+		<view class="modal_box transition3s {{ isShow ? 'g_scale1': ''}}" id="modal-box" style="height:{{height}}rpx">
+			<view class="modal-content">
+				<view class="home-view-box weui-flex between wrap">
+					<view class="modal-title ">{{title}} </view>
 					<repeat wx:for="{{menus}}" wx:key="index">
 						<view class="card-item weui-flex between wrap">
 							<image src="{{item.icon}}" alt="" mode="aspectFill" class="menu-icon" />
 							<view class="card-item-title">{{item.title}}</view>
-							<image src="https://a.rsd123.com/image/images/user/radio2.png" alt="" mode="aspectFill" 
-							wx:if="{{index==activeIndex}}" @tap="selectType({{index}})" class="radio-icon" />
+							<image src="https://a.rsd123.com/image/images/user/radio2.png" alt="" mode="aspectFill" wx:if="{{index==activeIndex}}" @tap="selectType({{index}})" class="radio-icon" />
 							<image src="https://a.rsd123.com/image/images/user/radio1.png" @tap="selectType({{index}})" wx:else alt="" mode="aspectFill" class="radio-icon" />
 						</view>
 					</repeat>
-		    </view>
-        <view class="weui-cell_btn weui-flex center footer-btn">
-          <button class="weui-btn_cell weui-btn_cell-gradient" @tap="handleOk">确定</button>
-        </view>
-      </view>
-      <image src="https://a.rsd123.com/image/images/close.png" @tap="handleClose" class="close-icon"/>
-    </view>
-  </view>
+				</view>
+				<view class="weui-cell_btn weui-flex center footer-btn">
+					<button class="weui-btn_cell weui-btn_cell-gradient" @tap="handleOk">确定</button>
+				</view>
+			</view>
+			<image src="https://a.rsd123.com/image/images/close.png" @tap="handleClose" class="close-icon" />
+		</view>
+	</view>
 </template>
 <script>
 import wepy from 'wepy'
@@ -38,7 +37,7 @@ export default class selectModal extends wepy.component {
 		isScaleModal: Boolean,
 		height: {
 			type: Number,
-			default: 540
+			default: 520
 		},
 		menus: Array,
 		title: String
@@ -50,23 +49,23 @@ export default class selectModal extends wepy.component {
 		sessionKey: ''
 	}
 	methods = {
-		handleClose() {
+		handleClose () {
 			this.isShow = false
 			this.$apply()
 			this.$emit('handleClose')
 		},
-		selectType(index) {
+		selectType (index) {
 			this.activeIndex = index
 			this.$apply()
 		},
-		handleOk() {
+		handleOk () {
 			this.isShow = false
 			this.$apply()
 			this.$emit('selectOk', this.activeIndex)
 		}
 	}
 	watch = {
-		isScaleModal(val) {
+		isScaleModal (val) {
 			if (!val) {
 				this.isShow = true
 			} else {

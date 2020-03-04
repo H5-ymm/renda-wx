@@ -57,7 +57,7 @@
     text-align: center;
     font-size: 36rpx;
     color: #000000;
-    margin: 24rpx 0;
+    margin-bottom: 10rpx;
   }
   .modal-subTitle {
     text-align: center;
@@ -97,18 +97,18 @@
         </view>
         <text selectable='true' decode="{{true}}" class="modal-subTitle" wx:if="{{modalObj.subTitle}}">{{modalObj.subTitle}}</text>
         <view class="weui-cell_btn weui-flex center">
-           <navigator open-type="{{openType}}" target="miniProgram" class="navigator">
-          <button class="weui-btn_cell weui-btn_cell-gradient" @tap="handleOk">我知道啦</button>
-            </navigator>
+          <navigator open-type="{{openType}}" target="miniProgram" class="navigator">
+            <button class="weui-btn_cell weui-btn_cell-gradient" @tap="handleOk">我知道啦</button>
+          </navigator>
         </view>
       </view>
-       <view wx:else class="modal-content modal-content-qrcode">
-         <image src="{{imgUrl}}" @longpress="saveImg" class="qrcode-img"/>
-          <view class="weui-cell_btn weui-flex center user-btn">
-            <button open-type="share" class="weui-btn_cell weui-btn_cell-gradient" @tap="handleOk">长按图片保存二维码并分享</button>
-          </view>
+      <view wx:else class="modal-content modal-content-qrcode">
+        <image src="{{imgUrl}}" @longpress="saveImg" class="qrcode-img" />
+        <view class="weui-cell_btn weui-flex center user-btn">
+          <button open-type="share" class="weui-btn_cell weui-btn_cell-gradient" @tap="handleOk">长按图片保存二维码并分享</button>
+        </view>
       </view>
-      <image src="../images/close.png" @tap="handleOk" class="close-icon" />
+      <image src="https://a.rsd123.com/image/images/close.png" @tap="handleOk" class="close-icon" />
     </view>
   </view>
 
@@ -125,12 +125,15 @@ export default class actionSheet extends wepy.component {
       default: 0
     },
     imgUrl: String,
-    openType: String
+    openType: {
+      type: String,
+      default: ''
+    }
   }
   data = {
     isShow: false
   }
-  saveImgUrl(url) {
+  saveImgUrl (url) {
     wx.getImageInfo({
       src: url,
       success: res => {
@@ -154,7 +157,7 @@ export default class actionSheet extends wepy.component {
   }
   methods = {
     // 长按保存图片
-    saveImg() {
+    saveImg () {
       //用户需要授权
       let that = this
       wx.getSetting({
@@ -180,14 +183,14 @@ export default class actionSheet extends wepy.component {
         }
       })
     },
-    handleOk() {
+    handleOk () {
       this.isShow = false
       this.$apply()
       this.$emit('handleOk', this.imgUrl)
     }
   }
   watch = {
-    isScaleModal(val) {
+    isScaleModal (val) {
       if (!val) {
         this.isShow = true
       } else {

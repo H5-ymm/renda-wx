@@ -1,32 +1,27 @@
 <style lang="less">
-@import "../../style/login.less";
+@import '../../style/login.less';
 </style>
 <template>
   <view class="login_page welcome-page page_botttom">
     <view class="login-view welcome-view">
-         <image src="https://a.rsd123.com/image/images/welcome/welcomeBg.png" mode="aspectFill" 
-         class="login-view-bg welcome-view-bg" />
+      <image src="https://a.rsd123.com/image/images/welcome/welcomeBg.png" mode="aspectFill" class="login-view-bg welcome-view-bg" />
       <view class="login-view-box welcome-view-box">
         <view class="welcome-view-form login-view-form">
-        <view class="weui-cell_btn weui-flex center login-btn">
-          <button lang='zh_CN' disabled="{{!isRead}}" 
-          class="weui-btn_cell weui-btn_cell-gradient {{!isRead?'weui-btn_cell-disabled':''}}"
-          @getuserinfo="getUserInfo" open-type="getUserInfo">开始使用</button>
+          <view class="weui-cell_btn weui-flex center login-btn">
+            <button lang='zh_CN' disabled="{{!isRead}}" class="weui-btn_cell weui-btn_cell-gradient {{!isRead?'weui-btn_cell-disabled':''}}" @getuserinfo="getUserInfo" open-type="getUserInfo">开始使用</button>
+          </view>
+          <view class="rule-view weui-flex start wrap">
+            <image wx:if="{{!checked}}" src="https://a.rsd123.com/image/images/check.png" mode="scaleToFill" class="check-icon" @tap="checkedRule({{checked}})" />
+            <image wx:else src="https://a.rsd123.com/image/images/check1.png" mode="scaleToFill" @tap="checkedRule({{checked}})" class="check-icon" />
+            我已认真阅读并同意<view class="text" @tap="router">《用户协议及隐私政策》</view>和
+            <view class="text" @tap="router">《信息保护政策》
+            </view>
+          </view>
         </view>
-        <view class="rule-view weui-flex start wrap">
-          <image wx:if="{{!checked}}" src="https://a.rsd123.com/image/images/check.png" mode="scaleToFill" class="check-icon" @tap="checkedRule({{checked}})" />
-          <image wx:else src="https://a.rsd123.com/image/images/check1.png" mode="scaleToFill"
-            @tap="checkedRule({{checked}})" class="check-icon" />
-              我已认真阅读并同意<view class="text" @tap="router">《用户协议及隐私政策》</view>和
-              <view class="text" @tap="router">《信息保护政策》
-           </view>
-        </view>
-      </view>
       </view>
     </view>
-    <modal :isScaleModal.sync="isModal" 
-    :height.sync="modalHeight" :modalObj.sync="modalObj"></modal>
-    <modalogin :isScaleModal.sync="isLoginModal" :type.sync="type" @handleClose="handleClose" :height.sync="modalLoginHeight" ></modalogin>
+    <modal :isScaleModal.sync="isModal" :height.sync="modalHeight" :modalObj.sync="modalObj"></modal>
+    <modalogin :isScaleModal.sync="isLoginModal" :type.sync="type" @handleClose="handleClose" :height.sync="modalLoginHeight"></modalogin>
   </view>
 </template>
 <script>
@@ -68,8 +63,18 @@ export default class Welcome extends wepy.page {
     code: '',
     sessionKey: ''
   }
-  onLoad(options) {
-    console.log(options)
+  onLoad (options) {
+
+    // let params = {
+    //   uid: 23,
+    //   type: 1
+    // }
+    // $http('/userinfo/userSwitchRole', params).then(res => {
+    //   if (res) {
+    //     wxToast('切换身份成功')
+    //   }
+    // })
+
     if (options && options.query) {
       this.checked = options.query
       this.isRead = true
@@ -97,13 +102,13 @@ export default class Welcome extends wepy.page {
       }
     })
   }
-  onShow() {
+  onShow () {
     if (!this.isRead) {
       this.checked = false
       this.$apply()
     }
   }
-  checkUserLogin(openid) {
+  checkUserLogin (openid) {
     store.dispatch(getAllUser(openid)).then(res => {
       this.isView = true
       this.$apply()
@@ -116,7 +121,7 @@ export default class Welcome extends wepy.page {
       }
     })
   }
-  checkRouterView(res) {
+  checkRouterView (res) {
     if (res && res.uid) {
       this.$parent.globalData.uid = res.uid
       // userType 1 企业 2 团队
@@ -143,12 +148,12 @@ export default class Welcome extends wepy.page {
       store.dispatch(getAllContant())
     }
   }
-  showErrorTip(code) {
+  showErrorTip (code) {
     let obj = getErrorTip(code)
     if (code === 6001 || code === 6008) {
       this.modalHeight = 640
     } else {
-      this.modalHeight = 560
+      this.modalHeight = 580
     }
     this.modalObj.title = obj.title
     this.modalObj.subTitle = obj.subTitle
@@ -156,14 +161,14 @@ export default class Welcome extends wepy.page {
     this.isView = false
     this.$apply()
   }
-  getWxPhone(params) {
+  getWxPhone (params) {
     $http('/login/decryptData', params).then(res => {
       if (res && res.data) {
         this.getWxPhoneLogin(res.data.phoneNumber)
       }
     })
   }
-  getWxPhoneLogin(phoneNumber) {
+  getWxPhoneLogin (phoneNumber) {
     if (!this.openid) {
       this.openid = this.$parent.getOpenId()
     }
@@ -207,7 +212,7 @@ export default class Welcome extends wepy.page {
     }
   }
   methods = {
-    checkedRule(checked) {
+    checkedRule (checked) {
       this.checked = !this.checked
       if (this.checked) {
         wxReLaunch('/pages/login/rule')
@@ -216,10 +221,10 @@ export default class Welcome extends wepy.page {
       }
       this.$apply()
     },
-    router() {
+    router () {
       wxReLaunch('/pages/login/rule')
     },
-    getUserInfo(e) {
+    getUserInfo (e) {
       // 没有阅读协议
       if (!this.isRead) return
       if (this.code === 6100) {

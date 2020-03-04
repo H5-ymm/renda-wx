@@ -1,37 +1,36 @@
 <style lang="less">
-@import "../../../style/user.less";
+@import '../../../style/user.less';
 </style>
 <template>
-  <view class="page-my">
-     <view class="view-content">
-      <view class="page_margin my-view">
-        <view class="my-view-box">
-          <view class="page_card page-card-company">
-            <repeat wx:for="{{menus}}" wx:key="index">
-              <view class="page_card_row" @tap="viewInfo({{item}})">
-                <view class="weui-flex between">
-                  <view class="weui-flex start">
-                    <image src="{{item.icon}}" alt="" class="my-icon" />
+	<view class="page-my">
+		<view class="view-content">
+			<view class="page_margin my-view">
+				<view class="my-view-box">
+					<view class="page_card page-card-company">
+						<repeat wx:for="{{menus}}" wx:key="index">
+							<view class="page_card_row" @tap="viewInfo({{item}})">
+								<view class="weui-flex between">
+									<view class="weui-flex start">
+										<image src="{{item.icon}}" alt="" class="my-icon" />
 										<view class="my-info">
 											<view class="my-text">{{item.title}}</view>
 											<view class="my-subTitle">{{item.subTitle}}</view>
-											<view class="badgeNum" 
-											wx:if="{{item.badgeNum&&item.badgeNum<10}}">{{item.badgeNum}}</view>
+											<view class="badgeNum" wx:if="{{item.badgeNum&&item.badgeNum<10}}">{{item.badgeNum}}</view>
 											<view class="badgeNum badgeNum1" wx:if="{{item.badgeNum>10&&item.badgeNum<100}}">{{item.badgeNum}}</view>
-												<view class="badgeNum badgeNum2" wx:if="{{item.badgeNum>10&&item.badgeNum>100}}">99+</view>
+											<view class="badgeNum badgeNum2" wx:if="{{item.badgeNum>10&&item.badgeNum>100}}">99+</view>
 										</view>
-                  </view>
-                  <view>
-                    <image mode="scaleToFill" src="https://a.rsd123.com/image/images/right.png" class="page_card_icon" />
-                  </view>
-                </view>
-              </view>
-            </repeat>
-          </view>
-        </view>
-      </view>
-    </view>
-  </view>
+									</view>
+									<view>
+										<image mode="scaleToFill" src="https://a.rsd123.com/image/images/right.png" class="page_card_icon" />
+									</view>
+								</view>
+							</view>
+						</repeat>
+					</view>
+				</view>
+			</view>
+		</view>
+	</view>
 </template>
 <script>
 import wepy from 'wepy'
@@ -45,7 +44,7 @@ export default class orderManage extends wepy.page {
 		navigationBarTitleText: '接单管理'
 	}
 	computed = {
-		menus() {
+		menus () {
 			let arr = []
 			let arr1 = [{
 				title: '简历初筛',
@@ -98,9 +97,9 @@ export default class orderManage extends wepy.page {
 			return arr.concat(arr1)
 		}
 	}
-	getUnreadNum() {
+	getUnreadNum () {
 		let uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
-		$http('/company/obtainAuditedTeamNum', { uid }).then(res => {
+		$http('/apply/getStatistics', { uid }).then(res => {
 			this.menus[0].badgeNum = res.data.teamInvoiceNum
 			this.menus[1].badgeNum = res.data.teamNum
 			this.menus[2].badgeNum = res.data.resumeNum
@@ -110,7 +109,7 @@ export default class orderManage extends wepy.page {
 		})
 	}
 	methods = {
-		viewInfo(item) {
+		viewInfo (item) {
 			if (item.url.indexOf('checkReceipt') > -1) {
 				wx.setStorageSync('receiptType', 0)
 			}
@@ -120,14 +119,14 @@ export default class orderManage extends wepy.page {
 			}
 			wxNavigateTo(item.url)
 		},
-		createOrderTaking() {
+		createOrderTaking () {
 			wxNavigateTo('/pages/companyView/ceateList')
 		}
 	}
-	onLoad() {
+	onLoad () {
 		this.userTeamType = wx.getStorageSync('rendaUserTeamType')
 	}
-	onShow() {
+	onShow () {
 		this.getUnreadNum()
 	}
 }

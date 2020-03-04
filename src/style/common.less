@@ -68,30 +68,25 @@ page {
     padding: 0 24rpx;
     margin-bottom: 20rpx;
     background-color: @weuiBgColorWhite;
-    font-size: 30rpx;
-
+    font-size: 26rpx;
     &.modal-page_card {
         box-shadow: none;
         border-radius: 0;
-
         .modal-page_item {
             height: 44rpx;
         }
     }
-
     .page_card_row {
         padding: 24rpx 0;
         // line-height: 52rpx;
         color: @weuiTextColorLight;
-
         .page_card_name {
-            font-size: 36rpx;
+            font-size:32rpx;
             color: @weuiTextColorDesc;
             font-weight: bold;
             position: relative;
             &.page_card_name1 {
                 font-weight: 400;
-                font-size:32rpx;
                 margin-bottom: 10rpx;
             }
             .badgeNum {
@@ -127,9 +122,15 @@ page {
                 }
             }
         }
-
+        .page_card_status-item {
+            .weui-btn_cell {
+              border-radius: 5rpx;
+              font-size: 25rpx;
+              padding: 23rpx 12rpx 21rpx;
+            }
+          }
         .page_card_time {
-            font-size: 26rpx;
+            font-size: 24rpx;
         }
 
         .page_card_num {
@@ -328,3 +329,24 @@ page {
         width: 40%;
     }
 }
+.header-box {
+    background: #ffffff;
+    height: 90rpx;
+    font-size: 24rpx;
+    padding: 0 26rpx;
+    .search-box {
+      border: 1px solid #eee;
+      width: 23%;
+      height: 48rpx;
+      border-radius: 30rpx;
+      padding: 4rpx 20rpx 0;
+      transition: 1s;
+      .searchIcon {
+        height: 24rpx;
+        width: 25rpx;
+      }
+      .search-input {
+        padding: 0 0 0 10rpx;
+      }
+    }
+  }

@@ -1,35 +1,11 @@
 <style lang="less">
-@import "../../style/home.less";
+@import '../../style/home.less';
 page {
   overflow: hidden;
 }
 .detail-view {
   height: 100%;
   overflow: hidden;
-  .page_margin {
-    margin: 24rpx 24rpx 0;
-  }
-  .header-box {
-    background: #ffffff;
-    height: 90rpx;
-    font-size: 24rpx;
-    padding: 0 26rpx;
-    .search-box {
-      border: 1px solid #eee;
-      width: 23%;
-      height: 48rpx;
-      border-radius: 30rpx;
-      padding: 4rpx 20rpx 0;
-      transition: 1s;
-      .searchIcon {
-        height: 24rpx;
-        width: 25rpx;
-      }
-      .search-input {
-        padding: 0 0 0 10rpx;
-      }
-    }
-  }
   .view-detail {
     height: calc(100% - 108px);
     overflow: auto;
@@ -75,13 +51,12 @@ page {
         <view class="status-item {{statusIndex==index?'status-item-active':''}}" @tap="selectStatus({{item}},{{index}})">{{item.label}}</view>
       </repeat>
     </view>
-      <view class="home-add-resume" @tap="addResume">
-        <image src="../../images/add.png" class="add-icon" />
-        <view class="home-add-text">添加简历</view>
-      </view>
-      <homeModal :isScaleModal.sync="isModal" @handleOk="handleOk" :height.sync="modalHeight" :type.sync="type" :modalObj.sync="modalObj" :imgUrl.sync="qrCode"></homeModal>
-      <tabBarBottom :usertype.sync="usertype" :tabBarIndex.sync="tabBarIndex"></tabBarBottom>
-      <selectModal :isScaleModal.sync="isSelectModal" :menus.sync="menus" @selectOk="selectOk" :title.sync="modalTitle" ></selectModal>
+    <view class="home-add-resume" @tap="addResume">
+      <image src="https://a.rsd123.com/image/images/add.png" class="add-icon" />
+      <view class="home-add-text">添加简历</view>
+    </view>
+    <homeModal :isScaleModal.sync="isModal" @handleOk="handleOk" :height.sync="modalHeight" :type.sync="type" :modalObj.sync="modalObj" :imgUrl.sync="qrCode"></homeModal>
+    <selectModal :isScaleModal.sync="isSelectModal" :menus.sync="menus" @selectOk="selectOk" :title.sync="modalTitle"></selectModal>
   </view>
 </template>
 <script>
@@ -91,7 +66,6 @@ import resumeList from '@/components/resumeList'
 import tabBar from '@/components/tabBar'
 import modal from '@/components/modal'
 import search from '@/components/search'
-import tabBarBottom from '@/components/tabBarBottom'
 import selectModal from '@/components/selectModal'
 import { getImgUrl } from '@/util.js'
 export default class home extends wepy.page {
@@ -100,20 +74,21 @@ export default class home extends wepy.page {
     search: search,
     resumeList: resumeList,
     homeModal: modal,
-    tabBarBottom: tabBarBottom,
     selectModal: selectModal
   }
   data = {
     list: [],
     tabBarList: [
       { name: '全部简历', num: 0 },
-      { name: '待审核', num: 0 },
+      { name: '未推荐', num: 0 },
       { name: '已通过', num: 0 },
-      { name: '未入职', num: 0 }],
+      { name: '已入职', num: 0 }],
     params: {
       uid: '',
       page: 1,
-      limit: 10
+      limit: 10,
+      status: 0,
+      username: ''
     },
     statusList: [
       {
@@ -156,18 +131,18 @@ export default class home extends wepy.page {
     modalObj: {
       title: '',
       subTitle: '',
-      imgBg: '../../images/modalIcon.png',
-      imgIcon: ''
+      imgBg: 'https://a.rsd123.com/image/images/modalIcon.png'
     },
-    usertype: '',
     tabBarData: {},
     tabBarIndex: 0,
     qrCode: '',
-    type: 0
+    type: 0,
+    isScoll: false
   }
   events = {
     searchValue: val => {
-      this.params = Object.assign(this.params, { where: val })
+      this.params = Object.assign(this.params, { username: val })
+      this.getTotal(val)
       this.getResumeList()
     },
     inputFocus: () => {
@@ -184,12 +159,13 @@ export default class home extends wepy.page {
         },
         {
           icon: '../../images/modal/icon4.png',
-          title: '企业接单'
+          title: '团队接单'
         }
       ]
       this.$apply()
     },
     switchTab: val => {
+      this.params.status = val
       if (val === 2) {
         this.isStatus = true
         this.$apply()
@@ -200,27 +176,60 @@ export default class home extends wepy.page {
     handleOk: (imgUl) => {
       if (imgUl) {
         this.qrCode = imgUl
-      } else {
-        setTimeout(() => {
-          wx.redirectTo({
-            url: '/pages/login/login' // 页面 A
-          })
-        }, 300)
       }
       this.isModal = true
       this.$apply()
     },
     selectOk: val => {
-      if (val === 0) {
-        wx.navigateTo({
-          url: '/pages/home/addInfo' // 页面 A
-        })
+      if (this.modalTitle == '请选择简历方式') {
+        if (val === 0) {
+          wx.navigateTo({
+            url: '/pages/home/addInfo' // 页面 A
+          })
+        } else {
+          this.createQrcode()
+        }
       } else {
-        this.createQrcode()
+        wx.navigateTo({
+          url: '/pages/teamView/internalInvoice/list?query=' + val // 页面 A
+        })
       }
     }
   }
-  createQrcode() {
+  onLoad () {
+    this.params.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
+  }
+  onShow () {
+    this.getTotal()
+    this.getResumeList()
+  }
+  getTotal (username) {
+    let params = {
+      uid: this.params.uid,
+      username: username || '',
+      status: this.params.status
+    }
+    $http('/resume/getResumeSumNum', params).then(res => {
+      this.tabBarList[0].num = res.data.allNum
+      this.tabBarList[1].num = res.data.notRecommendNum
+      this.tabBarList[2].num = res.data.adoptNum
+      this.tabBarList[3].num = res.data.entryNum
+      this.$apply()
+    })
+  }
+  getResumeList () {
+    $http('/resume/teamUserResumeList', this.params).then(res => {
+      this.list = res.data.data || []
+      this.count = res.data.count
+      this.isStatus = false
+      if (!this.isScoll) {
+        this.statusIndex = 0
+        this.params.status = 0
+      }
+      this.$apply()
+    })
+  }
+  createQrcode () {
     let params = {
       scene: 'uid?=' + this.params.uid,
       page: 'pages/home/qrCodeResume',
@@ -232,12 +241,11 @@ export default class home extends wepy.page {
         this.isModal = !this.isModal
         this.qrCode = getImgUrl(res.data)
         this.$apply()
-        console.log(this.qrCode)
       }
     })
   }
 
-  onShareAppMessage(res) {
+  onShareAppMessage (res) {
     return {
       title: '转发',
       imageUrl: this.qrCode,
@@ -245,7 +253,7 @@ export default class home extends wepy.page {
     }
   }
   methods = {
-    addResume() {
+    addResume () {
       this.isSelectModal = !this.isSelectModal
       this.modalTitle = '请选择简历方式'
       this.menus = [
@@ -260,34 +268,24 @@ export default class home extends wepy.page {
       ]
       this.$apply()
     },
-    searchScrollLower() {
+    searchScrollLower () {
       if (this.count > this.list.length && this.count > this.params.limit) {
+        this.isScoll = true
         this.params.limit = this.params.limit + 10
         this.getResumeList()
+      } else {
+        this.isScoll = false
       }
     },
-    selectStatus(item, index) {
+    selectStatus (item, index) {
       this.statusIndex = index
+      if (index) {
+        this.params.status = index + 3
+      }
+      this.getTotal()
       this.getResumeList()
       this.$apply()
-      console.log(item)
     }
-  }
-  getResumeList() {
-    $http('/Wxresume/resumelist', this.params).then(res => {
-      this.list = res.data.data || []
-      this.count = res.data.count
-      this.isStatus = false
-      this.$apply()
-    })
-  }
-  onLoad() {
-    this.usertype = wx.getStorageSync('rendaUserType')
-    this.params.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
-    this.$apply()
-  }
-  onShow() {
-    this.getResumeList()
   }
 }
 </script>

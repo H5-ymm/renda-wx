@@ -86,8 +86,11 @@ export default class department extends wepy.page {
 			this.$apply()
 		})
 	}
-	delDepartment () {
-		let params = {}
+	delDepartment (val) {
+		let params = {
+			uid: val.uid,
+			departId: val.id
+		}
 		$http('/team/delDepartment', params).then(res => {
 			if (res.data) {
 				wxToast('删除成功')
@@ -126,8 +129,9 @@ export default class department extends wepy.page {
 			}
 		},
 		delDepart: val => {
+			console.log(val)
 			wxShowModal('', '确定删除该部门吗？', '确定').then(res => {
-				this.delDepartment()
+				this.delDepartment(val)
 			}).catch(() => {
 				console.log('取消')
 			})

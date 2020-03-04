@@ -1,5 +1,5 @@
 <style lang="less">
-@import "../style/home.less";
+@import '../style/home.less';
 .weui-input {
   text-align: right;
 }
@@ -50,19 +50,15 @@ export default class scanIdCard extends wepy.component {
       age: '',
       education: 0,
       sex: 1,
-<<<<<<< HEAD
-      id_card: ''
-=======
       id_card: '',
       household_address: ''
->>>>>>> resume_dev
     },
     infoImg: '',
     tempFilePaths: [],
     cWidth: '',
     cHeight: ''
   }
-  getUrl(infoImg) {
+  getUrl (infoImg) {
     let params = {
       uid: wx.getStorageSync('rendaUid') || this.$parent.$parent.globalData.uid,
       infoImg
@@ -104,7 +100,7 @@ export default class scanIdCard extends wepy.component {
     })
   }
   methods = {
-    uploadImg() {
+    uploadImg () {
       wx.chooseImage({
         sizeType: ['compressed'],
         success: res => {
@@ -127,7 +123,7 @@ export default class scanIdCard extends wepy.component {
         }
       })
     },
-    save() {
+    save () {
       if (!this.infoImg) return
       this.$emit('submitForm', this.form)
     }

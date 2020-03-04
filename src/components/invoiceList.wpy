@@ -24,7 +24,7 @@
     margin-bottom: 40rpx;
     border-radius: 5rpx;
     font-size: 25rpx;
-    padding: 26rpx 18rpx;
+    padding: 23rpx 18rpx 21rpx;
   }
   .page_card_status-text {
     height: 80rpx;
@@ -32,50 +32,45 @@
 }
 </style>
 <template>
-  <view class="resume-list">
-    <repeat wx:for="{{list}}" wx:key="index">
-      <view class="page_card" wx:if="{{list.length}}">
-        <view class="page_card_row weui-flex between">
-					<view class="weui-flex start">
-						  <view wx:if="{{isBatch}}">
-								<image src="https://a.rsd123.com/image/images/user/radio2.png" alt="" mode="aspectFill" class="radio-icon" @tap="selectResume({{item}},{{index}})"
-								 wx:if="{{item.disabled}}"/>
-								<image src="https://a.rsd123.com/image/images/user/radio1.png" wx:else @tap="selectResume({{item}},{{index}})" mode="aspectFill" class="radio-icon" />
-								</view>
+	<view class="resume-list">
+		<repeat wx:for="{{list}}" wx:key="index">
+			<view class="page_card" wx:if="{{list.length}}" @tap="selectJob({{item}})">
+				<view class="page_card_row weui-flex between">
+					<view class="weui-flex__item">
+						<view class="weui-flex between">
 							<view>
-								<view class="page_card_name">{{item.name}}</view>
+								<view class="page_card_name">{{item.job_name}}</view>
 								<view class="text-line weui-flex__item">
-									{{item.age}}岁 {{item.sex==1?'男':'女'}} {{item.education}}</view>
+									{{receiptType==1?item.com_name:item.company_name}}</view>
 								<view class="text-line weui-flex__item">
-								 {{item.citys||'-'}}
-							  </view>
-					   </view>
-					</view>
-          <view class="weui-flex end wrap page_card_end">		
-						<view class="page_card_status-text">
-							<button class="weui-btn_cell weui-flex__item weui-btn_primary"
-							@tap="handleResume({{item}},1)">
-								推荐岗位
-							</button>
+									需求人数:{{receiptType==1?item.required_number:item.number}}人
+								</view>
+							</view>
+							<view class="weui-flex end wrap page_card_end">
+								<view class="page_card_status-text">
+									<button class="weui-btn_cell weui-flex__item weui-btn_primary" @tap.stop="handleJob({{item}},1)">
+										推荐岗位
+									</button>
+								</view>
+								<view class="page_card_time">已推荐: 23</view>
+							</view>
 						</view>
-						<view class="page_card_time">已推荐: 23</view>
 					</view>
-        </view>
-      </view>
-    </repeat>
-    <view wx:if="{{!list.length}}" class="page_list">
-      <image src="https://a.rsd123.com/image/images/noBg.png" class="page_noData" mode="scaleToFill"/>
-      <view class="page_noData_text">暂无数据！</view>
-    </view>
-  </view>
+					<image mode="scaleToFill" class="weui-flex__item" src="https://a.rsd123.com/image/images/right.png" class="page_down_icon" />
+				</view>
+			</view>
+		</repeat>
+		<view wx:if="{{!list.length}}" class="page_list">
+			<image src="https://a.rsd123.com/image/images/noBg.png" class="page_noData" mode="scaleToFill" />
+			<view class="page_noData_text">暂无数据！</view>
+		</view>
+	</view>
 </template>
 <script>
 import wepy from 'wepy'
 export default class companyResumeList extends wepy.component {
 	props = {
 		list: Array,
-		isBatch: Boolean,
-		isCheck: Boolean,
 		receiptType: Number
 	}
 	data = {
@@ -86,38 +81,29 @@ export default class companyResumeList extends wepy.component {
 		isShowBtn: true,
 		resumeList: []
 	}
-	onLoad() {
+	onLoad () {
 
 	}
 	watch = {
-		list(val) {
+		list (val) {
 			if (val) {
 				this.resumeList = val
 			}
 		}
 	}
 	methods = {
-		handleResume(item, status) {
+		handleJob (item, status) {
 			let query = {
 				uid: wx.getStorageSync('rendaUid'),
 				id: item.id,
 				status
 			}
-			this.$emit('handleResume', query)
+			this.$emit('handleJob', query)
 		},
-		selectResume(item, index) {
-			let arr = []
-			item.disabled = !item.disabled
-			this.$apply()
-			if (arr.indexOf(item.id) === -1) {
-				arr.push(item.id)
-			} else {
-				let ret = arr.findIndex(v => {
-					return v === item.id
-				})
-				arr.splice(ret, 1)
-			}
-			this.$emit('selectResume', Array.from(new Set(arr)))
+		selectJob (item) {
+			wx.redirectTo({
+				url: '/pages/teamView/internalInvoice/teamJobDetail?query=' + item.job_id // 页面 A
+			})
 		}
 	}
 }
