@@ -11,7 +11,8 @@
     .weui-textarea {
       text-align: left;
       line-height: 32rpx;
-      margin-top: 10rpx;
+      margin-top: 20rpx;
+      display: block;
     }
   }
   .register-btn {
@@ -25,10 +26,13 @@
 </style>
 <template>
 	<view class="detail-view">
-		<jobTemplate :form.sync="form"></jobTemplate>
+		<jobTemplateTeam :form.sync="form"></jobTemplateTeam>
 		<view class="weui-cell_btn weui-flex between register-btn">
 			<!-- <button class="weui-btn_cell weui-btn_primary" @tap="handleDelete">接单分配</button> -->
-			<button class="weui-btn_cell weui-btn_primary" @tap="handleDelete">推荐岗位</button>
+			<button class="weui-btn_cell weui-btn_primary" wx:if="{{receiptType<0}}" @tap="recommend">推荐岗位</button>
+			<button class="weui-btn_cell weui-btn_primary" wx:if="{{!receiptType&&form.status==1}}" @tap="contactPhone">联系客服</button>
+			<button class="weui-btn_cell weui-btn_primary" wx:if="{{!receiptType&&form.status&&form.status!=1}}" @tap="handleDelete">删除</button>
+			<!-- <button class="weui-btn_cell weui-btn_primary" v-if="receiptType==-1" @tap="handleDelete">推荐岗位</button> -->
 		</view>
 	</view>
 </template>
@@ -39,57 +43,64 @@ import { wxToast, wxReLaunch, wxShowModal } from '@/util.js'
 import jobTemplate from '@/components/jobTemplate'
 export default class teamJobDetail extends wepy.page {
 	components = {
-		jobTemplate: jobTemplate
+		jobTemplateTeam: jobTemplate
 	}
 	data = {
 		form: {},
-		id: ''
+		id: '',
+		receiptType: -2,
+		uid: ''
 	}
 	config = {
 		navigationBarTitleText: '发单详情'
 	}
 	onLoad (options) {
 		this.id = options.query
+		this.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
+		this.receiptType = Number(wx.getStorageSync('receiptType'))
+		console.log(this.receiptType)
+		this.$apply()
 		this.getInvoiceDetail()
 	}
 	getInvoiceDetail () {
-		$http('/receipt/invoiceInfo', { id: this.id }).then(res => {
+		let params = {
+			apply_id: this.id,
+			uid: this.uid
+		}
+		$http('/apply/applyDetail', params).then(res => {
 			this.form = res.data
-			this.form.job_content = this.form.job_content.replace('/<br>/g', '')
+			console.log(this.form)
 			this.$apply()
-		})
-	}
-	setReceiptShelf (params) {
-		$http('/company/companyReceiptShelf', params).then(res => {
-			this.form.job_status = params.job_status
-			this.$apply()
-			wxToast('操作成功')
 		})
 	}
 	deleteReceiptShelf (params) {
-		$http('/company/delReceiptShelf', params).then(res => {
+		$http('/apply/delapply', params).then(res => {
 			wxToast('删除成功')
-			wxReLaunch('/pages/companyView/checkReceipt')
+			wxReLaunch('/pages/teamView/orderManage/list?query=0')
 		})
 	}
 	methods = {
-		handleShelf () {
-			let params = {
-				uid: this.form.uid,
-				id: this.form.id,
-				job_status: this.form.job_status == 1 ? 2 : 1
-			}
-			let text = this.form.job_status == 1 ? '下架' : '上架'
-			wxShowModal('', `确定${text}的申请单子`).then(res => {
-				this.setReceiptShelf(params)
-			}).catch(() => {
-				console.log('取消')
+		contactPhone () {
+			wx.showActionSheet({
+				itemList: ['拨打021-51991869'],
+				success (res) {
+					wx.makePhoneCall({
+						phoneNumber: '021-51991869'
+					})
+				},
+				fail (res) {
+					console.log(res.errMsg)
+				}
 			})
+		},
+		// 推荐岗位
+		recommend () {
+
 		},
 		handleDelete () {
 			let params = {
 				uid: wx.getStorageSync('rendaUid'),
-				id: this.form.id
+				apply_id: this.form.id
 			}
 			wxShowModal('', '确定删除团队申请记录', '确定').then(res => {
 				this.deleteReceiptShelf(params)

@@ -1,0 +1,76 @@
+<style lang="less">
+@import '../../../style/home.less';
+.input-text-end {
+  margin-left: 10rpx;
+}
+.detail-view {
+  height: 100%;
+  overflow: hidden;
+  .home-view-box {
+    overflow: auto;
+    .weui-textarea {
+      text-align: left;
+      line-height: 32rpx;
+      margin-top: 10rpx;
+    }
+  }
+  .register-btn {
+    height: 100rpx;
+    margin-bottom: 80rpx;
+    .weui-btn_cell {
+      margin: 0 24rpx;
+    }
+  }
+}
+</style>
+<template>
+  <view class="detail-view">
+    <insiderJobTemplate :form.sync="form"></insiderJobTemplate>
+    <view class="weui-cell_btn weui-flex between register-btn">
+      <button class="weui-btn_cell weui-btn_primary" @tap="handleDelete">推荐岗位</button>
+    </view>
+  </view>
+</template>
+<script>
+import wepy from 'wepy'
+import { $http } from '@/http.js'
+import { wxToast, wxReLaunch, wxShowModal } from '@/util.js'
+import insiderJobTemplate from '@/components/insiderJobTemplate'
+export default class insiderJobDetail extends wepy.page {
+  components = {
+    insiderJobTemplate: insiderJobTemplate
+  }
+  data = {
+    form: {},
+    id: '',
+    receiptType: 0
+  }
+  config = {
+    navigationBarTitleText: '内部发单详情'
+  }
+  onLoad (options) {
+    this.id = options.query
+    this.receiptType = wx.getStorageSync('receiptType')
+    this.getInvoiceDetail()
+  }
+  getInvoiceDetail () {
+    $http('/receipt/invoiceInfo', { id: this.id }).then(res => {
+      this.form = res.data
+      this.$apply()
+    })
+  }
+  methods = {
+    handleDelete () {
+      let params = {
+        uid: wx.getStorageSync('rendaUid'),
+        id: this.form.id
+      }
+      wxShowModal('', '确定删除团队申请记录', '确定').then(res => {
+        this.deleteReceiptShelf(params)
+      }).catch(() => {
+        console.log('取消')
+      })
+    }
+  }
+}
+</script>

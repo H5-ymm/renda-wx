@@ -81,18 +81,18 @@ export default class companyResumeList extends wepy.component {
 		isShowBtn: true,
 		resumeList: []
 	}
-	onLoad() {
+	onLoad () {
 
 	}
 	watch = {
-		list(val) {
+		list (val) {
 			if (val) {
 				this.resumeList = val
 			}
 		}
 	}
 	methods = {
-		handleJob(item, status) {
+		handleJob (item, status) {
 			let query = {
 				uid: wx.getStorageSync('rendaUid'),
 				id: item.id,
@@ -100,10 +100,17 @@ export default class companyResumeList extends wepy.component {
 			}
 			this.$emit('handleJob', query)
 		},
-		selectJob(item) {
-			wx.redirectTo({
-				url: '/pages/teamView/internalInvoice/teamJobDetail?query=' + item.job_id // 页面 A
-			})
+		selectJob (item) {
+			wx.setStorageSync('receiptType', -1)
+			if (!this.recommendType) {
+				wx.redirectTo({
+					url: '/pages/teamView/internalInvoice/teamJobDetail?query=' + item.job_id // 页面 A
+				})
+			} else {
+				wx.redirectTo({
+					url: '/pages/teamView/internalInvoice/insiderJobDetail?query=' + item.id // 页面 A
+				})
+			}
 		}
 	}
 }

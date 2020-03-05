@@ -1,0 +1,54 @@
+<template>
+  <view class="page_card">
+    <view class="page_card_row">
+      <view class="weui-flex between">
+        <view class="my-text weui-flex__item">岗位类型</view>
+        <view class="my-text-right">普通岗位</view>
+      </view>
+    </view>
+    <view class="page_card_row">
+      <view class="weui-flex between">
+        <view class="my-text weui-flex__item">岗位来源</view>
+        <view class="my-text-right">普通岗位</view>
+      </view>
+    </view>
+    <view class="page_card_row">
+      <view class="weui-flex between">
+        <view class="my-text weui-flex__item">合作姓名</view>
+        <view class="my-text-right">普通岗位</view>
+      </view>
+    </view>
+    <view class="page_card_row">
+      <view class="weui-flex between">
+        <view class="my-text weui-flex__item">合作电话</view>
+        <view class="my-text-right">普通岗位</view>
+      </view>
+    </view>
+    <view class="page_card_row">
+      <view class="weui-flex between">
+        <view class="my-text weui-flex__item">面试时间</view>
+        <view class="my-text-right">普通岗位</view>
+      </view>
+    </view>
+    <view class="page_card_row">
+      <view class="weui-flex between">
+        <view class="my-text weui-flex__item">面试地址</view>
+        <view class="my-text-right">{{formOperator.tel}}</view>
+      </view>
+    </view>
+    <view class="page_card_row">
+      <view class="weui-flex between">
+        <view class="my-text weui-flex__item">发单负责人</view>
+      </view>
+      <view class="my-text-right weui-textarea">{{formOperator.job_content}}</view>
+    </view>
+  </view>
+</template>
+<script>
+import wepy from 'wepy'
+export default class insiderOperatorTemplate extends wepy.component {
+  props = {
+    formOperator: Object
+  }
+}
+</script>

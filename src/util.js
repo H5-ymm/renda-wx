@@ -2,11 +2,11 @@ import $moment from 'moment';
 const manglingFormatCardNumber = (cardNumber) => {
     if (cardNumber && cardNumber.length > 8) {
         return `${cardNumber.substring(0, 4)} ${'*'
-      .repeat(cardNumber.length - 8)
-      .replace(/(.{4})/g, `
+            .repeat(cardNumber.length - 8)
+            .replace(/(.{4})/g, `
         $1 `)}${
-      cardNumber.length % 4 ? ' ' : ''
-    }${cardNumber.slice(-4)}`;
+            cardNumber.length % 4 ? ' ' : ''
+            }${cardNumber.slice(-4)}`;
     }
     // eslint-disable-next-line semi
     return cardNumber
@@ -90,7 +90,7 @@ const compressImg = (photoSrc, ratio = 2) => {
     return new Promise((resolve, reject) => {
         wx.getImageInfo({
             src: photoSrc,
-            success(res) {
+            success (res) {
                 let canvasWidth = res.width // 图片原始长宽
                 let canvasHeight = res.height
                 console.log(res)
@@ -105,18 +105,18 @@ const compressImg = (photoSrc, ratio = 2) => {
                     false,
                     setTimeout(() => {
                         wx.canvasToTempFilePath({
-                                canvasId: 'canvas',
-                                destWidth: canvasWidth,
-                                destHeight: canvasHeight,
-                                success: function (res) {
-                                    console.log(res.tempFilePath)
-                                    obj.url = res.tempFilePath
-                                    resolve(obj)
-                                },
-                                fail: function (res) {
-                                    console.log(res.errMsg)
-                                }
+                            canvasId: 'canvas',
+                            destWidth: canvasWidth,
+                            destHeight: canvasHeight,
+                            success: function (res) {
+                                console.log(res.tempFilePath)
+                                obj.url = res.tempFilePath
+                                resolve(obj)
                             },
+                            fail: function (res) {
+                                console.log(res.errMsg)
+                            }
+                        },
                             this
                         )
                     }, 100)
@@ -239,7 +239,7 @@ const wxShowModal = (title, content, confirmText) => {
             confirmText: confirmText || '确定',
             cancelColor: '#666666',
             confirmColor: '#1890FF',
-            success(res) {
+            success (res) {
                 if (res.confirm) {
                     resove()
                 } else if (res.cancel) {
@@ -257,7 +257,7 @@ const getList = (list, key, formatType) => {
         if (item[key] && reg.test(item[key])) {
             flag = true
         }
-        item[key] = flag ? $moment.unix(item[key]).format(type) : item[key]
+        item[key] = flag ? $moment.unix(item[key]).format(type) : $moment(item[key]).format(type)
         return item
     })
 }

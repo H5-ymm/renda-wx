@@ -1,5 +1,5 @@
 <style lang="less">
-@import "../../../style/user.less";
+@import '../../../style/user.less';
 </style>
 <template>
 	<view class="page-my">
@@ -38,96 +38,110 @@ import { $http } from '@/http.js'
 import { wxNavigateTo } from '@/util.js'
 export default class orderManage extends wepy.page {
 	data = {
-		userTeamType: 1
+		userTeamType: 1,
+		menus: []
 	}
 	config = {
 		navigationBarTitleText: '接单管理'
 	}
-	computed = {
-		menus() {
-			let arr = []
-			let arr1 = [{
-				title: '简历初筛',
-				subTitle: '推荐简历给企业筛选，通过简历可参加面试',
-				icon: 'https://a.rsd123.com/image/images/orderTaking/icon3.png',
-				url: '/pages/companyView/resumeSiftings?query=1',
+	getMenus (userTeamType) {
+		let arr = []
+		let arr2 = []
+		let arr1 = [{
+			title: '简历初筛',
+			subTitle: '推荐简历给企业筛选，通过简历可参加面试',
+			icon: 'https://a.rsd123.com/image/images/orderTaking/icon3.png',
+			url: '/pages/companyView/resumeSiftings?query=1',
+			badgeNum: 0
+		},
+		{
+			title: '面试结果',
+			subTitle: '已通过面试简历，可参加入职',
+			icon: 'https://a.rsd123.com/image/images/orderTaking/icon4.png',
+			url: '/pages/companyView/resumeSiftings?query=2',
+			badgeNum: 0
+		},
+		{
+			title: '入职名单',
+			subTitle: '已入职简历',
+			icon: 'https://a.rsd123.com/image/images/orderTaking/icon5.png',
+			url: '/pages/companyView/resumeSiftings?query=3',
+			badgeNum: 0
+		}]
+		if (userTeamType == 1) {
+			arr = [{
+				title: '申请接单',
+				subTitle: '已申请接单的审核情况',
+				icon: '../../../images/orderTaking/icon6.png',
+				url: '/pages/teamView/orderManage/list?query=0',
 				badgeNum: 0
 			},
 			{
-				title: '面试结果',
-				subTitle: '已通过面试简历，可参加入职',
-				icon: 'https://a.rsd123.com/image/images/orderTaking/icon4.png',
-				url: '/pages/companyView/resumeSiftings?query=2',
-				badgeNum: 0
-			},
-			{
-				title: '入职名单',
-				subTitle: '已入职简历',
-				icon: 'https://a.rsd123.com/image/images/orderTaking/icon5.png',
-				url: '/pages/companyView/resumeSiftings?query=3',
+				title: '接单分配',
+				subTitle: '已确定合作企业接单',
+				icon: '../../../images/orderTaking/icon7.png',
+				url: '/pages/teamView/orderManage/list?query=1',
 				badgeNum: 0
 			}]
-			if (this.userTeamType == 1) {
+		} else
+			if (userTeamType == 1) {
 				arr = [{
-					title: '申请接单',
-					subTitle: '已申请接单的审核情况',
-					icon: '../../../images/orderTaking/icon6.png',
-					url: '/pages/teamView/orderManage/list?query=0',
-					badgeNum: 0
-				},
-				{
 					title: '接单分配',
 					subTitle: '已确定合作企业接单',
 					icon: '../../../images/orderTaking/icon7.png',
-					url: '/pages/teamView/orderManage/list?query=1',
+					url: '/pages/companyView/checkTeam',
 					badgeNum: 0
 				}]
-			} else
-				if (this.userTeamType == 1) {
-					arr = [{
-						title: '接单分配',
-						subTitle: '已确定合作企业接单',
-						icon: '../../../images/orderTaking/icon7.png',
-						url: '/pages/companyView/checkTeam',
-						badgeNum: 0
-					}]
-				} else {
-					arr = []
-				}
-			return arr.concat(arr1)
-		}
+			} else {
+				arr = []
+			}
+		arr2 = arr.concat(arr1)
+		this.getUnreadNum(arr2, userTeamType)
+		return arr2
 	}
-	getUnreadNum() {
+	getUnreadNum (arr, type) {
 		let uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
 		$http('/apply/getStatistics', { uid }).then(res => {
-			this.menus[0].badgeNum = res.data.teamInvoiceNum
-			this.menus[1].badgeNum = res.data.teamNum
-			this.menus[2].badgeNum = res.data.resumeNum
-			this.menus[3].badgeNum = res.data.interviewNum
-			this.menus[4].badgeNum = res.data.entryNum
+			if (type == 1) {
+				arr[0].badgeNum = res.data.applynummsg
+				arr[1].badgeNum = res.data.orderDistribution
+				arr[2].badgeNum = res.data.applyshmsg
+				arr[3].badgeNum = res.data.applyviewmsg
+				arr[4].badgeNum = res.data.applynumentrymsg
+			} else if (type == 2) {
+				arr[0].badgeNum = res.data.orderDistribution
+				arr[1].badgeNum = res.data.applyshmsg
+				arr[2].badgeNum = res.data.applyviewmsg
+				arr[3].badgeNum = res.data.applynumentrymsg
+			} else {
+				arr[0].badgeNum = res.data.applyshmsg
+				arr[1].badgeNum = res.data.applyviewmsg
+				arr[2].badgeNum = res.data.applynumentrymsg
+			}
 			this.$apply()
 		})
 	}
 	methods = {
-		viewInfo(item) {
-			if (item.url.indexOf('checkReceipt') > -1) {
-				wx.setStorageSync('receiptType', 0)
-			}
-			if (item.url.indexOf('resumeSiftings') > -1) {
-				let receiptType = item.url.split('=')[1]
+		viewInfo (item) {
+			let receiptType = item.url.split('=')[1]
+			if (item.url.indexOf('orderManage') > -1) {
 				wx.setStorageSync('receiptType', receiptType)
 			}
+			// if (item.url.indexOf('resumeSiftings') > -1) {
+			// 	let receiptType = item.url.split('=')[1]
+			// 	wx.setStorageSync('receiptType', receiptType)
+			// }
 			wxNavigateTo(item.url)
 		},
-		createOrderTaking() {
+		createOrderTaking () {
 			wxNavigateTo('/pages/companyView/ceateList')
 		}
 	}
-	onLoad() {
+	onLoad () {
 		this.userTeamType = wx.getStorageSync('rendaUserTeamType')
 	}
-	onShow() {
-		this.getUnreadNum()
+	onShow () {
+		this.menus = this.getMenus(this.userTeamType)
 	}
 }
 </script>

@@ -44,7 +44,7 @@
 <script>
 import wepy from 'wepy'
 import { $http } from '@/http.js'
-import { getImgUrl, wxToast } from '@/util.js'
+import { getImgUrl, wxToast, wxRedirectTo } from '@/util.js'
 import tabBarBottom from '@/components/tabBarBottom'
 import selectModal from '@/components/selectModal'
 export default class my extends wepy.page {
@@ -148,7 +148,11 @@ export default class my extends wepy.page {
         wxToast('切换身份成功')
         let userType = this.type === 1 ? 2 : 1
         this.isSelectModal = !this.isSelectModal
+        wx.clearStorageSync()
         wx.setStorageSync('rendaUserType', userType)
+        wxRedirectTo('/pages/login/welcome')
+      } else {
+        wxToast('切换身份失败')
       }
     })
   }

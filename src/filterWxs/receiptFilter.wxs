@@ -16,6 +16,7 @@ var statusText = function (status) {
     return text
 }
 var statusTeamText = function (status) {
+    console.log(status)
     var text = ''
     switch (status) {
         case 0:
@@ -51,12 +52,12 @@ var statusReceiptText = function (invoice_status, interview_status, entry_status
         } else if (type == 2) {
             if (interview_status <= 1) {
                 text = '面试开始'
-            } else(interview_status == 2) {
+            } else (interview_status == 2) {
                 if (!entry_status) {
                     text = '面试结束'
                 } else if (entry_status == 1) {
                     text = '入职开始'
-                } else(entry_status == 2) {
+                } else (entry_status == 2) {
                     text = '入职结束'
                 }
             }

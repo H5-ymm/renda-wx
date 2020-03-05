@@ -64,7 +64,6 @@ export default class Welcome extends wepy.page {
     sessionKey: ''
   }
   onLoad (options) {
-
     // let params = {
     //   uid: 23,
     //   type: 1
@@ -74,7 +73,6 @@ export default class Welcome extends wepy.page {
     //     wxToast('切换身份成功')
     //   }
     // })
-
     if (options && options.query) {
       this.checked = options.query
       this.isRead = true

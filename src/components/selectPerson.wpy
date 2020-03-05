@@ -1,7 +1,7 @@
 
 <style lang="less">
 .page_card {
-  .page_card_row  {
+  .page_card_row {
     .page_card_name {
       font-weight: normal;
     }
@@ -12,26 +12,24 @@
   height: 30rpx;
 }
 </style>
-
 <template>
   <view>
     <repeat wx:for="{{personList}}" wx:key="index">
       <view class="page_card" wx:if="{{personList.length}}">
         <view class="page_card_row weui-flex between">
           <view class="weui-flex__item">
-            <view class="page_card_name">{{item.name}}</view> 
+            <view class="page_card_name">{{item.user_name}}</view>
             <view class="text-line">
-              销售部  部门经理
-            </view> 
+              销售部 {{item.grade_name}}
+            </view>
           </view>
-          	<image src="https://a.rsd123.com/image/images/user/radio2.png" alt="" mode="aspectFill" class="radio-icon" @tap="selectUser({{item}},{{index}})"
-							wx:if="{{item.disabled}}"/>
-						<image src="https://a.rsd123.com/image/images/user/radio1.png" wx:else @tap="selectUser({{item}},{{index}})" mode="aspectFill" class="radio-icon" />
+          <image src="https://a.rsd123.com/image/images/user/radio2.png" alt="" mode="aspectFill" class="radio-icon" @tap="selectUser({{item}},{{index}})" wx:if="{{item.disabled}}" />
+          <image src="https://a.rsd123.com/image/images/user/radio1.png" wx:else @tap="selectUser({{item}},{{index}})" mode="aspectFill" class="radio-icon" />
         </view>
       </view>
     </repeat>
     <view wx:if="{{!personList.length}}" class="page_list">
-      <image src="https://a.rsd123.com/image/images/noBg.png" class="page_noData" mode="scaleToFill"/>
+      <image src="https://a.rsd123.com/image/images/noBg.png" class="page_noData" mode="scaleToFill" />
       <view class="page_noData_text">暂无数据！</view>
     </view>
   </view>
@@ -48,31 +46,32 @@ export default class selectPerson extends wepy.component {
     personList: []
   }
   watch = {
-		list(val) {
-      // console.log(val)
-			if (val) {
-				this.personList = val
-			}
-		}
+    list (val) {
+      console.log(val)
+      if (val) {
+        console.log(val)
+        this.personList = val
+        this.$apply()
+      }
+    }
   }
-  onLoad() {
-    console.log(this.list)
+  onLoad () {
     this.personList = this.list
     this.$apply()
   }
   methods = {
-    selectUser(item, index) {
+    selectUser (item, index) {
       this.personList[index].disabled = !item.disabled
       this.$apply()
-      if (this.idList.indexOf(item.id) === -1) {
-				this.idList.push(item.id)
-			} else {
-				let ret = this.idList.findIndex(v => {
-					return v === item.id
-				})
-				this.idList.splice(ret, 1)
+      if (this.idList.indexOf(item.uid) === -1) {
+        this.idList.push(item.uid)
+      } else {
+        let ret = this.idList.findIndex(v => {
+          return v === item.uid
+        })
+        this.idList.splice(ret, 1)
       }
-			this.$emit('selectUser', Array.from(new Set(this.idList)))
+      this.$emit('selectUser', Array.from(new Set(this.idList)))
     }
   }
 }

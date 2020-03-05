@@ -1,0 +1,135 @@
+<style lang="less">
+@import '../../../style/home.less';
+page {
+  overflow: hidden;
+}
+.home-view {
+  height: 100%;
+  overflow: hidden;
+  .person-list {
+    overflow: auto;
+  }
+  .footer-box {
+    height: 180rpx;
+    .weui-btn_cell {
+      margin: 0 20rpx;
+    }
+  }
+}
+</style>
+<template>
+	<view class="home-view page page_margin">
+		<view class="view-detail person-list">
+			<scroll-view scroll-y="true" style="height:100%" class="content-box">
+				<selectPerson :list.sync="newList"></selectPerson>
+			</scroll-view>
+		</view>
+		<view class="weui-cell_btn weui-flex between footer-box">
+			<button class="weui-btn_cell weui-btn_primary" @tap="okAllocation">确定分配</button>
+			<button class="weui-btn_cell weui-btn_primary_plain" @tap="cancleAllocation" wx:if="{{distributionnum}}">取消分配</button>
+		</view>
+	</view>
+</template>
+<script>
+import wepy from 'wepy'
+import { $http } from '@/http.js'
+import selectPerson from '@/components/selectPerson'
+import { getList, wxNavigateTo, wxShowModal, wxToast, wxReLaunch } from '@/util'
+export default class allocationPerson extends wepy.page {
+	components = {
+		selectPerson: selectPerson
+	}
+	data = {
+		list: [],
+		uid: '',
+		count: 0,
+		distributionnum: 0,
+		applyId: '',
+		handleStatus: false,
+		job_id: '',
+		uids: ''
+	}
+	computed = {
+		newList () {
+			let arr = []
+			if (!this.distributionnum) {
+				arr = this.checkAll(this.list, false)
+			} else {
+				arr = this.changeList(this.list, false)
+			}
+			return arr
+		}
+	}
+	checkAll (list, status) {
+		return list.filter(item => {
+			item.disabled = status
+			return item
+		})
+	}
+	changeList (list) {
+		return list.filter(item => {
+			item.disabled = item.status ? true : false
+			return item
+		})
+	}
+	config = {
+		navigationBarTitleText: '分配接单'
+	}
+	onLoad (options) {
+		this.applyId = options.id
+		this.job_id = options.job_id
+		this.distributionnum = options.distributionnum
+		this.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
+		this.$apply()
+	}
+	onShow () {
+		this.getPersonList()
+	}
+	getPersonList () {
+		let params = {
+			uid: this.uid,
+			job_id: this.job_id
+		}
+		$http('/apply/getobedistributed_list', params).then(res => {
+			console.log(res)
+			if (res.data) {
+				this.list = res.data || []
+			} else {
+				this.list = []
+			}
+			console.log(this.list)
+			this.$apply()
+		})
+
+	}
+	allocationReceipt () {
+		let params = {
+			uid: this.uid,
+			uids: this.uids,
+			job_id: this.job_id
+		}
+		$http('/apply/setjobtouser', params).then(res => {
+			if (res) {
+				wxToast('分配成功')
+				wxReLaunch('/pages/teamView/orderManage/list?query=1')
+			} else {
+				wxToast('分配失败')
+			}
+		})
+	}
+	events = {
+		selectUser: val => {
+			if (val.length) {
+				this.uids = val.join(',')
+				this.allocationReceipt()
+			} else {
+				wxToast('请选择分配人员')
+			}
+		}
+	}
+	methods = {
+		cancleAllocation () { },
+		okAllocation () { }
+	}
+}
+</script>

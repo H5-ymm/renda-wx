@@ -4,24 +4,23 @@
     <view wx:if="{{list.length}}">
       <repeat for="{{list}}" key="index" item="rItem">
         <view class="page_card" @tap="viewDetail({{rItem}})">
-          <receiptItem :itemValue.sync="rItem"></receiptItem>
+          <teamReceiptItem :itemValue.sync="rItem"></teamReceiptItem>
         </view>
       </repeat>
     </view>
     <view wx:else class="page_list">
-      <image src="https://a.rsd123.com/image/images/noBg.png"
-      class="page_noData" mode="scaleToFill"/>
+      <image src="https://a.rsd123.com/image/images/noBg.png" class="page_noData" mode="scaleToFill" />
       <view class="page_noData_text">暂无数据！</view>
     </view>
   </view>
 </template>
 <script>
 import wepy from 'wepy'
-import receiptItem from './receiptItem'
+import teamReceiptItem from './teamReceiptItem'
 import { wxToast, wxNavigateTo } from '@/util.js'
 export default class teamReceiptList extends wepy.component {
   components = {
-    receiptItem: receiptItem
+    teamReceiptItem: teamReceiptItem
   }
   props = {
     list: Array,
@@ -31,13 +30,12 @@ export default class teamReceiptList extends wepy.component {
     }
   }
   methods = {
-    viewDetail(item) {
+    viewDetail (item) {
       if (!this.receiptType) {
-        if (item.status <= 1) {
-          wxNavigateTo('/pages/companyView/jobDetail?query=' + item.id)
-        } else {
-          wxNavigateTo('/pages/companyView/viewJob?query=' + item.id)
-        }
+        wxNavigateTo('/pages/teamView/internalInvoice/teamJobDetail?query=' + item.id)
+      } else if (this.receiptType == 1) {
+        console.log(item)
+        wxNavigateTo(`/pages/teamView/orderManage/allocationPerson?query=${item.id}&distributionnum=${item.distributionnum}&job_id=${item.job_id}`)
       } else {
         let obj = {
           entry_status: item.entry_status,
@@ -47,13 +45,9 @@ export default class teamReceiptList extends wepy.component {
           entry_time: item.entry_time
         }
         wx.setStorageSync('statusObj', JSON.stringify(obj))
-        if ((!item.view_time && this.receiptType === 1) || (this.receiptType === 2 && item.interview_status <= 1 && !item.entry_time)) {
-          this.$emit('setTime', item.id)
-        } else {
-          wx.navigateTo({
-            url: '/pages/companyView/checkResumeList?query=' + this.receiptType + '&job_id=' + item.id
-          })
-        }
+        wx.navigateTo({
+          url: '/pages/companyView/checkResumeList?query=' + this.receiptType + '&job_id=' + item.id
+        })
       }
     }
   }

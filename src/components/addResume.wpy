@@ -1,5 +1,5 @@
 <style lang="less">
-@import "../style/home.less";
+@import '../style/home.less';
 .weui-input {
   text-align: right;
 }
@@ -36,18 +36,12 @@
           </view>
         </view>
         <view class="page_card_row">
-					<view class="weui-flex between">
-						<view class="my-text weui-flex__item my-text-require">身份证</view>
-						 <input class="weui-input" placeholder-class="placeholder" data-name="id_card" value="{{form.id_card}}" @input="changeInput" placeholder="请输入身份证" />
-					</view>
-				</view>
-        <view class="page_card_row">
           <view class="weui-flex between">
             <view class="my-text weui-flex__item">性别：</view>
             <picker @change="bindPickerChange" value="{{index}}" range="{{array}}">
               <view class="my-text-right weui-flex between">
                 <view class="{{array[index]?'':'placeholder'}}"> {{array[index]?array[index]:'请选择'}}</view>
-                <image mode="scaleToFill" src="https://a.rsd123.com/image/images/right.png" class="page_down_icon" />
+                <image mode="scaleToFill" src="https://a.rsd123.com/image/images/down.png" class="page_down_icon" />
               </view>
             </picker>
           </view>
@@ -56,7 +50,6 @@
           <view class="weui-flex between ">
             <view class="my-text weui-flex__item">户籍地址：</view>
             <input class="weui-input" placeholder-class="placeholder" data-name="address" value="{{form.address}}" @input="changeInput" placeholder="请输入住址" />
-            <!-- <view class="my-text-right">仁达网络科技（上海）有限公司</view> -->
           </view>
         </view>
         <view class="page_card_row">
@@ -94,13 +87,13 @@
             <input class="weui-input" data-name="household_address" placeholder-class="placeholder" value="{{form.household_address}}" @input="changeInput" placeholder="请输入详细住址" />
           </view>
         </view>
-        
+
       </view>
     </view>
     <view class="weui-cell_btn weui-flex center">
-     
+
       <button class="weui-btn_cell .weui-btn_primary" @tap="save">{{step==1?'下一步':'保存'}}</button>
-    
+
     </view>
   </view>
 </template>
@@ -143,7 +136,7 @@ export default class addResume extends wepy.component {
     disabled: false
   }
   watch = {
-    resumeInfo(val) {
+    resumeInfo (val) {
       if (val && val.name) {
         this.form = val
         this.index = val.sex - 1
@@ -165,7 +158,7 @@ export default class addResume extends wepy.component {
       }
       this.$apply()
     },
-    stepActive(val) {
+    stepActive (val) {
       if (val) {
         this.step = val
         console.log(this.step)
@@ -180,19 +173,19 @@ export default class addResume extends wepy.component {
     }
   }
   methods = {
-    bindPickerChange(e) {
+    bindPickerChange (e) {
       this.index = e.detail.value
       this.form.sex = Number(this.index) + 1
     },
-    eduPickerChange(e) {
+    eduPickerChange (e) {
       this.eduIndex = e.detail.value
       this.form.education = this.eduIndex
     },
-    changeInput(e) {
+    changeInput (e) {
       let key = e.currentTarget.dataset.name
       this.form[key] = e.detail.value
     },
-    save() {
+    save () {
       if (!this.form.name) {
         wxToast('请输入姓名')
       } else if (!this.form.id_card) {
@@ -203,10 +196,6 @@ export default class addResume extends wepy.component {
         wxToast('请输入手机号码')
       } else if (!checkMobile(this.form.mobile)) {
         wxToast('请输入正确的手机号码')
-      } else if (!this.form.id_card) {
-        wxToast('请输入身份证号码')
-      } else if (!validateIdCard(this.form.id_card)) {
-        wxToast('请输入正确的身份证')
       } else if (this.form.age && Number(this.form.age) < 16) {
         wxToast('请输入的年龄不小于16')
       } else if (this.form.age && Number(this.form.age) > 65) {
