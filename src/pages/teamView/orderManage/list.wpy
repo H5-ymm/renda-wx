@@ -1,5 +1,5 @@
 <style lang="less">
-@import '../../../style/home.less';
+@import "../../../style/home.less";
 </style>
 <template>
 	<view class="home-view">
@@ -12,7 +12,6 @@
 				</view>
 			</scroll-view>
 		</view>
-		<noticeModal :isScaleModal.sync="isModal" :height.sync="modalHeight" :title.sync="title"></noticeModal>
 	</view>
 </template>
 <script>
@@ -20,13 +19,11 @@ import wepy from 'wepy'
 import { $http } from '@/http.js'
 import search from '@/components/search'
 import teamReceiptList from '@/components/teamReceiptList'
-import noticeModal from '@/components/noticeModal'
 import { wxToast, getList } from '@/util.js'
 export default class orderList extends wepy.page {
 	components = {
 		search: search,
-		teamReceiptList: teamReceiptList,
-		noticeModal: noticeModal
+		teamReceiptList: teamReceiptList
 	}
 	data = {
 		list: [],
@@ -36,13 +33,9 @@ export default class orderList extends wepy.page {
 			limit: 10
 		},
 		count: 0,
-		receiptType: 0,
-		isModal: true,
-		modalHeight: 900,
-		title: '',
-		job_id: ''
+		receiptType: 0
 	}
-	getTitle (val) {
+	getTitle(val) {
 		let text = ''
 		switch (val) {
 			case 0:
@@ -65,7 +58,7 @@ export default class orderList extends wepy.page {
 		}
 		return text
 	}
-	getJobList () {
+	getJobList() {
 		this.list = []
 		$http(this.urlApi, this.params).then(res => {
 			this.list = res.data.data || []
@@ -73,30 +66,9 @@ export default class orderList extends wepy.page {
 			this.$apply()
 		})
 	}
-	// 设置面试和入职时间
-	setDate (data) {
-		let params = {
-			uid: this.params.uid,
-			job_id: this.job_id,
-			time: data.time,
-			content: data.content
-		}
-		$http(this.timeUrlApi, params).then(res => {
-			if (res.data) {
-				this.isModal = true
-				this.$apply()
-				this.getJobList()
-			} else {
-				wxToast('设置时间失败')
-			}
-		})
-	}
-	onLoad (options) {
-		if (options.jobId) {
-			this.params.jobId = options.jobId
-		}
-		this.params.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
+	onLoad(options) {
 		this.receiptType = Number(options.query)
+		this.params.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
 		if (this.receiptType > 1) {
 			this.params.type = this.receiptType - 1
 		}
@@ -105,42 +77,26 @@ export default class orderList extends wepy.page {
 		})
 		this.$apply()
 	}
-	onShow () {
+	onShow() {
 		this.getJobList()
 	}
 	computed = {
-		newList () {
+		newList() {
 			return getList(this.list, 'addtime')
 		},
 		// 获取简历初筛，面试名单，入职名单列表url
-		urlApi () {
+		urlApi() {
 			return this.receiptType === 0 ? '/apply/applyList' : this.receiptType === 1 ? '/apply/orderDistribution' : '/apply/resume_joblist'
-		},
-		timeUrlApi () {
-			return this.receiptType === 1 ? '/company/editInterviewTime' : '/company/editEntryTime'
 		}
 	}
 	events = {
 		searchValue: val => {
 			this.params = Object.assign(this.params, { job_name: val })
 			this.getJobList()
-		},
-		setTime: data => {
-			this.job_id = data
-			this.isModal = !this.isModal
-			this.title = this.receiptType === 1 ? '面试' : '入职'
-			this.$apply()
-		},
-		handleClose: () => {
-			this.isModal = true
-			this.$apply()
-		},
-		setAllTime: data => {
-			this.setDate(data)
 		}
 	}
 	methods = {
-		searchScrollLower () {
+		searchScrollLower() {
 			if (this.count > this.list.length && this.count > this.params.limit) {
 				this.params.limit = this.params.limit + 10
 				this.getJobList()

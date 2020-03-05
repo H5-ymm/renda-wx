@@ -51,21 +51,21 @@ export default class orderManage extends wepy.page {
 			title: '简历初筛',
 			subTitle: '推荐简历给企业筛选，通过简历可参加面试',
 			icon: 'https://a.rsd123.com/image/images/orderTaking/icon3.png',
-			url: '/pages/companyView/resumeSiftings?query=1',
+			url: '/pages/teamView/orderManage/list?query=2',
 			badgeNum: 0
 		},
 		{
 			title: '面试结果',
 			subTitle: '已通过面试简历，可参加入职',
 			icon: 'https://a.rsd123.com/image/images/orderTaking/icon4.png',
-			url: '/pages/companyView/resumeSiftings?query=2',
+			url: '/pages/teamView/orderManage/list?query=3',
 			badgeNum: 0
 		},
 		{
 			title: '入职名单',
 			subTitle: '已入职简历',
 			icon: 'https://a.rsd123.com/image/images/orderTaking/icon5.png',
-			url: '/pages/companyView/resumeSiftings?query=3',
+			url: '/pages/teamView/orderManage/list?query=4',
 			badgeNum: 0
 		}]
 		if (userTeamType == 1) {
@@ -127,10 +127,6 @@ export default class orderManage extends wepy.page {
 			if (item.url.indexOf('orderManage') > -1) {
 				wx.setStorageSync('receiptType', receiptType)
 			}
-			// if (item.url.indexOf('resumeSiftings') > -1) {
-			// 	let receiptType = item.url.split('=')[1]
-			// 	wx.setStorageSync('receiptType', receiptType)
-			// }
 			wxNavigateTo(item.url)
 		},
 		createOrderTaking () {

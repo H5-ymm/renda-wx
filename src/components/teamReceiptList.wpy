@@ -44,9 +44,10 @@ export default class teamReceiptList extends wepy.component {
           view_time: item.view_time,
           entry_time: item.entry_time
         }
+        console.log(item)
         wx.setStorageSync('statusObj', JSON.stringify(obj))
         wx.navigateTo({
-          url: '/pages/companyView/checkResumeList?query=' + this.receiptType + '&job_id=' + item.id
+          url: '/pages/teamView/orderManage/viewResumeList?query=' + this.receiptType + '&id=' + item.id
         })
       }
     }

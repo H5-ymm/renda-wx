@@ -1,5 +1,5 @@
 <style lang="less">
-@import '../../../style/home.less';
+@import "../../../style/home.less";
 page {
   overflow: hidden;
 }
@@ -26,7 +26,11 @@ page {
 		</view>
 		<view class="weui-cell_btn weui-flex between footer-box">
 			<button class="weui-btn_cell weui-btn_primary" @tap="okAllocation">确定分配</button>
-			<button class="weui-btn_cell weui-btn_primary_plain" @tap="cancleAllocation" wx:if="{{distributionnum}}">取消分配</button>
+			<button
+				class="weui-btn_cell weui-btn_primary_plain"
+				@tap="cancleAllocation"
+				wx:if="{{distributionnum}}"
+			>取消分配</button>
 		</view>
 	</view>
 </template>
@@ -50,7 +54,7 @@ export default class allocationPerson extends wepy.page {
 		uids: ''
 	}
 	computed = {
-		newList () {
+		newList() {
 			let arr = []
 			if (!this.distributionnum) {
 				arr = this.checkAll(this.list, false)
@@ -60,13 +64,13 @@ export default class allocationPerson extends wepy.page {
 			return arr
 		}
 	}
-	checkAll (list, status) {
+	checkAll(list, status) {
 		return list.filter(item => {
 			item.disabled = status
 			return item
 		})
 	}
-	changeList (list) {
+	changeList(list) {
 		return list.filter(item => {
 			item.disabled = item.status ? true : false
 			return item
@@ -75,17 +79,17 @@ export default class allocationPerson extends wepy.page {
 	config = {
 		navigationBarTitleText: '分配接单'
 	}
-	onLoad (options) {
+	onLoad(options) {
 		this.applyId = options.id
 		this.job_id = options.job_id
 		this.distributionnum = options.distributionnum
 		this.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
 		this.$apply()
 	}
-	onShow () {
+	onShow() {
 		this.getPersonList()
 	}
-	getPersonList () {
+	getPersonList() {
 		let params = {
 			uid: this.uid,
 			job_id: this.job_id
@@ -102,7 +106,7 @@ export default class allocationPerson extends wepy.page {
 		})
 
 	}
-	allocationReceipt () {
+	allocationReceipt() {
 		let params = {
 			uid: this.uid,
 			uids: this.uids,
@@ -111,7 +115,7 @@ export default class allocationPerson extends wepy.page {
 		$http('/apply/setjobtouser', params).then(res => {
 			if (res) {
 				wxToast('分配成功')
-				wxReLaunch('/pages/teamView/orderManage/list?query=1')
+				wxNavigateTo('/pages/teamView/orderManage/list?query=1')
 			} else {
 				wxToast('分配失败')
 			}
@@ -121,15 +125,16 @@ export default class allocationPerson extends wepy.page {
 		selectUser: val => {
 			if (val.length) {
 				this.uids = val.join(',')
-				this.allocationReceipt()
 			} else {
 				wxToast('请选择分配人员')
 			}
 		}
 	}
 	methods = {
-		cancleAllocation () { },
-		okAllocation () { }
+		cancleAllocation() { },
+		okAllocation() {
+			this.allocationReceipt()
+		}
 	}
 }
 </script>

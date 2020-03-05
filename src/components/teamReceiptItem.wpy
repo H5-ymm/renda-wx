@@ -25,7 +25,7 @@
 					</view>
 				</view>
 				<view wx:if="{{receiptType==1}}">
-					<view class="page_card_receipt_status {{'page_card_receipt_status'+itemValue.distributionnum}}">
+					<view class="page_card_receipt_status {{itemValue.distributionnum?'page_card_receipt_status1':''}}">
 						{{itemValue.distributionnum?'已分配':'未分配'}}
 					</view>
 				</view>
