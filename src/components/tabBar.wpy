@@ -39,12 +39,9 @@
 <template>
   <view class="weui-flex around tabBar" wx:if="{{!isSeachWidth}}">
     <repeat wx:for="{{tabBarList}}" wx:key="index">
-      <view
-        class="{{activeIndex==index?'tabBar_item-active':''}} weui-flex__item tabBar_item"
-        @tap="switchTab({{index}})"
-      >
+      <view class="{{activeIndex==index?'tabBar_item-active':''}} weui-flex__item tabBar_item" @tap="switchTab({{index}})">
         <view>{{item.name}}</view>
-        <view>({{item.num}})</view>
+        <view wx:if="{{item.num!=-1}}">({{item.num}})</view>
       </view>
     </repeat>
     <view class="tab-line {{'line'+activeIndex}}"></view>
@@ -64,7 +61,7 @@ export default class tabBar extends wepy.component {
     activeIndex: 0
   }
   methods = {
-    switchTab(index) {
+    switchTab (index) {
       this.activeIndex = index
       this.$emit('switchTab', this.activeIndex)
       this.$apply()

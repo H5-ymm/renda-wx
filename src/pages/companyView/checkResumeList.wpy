@@ -1,80 +1,65 @@
 <style lang="less">
-@import "../../style/home.less";
-@import "../../style/resume.less";
+@import '../../style/home.less';
+@import '../../style/resume.less';
 </style>
 <template>
-  <view class="detail-view">
+	<view class="detail-view">
 		<view class="weui-flex between header-box">
-			<tabBar :tabBarList.sync="tabBarList" 
-			wx:if="{{!isSeachWidth}}"></tabBar>
-			<search class="search-box {{isSeachWidth?'weui-flex__item':''}}" 
-			 @searchValue="searchValue">
+			<tabBar :tabBarList.sync="tabBarList" wx:if="{{!isSeachWidth}}"></tabBar>
+			<search class="search-box {{isSeachWidth?'weui-flex__item':''}}" @searchValue="searchValue">
 			</search>
 		</view>
-    <view class="page_margin view-detail">	
-			<scroll-view scroll-y="true" style="height:100%" >
-				<companyResumeList 
-				 :list.sync="newList" :receiptType.sync="receiptType" 
-				 :isBatch.sync="isBatch" :isCheck.sync="isCheck" @handleResume="handleResume">
+		<view class="page_margin view-detail">
+			<scroll-view scroll-y="true" style="height:100%">
+				<companyResumeList :list.sync="newList" :receiptType.sync="receiptType" :isBatch.sync="isBatch" :isCheck.sync="isCheck" @handleResume="handleResume">
 				</companyResumeList>
 			</scroll-view>
-    </view>
-	  <view wx:if="{{list.length}}">
+		</view>
+		<view wx:if="{{list.length}}">
 			<view wx:if="{{isCheckBtn || (check&&!isShowOverBtn)}}" class="create-btn footer-box">
 				<view class="weui-flex center footer-box-item" wx:if="{{!isBatch}}">
-					<view class="weui-flex__item item-btn weui-flex center"
-						@tap="batchHandle" wx:if="{{!check}}">
-					  批量操作
+					<view class="weui-flex__item item-btn weui-flex center" @tap="batchHandle" wx:if="{{!check}}">
+						批量操作
 					</view>
-					<view wx:if="{{check&&(statusObj.interview_status==1||statusObj.entry_status==1)}}" class="weui-flex__item weui-text_primary item-btn weui-flex center"
-						@tap="overView">
+					<view wx:if="{{check&&(statusObj.interview_status==1||statusObj.entry_status==1)}}" class="weui-flex__item weui-text_primary item-btn weui-flex center" @tap="overView">
 						{{receiptType===1?'提前结束面试':'提前结束入职'}}
 					</view>
-					<view wx:else class="weui-flex__item footer-box-item weui-flex center item-btn" 
-						@tap="viewNotice" >
+					<view wx:else class="weui-flex__item footer-box-item weui-flex center item-btn" @tap="viewNotice">
 						{{receiptType==1?'查看面试通知':'查看入职通知'}}
 					</view>
 				</view>
 				<view class="weui-flex between footer-box-item" wx:if="{{isBatch}}">
 					<view class="item-col">
-						<image src="https://a.rsd123.com/image/images/user/radio2.png" wx:if="{{isCheck}}" 
-							@tap="selectResume({{isCheck}})"
-							alt="" mode="aspectFill" class="radio-icon"  />
-						<image src="https://a.rsd123.com/image/images/user/radio1.png" wx:else 
-						@tap="selectResume({{isCheck}})" mode="aspectFill" class="radio-icon" />
-					  全选
-				  </view>
-			  	<view 
-						class="page_card_status-resume weui-flex center item-col">
+						<image src="https://a.rsd123.com/image/images/user/radio2.png" wx:if="{{isCheck}}" @tap="selectResumeAll({{isCheck}})" alt="" mode="aspectFill" class="radio-icon" />
+						<image src="https://a.rsd123.com/image/images/user/radio1.png" wx:else @tap="selectResumeAll({{isCheck}})" mode="aspectFill" class="radio-icon" />
+						全选
+					</view>
+					<view class="page_card_status-resume weui-flex center item-col">
 						<button class="weui-btn_cell  weui-flex__item weui-btn_primary" @tap="setResumeStatus(1)">
 							通过
 						</button>
 						<button class="weui-btn_cell weui-flex__item weui-btn_primary_plain" @tap="setResumeStatus(2)">
 							拒绝
 						</button>
-				 </view>
-		   </view>
-		</view>
-		<view wx:if="{{!isCheckBtn&&check}}" class="weui-flex between only-btn">
-	    <view wx:if="{{isShowOverBtn}}"
-				class="weui-flex center weui-flex__item only-btn-item">
-				<button class="weui-btn_cell  weui-flex__item weui-btn_primary" @tap="overView">
-					{{receiptType===1?'提前结束面试':'提前结束入职'}}
-				</button>
+					</view>
+				</view>
 			</view>
-			<view 
-			 wx:if="{{receiptType==2&&statusObj.interview_status>=3&&statusObj.entry_status}}"
-				class="weui-flex weui-flex__item center only-btn-item">
-				<button class="weui-btn_cell  weui-flex__item weui-btn_primary_plain" @tap="viewEntry">
-					查看入职
-				</button>
+			<view wx:if="{{!isCheckBtn&&check}}" class="weui-flex between only-btn">
+				<view wx:if="{{isShowOverBtn}}" class="weui-flex center weui-flex__item only-btn-item">
+					<button class="weui-btn_cell  weui-flex__item weui-btn_primary" @tap="overView">
+						{{receiptType===1?'提前结束面试':'提前结束入职'}}
+					</button>
+				</view>
+				<view wx:if="{{receiptType==2&&statusObj.interview_status>=3&&statusObj.entry_status}}" class="weui-flex weui-flex__item center only-btn-item">
+					<button class="weui-btn_cell  weui-flex__item weui-btn_primary_plain" @tap="viewEntry">
+						查看入职
+					</button>
+				</view>
 			</view>
 		</view>
-		</view>
-		</view>
-		<viewNoticeModal :isScaleModal.sync="isModal" 
-    :height.sync="modalHeight" :timeInfo.sync="timeInfo" :title.sync="title"></viewNoticeModal>
-  </view>
+	</view>
+	<viewNoticeModal :isScaleModal.sync="isModal" :height.sync="modalHeight" :timeInfo.sync="timeInfo" :title.sync="title"></viewNoticeModal>
+	</view>
 </template>
 <script>
 import wepy from 'wepy'
@@ -116,30 +101,30 @@ export default class checkResumeList extends wepy.page {
 		check: false
 	}
 	computed = {
-		newList() {
+		newList () {
 			return getList(this.list, 'addtime')
 		},
 		// 获取简历初筛，面试名单，入职名单列表url
-		urlApi() {
+		urlApi () {
 			return this.receiptType === 1 ? '/company/auditResumeList' : this.receiptType === 2 ? '/company/entryRecommendResumeList' : '/company/entryUserRecommendResumeList'
 		},
-		checkUrlAPI() {
+		checkUrlAPI () {
 			return this.receiptType === 1 ? '/company/auditResumeRecommend' : this.receiptType === 2 ? '/company/auditInterviewResumeRecommend' : '/company/updateEntryUser'
 		},
-		overViewAndEntry() {
+		overViewAndEntry () {
 			return this.receiptType === 1 ? '/company/endInterview' : '/company/endEntry'
 		},
-		isCheckBtn() {
+		isCheckBtn () {
 			return (this.receiptType === 1 && this.statusObj.invoice_status < 2) ||
 				(this.receiptType === 2 && this.statusObj.interview_status < 4) ||
 				(this.receiptType === 3 && this.statusObj.entry_status < 2)
 		},
-		isShowOverBtn() {
+		isShowOverBtn () {
 			return (this.statusObj.view_time && this.statusObj.interview_status == 1 && this.check) ||
 				(this.statusObj.entry_time && this.statusObj.entry_status == 1 && this.check)
 		}
 	}
-	onLoad(options) {
+	onLoad (options) {
 		this.receiptType = Number(options.query)
 		this.job_id = options.job_id
 		if (this.receiptType === 1) {
@@ -152,7 +137,7 @@ export default class checkResumeList extends wepy.page {
 			title: this.getTitle(this.receiptType)
 		})
 	}
-	onShow() {
+	onShow () {
 		this.params.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
 		this.statusObj = JSON.parse(wx.getStorageSync('statusObj'))
 		this.tabBarList = this.getTabBarList(this.receiptType)
@@ -187,11 +172,11 @@ export default class checkResumeList extends wepy.page {
 				this.$apply()
 			}
 			if (data.length) {
-        this.id = data.join(',')
-			}	
+				this.id = data.join(',')
+			}
 		}
 	}
-	auditResumeRecommend(params) {
+	auditResumeRecommend (params) {
 		$http(this.checkUrlAPI, params).then(res => {
 			if (res.data) {
 				if (this.isCheck || this.check) {
@@ -211,13 +196,13 @@ export default class checkResumeList extends wepy.page {
 			}
 		})
 	}
-	overInterview() {
+	overInterview () {
 		let params = {
 			jobId: this.job_id,
 			uid: this.params.uid
 		}
 		$http(this.overViewAndEntry, params).then(res => {
-			if (res.data) {	
+			if (res.data) {
 				if (this.receiptType === 1) {
 					this.statusObj.invoice_status = 2
 				}
@@ -234,15 +219,15 @@ export default class checkResumeList extends wepy.page {
 		})
 	}
 	methods = {
-		batchHandle() {
+		batchHandle () {
 			this.isBatch = true
 			this.list = this.checkAll(this.list, false)
 			this.$apply()
 		},
-		viewNotice() {
+		viewNotice () {
 			this.viewTimeInfo()
 		},
-		selectResume(check) {
+		selectResumeAll (check) {
 			this.isCheck = !check
 			this.list = this.checkAll(this.list, this.isCheck)
 			let arr = this.list.map(item => {
@@ -255,7 +240,7 @@ export default class checkResumeList extends wepy.page {
 			}
 			this.$apply()
 		},
-		overView() {
+		overView () {
 			let text = this.receiptType === 1 ? '面试' : '入职'
 			wxShowModal('', `确定提前结束${text}`).then(res => {
 				this.overInterview()
@@ -263,7 +248,7 @@ export default class checkResumeList extends wepy.page {
 				console.log('取消')
 			})
 		},
-		setResumeStatus(status) {
+		setResumeStatus (status) {
 			if (!this.isCheck) {
 				return wxToast('请选择简历')
 			}
@@ -274,12 +259,12 @@ export default class checkResumeList extends wepy.page {
 			}
 			this.auditResumeRecommend(parasm)
 		},
-		viewEntry() {
+		viewEntry () {
 			wx.setStorageSync('receiptType', 3)
 			wxNavigateTo('/pages/companyView/resumeSiftings?query=3&jobId=' + this.job_id)
 		}
 	}
-	checkAll(list, status) {
+	checkAll (list, status) {
 		return list.filter(item => {
 			if (!item.status) {
 				item.disabled = status
@@ -287,7 +272,7 @@ export default class checkResumeList extends wepy.page {
 			}
 		})
 	}
-	getTabBarList(val) {
+	getTabBarList (val) {
 		let arr = []
 		let arr1 = [
 			{ name: '全部简历', num: 0 },
@@ -309,7 +294,7 @@ export default class checkResumeList extends wepy.page {
 		this.getTotal(newArr)
 		return newArr
 	}
-	getTotal(arr) {
+	getTotal (arr) {
 		let params = {
 			uid: this.params.uid,
 			job_id: this.job_id,
@@ -326,7 +311,7 @@ export default class checkResumeList extends wepy.page {
 		})
 	}
 	// 查看面试和入职时间
-	viewTimeInfo() {
+	viewTimeInfo () {
 		$http('/company/selectInterviewEntryInfo', { id: this.job_id }).then(res => {
 			let query = {}
 			if (this.receiptType === 1) {
@@ -345,18 +330,18 @@ export default class checkResumeList extends wepy.page {
 			this.$apply()
 		})
 	}
-	getCheckList() {
+	getCheckList () {
 		$http(this.urlApi, this.params).then(res => {
 			this.list = res.data.data || []
 			if (this.receiptType) {
-        this.check = this.checkStatus(this.list, this.receiptType)
-			}			
+				this.check = this.checkStatus(this.list, this.receiptType)
+			}
 			this.tabBarList[this.activeIndex].num = this.list.length
 			this.count = res.data.count
 			this.$apply()
 		})
 	}
-	checkStatus(list, type) {
+	checkStatus (list, type) {
 		let status = ''
 		if (type === 1) {
 			status = 'status'
@@ -369,7 +354,7 @@ export default class checkResumeList extends wepy.page {
 			return item[status]
 		})
 	}
-	getTitle(val) {
+	getTitle (val) {
 		return val === 1 ? '简历列表' : val === 2 ? '面试审核' : '入职审核'
 	}
 }

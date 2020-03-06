@@ -1,15 +1,9 @@
 <style lang="less">
-@import '../../style/home.less';
+@import '../../style/resume.less';
 @import '../../style/form.less';
-page {
-  overflow: hidden;
-}
 .detail-view {
   height: 100%;
   overflow: hidden;
-  .home-view-box {
-    overflow: auto;
-  }
   .create-btn {
     height: 100rpx;
     margin-bottom: 80rpx;
@@ -35,7 +29,7 @@ page {
 </style>
 <template>
 	<view class="detail-view">
-		<view class="home-view-box page_margin view-detail">
+		<view class="page_margin view-detail">
 			<view>
 				<view class="weui-flex start panel">
 					<image mode="scaleToFill" src="https://a.rsd123.com/image/images/teamDetail/icon1.png" class="panel-icon" />

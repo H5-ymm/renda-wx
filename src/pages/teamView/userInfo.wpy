@@ -1,5 +1,5 @@
 <style lang="less">
-@import "../../style/home.less";
+@import '../../style/home.less';
 .input-text-end {
   margin-left: 10rpx;
 }
@@ -47,19 +47,19 @@
 				<view class="page_card_row">
 					<view class="weui-flex between">
 						<view class="my-text weui-flex__item">姓名</view>
-						 <input class="weui-input" placeholder-class="placeholder" data-name="user_name" value="{{form.user_name}}" @input="changeInput" placeholder="请输入姓名" disabled="{{id!=''}}"/>
+						<input class="weui-input" placeholder-class="placeholder" data-name="user_name" value="{{form.user_name}}" @input="changeInput" placeholder="请输入姓名" disabled="{{id!=''}}" />
 					</view>
 				</view>
 				<view class="page_card_row">
 					<view class="weui-flex between">
 						<view class="my-text weui-flex__item">身份证</view>
-						 <input class="weui-input" placeholder-class="placeholder" data-name="id_card" value="{{form.id_card}}" disabled="{{id!=''}}" @input="changeInput" placeholder="请输入身份证" />
+						<input class="weui-input" placeholder-class="placeholder" data-name="id_card" value="{{form.id_card}}" disabled="{{id!=''}}" @input="changeInput" placeholder="请输入身份证" />
 					</view>
 				</view>
 				<view class="page_card_row">
 					<view class="weui-flex between">
 						<view class="my-text weui-flex__item">手机号</view>
-						 <input class="weui-input" placeholder-class="placeholder" data-name="mobile" value="{{form.mobile}}" disabled="{{id!=''}}" @input="changeInput" placeholder="请输入手机号" />
+						<input class="weui-input" placeholder-class="placeholder" data-name="mobile" value="{{form.mobile}}" disabled="{{id!=''}}" @input="changeInput" placeholder="请输入手机号" />
 					</view>
 				</view>
 			</view>
@@ -68,45 +68,44 @@
 					<view class="weui-flex between">
 						<view class="my-text weui-flex__item">学历</view>
 						<picker @change="pickerChange" value="{{eduIndex}}" wx:if="{{!id}}" data-name="education" range="{{eduList}}">
-              <view class="my-text-right weui-flex between">
-                <view class="{{eduList[eduIndex]?'':'placeholder'}}"> {{eduList[eduIndex]?eduList[eduIndex]:'请选择'}}</view>
-                <image mode="scaleToFill" src="https://a.rsd123.com/image/images/down.png" class="page_down_icon" />
-              </view>
-            </picker>
+							<view class="my-text-right weui-flex between">
+								<view class="{{eduList[eduIndex]?'':'placeholder'}}"> {{eduList[eduIndex]?eduList[eduIndex]:'请选择'}}</view>
+								<image mode="scaleToFill" src="https://a.rsd123.com/image/images/down.png" class="page_down_icon" />
+							</view>
+						</picker>
 						<view class="my-text-right" wx:else>{{form.educationName||'-'}}</view>
 					</view>
 				</view>
 				<view class="page_card_row">
 					<view class="weui-flex between">
 						<view class="my-text weui-flex__item">所在地区</view>
-						<districtSelet @selectCity="selectCity" 
-						:address.sync="[]"  wx:if="{{!id}}" :disabled.sync="disabled"></districtSelet>
+						<districtSelet @selectCity="selectCity" :address.sync="[]" wx:if="{{!id}}" :disabled.sync="disabled"></districtSelet>
 						<view class="my-text-right" wx:else>{{addressText}}</view>
 					</view>
-			  </view>
+				</view>
 			</view>
 			<view class="page_card">
 				<view class="page_card_row">
 					<view class="weui-flex between">
 						<view class="my-text weui-flex__item">当前职位</view>
 						<picker @change="pickerChange" value="{{depIndex}}" wx:if="{{uid!=userUid&&userTeamType==1}}" range-key="depart_name" data-name="depId" range="{{depList}}">
-              <view class="my-text-right weui-flex between">
-                <view class="{{depList[depIndex]?'':'placeholder'}}"> {{depList[depIndex]?depList[depIndex].depart_name:'请选择职位'}}</view>
-                <image mode="scaleToFill" src="https://a.rsd123.com/image/images/down.png" class="page_down_icon" />
-              </view>
-            </picker>
-						<view class="my-text-right"  wx:else>{{form.depart_name}}</view>
+							<view class="my-text-right weui-flex between">
+								<view class="{{depList[depIndex]?'':'placeholder'}}"> {{depList[depIndex]?depList[depIndex].depart_name:'请选择职位'}}</view>
+								<image mode="scaleToFill" src="https://a.rsd123.com/image/images/down.png" class="page_down_icon" />
+							</view>
+						</picker>
+						<view class="my-text-right" wx:else>{{form.depart_name}}</view>
 					</view>
 				</view>
 				<view class="page_card_row">
 					<view class="weui-flex between">
 						<view class="my-text weui-flex__item">部门</view>
-						<picker @change="pickerChange" value="{{jobIndex}}" range-key="grade_name"  wx:if="{{uid!=userUid&&userTeamType==1}}" data-name="grade_id" range="{{jobList}}">
-              <view class="my-text-right weui-flex between">
-                <view class="{{jobList[jobIndex]?'':'placeholder'}}"> {{jobList[jobIndex]?jobList[jobIndex].grade_name:'请选择部门'}}</view>
-                <image mode="scaleToFill" src="https://a.rsd123.com/image/images/down.png" class="page_down_icon" />
-              </view>
-            </picker>
+						<picker @change="pickerChange" value="{{jobIndex}}" range-key="grade_name" wx:if="{{uid!=userUid&&userTeamType==1}}" data-name="grade_id" range="{{jobList}}">
+							<view class="my-text-right weui-flex between">
+								<view class="{{jobList[jobIndex]?'':'placeholder'}}"> {{jobList[jobIndex]?jobList[jobIndex].grade_name:'请选择部门'}}</view>
+								<image mode="scaleToFill" src="https://a.rsd123.com/image/images/down.png" class="page_down_icon" />
+							</view>
+						</picker>
 						<view class="my-text-right" wx:else>{{form.grade_name}}</view>
 					</view>
 				</view>
@@ -116,7 +115,7 @@
 						<view class="my-text-right">{{form.export_num}}份</view>
 					</view>
 				</view>
-				<view class="page_card_row"  wx:if="{{id}}">
+				<view class="page_card_row" wx:if="{{id}}">
 					<view class="weui-flex between">
 						<view class="my-text weui-flex__item">入职人数</view>
 						<view class="my-text-right">{{form.entry_num}}人</view>
@@ -125,24 +124,21 @@
 				<view class="page_card_row">
 					<view class="weui-flex between">
 						<view class="my-text weui-flex__item">当前状态</view>
-						 <picker @change="pickerChange" wx:if="{{uid!=userUid}}" value="{{index}}" data-name="status" range="{{statusList}}">
-              <view class="my-text-right weui-flex between">
-                <view class="{{statusList[index]?'':'placeholder'}}"> {{statusList[index]?statusList[index]:'请选择'}}</view>
-                <image mode="scaleToFill" src="https://a.rsd123.com/image/images/down.png" class="page_down_icon" />
-              </view>
-            </picker>
+						<picker @change="pickerChange" wx:if="{{uid!=userUid}}" value="{{index}}" data-name="status" range="{{statusList}}">
+							<view class="my-text-right weui-flex between">
+								<view class="{{statusList[index]?'':'placeholder'}}"> {{statusList[index]?statusList[index]:'请选择'}}</view>
+								<image mode="scaleToFill" src="https://a.rsd123.com/image/images/down.png" class="page_down_icon" />
+							</view>
+						</picker>
 						<view class="my-text-right" wx:else>正常</view>
 					</view>
 				</view>
 				<view class="page_card_row" wx:if="{{form.status==2}}">
-          <view class="weui-flex between">
-            <view class="my-text weui-flex__item my-text-require">锁定原因：</view>
-          </view>
-          <textarea data-name="remark"   placeholder-class="placeholder"
-						disable-default-padding="true"
-						 class="weui-input weui-textarea" value="{{form.remark}}" @input="changeInput"
-						 placeholder="请输入锁定原因" maxlength="-1"/>
-        </view>
+					<view class="weui-flex between">
+						<view class="my-text weui-flex__item my-text-require">锁定原因：</view>
+					</view>
+					<textarea data-name="remark" placeholder-class="placeholder" disable-default-padding="true" class="weui-input weui-textarea" value="{{form.remark}}" @input="changeInput" placeholder="请输入锁定原因" maxlength="-1" />
+					</view>
        </view>
 			 <view class="weui-flex start notice-tip">
 					<image src="https://a.rsd123.com/image/images/orderTaking/warn.png" class="tipIcon" />
@@ -190,13 +186,15 @@ export default class userInfo extends wepy.page {
 		depIndex: 0,
 		jobIndex: 1,
 		jobList: [],
-		userTeamType: ''
+		userTeamType: '',
+		rendaUidQrcode: '',
+		teamData: ''
 	}
 	config = {
 		navigationBarTitleText: '成员详情'
 	}
 	computed = {
-		addressText() {
+		addressText () {
 			return (
 				(this.form.provinceName ? this.form.provinceName : '') +
 				(this.form.cityName ? this.form.cityName : '') +
@@ -211,7 +209,16 @@ export default class userInfo extends wepy.page {
 			this.form.three_cityid = data[2] ? data[2] : 0
 		}
 	}
-	onLoad(options) {
+	onLoad (options) {
+		// this.$parent.getOpenId()
+		let openid = wx.getStorageSync('rendaOpenId') || this.$parent.globalData.openid
+		if (!openid && wx.getStorageSync('rendaUidQrcode')) {
+			wxRedirectTo('/pages/login/welcome?query=addUsr')
+		}
+		if (wx.getStorageSync('rendaUidQrcode')) {
+			this.rendaUidQrcode = wx.getStorageSync('rendaUidQrcode') || this.$parent.globalData.rendaUidQrcode
+			this.getTeamInfoAPi(this.rendaUidQrcode)
+		}
 		this.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
 		this.userTeamType = wx.getStorageSync('rendaUserTeamType')
 		this.$apply()
@@ -221,7 +228,14 @@ export default class userInfo extends wepy.page {
 			this.getMembeDetail()
 		}
 	}
-	getDepartmenList() {
+	getTeamInfoAPi (uid) {
+		$http('/Userinfo/getteaminfo', { uid }).then(res => {
+			this.teamData = res.data || {}
+			wx.setStorageSync('wxTeamInfoQrcode', JSON.stringify(res.data))
+			this.$apply()
+		})
+	}
+	getDepartmenList () {
 		$http('/team/departmentRoleList', { uid: this.uid }).then(res => {
 			let list = res.data || []
 			if (this.userTeamType == 1) {
@@ -240,7 +254,7 @@ export default class userInfo extends wepy.page {
 			this.$apply()
 		})
 	}
-	getCurrentDepList(array) {
+	getCurrentDepList (array) {
 		let arr = []
 		array.filter(item => {
 			if (item.id == this.depId) {
@@ -249,7 +263,7 @@ export default class userInfo extends wepy.page {
 		})
 		return arr
 	}
-	getArr(arr, id) {
+	getArr (arr, id) {
 		let newArr = []
 		arr.forEach(item => {
 			if (item.id == id) {
@@ -258,7 +272,7 @@ export default class userInfo extends wepy.page {
 		})
 		return newArr
 	}
-	getMembeDetail() {
+	getMembeDetail () {
 		let params = {
 			userId: this.id,
 			uid: this.uid
@@ -272,7 +286,7 @@ export default class userInfo extends wepy.page {
 			this.$apply()
 		})
 	}
-	updateTeamUser(params) {
+	updateTeamUser (params) {
 		$http('/userinfo/updateTeamUser', params).then(res => {
 			if (res.data) {
 				wxRedirectTo('/pages/teamView/userList')
@@ -281,7 +295,7 @@ export default class userInfo extends wepy.page {
 			}
 		})
 	}
-	deleteUser(params) {
+	deleteUser (params) {
 		$http('/userinfo/deleteTeamUser', params).then(res => {
 			if (res.data) {
 				wxRedirectTo('/pages/teamView/userList')
@@ -290,7 +304,7 @@ export default class userInfo extends wepy.page {
 			}
 		})
 	}
-	saveUser(params) {
+	saveUser (params) {
 		params.uid = this.uid
 		$http('/userinfo/addTeamUser', params).then(res => {
 			if (res.data) {
@@ -308,7 +322,7 @@ export default class userInfo extends wepy.page {
 			}
 		})
 	}
-	handleUser() {
+	handleUser () {
 		if (this.id) {
 			let params = {
 				uid: this.uid,
@@ -327,7 +341,7 @@ export default class userInfo extends wepy.page {
 		}
 	}
 	methods = {
-		pickerChange(e) {
+		pickerChange (e) {
 			let key = e.currentTarget.dataset.name
 			if (key === 'education') {
 				this.eduIndex = e.detail.value
@@ -345,11 +359,11 @@ export default class userInfo extends wepy.page {
 			}
 			this.$apply()
 		},
-		changeInput(e) {
+		changeInput (e) {
 			let key = e.currentTarget.dataset.name
 			this.form[key] = e.detail.value
 		},
-		save() {
+		save () {
 			if (!this.form.user_name) {
 				wxToast('请输入姓名')
 			} else if (!this.form.mobile) {
@@ -372,7 +386,7 @@ export default class userInfo extends wepy.page {
 				this.handleUser()
 			}
 		},
-		deleteUser() {
+		deleteUser () {
 			let params = {
 				uid: this.uid,
 				userid: this.userUid

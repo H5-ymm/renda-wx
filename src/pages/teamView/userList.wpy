@@ -1,5 +1,5 @@
 <style lang="less">
-@import "../../style/home.less";
+@import '../../style/home.less';
 page {
   overflow: hidden;
 }
@@ -25,32 +25,27 @@ page {
 }
 </style>
 <template>
-  <view class="detail-view home-view">
+	<view class="detail-view home-view">
 		<view class="home-view-header"></view>
 		<view class="header-box-team">
-			<search class="weui-cell weui-flex start page_card" 
-			 @searchValue="searchValue">
+			<search class="weui-cell weui-flex start page_card" @searchValue="searchValue">
 			</search>
 		</view>
-    <view class="page_margin view-team">	
+		<view class="page_margin view-team">
 			<scroll-view scroll-y="true" @scrolltolower="searchScrollLower" style="height: 100%;">
 				<teamUser :list.sync="list"></teamUser>
 			</scroll-view>
-    </view>
-		 <view class="weui-flex between only-btn">
-				<view 
-					class="weui-flex center weui-flex__item only-btn-item">
-					<button class="weui-btn_cell  weui-flex__item weui-btn_primary" @tap="addUser">
-						添加成员
-					</button>
-				</view>
-	  	</view>
 		</view>
-		<modalAddUser :isScaleModal.sync="isModal" @handleClose="handleClose" @handleOk="handleOk" 
-		:title.sync= "title"
-		:height.sync="modalHeight" :type.sync="type" 
-		:imgUrl.sync="qrCode"></modalAddUser>
-  </view>
+		<view class="weui-flex between only-btn">
+			<view class="weui-flex center weui-flex__item only-btn-item">
+				<button class="weui-btn_cell  weui-flex__item weui-btn_primary" @tap="addUser">
+					添加成员
+				</button>
+			</view>
+		</view>
+	</view>
+	<modalAddUser :isScaleModal.sync="isModal" @handleClose="handleClose" @handleOk="handleOk" :title.sync="title" :height.sync="modalHeight" :type.sync="type" :imgUrl.sync="qrCode"></modalAddUser>
+	</view>
 </template>
 <script>
 import wepy from 'wepy'
@@ -86,20 +81,20 @@ export default class userList extends wepy.page {
 	config = {
 		navigationBarTitleText: '成员列表'
 	}
-	onLoad(options) {
+	onLoad (options) {
 		this.params.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
 	}
-	getUserList() {
+	getUserList () {
 		$http('/userinfo/teamUserList', this.params).then(res => {
 			this.list = res.data.data || []
 			this.count = res.data.count
 			this.$apply()
 		})
 	}
-	onShow() {
+	onShow () {
 		this.getUserList()
 	}
-	createQrcode() {
+	createQrcode () {
 		let params = {
 			scene: this.uid,
 			page: 'pages/login/welcome',
@@ -129,7 +124,7 @@ export default class userList extends wepy.page {
 			}
 		}
 	}
-	onShareAppMessage(res) {
+	onShareAppMessage (res) {
 		console.log(res.from === 'button')
 		if (res.from === 'button') {
 
@@ -137,15 +132,15 @@ export default class userList extends wepy.page {
 		return {
 			title: '转发',
 			imageUrl: this.qrCode,
-			path: '/pages/login/welcome?uid=' + this.uid
+			path: '/pages/teamView/userInfo?uid=' + this.uid
 		}
 	}
 	methods = {
-		addUser() {
+		addUser () {
 			this.isModal = !this.isModal
 			this.$apply()
 		},
-		searchScrollLower() {
+		searchScrollLower () {
 			if (this.count > this.list.length && this.count > this.params.limit) {
 				this.params.limit = this.params.limit + 10
 				this.getUserList()

@@ -34,18 +34,13 @@ export default class teamReceiptList extends wepy.component {
       if (!this.receiptType) {
         wxNavigateTo('/pages/teamView/internalInvoice/teamJobDetail?query=' + item.id)
       } else if (this.receiptType == 1) {
-        console.log(item)
         wxNavigateTo(`/pages/teamView/orderManage/allocationPerson?query=${item.id}&distributionnum=${item.distributionnum}&job_id=${item.job_id}`)
       } else {
-        let obj = {
-          entry_status: item.entry_status,
-          invoice_status: item.invoice_status,
-          interview_status: item.interview_status,
-          view_time: item.view_time,
-          entry_time: item.entry_time
+        if (this.receiptType == 2) {
+          wx.setStorageSync('receiptTime', item.view_time)
+        } else {
+          wx.setStorageSync('receiptTime', item.entry_time)
         }
-        console.log(item)
-        wx.setStorageSync('statusObj', JSON.stringify(obj))
         wx.navigateTo({
           url: '/pages/teamView/orderManage/viewResumeList?query=' + this.receiptType + '&id=' + item.id
         })

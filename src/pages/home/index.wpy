@@ -1,15 +1,6 @@
 <style lang="less">
-@import '../../style/home.less';
-page {
-  overflow: hidden;
-}
+@import '../../style/resume.less';
 .detail-view {
-  height: 100%;
-  overflow: hidden;
-  .view-detail {
-    height: calc(100% - 108px);
-    overflow: auto;
-  }
   .status-row {
     position: absolute;
     top: 90rpx;
@@ -35,7 +26,7 @@ page {
 }
 </style>
 <template>
-  <view class="home-view detail-view">
+  <view class="detail-view">
     <view class="weui-flex between header-box">
       <tabBar :tabBarList.sync="tabBarList" wx:if="{{!isSeachWidth}}" @switchTab="switchTab"></tabBar>
       <search class="search-box {{isSeachWidth?'weui-flex__item':''}}" @searchValue="searchValue">

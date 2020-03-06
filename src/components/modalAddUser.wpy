@@ -1,5 +1,5 @@
 <style lang="less">
-@import "../style/modal.less";
+@import '../style/modal.less';
 .modal-title {
   margin-bottom: 20rpx;
 }
@@ -19,27 +19,26 @@
       <view class="modal-content" wx:if="{{!type}}">
         <view class="home-view-box weui-flex between wrap">
           <view class="modal-title">{{title}}</view>
-					<repeat wx:for="{{menus}}" wx:key="index">
-						<view class="card-item weui-flex between wrap">
-							<image src="{{item.icon}}" alt="" mode="aspectFill" class="menu-icon" />
-							<view class="card-item-title">{{item.title}}</view>
-							<image src="https://a.rsd123.com/image/images/user/radio2.png" alt="" mode="aspectFill" 
-							wx:if="{{index==activeIndex}}" @tap="selectType({{index}})" class="radio-icon" />
-							<image src="https://a.rsd123.com/image/images/user/radio1.png" @tap="selectType({{index}})" wx:else alt="" mode="aspectFill" class="radio-icon" />
-						</view>
-					</repeat>
-		    </view>
+          <repeat wx:for="{{menus}}" wx:key="index">
+            <view class="card-item weui-flex between wrap">
+              <image src="{{item.icon}}" alt="" mode="aspectFill" class="menu-icon" />
+              <view class="card-item-title">{{item.title}}</view>
+              <image src="https://a.rsd123.com/image/images/user/radio2.png" alt="" mode="aspectFill" wx:if="{{index==activeIndex}}" @tap="selectType({{index}})" class="radio-icon" />
+              <image src="https://a.rsd123.com/image/images/user/radio1.png" @tap="selectType({{index}})" wx:else alt="" mode="aspectFill" class="radio-icon" />
+            </view>
+          </repeat>
+        </view>
         <view class="weui-cell_btn weui-flex center user-btn">
           <button class="weui-btn_cell weui-btn_cell-gradient" @tap="handleOk">确定</button>
         </view>
       </view>
       <view wx:else class="modal-content modal-content-qrcode">
-         <image src="{{imgUrl}}" @longpress="saveImg" class="qrcode-img"/>
-          <view class="weui-cell_btn weui-flex center user-btn">
-            <button open-type="share" class="weui-btn_cell weui-btn_cell-gradient" @tap="handleOk">长按保存二维码并分享</button>
-          </view>
+        <image src="{{imgUrl}}" @longpress="saveImg" class="qrcode-img" />
+        <view class="weui-cell_btn weui-flex center user-btn">
+          <button open-type="share" class="weui-btn_cell weui-btn_cell-gradient" @tap="handleOk">长按保存二维码并分享</button>
+        </view>
       </view>
-      <image src="https://a.rsd123.com/image/images/close.png" @tap="handleClose" class="close-icon"/>
+      <image src="https://a.rsd123.com/image/images/close.png" @tap="handleClose" class="close-icon" />
     </view>
   </view>
 </template>
@@ -67,9 +66,10 @@ export default class modalAddUser extends wepy.component {
         title: '二维码添加'
       }
     ],
-    activeIndex: 0
+    activeIndex: 0,
+    isInviteUser: false
   }
-  saveImgUrl(url) {
+  saveImgUrl (url) {
     wx.getImageInfo({
       src: url,
       success: res => {
@@ -91,9 +91,16 @@ export default class modalAddUser extends wepy.component {
       }
     })
   }
+  onLoad () {
+    if (wx.getStorageSync('rendaUidQrcode') != '') {
+      this.isInviteUser = true
+    } else {
+      this.isInviteUser = false
+    }
+  }
   methods = {
     // 长按保存图片
-    saveImg() {
+    saveImg () {
       //用户需要授权
       let that = this
       wx.getSetting({
@@ -119,16 +126,16 @@ export default class modalAddUser extends wepy.component {
         }
       })
     },
-    handleClose() {
+    handleClose () {
       this.isShow = false
       this.$apply()
       this.$emit('handleClose')
     },
-    selectType(index) {
+    selectType (index) {
       this.activeIndex = index
       this.$apply()
     },
-    handleOk() {
+    handleOk () {
       if (!this.activeIndex) {
         this.isShow = false
       }
@@ -141,7 +148,7 @@ export default class modalAddUser extends wepy.component {
     }
   }
   watch = {
-    isScaleModal(val) {
+    isScaleModal (val) {
       console.log(val)
       if (!val) {
         this.isShow = true

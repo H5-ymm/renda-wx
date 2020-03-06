@@ -1,13 +1,12 @@
 <style lang="less">
-@import "../../style/home.less";
+@import '../../style/home.less';
 </style>
 <template>
-  <scroll-view scroll-y="true" @scrolltolower="searchScrollLower" class="page page_botttom">
-    <view class="page_margin">
+  <scroll-view scroll-y="true" @scrolltolower="searchScrollLower" class="home-view page page_botttom">
+    <view class="page_margin page">
       <view class="home-view-box">
         <repeat wx:for="{{list}}" wx:key="index">
-          <view class="page_card  {{activeIndex==index? 'page_card_active': ''}}" 
-           wx:if="{{list.length}}" @tap="selectJob({{index}},{{item}})">
+          <view class="page_card  {{activeIndex==index? 'page_card_active': ''}}" wx:if="{{list.length}}" @tap="selectJob({{index}},{{item}})">
             <view class="page_card_row">
               <view class="weui-flex between">
                 <view class="page_card_name">{{item.job_name}}</view>
@@ -49,14 +48,14 @@ export default class list extends wepy.page {
   config = {
     navigationBarTitleText: this.resumeType
   }
-  getGeportOrderList() {
+  getGeportOrderList () {
     $http('/Wxresume/reportOrderList', this.params).then(res => {
       this.list = res.data.data || []
       this.count = res.data.count
       this.$apply()
     })
   }
-  getInternalInvoiceList() {
+  getInternalInvoiceList () {
     $http('/Wxresume/internalInvoiceList', this.params).then(res => {
       this.list = res.data.data || []
       this.count = res.data.count
@@ -64,7 +63,7 @@ export default class list extends wepy.page {
     })
   }
   methods = {
-    selectJob(index, item) {
+    selectJob (index, item) {
       this.activeIndex = index
       let params = {}
       if (this.resumeType == '团队接单') {
@@ -88,21 +87,21 @@ export default class list extends wepy.page {
         url: '/pages/home/addInfo?query=' + query // 页面 A
       })
     },
-    searchScrollLower() {
+    searchScrollLower () {
       if (this.count > this.params.limit && this.count > this.list.length) {
         this.params.limit = this.params.limit + 10
         this.getList()
       }
     }
   }
-  getList() {
+  getList () {
     if (this.resumeType == '团队接单') {
       this.getGeportOrderList()
     } else {
       this.getInternalInvoiceList()
     }
   }
-  onShow() {
+  onShow () {
     this.params.uid =
       wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
     this.resumeType = wx.getStorageSync('resumeType')

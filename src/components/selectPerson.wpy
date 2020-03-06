@@ -20,7 +20,7 @@
           <view class="weui-flex__item">
             <view class="page_card_name">{{item.user_name}}</view>
             <view class="text-line">
-              销售部 {{item.grade_name}}
+              {{item.departname}} {{item.grade_name}}
             </view>
           </view>
           <image src="https://a.rsd123.com/image/images/user/radio2.png" alt="" mode="aspectFill" class="radio-icon" @tap="selectUser({{item}},{{index}})" wx:if="{{item.disabled}}" />
@@ -39,7 +39,9 @@
 import wepy from 'wepy'
 export default class selectPerson extends wepy.component {
   props = {
-    list: Array
+    list: Array,
+    distributionnum: Number,
+    activeIndex: Number
   }
   data = {
     idList: [],
@@ -47,9 +49,7 @@ export default class selectPerson extends wepy.component {
   }
   watch = {
     list (val) {
-      console.log(val)
       if (val) {
-        console.log(val)
         this.personList = val
         this.$apply()
       }
@@ -61,6 +61,8 @@ export default class selectPerson extends wepy.component {
   }
   methods = {
     selectUser (item, index) {
+      let flag = this.idList.indexOf(item.uid)
+      if (item.disabled && this.distributionnum && flag === -1 && !this.activeIndex) return
       this.personList[index].disabled = !item.disabled
       this.$apply()
       if (this.idList.indexOf(item.uid) === -1) {

@@ -65,7 +65,7 @@ export default class resumeList extends wepy.component {
         job_id = item.job_id
         job_type = item.type
       }
-      let query = `?job_id=${job_id}&resume_id=${item.id}&type=${job_type}`
+      let query = `?job_id=${job_id}&resume_id=${item.id}&type=${job_type}&recommendId=${item.recommendId}`
       wx.navigateTo({
         url: '/pages/home/resumeDetail' + query
       })

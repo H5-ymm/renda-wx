@@ -3,13 +3,6 @@
 .resume-list {
   .page_card_row {
     line-height: 40rpx;
-    // .page_card_name {
-    //   font-size: 32rpx;
-    //   margin-bottom: 6rpx;
-    // }
-    // .text-line {
-    //   font-size: 26rpx;
-    // }
   }
 }
 .page_card_end {
@@ -37,55 +30,51 @@
 }
 </style>
 <template>
-  <view class="resume-list">
-    <repeat wx:for="{{list}}" wx:key="index">
-      <view class="page_card" wx:if="{{list.length}}">
-        <view class="page_card_row weui-flex between">
+	<view class="resume-list">
+		<repeat wx:for="{{list}}" wx:key="index">
+			<view class="page_card" wx:if="{{list.length}}">
+				<view class="page_card_row weui-flex between">
 					<view class="weui-flex start">
-						  <view wx:if="{{isBatch}}">
-								<image src="https://a.rsd123.com/image/images/user/radio2.png" alt="" mode="aspectFill" class="radio-icon" @tap="selectResume({{item}},{{index}})"
-								 wx:if="{{item.disabled}}"/>
-								<image src="https://a.rsd123.com/image/images/user/radio1.png" wx:else @tap="selectResume({{item}},{{index}})" mode="aspectFill" class="radio-icon" />
-								</view>
-							<view>
-								<view class="page_card_name">{{item.name}}</view>
-								<view class="text-line weui-flex__item">
-									{{item.age}}岁 {{item.sex==1?'男':'女'}} {{item.education}}</view>
-								<view class="text-line weui-flex__item">
-								 {{item.citys||'-'}}
-							  </view>
-					   </view>
+						<view wx:if="{{isBatch}}">
+							<image src="https://a.rsd123.com/image/images/user/radio2.png" alt="" mode="aspectFill" class="radio-icon" @tap="selectResume({{item}},{{index}})" wx:if="{{item.disabled}}" />
+							<image src="https://a.rsd123.com/image/images/user/radio1.png" wx:else @tap="selectResume({{item}},{{index}})" mode="aspectFill" class="radio-icon" />
+						</view>
+						<view>
+							<view class="page_card_name">{{item.name}}</view>
+							<view class="text-line weui-flex__item">
+								{{item.age}}岁 {{item.sex==1?'男':'女'}} {{item.education}}</view>
+							<view class="text-line weui-flex__item">
+								{{item.citys||'-'}}
+							</view>
+						</view>
 					</view>
-          <view class="weui-flex end wrap page_card_end">	
+					<view class="weui-flex end wrap page_card_end">
 						<view wx:if="{{isShowBtn}}" class="page_card_status-resume">
-							<view class="page_card_status-item weui-flex between"
-								wx:if="{{(receiptType==1&&!item.status)||(receiptType==2&&!item.interview_status)||(receiptType==3&&!item.entry_status)}}">
-									<button class="weui-btn_cell weui-flex__item weui-btn_primary"
-									@tap="handleResume({{item}},1)">
-										{{text}}
-									</button>
-									<button class="weui-btn_cell weui-flex__item weui-btn_primary_plain" @tap="handleResume({{item}},2)">
-										{{receiptType===1?'拒绝':receiptType===2?'未通过':'未入职'}}
-									</button>
-						    </view>
-						  	<view wx:else class="page_card_status-text weui-flex center-start">
-									<view 
-									wx:if="{{item.status==1||item.interview_status==1||item.entry_status==1}}" class="page_card_receipt_status page_card_receipt_status2">已{{text}}</view>
-									<view wx:else class="page_card_receipt_status page_card_receipt_status3">
-										{{refuseText}}
+							<view class="page_card_status-item weui-flex between" wx:if="{{(receiptType==1&&!item.status)||(receiptType==2&&!item.interview_status)||(receiptType==3&&!item.entry_status)}}">
+								<button class="weui-btn_cell weui-flex__item weui-btn_primary" @tap="handleResume({{item}},1)">
+									{{text}}
+								</button>
+								<button class="weui-btn_cell weui-flex__item weui-btn_primary_plain" @tap="handleResume({{item}},2)">
+									{{receiptType===1?'拒绝':receiptType===2?'未通过':'未入职'}}
+								</button>
+							</view>
+							<view wx:else class="page_card_status-text weui-flex center-start">
+								<view wx:if="{{item.status==1||item.interview_status==1||item.entry_status==1}}" class="page_card_receipt_status page_card_receipt_status2">已{{text}}</view>
+								<view wx:else class="page_card_receipt_status page_card_receipt_status3">
+									{{refuseText}}
 								</view>
 							</view>
 						</view>
 						<view class="page_card_time">{{item.addtime}}</view>
 					</view>
-        </view>
-      </view>
-    </repeat>
-    <view wx:if="{{!list.length}}" class="page_list">
-      <image src="https://a.rsd123.com/image/images/noBg.png" class="page_noData" mode="scaleToFill"/>
-      <view class="page_noData_text">暂无数据！</view>
-    </view>
-  </view>
+				</view>
+			</view>
+		</repeat>
+		<view wx:if="{{!list.length}}" class="page_list">
+			<image src="https://a.rsd123.com/image/images/noBg.png" class="page_noData" mode="scaleToFill" />
+			<view class="page_noData_text">暂无数据！</view>
+		</view>
+	</view>
 </template>
 <script>
 import wepy from 'wepy'
@@ -104,7 +93,7 @@ export default class companyResumeList extends wepy.component {
 		isShowBtn: true,
 		resumeList: []
 	}
-	onLoad() {
+	onLoad () {
 		this.getText(this.receiptType)
 		let statusObj = JSON.parse(wx.getStorageSync('statusObj'))
 		if (this.receiptType === 2 && !statusObj.view_time) {
@@ -114,7 +103,7 @@ export default class companyResumeList extends wepy.component {
 			this.isShowBtn = false
 		}
 	}
-	getText(val) {
+	getText (val) {
 		if (val === 3) {
 			this.text = '入职'
 			this.refuseText = '未入职'
@@ -129,14 +118,14 @@ export default class companyResumeList extends wepy.component {
 		this.$apply()
 	}
 	watch = {
-		list(val) {
+		list (val) {
 			if (val) {
 				this.resumeList = val
 			}
 		}
 	}
 	methods = {
-		handleResume(item, status) {
+		handleResume (item, status) {
 			let query = {
 				uid: wx.getStorageSync('rendaUid'),
 				id: item.id,
@@ -144,7 +133,7 @@ export default class companyResumeList extends wepy.component {
 			}
 			this.$emit('handleResume', query)
 		},
-		selectResume(item, index) {
+		selectResume (item, index) {
 			let arr = []
 			item.disabled = !item.disabled
 			this.$apply()
