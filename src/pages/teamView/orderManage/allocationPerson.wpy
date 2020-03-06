@@ -1,6 +1,6 @@
 <style lang="less">
-@import '../../../style/home.less';
-@import '../../../style/resume.less';
+@import "../../../style/home.less";
+@import "../../../style/resume.less";
 .detail-view {
   .team-allocation-header {
     .tabBar {
@@ -22,9 +22,13 @@
 		<view class="weui-flex between header-box team-allocation-header" wx:if="{{distributionnum}}">
 			<tabBar :tabBarList.sync="tabBarList" class="weui-flex__item"></tabBar>
 		</view>
-		<view class="view-detail  page_margin {{distributionnum?'person-list':''}}">
+		<view class="view-detail page_margin {{distributionnum?'person-list':''}}">
 			<scroll-view scroll-y="true" style="height:100%" class="content-box">
-				<selectPerson :list.sync="newList" :distributionnum.sync="distributionnum" :activeIndex.sync="activeIndex"></selectPerson>
+				<selectPerson
+					:list.sync="newList"
+					:distributionnum.sync="distributionnum"
+					:activeIndex.sync="activeIndex"
+				></selectPerson>
 			</scroll-view>
 		</view>
 		<view class="weui-cell_btn weui-flex between footer-box">
@@ -58,22 +62,16 @@ export default class allocationPerson extends wepy.page {
 		activeIndex: 0
 	}
 	computed = {
-		newList () {
-			let arr = []
-			if (!this.activeIndex) {
-				arr = this.checkAll(this.list)
-			} else {
-				arr = this.changeList(this.list)
-			}
+		newList() {
 			return this.checkAll(this.list)
 		}
 	}
 	watch = {
-		activeIndex (val) {
+		activeIndex(val) {
 			this.getAllList(val)
 		}
 	}
-	checkAll (list) {
+	checkAll(list) {
 		return list.filter(item => {
 			if (!this.activeIndex) {
 				item.disabled = item.isget ? true : false
@@ -83,7 +81,7 @@ export default class allocationPerson extends wepy.page {
 			return item
 		})
 	}
-	changeList (list) {
+	changeList(list) {
 		return list.filter(item => {
 			item.disabled = item.status ? true : false
 			return item
@@ -92,29 +90,31 @@ export default class allocationPerson extends wepy.page {
 	config = {
 		navigationBarTitleText: '分配接单'
 	}
-	onLoad (options) {
+	onLoad(options) {
 		this.applyId = options.id
 		this.job_id = options.job_id
-		this.distributionnum = options.distributionnum
+		this.distributionnum = Number(options.distributionnum)
+		console.log(this.distributionnum)
 		this.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
 		this.$apply()
 	}
-	onShow () {
+	onShow() {
 		this.getAllList(this.activeIndex)
 	}
-	getAllList (val) {
+	getAllList(val) {
 		if (val) {
 			this.getHasAllocationList()
 		} else {
 			this.getPersonList()
 		}
 	}
-	getHasAllocationList () {
+	getHasAllocationList() {
 		let params = {
 			uid: this.uid,
 			job_id: this.job_id
 		}
 		$http('/apply/getTomember', params).then(res => {
+			console.log(res)
 			if (res.data) {
 				this.list = res.data || []
 			} else {
@@ -123,7 +123,7 @@ export default class allocationPerson extends wepy.page {
 			this.$apply()
 		})
 	}
-	getPersonList () {
+	getPersonList() {
 		let params = {
 			uid: this.uid,
 			job_id: this.job_id
@@ -137,14 +137,14 @@ export default class allocationPerson extends wepy.page {
 			this.$apply()
 		})
 	}
-	allocationReceipt () {
+	allocationReceipt() {
 		let params = {
 			uid: this.uid,
 			uids: this.uids,
 			job_id: this.job_id
 		}
 		$http('/apply/setjobtouser', params).then(res => {
-			if (res) {
+			if (res.data) {
 				wxToast('分配成功')
 				wxNavigateTo('/pages/teamView/orderManage/list?query=1')
 			} else {
@@ -152,14 +152,14 @@ export default class allocationPerson extends wepy.page {
 			}
 		})
 	}
-	cancelrecv () {
+	cancelrecv() {
 		let params = {
 			uid: this.uid,
-			uids: this.uids,
+			ids: this.uids,
 			job_id: this.job_id
 		}
 		$http('/apply/cancelrecv', params).then(res => {
-			if (res) {
+			if (res.data) {
 				wxToast('取消成功')
 				wxNavigateTo('/pages/teamView/orderManage/list?query=1')
 			} else {
@@ -174,13 +174,13 @@ export default class allocationPerson extends wepy.page {
 			}
 		},
 		switchTab: val => {
-			this.list = []
+			// this.list = []
 			this.activeIndex = val
 			this.$apply()
 		}
 	}
 	methods = {
-		cancleAllocation () {
+		cancleAllocation() {
 			if (!this.uids) {
 				return wxToast('请选择取消分配人员')
 			}
@@ -190,7 +190,7 @@ export default class allocationPerson extends wepy.page {
 				console.log('取消')
 			})
 		},
-		okAllocation () {
+		okAllocation() {
 			if (!this.uids) {
 				return wxToast('请选择分配人员')
 			}

@@ -8,7 +8,7 @@
 			<scroll-view scroll-y="true" style="height:100%" @scrolltolower="searchScrollLower">
 				<view class="home-view-box">
 					<search @searchValue="searchValue" class="weui-cell weui-flex start page_card"></search>
-					<teamReceiptList :list.sync="newList" :receiptType.sync="receiptType" @setTime="setTime"></teamReceiptList>
+					<teamReceiptList :list.sync="newList" :receiptType.sync="receiptType"></teamReceiptList>
 				</view>
 			</scroll-view>
 		</view>

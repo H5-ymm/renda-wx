@@ -4,25 +4,25 @@
       <view class="page_card_row">
         <view class="weui-flex between">
           <view class="my-text weui-flex__item">职位名称</view>
-          <view class="my-text-right">{{form.name}}</view>
+          <view class="my-text-right">{{form.job_name}}</view>
         </view>
       </view>
       <view class="page_card_row">
         <view class="weui-flex between">
           <view class="my-text weui-flex__item">用工企业</view>
-          <view class="my-text-right">{{form.job_type}}</view>
+          <view class="my-text-right">{{form.company_name}}</view>
         </view>
       </view>
-      <view class="page_card_row">
+      <view class="page_card_row" wx:if="{{form.form.settlement_time}}">
         <view class="weui-flex between">
           <view class="my-text weui-flex__item">截止日期</view>
-          <view class="my-text-right">{{form.required_number}}人</view>
+          <view class="my-text-right">{{form.form.settlement_time}}</view>
         </view>
       </view>
       <view class="page_card_row">
         <view class="weui-flex between">
           <view class="my-text weui-flex__item">招聘人数</view>
-          <view class="my-text-right">{{form.required_number}}人</view>
+          <view class="my-text-right">{{form.number}}人</view>
         </view>
       </view>
     </view>
@@ -30,13 +30,17 @@
       <view class="page_card_row">
         <view class="weui-flex between">
           <view class="my-text weui-flex__item">综合薪资</view>
-          <view class="my-text-right">5000-9000</view>
+          <view
+            class="my-text-right"
+            wx:if="{{form.offermoney_type==1}}"
+          >{{form.money_min}}-{{form.money_max}}</view>
+          <view class="my-text-right" wx-else>{{form.offermoney}}</view>
         </view>
       </view>
-      <view class="page_card_row">
+      <view class="page_card_row" wx:if="{{form.welfare_statement}}">
         <view class="weui-flex between">
           <view class="my-text weui-flex__item">福利说明</view>
-          <view class="my-text-right">长白班，不累</view>
+          <view class="my-text-right">{{form.welfare_statement}}</view>
         </view>
       </view>
     </view>
@@ -45,24 +49,24 @@
         <view class="weui-flex between">
           <view class="my-text weui-flex__item">工作内容</view>
         </view>
-        <rich-text nodes="{{form.job_content}}" class="my-text-right weui-textarea"></rich-text>
+        <rich-text nodes="{{form.job_description}}" class="my-text-right weui-input weui-textarea"></rich-text>
       </view>
       <view class="page_card_row">
         <view class="weui-flex between">
           <view class="my-text weui-flex__item">工作地址</view>
-          <view class="my-text-right">上海市浦东新区金海路2588号</view>
+          <view class="my-text-right">{{form.province}}{{form.city}}{{form.address}}</view>
         </view>
       </view>
       <view class="page_card_row">
         <view class="weui-flex between">
           <view class="my-text weui-flex__item">上班时长</view>
-          <view class="my-text-right">{{form.educationName}}</view>
+          <view class="my-text-right">{{form.working_hours}}</view>
         </view>
       </view>
       <view class="page_card_row">
         <view class="weui-flex between">
           <view class="my-text weui-flex__item">入职条件</view>
-          <view class="my-text-right">{{form.educationName}}</view>
+          <view class="my-text-right">{{form.entry_requirements}}</view>
         </view>
       </view>
     </view>
@@ -70,7 +74,7 @@
       <view class="page_card_row">
         <view class="weui-flex between">
           <view class="my-text weui-flex__item">年龄</view>
-          <view class="my-text-right">{{form.min_age}}岁-{{form.max_age}}岁</view>
+          <view class="my-text-right">{{form.age_min}}岁-{{form.age_max}}岁</view>
         </view>
       </view>
       <view class="page_card_row">
@@ -79,22 +83,22 @@
           <view class="my-text-right">{{form.sex==1?'男':form.sex==2?'女':'男女不限'}}</view>
         </view>
       </view>
-      <view class="page_card_row">
+      <view class="page_card_row" wx:if="{{form.education}}">
         <view class="weui-flex between">
           <view class="my-text weui-flex__item">学历</view>
-          <view class="my-text-right">{{form.educationName}}</view>
+          <view class="my-text-right">{{form.education}}</view>
         </view>
       </view>
-      <view class="page_card_row">
+      <view class="page_card_row" wx:if="{{form.five_risks}}">
         <view class="weui-flex between">
           <view class="my-text weui-flex__item">缴纳五金</view>
-          <view class="my-text-right">{{form.is_five_risks==1?'是': form.is_five_risks==2?'否':'试用期后'}}</view>
+          <view class="my-text-right">{{form.five_risks==1?'是': form.five_risks==2?'否':'试用期后'}}</view>
         </view>
       </view>
-      <view class="page_card_row">
+      <view class="page_card_row" wx:if="{{form.reserve_fund}}">
         <view class="weui-flex between">
           <view class="my-text weui-flex__item">缴纳公积金：</view>
-          <view class="my-text-right">{{form.is_fund==1?'是': form.is_five_risks==2?'否':'试用期后'}}</view>
+          <view class="my-text-right">{{form.reserve_fund==1?'是': form.reserve_fund==2?'否':'试用期后'}}</view>
         </view>
       </view>
     </view>
@@ -103,10 +107,11 @@
         <view class="weui-flex between">
           <view class="my-text weui-flex__item">企业介绍</view>
         </view>
-        <rich-text nodes="{{form.job_content}}" class="my-text-right weui-textarea"></rich-text>
+        <rich-text nodes="{{form.com_introduction}}" class="my-text-right weui-input weui-textarea"></rich-text>
       </view>
     </view>
-    <view class="page_card" wx:if="{{form.type==1}}">
+    <rewardTeamplate :formReward.sync="form" wx:if="{{form.type==1}}"></rewardTeamplate>
+    <view class="page_card" wx:else>
       <view class="page_card_row">
         <view class="weui-flex between">
           <view class="my-text weui-flex__item">招聘模式</view>
@@ -114,8 +119,7 @@
         </view>
       </view>
     </view>
-    <rewardTeamplate :formReward.sync="form" wx:else></rewardTeamplate>
-    <insiderOperatorTemplate :formOperator.sync="form.otherInfo" wx:if="{{form.otherInfo}}"></insiderOperatorTemplate>
+    <insiderOperatorTemplate :formOperator.sync="form" wx:if="{{form.setinfo}}"></insiderOperatorTemplate>
   </view>
 </template>
 <script>
@@ -131,7 +135,7 @@ export default class insiderJobTemplate extends wepy.component {
     form: {
       type: Object,
       default: {
-        otherInfo: {}
+        setinfo: {}
       }
     }
   }

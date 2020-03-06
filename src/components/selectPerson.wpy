@@ -18,10 +18,11 @@
       <view class="page_card" wx:if="{{personList.length}}">
         <view class="page_card_row weui-flex between">
           <view class="weui-flex__item">
-            <view class="page_card_name">{{item.user_name}}</view>
+            <view class="page_card_name">{{item.user_name || '-'}}</view>
             <view class="text-line">
-              {{item.departname}} {{item.grade_name}}
+              {{item.departname || item.depart_name}} {{item.grade_name}}
             </view>
+            <view class="page_card_time">{{item.addtime}}</view>
           </view>
           <image src="https://a.rsd123.com/image/images/user/radio2.png" alt="" mode="aspectFill" class="radio-icon" @tap="selectUser({{item}},{{index}})" wx:if="{{item.disabled}}" />
           <image src="https://a.rsd123.com/image/images/user/radio1.png" wx:else @tap="selectUser({{item}},{{index}})" mode="aspectFill" class="radio-icon" />
@@ -51,12 +52,14 @@ export default class selectPerson extends wepy.component {
     list (val) {
       if (val) {
         this.personList = val
+        console.log( this.personList)
         this.$apply()
       }
     }
   }
   onLoad () {
     this.personList = this.list
+    console.log( this.personList)
     this.$apply()
   }
   methods = {
@@ -65,14 +68,26 @@ export default class selectPerson extends wepy.component {
       if (item.disabled && this.distributionnum && flag === -1 && !this.activeIndex) return
       this.personList[index].disabled = !item.disabled
       this.$apply()
-      if (this.idList.indexOf(item.uid) === -1) {
+      if (!this.activeIndex) {
+        if (this.idList.indexOf(item.uid) === -1) {
         this.idList.push(item.uid)
       } else {
         let ret = this.idList.findIndex(v => {
           return v === item.uid
         })
         this.idList.splice(ret, 1)
+       }
+      } else {   
+        if (this.idList.indexOf(item.id) === -1) {
+        this.idList.push(item.id)
+        } else {
+          let ret = this.idList.findIndex(v => {
+            return v === item.id
+          })
+          this.idList.splice(ret, 1)
+        }
       }
+      console.log(this.idList)
       this.$emit('selectUser', Array.from(new Set(this.idList)))
     }
   }

@@ -68,49 +68,25 @@
 </template>
 <script>
 import wepy from 'wepy'
-export default class companyResumeList extends wepy.component {
+export default class invoiceList extends wepy.component {
 	props = {
 		list: Array,
 		recommendType: Number
 	}
 	data = {
-		isCheck: false,
-		isShow: false,
-		refuseText: '',
-		text: '',
-		isShowBtn: true,
-		resumeList: []
-	}
-	onLoad () {
 
-	}
-	watch = {
-		list (val) {
-			if (val) {
-				this.resumeList = val
-			}
-		}
 	}
 	methods = {
 		handleJob (item, status) {
+			console.log(item)
 			let query = {
 				uid: wx.getStorageSync('rendaUid'),
-				id: item.id,
-				status
+				id: item.id
 			}
-			this.$emit('handleJob', query)
+			this.$emit('handleJob', {id: item.id})
 		},
 		selectJob (item) {
-			wx.setStorageSync('receiptType', -1)
-			if (!this.recommendType) {
-				wx.redirectTo({
-					url: '/pages/teamView/internalInvoice/teamJobDetail?query=' + item.job_id // 页面 A
-				})
-			} else {
-				wx.redirectTo({
-					url: '/pages/teamView/internalInvoice/insiderJobDetail?query=' + item.id // 页面 A
-				})
-			}
+			this.$emit('selectJob', {id: item.id})
 		}
 	}
 }

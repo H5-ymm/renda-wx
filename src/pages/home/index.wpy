@@ -128,7 +128,8 @@ export default class home extends wepy.page {
     tabBarIndex: 0,
     qrCode: '',
     type: 0,
-    isScoll: false
+    isScoll: false,
+    resumeInfo:{}
   }
   events = {
     searchValue: val => {
@@ -141,7 +142,8 @@ export default class home extends wepy.page {
       this.$apply()
     },
     applyResume: data => {
-      this.isSelectModal = !this.isSelectModal
+      console.log(data)
+      this.resumeInfo = data
       this.modalTitle = '请选择岗位方式'
       this.menus = [
         {
@@ -153,6 +155,7 @@ export default class home extends wepy.page {
           title: '团队接单'
         }
       ]
+      this.isSelectModal = !this.isSelectModal
       this.$apply()
     },
     switchTab: val => {
@@ -181,8 +184,8 @@ export default class home extends wepy.page {
           this.createQrcode()
         }
       } else {
-        wx.navigateTo({
-          url: '/pages/teamView/internalInvoice/list?query=' + val // 页面 A
+        wx.redirectTo({
+          url: `/pages/teamView/internalInvoice/list?query=${val}&resumeId=${this.resumeInfo.id}&recommendId=${this.resumeInfo.recommendId}`
         })
       }
     }

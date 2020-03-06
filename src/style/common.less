@@ -6,12 +6,16 @@ page {
     height: 100%;
     font-family: -apple-system-font, Helvetica Neue, Helvetica, sans-serif;
 }
+
 .page {
     height: 100%;
+
     .home-view-box {
-        overflow: auto;;
+        overflow: auto;
+        ;
     }
 }
+
 .placeholder {
     color: @weuiPlaceholderColor;
 }
@@ -74,26 +78,33 @@ page {
     margin-bottom: 20rpx;
     background-color: @weuiBgColorWhite;
     font-size: 26rpx;
+
     &.modal-page_card {
         box-shadow: none;
         border-radius: 0;
+
         .modal-page_item {
             height: 44rpx;
         }
     }
+
     .page_card_row {
         padding: 24rpx 0;
         color: @weuiTextColorLight;
+        font-size: 32rpx;
+
         .page_card_name {
-            font-size:32rpx;
+            // font-size: 32rpx;
             color: @weuiTextColorDesc;
             font-weight: bold;
             position: relative;
             margin-bottom: 6rpx;
+
             &.page_card_name1 {
                 font-weight: 400;
                 margin-bottom: 10rpx;
             }
+
             .badgeNum {
                 position: absolute;
                 right: -30rpx;
@@ -127,13 +138,15 @@ page {
                 }
             }
         }
+
         .page_card_status-item {
             .weui-btn_cell {
-              border-radius: 5rpx;
-              font-size: 25rpx;
-              padding: 23rpx 12rpx 21rpx;
+                border-radius: 5rpx;
+                font-size: 25rpx;
+                padding: 23rpx 12rpx 21rpx;
             }
-          }
+        }
+
         .page_card_time {
             font-size: 24rpx;
         }
@@ -334,24 +347,46 @@ page {
         width: 40%;
     }
 }
+
 .header-box {
     background: #ffffff;
     height: 90rpx;
     font-size: 24rpx;
     padding: 0 26rpx;
+
     .search-box {
-      border: 1px solid #eee;
-      width: 23%;
-      height: 48rpx;
-      border-radius: 30rpx;
-      padding: 4rpx 20rpx 0;
-      transition: 1s;
-      .searchIcon {
-        height: 24rpx;
-        width: 25rpx;
-      }
-      .search-input {
-        padding: 0 0 0 10rpx;
-      }
+        border: 1px solid #eee;
+        width: 23%;
+        height: 48rpx;
+        border-radius: 30rpx;
+        padding: 4rpx 20rpx 0;
+        transition: 1s;
+
+        .searchIcon {
+            height: 24rpx;
+            width: 25rpx;
+        }
+
+        .search-input {
+            padding: 0 0 0 10rpx;
+        }
     }
-  }
+}
+
+.weui-input {
+    text-align: right;
+
+    &.weui-textarea {
+        margin: 20rpx 0;
+        min-height: 130rpx;
+        text-align: left;
+        height: 140rpx;
+        width: 100%;
+        display: block;
+    }
+
+    &.settlement_time_input {
+        width: 100rpx;
+        text-align: center;
+    }
+}
