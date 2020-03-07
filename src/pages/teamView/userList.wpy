@@ -96,7 +96,7 @@ export default class userList extends wepy.page {
 	}
 	createQrcode () {
 		let params = {
-			scene: this.uid,
+			scene: 'uid?=' + this.params.uid,
 			page: 'pages/login/welcome',
 			width: 300
 		}
@@ -132,7 +132,8 @@ export default class userList extends wepy.page {
 		return {
 			title: '转发',
 			imageUrl: this.qrCode,
-			path: '/pages/teamView/userInfo?uid=' + this.uid
+			// path: '/pages/teamView/userInfo?uid=' + this.uid
+			 path: '/pages/login/welcome?uid=' + this.uid
 		}
 	}
 	methods = {

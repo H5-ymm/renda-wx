@@ -80,7 +80,7 @@ export default class viewResumeList extends wepy.page {
 		list: [],
 		params: {
 			uid: '',
-			apply_id: '',
+			job_id: '',
 			status: 0,
 			type: ''
 		},
@@ -94,7 +94,8 @@ export default class viewResumeList extends wepy.page {
 		job_id: '',
 		timeInfo: {},
 		id: '',
-		receiptTime: ''
+		receiptTime: '',
+		apply_id: ''
 	}
 	computed = {
 		newList () {
@@ -108,8 +109,9 @@ export default class viewResumeList extends wepy.page {
 	onLoad (options) {
 		this.receiptType = Number(options.query)
 		this.params.type = this.receiptType - 1
-		this.apply_id = options.id
-		this.params.apply_id = options.id
+		this.job_id = options.id
+		this.apply_id = options.apply_id
+		this.params.job_id = options.id
 		this.receiptTime = wx.getStorageSync('receiptTime')
 		this.$apply()
 		wx.setNavigationBarTitle({
