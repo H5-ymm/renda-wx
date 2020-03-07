@@ -97,9 +97,12 @@
         </view>
         <text selectable='true' decode="{{true}}" class="modal-subTitle" wx:if="{{modalObj.subTitle}}">{{modalObj.subTitle}}</text>
         <view class="weui-cell_btn weui-flex center">
-          <navigator open-type="{{openType}}" target="miniProgram" class="navigator">
+          <navigator open-type="{{openType}}" wx:if="{{openType}}" target="miniProgram" class="navigator">
             <button class="weui-btn_cell weui-btn_cell-gradient" @tap="handleOk">我知道啦</button>
           </navigator>
+          <view class="navigator" wx:else>
+            <button class="weui-btn_cell weui-btn_cell-gradient" @tap="handleOk">我知道啦</button>
+          </view>
         </view>
       </view>
       <view wx:else class="modal-content modal-content-qrcode">

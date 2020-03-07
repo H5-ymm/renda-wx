@@ -36,7 +36,8 @@ page {
 				<teamUser :list.sync="list"></teamUser>
 			</scroll-view>
 		</view>
-		<view class="weui-flex between only-btn">
+		<view class="weui-flex between only-btn"
+		 wx:if="{{rendaUserTeamType==1||rendaUserTeamType==2}}">
 			<view class="weui-flex center weui-flex__item only-btn-item">
 				<button class="weui-btn_cell  weui-flex__item weui-btn_primary" @tap="addUser">
 					添加成员
@@ -76,13 +77,18 @@ export default class userList extends wepy.page {
 			limit: 10
 		},
 		qrCode: '',
-		type: 0
+		type: 0,
+		teamId: '',
+		rendaUserTeamType:1
 	}
 	config = {
 		navigationBarTitleText: '成员列表'
 	}
 	onLoad (options) {
 		this.params.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
+		this.rendaUserTeamType = Number(wx.getStorageSync('rendaUserTeamType'))
+		this.$apply()
+		this.teamId = wx.getStorageSync('rendaUserTeamId')
 	}
 	getUserList () {
 		$http('/userinfo/teamUserList', this.params).then(res => {
@@ -96,14 +102,16 @@ export default class userList extends wepy.page {
 	}
 	createQrcode () {
 		let params = {
-			scene: 'uid?=' + this.params.uid,
+			scene: `uid?${this.params.uid}&teamId=${this.teamId}`,
 			page: 'pages/login/welcome',
 			width: 300
 		}
+		this.isModal = false
 		$http('/login/get_qrcode', params).then(res => {
 			if (res.data) {
 				this.type = 1
 				this.isModal = false
+				 wx.removeStorageSync('rendaUserTeamId')
 				this.qrCode = getImgUrl(res.data)
 				this.$apply()
 			}
@@ -125,15 +133,11 @@ export default class userList extends wepy.page {
 		}
 	}
 	onShareAppMessage (res) {
-		console.log(res.from === 'button')
-		if (res.from === 'button') {
-
-		}
 		return {
 			title: '转发',
 			imageUrl: this.qrCode,
 			// path: '/pages/teamView/userInfo?uid=' + this.uid
-			 path: '/pages/login/welcome?uid=' + this.uid
+			 path: `/pages/login/welcome?uid=${this.params.uid}&teamId=${this.teamId}`
 		}
 	}
 	methods = {

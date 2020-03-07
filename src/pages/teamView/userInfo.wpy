@@ -59,7 +59,7 @@
 				<view class="page_card_row">
 					<view class="weui-flex between">
 						<view class="my-text weui-flex__item">手机号</view>
-						<input class="weui-input" placeholder-class="placeholder" data-name="mobile" value="{{form.mobile}}" disabled="{{id!=''}}" @input="changeInput" placeholder="请输入手机号" />
+						<input class="weui-input" placeholder-class="placeholder" data-name="mobile" value="{{form.mobile}}" disabled="{{id!=''||teamId!=''}}" @input="changeInput" placeholder="请输入手机号" />
 					</view>
 				</view>
 			</view>
@@ -84,7 +84,7 @@
 					</view>
 				</view>
 			</view>
-			<view class="page_card">
+			<view class="page_card" wx:if="{{!invite_uid}}">
 				<view class="page_card_row">
 					<view class="weui-flex between">
 						<view class="my-text weui-flex__item">当前职位</view>
@@ -94,10 +94,10 @@
 								<image mode="scaleToFill" src="https://a.rsd123.com/image/images/down.png" class="page_down_icon" />
 							</view>
 						</picker>
-						<view class="my-text-right" wx:else>{{form.depart_name}}</view>
+						<view class="my-text-right" wx:else>{{form.depart_name?form.depart_name:'-'}}</view>
 					</view>
 				</view>
-				<view class="page_card_row">
+				<view class="page_card_row" wx:if="{{!invite_uid}}">
 					<view class="weui-flex between">
 						<view class="my-text weui-flex__item">部门</view>
 						<picker @change="pickerChange" value="{{jobIndex}}" range-key="grade_name" wx:if="{{uid!=userUid&&userTeamType==1}}" data-name="grade_id" range="{{jobList}}">
@@ -106,7 +106,7 @@
 								<image mode="scaleToFill" src="https://a.rsd123.com/image/images/down.png" class="page_down_icon" />
 							</view>
 						</picker>
-						<view class="my-text-right" wx:else>{{form.grade_name}}</view>
+						<view class="my-text-right" wx:else>{{form.grade_name?form.grade_name:'-'}}</view>
 					</view>
 				</view>
 				<view class="page_card_row" wx:if="{{id}}">
@@ -140,12 +140,13 @@
 					<textarea data-name="remark" placeholder-class="placeholder" disable-default-padding="true" class="weui-input weui-textarea" value="{{form.remark}}" @input="changeInput" placeholder="请输入锁定原因" maxlength="-1" />
 					</view>
        </view>
-			 <view class="weui-flex start notice-tip">
+			 <view class="weui-flex start notice-tip" wx:if="{{!invite_uid}}">
 					<image src="https://a.rsd123.com/image/images/orderTaking/warn.png" class="tipIcon" />
 					<text class="tip">部门可在添加成员成功之后新增</text>
 				</view>
 		</view>
-		<view class="weui-cell_btn weui-flex between register-btn"  wx:if="{{uid!=userUid}}">
+		<view class="weui-cell_btn weui-flex between register-btn"
+		wx:if="{{uid!=userUid||invite_uid!=''}}">
 			<button class="weui-btn_cell weui-flex__item  weui-btn_primary" @tap="save">
 				{{id?'修改':'保存'}}
 			</button>
@@ -160,7 +161,7 @@ import wepy from 'wepy'
 import { $http } from '@/http.js'
 import districtSelet from '@/components/districtSelet'
 import { wxToast, wxReLaunch, wxShowModal, validateIdCard, checkMobile, wxNavigateTo, wxRedirectTo } from '@/util.js'
-export default class userInfo extends wepy.page {
+export default class userInTeam extends wepy.page {
 	components = {
 		districtSelet: districtSelet
 	}
@@ -188,7 +189,8 @@ export default class userInfo extends wepy.page {
 		jobList: [],
 		userTeamType: '',
 		rendaUidQrcode: '',
-		teamData: ''
+		teamId: '',
+		invite_uid: ''
 	}
 	config = {
 		navigationBarTitleText: '成员详情'
@@ -210,29 +212,41 @@ export default class userInfo extends wepy.page {
 		}
 	}
 	onLoad (options) {
-		// this.$parent.getOpenId()
-		let openid = wx.getStorageSync('rendaOpenId') || this.$parent.globalData.openid
-		if (!openid && wx.getStorageSync('rendaUidQrcode')) {
-			wxRedirectTo('/pages/login/welcome?query=addUsr')
+		console.log(options.query)
+		if (options.query && wx.getStorageSync('rendaUidQrcode')) {
+			let query = JSON.parse(options.query)
+			this.teamId = query.teamId
+			this.id = ''
+			this.form.mobile = query.tel
+			this.uid = query.uid
+			this.invite_uid = query.invite_uid || wx.getStorageSync('rendaUidQrcode')
+		} else {
+			this.teamId = ''
+			this.form.mobile = ''
+			this.invite_uid = ''
+			if (options.query) {
+				this.userTeamType = wx.getStorageSync('rendaUserTeamType')
+				this.id = options.query		
+				this.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
+				this.getMembeDetail()
+				this.getDepartmenList()
+			}
+			else {
+				this.id = ''
+			}
 		}
-		if (wx.getStorageSync('rendaUidQrcode')) {
-			this.rendaUidQrcode = wx.getStorageSync('rendaUidQrcode') || this.$parent.globalData.rendaUidQrcode
-			this.getTeamInfoAPi(this.rendaUidQrcode)
-		}
-		this.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
-		this.userTeamType = wx.getStorageSync('rendaUserTeamType')
 		this.$apply()
-		this.getDepartmenList()
-		if (options.query) {
-			this.id = options.query
-			this.getMembeDetail()
-		}
 	}
-	getTeamInfoAPi (uid) {
-		$http('/Userinfo/getteaminfo', { uid }).then(res => {
-			this.teamData = res.data || {}
-			wx.setStorageSync('wxTeamInfoQrcode', JSON.stringify(res.data))
-			this.$apply()
+	bindMember(params) {
+		let query = Object.assign(params, {uid: this.uid,invite_uid: this.invite_uid})
+		$http('/userinfo/bindMember', query).then(res => {
+			if (res.data) {
+				wx.removeStorageSync('rendaUidQrcode');
+        wx.removeStorageSync('rendaUserTeamId');
+				wxRedirectTo('/pages/teamView/index')
+			} else {
+				wxToast('添加失败')
+			}
 		})
 	}
 	getDepartmenList () {
@@ -249,8 +263,12 @@ export default class userInfo extends wepy.page {
 				this.depId = wx.getStorageSync('rendaDradeId')
 				this.depList = this.getCurrentDepList(list, this.depId)
 			}
+			console.log(this.depList)
 			this.jobList = this.getArr(this.depList, this.depId)
-			this.form.grade_id = this.jobList[1].id
+			if (this.jobList.length) {
+					console.log(this.jobList)
+        this.form.grade_id = this.jobList[1].id
+			}
 			this.$apply()
 		})
 	}
@@ -282,7 +300,9 @@ export default class userInfo extends wepy.page {
 			this.index = res.data.data.status ? res.data.data.status - 1 : 0
 			this.userUid = res.data.data.uid
 			this.form.education = res.data.data.education ? res.data.data.education : 0
-			this.form.grade_id = this.jobList[1].id
+			if (this.jobList.length) {
+        this.form.grade_id = this.jobList[1].id
+			}			
 			this.$apply()
 		})
 	}
@@ -337,7 +357,11 @@ export default class userInfo extends wepy.page {
 			}
 			this.updateTeamUser(params)
 		} else {
-			this.saveUser(this.form)
+			if (this.invite_uid && this.teamId) {
+				this.bindMember(this.form)
+			} else {
+				this.saveUser(this.form)
+			}
 		}
 	}
 	methods = {
@@ -364,6 +388,7 @@ export default class userInfo extends wepy.page {
 			this.form[key] = e.detail.value
 		},
 		save () {
+			console.log(1)
 			if (!this.form.user_name) {
 				wxToast('请输入姓名')
 			} else if (!this.form.mobile) {

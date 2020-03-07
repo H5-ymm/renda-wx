@@ -58,7 +58,7 @@ import tabBar from '@/components/tabBar'
 import modal from '@/components/modal'
 import search from '@/components/search'
 import selectModal from '@/components/selectModal'
-import { getImgUrl } from '@/util.js'
+import { getImgUrl, wxNavigateTo } from '@/util.js'
 export default class home extends wepy.page {
   components = {
     tabBar: tabBar,
@@ -184,7 +184,7 @@ export default class home extends wepy.page {
           this.createQrcode()
         }
       } else {
-        wx.redirectTo({
+        wx.navigateTo({
           url: `/pages/teamView/internalInvoice/list?query=${val}&resumeId=${this.resumeInfo.id}&recommendId=${this.resumeInfo.recommendId}`
         })
       }

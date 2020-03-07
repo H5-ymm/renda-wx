@@ -42,6 +42,8 @@ const http = (url, params, method) => {
                         wxToast(remind)
                     }
                 } else {
+                    console.log(url + '请求失败')
+                    console.log(params)
                     wxToast('请求失败')
                 }
             },

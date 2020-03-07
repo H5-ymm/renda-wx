@@ -165,7 +165,7 @@ export default class addInfo extends wepy.page {
       imgBg: 'https://a.rsd123.com/image/images/success.png'
     },
     resumeType: '简历管理',
-    isInput: true,
+    isInput: false,
     stepActive: 1,
     resumeInfo: {},
     baseInfo: {},

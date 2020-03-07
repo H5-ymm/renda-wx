@@ -21,7 +21,7 @@
       </view>
     </view>
     <modal :isScaleModal.sync="isModal" :height.sync="modalHeight" :modalObj.sync="modalObj"></modal>
-    <modalogin :isScaleModal.sync="isLoginModal" :type.sync="type" @handleClose="handleClose" :height.sync="modalLoginHeight"></modalogin>
+    <modalogin :isScaleModal.sync="isLoginModal" :type.sync="type" @handleClose="handleClose" @handleOkLogin="handleOkLogin" :height.sync="modalLoginHeight"></modalogin>
   </view>
 </template>
 <script>
@@ -62,12 +62,15 @@ export default class Welcome extends wepy.page {
     openid: '',
     code: '',
     sessionKey: '',
-    isInviteUser: false
+    isInviteUser: false,
+    teamId:'',
+    rendaUidQrcode: '',
+    uid: ''
   }
   onLoad (options) {
-    console.log(options.query)
-    console.log( wx.getStorageSync('rendaUidQrcode'))
-    if ( wx.getStorageSync('rendaUidQrcode')) {
+    this.rendaUidQrcode = wx.getStorageSync('rendaUidQrcode') || this.$parent.globalData.rendaUidQrcode
+    this.teamId = wx.getStorageSync('rendaUserTeamId') || this.$parent.globalData.teamId
+    if (this.rendaUidQrcode && this.teamId) {
       this.isInviteUser = true
     } else {
       this.isInviteUser = false
@@ -114,8 +117,39 @@ export default class Welcome extends wepy.page {
       this.$apply()
     }
   }
+  checkQrcode(item) {
+    let params = {
+      uid: item.uid,
+      team_id: this.rendaUidQrcode,
+      invite_uid: this.teamId
+    }
+    $http('/userinfo/checkbindTeam', params).then(res => {
+     if (res.data.is_bond == 0 && res.data.effect == 0) {
+        this.isLoginModal = false
+        this.$apply()
+     } else {
+        if (res.data.is_bond==1) {
+          wxToast('已有团队，不需要加入')
+          this.viewRouter(item) 
+        } else {
+          wxToast('二维码已经失败')
+        }
+      }
+    })  
+  }
   checkUserLogin (openid) {
-    store.dispatch(getAllUser(openid)).then(res => {
+    let params = {}
+    if (this.isInviteUser) {
+      params = {
+        openid,
+        type: 2
+      } 
+    } else {
+      params = {
+        openid
+      }
+    }
+    store.dispatch(getAllUser(params)).then(res => {
       this.isView = true
       this.$apply()
       this.checkRouterView(res.payload)
@@ -123,6 +157,9 @@ export default class Welcome extends wepy.page {
       if (error && error.code) {
         this.code = error.code
         this.isView = false
+        if (this.code === 6100 && this.authorize) {
+          this.isLoginModal = false
+        }
         this.$apply()
       }
     })
@@ -130,28 +167,37 @@ export default class Welcome extends wepy.page {
   checkRouterView (res) {
     if (res && res.uid) {
       this.$parent.globalData.uid = res.uid
-      // userType 1 企业 2 团队
+      this.uid = res.uid
+      wx.setStorageSync('rendaUid', res.uid)
       this.isRead = true
       this.checked = true
       this.$apply()
-      wx.setStorageSync('rendaUserType', res.usertype)
-      wx.setStorageSync('rendaUid', res.uid)
-      if (!res.usertype) {
-        wxReLaunch('/pages/register/selectUser')
-      } else if (res.usertype === 2) {
-        if (res.is_team !== '0') {
-          wxReLaunch('/pages/teamView/index')
-        } else {
-          wxReLaunch('/pages/register/selectUser?query=1')
-        }
-      } else {
-        if (res.is_company !== '0') {
-          wxReLaunch('/pages/companyView/index')
-        } else {
-          wxReLaunch('/pages/register/companyForm')
-        }
+      if (this.isInviteUser) {
+        wx.setStorageSync('rendaUserType', 2)
+        this.checkQrcode(res)
+      } else {     
+        // userType 1 企业 2 团队
+        wx.setStorageSync('rendaUserType', res.usertype)  
+        this.viewRouter(res) 
       }
       store.dispatch(getAllContant())
+    }
+  }
+  viewRouter(res) {
+    if (!res.usertype) {
+      wxReLaunch('/pages/register/selectUser')
+    } else if (Number(res.usertype) === 2) {
+      if (res.is_team !== '0') {
+        wxReLaunch('/pages/teamView/index')
+      } else {
+        wxReLaunch('/pages/register/selectUser?query=1')
+      }
+    } else {
+      if (res.is_company !== '0') {
+        wxReLaunch('/pages/companyView/index')
+      } else {
+        wxReLaunch('/pages/register/companyForm')
+      }
     }
   }
   showErrorTip (code) {
@@ -170,6 +216,7 @@ export default class Welcome extends wepy.page {
   getWxPhone (params) {
     $http('/login/decryptData', params).then(res => {
       if (res && res.data) {
+        wx.setStorageSync('wxphoneNumber', res.data.phoneNumber)
         this.getWxPhoneLogin(res.data.phoneNumber)
       }
     })
@@ -182,9 +229,26 @@ export default class Welcome extends wepy.page {
       tel: phoneNumber,
       openid: this.openid
     }
+    if (this.isInviteUser) {
+      params.type = 2
+    }
     $http('/login/is_register_auto', params).then(res => {
+      this.isRead = true
+      this.checked = true
+      wx.setStorageSync('rendaUid', res.data.uid)
+      // 如果邀请组员
+      if (this.isInviteUser) {
+        let query = {
+          teamId: this.teamId,
+          invite_uid: this.rendaUidQrcode,
+          tel:phoneNumber,
+          uid: res.data.uid
+        }
+        wxNavigateTo('/pages/teamView/userInfo?query='+ JSON.stringify(query))
+      } else {
+        this.checkRouterView(res.data)
+      }
       store.dispatch({ type: GETALLUSER, payload: res.data })
-      this.checkRouterView(res.data)
     }).catch(error => {
       if (error && error.status && error.status.code) {
         if (this.authorize) {
@@ -198,22 +262,28 @@ export default class Welcome extends wepy.page {
   }
   events = {
     handleOk: () => {
-      this.isModal = true
+      this.isModal = !this.isModal
       this.$apply()
     },
     handleOkLogin: val => {
       if (val) {
         if (typeof val === 'object') {
-          this.getWxPhone(val)
+          if (wx.getStorageSync('wxphoneNumber')) {
+            let tel = wx.getStorageSync('wxphoneNumber')
+            this.getWxPhoneLogin(tel)
+          } else {
+            this.getWxPhone(val)
+          }
+          
         } else {
           wxNavigateTo('/pages/login/login')
         }
-        this.isLoginModal = true
+        this.isLoginModal = !this.isLoginModal
         this.$apply()
       }
     },
     handleClose: () => {
-      this.isLoginModal = true
+      this.isLoginModal = !this.isLoginModal
       this.$apply()
     }
   }
@@ -233,8 +303,8 @@ export default class Welcome extends wepy.page {
     getUserInfo (e) {
       // 没有阅读协议
       if (!this.isRead) return
-      if (this.code === 6100) {
-        this.isLoginModal = false
+      if (this.code === 6100 && this.teamId!='') {
+        this.isLoginModal = !this.isLoginModal
         this.$apply()
         return
       }
@@ -250,6 +320,7 @@ export default class Welcome extends wepy.page {
           user_name: this.userInfo.nickName
         }
         this.$parent.globalData.wxInfo = params
+        this.isLoginModal = false
         wx.setStorageSync('wxInfo', JSON.stringify(params))
         this.authorize = true
         this.$apply()

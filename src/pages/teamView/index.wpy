@@ -142,6 +142,7 @@ export default class teamView extends wepy.page {
   getTeamInfoAPi(uid) {
     $http('/Userinfo/getteaminfo', { uid }).then(res => {
       this.teamData = res.data || {}
+      wx.setStorageSync('rendaUserTeamId', res.data.team_id)
       wx.setStorageSync('rendaUserTeamType', res.data.grade_num)
       wx.setStorageSync('rendaDradeId', res.data.grade_id)
       if (res.data.logo) {
@@ -154,6 +155,5 @@ export default class teamView extends wepy.page {
     let uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
     this.getTeamInfoAPi(uid)
   }
-
 }
 </script>

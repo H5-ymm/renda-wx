@@ -11,6 +11,7 @@
       line-height: 32rpx;
       margin-top: 10rpx;
       display: block;
+      height: 100rpx;
     }
   }
   .only-btn {

@@ -48,13 +48,13 @@
           <view class="page_card_row">
             <view class="weui-flex between">
               <view class="my-text">所属部门</view>
-              <view class="my-text-right weui-flex__item">{{teamData.depart_name}}</view>
+              <view class="my-text-right weui-flex__item">{{teamData.depart_name||'-'}}</view>
             </view>
           </view>
           <view class="page_card_row">
             <view class="weui-flex between">
               <view class="my-text">等级</view>
-              <view class="my-text-right weui-flex__item">{{teamData.grade_name}}</view>
+              <view class="my-text-right weui-flex__item">{{teamData.grade_name?teamData.grade_name:'-'}}</view>
             </view>
           </view>
           <view class="page_card_row">

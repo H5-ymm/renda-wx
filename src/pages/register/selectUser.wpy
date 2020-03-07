@@ -62,7 +62,7 @@
 						<text decode="{{true}}">{{item.content}}</text>
 				  	<text class="card-text" >...</text>
 					</view>
-					<image src="../../images/active.png" alt="" wx:if="{{activeIndex==index}}"
+					<image src="https://a.rsd123.com/image/images/active.png" alt="" wx:if="{{activeIndex==index}}"
 					 mode="aspectFit" class="menu-icon-select" />
 				</view>
 			</repeat>

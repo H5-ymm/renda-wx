@@ -40,7 +40,6 @@
 				wx:if="{{!receiptType&&form.status&&form.status!=1}}"
 				@tap="handleDelete"
 			>删除</button>
-			<!-- <button class="weui-btn_cell weui-btn_primary" v-if="receiptType==-1" @tap="handleDelete">推荐岗位</button> -->
 		</view>
 	</view>
 </template>
@@ -87,7 +86,7 @@ export default class teamJobDetail extends wepy.page {
 			wxReLaunch('/pages/teamView/orderManage/list?query=0')
 		})
 	}
-	recommendResume() {
+	recommendResume(params) {
 		$http('/apply/add_put', params).then(res => {
 			if (res.data) {
 				wxToast('推荐成功')
@@ -116,10 +115,10 @@ export default class teamJobDetail extends wepy.page {
 			let params = {
 				uid: this.uid,
 				resume_id: this.resumeId,
-				job_id: this.id
+				apply_id: this.id
 			}
 			wxShowModal('', '确定推荐岗位吗？', '确定').then(res => {
-				this.recommend(params)
+				this.recommendResume(params)
 			}).catch(() => {
 				console.log('取消')
 			})
@@ -129,7 +128,7 @@ export default class teamJobDetail extends wepy.page {
 				uid: wx.getStorageSync('rendaUid'),
 				apply_id: this.form.id
 			}
-			wxShowModal('', '确定删除团队申请记录', '确定').then(res => {
+			wxShowModal('', '确定删除吗？', '确定').then(res => {
 				this.deleteReceiptShelf(params)
 			}).catch(() => {
 				console.log('取消')

@@ -107,7 +107,8 @@ export default class my extends wepy.page {
       }
     ],
     uid: '',
-    type: 1
+    type: 1,
+    rendaUserTeamType:1
   }
   config = {
     navigationBarTitleText: '我的'
@@ -165,6 +166,10 @@ export default class my extends wepy.page {
     }
   }
   onLoad () {
+    this.rendaUserTeamType = wx.getStorageSync('rendaUserTeamType')
+    if (this.rendaUserTeamType!=1) {
+      this.menus[1].child.splice(1,1)
+    }
     this.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
     let wxInfo = wx.getStorageSync('wxInfo')
     $http('/Userinfo/getUserInfo', { uid: this.uid }).then(res => {
@@ -174,9 +179,9 @@ export default class my extends wepy.page {
       } else {
         this.head_img = wxInfo ? JSON.parse(wxInfo).head_img : ''
       }
-      this.$apply()
       wx.setStorageSync('userInfo', JSON.stringify(this.userInfo))
     })
+    this.$apply()
   }
 }
 </script>

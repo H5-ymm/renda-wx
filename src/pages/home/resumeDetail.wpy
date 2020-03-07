@@ -130,6 +130,7 @@
 import wepy from 'wepy'
 import districtSelet from '@/components/districtSelet'
 import { $http } from '@/http.js'
+import { wxShowModal, wxToast, wxRedirectTo } from '@/util.js'
 export default class resumeDetail extends wepy.page {
   components = {
     districtSelet: districtSelet
@@ -146,7 +147,8 @@ export default class resumeDetail extends wepy.page {
     formTeam: {},
     address: [],
     status: 0,
-    id: ''
+    id: '',
+    recommendId: ''
   }
   config = {
     navigationBarTitleText: '简历信息'
@@ -158,23 +160,15 @@ export default class resumeDetail extends wepy.page {
   }
   updateResume () {
     if (this.checkObj(this.form, this.formTeam)) {
-      wx.reLaunch({
-        url: '/pages/home/index'
-      })
+      wxRedirectTo('/pages/home/index')
       return
     }
     this.form = Object.assign(this.query, this.form)
     $http('/Wxresume/editruseme', this.form).then(res => {
       if (res.data) {
-        wx.reLaunch({
-          url: '/pages/home/index'
-        })
+        wxRedirectTo('/pages/home/index')
       } else {
-        wx.showToast({
-          icon: 'none',
-          title: '修改失败',
-          duration: 2000
-        })
+        wxToast('修改失败')
       }
     })
   }
@@ -210,7 +204,12 @@ export default class resumeDetail extends wepy.page {
   }
   changeResumeStatus (urlApi, parasm) {
     $http(urlApi, parasm).then(res => {
-
+      if (res.data) {
+        wxToast('操作成功')
+        wxRedirectTo('/pages/home/index')
+      } else {
+        wxToast('操作失败')
+      }
     })
   }
   events = {
@@ -234,13 +233,14 @@ export default class resumeDetail extends wepy.page {
       this.form[key] = e.detail.value
     },
     handleResume (status) {
-      this.status = status
+      this.status = Number(status)
       let urlApi = this.status === 0 ? '/apply/del_put' : this.status === 1 ? '/apply/giveup_view' : '/apply/giveup_entry'
       let text = this.status === 0 ? '放弃报名' : this.status === 1 ? '放弃面试' : '放弃入职'
       let params = {
         uid: this.uid,
-        ids: this.form.id
+        ids: this.id
       }
+      console.log(urlApi)
       wxShowModal('', `确定${text}?`, '确定').then(res => {
         this.changeResumeStatus(urlApi, params)
       }).catch(() => {
@@ -249,19 +249,11 @@ export default class resumeDetail extends wepy.page {
     },
     save () {
       if (this.form.age && Number(this.form.age) < 16) {
-        wx.showToast({
-          title: '请输入的年龄不小于16',
-          icon: 'none',
-          duration: 2000
-        })
+        wxToast('请输入的年龄不小于16')
         return
       }
       if (this.form.age && Number(this.form.age) > 65) {
-        wx.showToast({
-          title: '请输入的年龄不大于65',
-          icon: 'none',
-          duration: 2000
-        })
+        wxToast('请输入的年龄不大于65')
         return
       }
       this.updateResume()
@@ -277,7 +269,6 @@ export default class resumeDetail extends wepy.page {
       resume_id: options.resume_id
     }
     this.id = options.recommendId
-
   }
   onShow () {
     this.getResumeDetail(this.query)
