@@ -65,7 +65,7 @@ export default class tabBarBottom extends wepy.component {
 		this.geTabBar(this.usertype)
 	}
 	geTabBar(val) {
-		let type = val ? val : wx.getStorageSync('UserType')
+		let type = val ? val : wx.getStorageSync('rendaUserType')
 		if (type === '1') {
 			this.$parent.$parent.globalData.tabBar.list = list1
 		} else {

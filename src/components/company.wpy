@@ -131,7 +131,7 @@ export default class Company extends wepy.component {
       jobName: ''
     },
     infoImg: '',
-    registerType: wx.getStorageSync('rendaUserType') || 1,
+    registerType: '',
     list: [],
     com_type: [],
     com_scale: [],
@@ -139,10 +139,7 @@ export default class Company extends wepy.component {
     comIndex: 0,
     comScaleIndex: 0,
     jobIndex: 0,
-    disabled: true,
-    cWidth: 0,
-    cHeight: 0
-
+    disabled: true
   }
   watch = {
     form(val) {
@@ -163,6 +160,7 @@ export default class Company extends wepy.component {
     for (let key in allData) {
       this[key] = allData[key]
     }
+    this.registerType = wx.getStorageSync('rendaUserType')
     this.$apply()
   }
   events = {

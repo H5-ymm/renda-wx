@@ -1,28 +1,182 @@
 <style lang="less">
-@import "../../style/home.less";
+@import '../../style/user.less';
 </style>
 <template>
-	<view class="home-view">
-		<view class="page_list view-content">
-      <image src="https://a.rsd123.com/image/images/noBg.png" class="page_noData" mode="scaleToFill"/>
-      <view class="page_noData_text">敬请期待！</view>
+  <view class="page-my">
+    <view class="my-view-header">
+      <image src="https://a.rsd123.com/image/images/bg.png" class="my-view-header-bg" mode="aspectFill" alt="" />
+      <view class="my-view-userInfo">
+        <view class="my-avatar-box">
+          <image src="{{head_img}}" wx:if="{{head_img}}" alt="" mode="aspectFill" class="my-avatar" />
+          <image src="https://a.rsd123.com/image/images/header.png" wx:else alt="" mode="aspectFit" class="my-avatar" />
+        </view>
+        <view class="my-user-name">{{userName}}</view>
+        <view class="my-user-mobile">{{userInfo.mobile?userInfo.mobile:''}}</view>
+      </view>
     </view>
-		<tabBarBottom :usertype.sync="usertype" :tabBarIndex.sync="tabBarIndex"></tabBarBottom>
-	</view>
+    <view class="view-content">
+      <view class="page_margin my-view">
+        <view class="my-view-box">
+          <repeat wx:for="{{menus}}" wx:key="index">
+            <view class="page_card">
+              <repeat wx:for="{{item.child}}" wx:key="index" wx:for-item="newitem">
+                <view class="page_card_row" @tap="viewInfo({{newitem}})">
+                  <view class="weui-flex between">
+                    <view class="weui-flex start">
+                      <image src="{{newitem.icon}}" alt="" class="my-icon" />
+                      <view class="my-text">{{newitem.title}}</view>
+                    </view>
+                    <view>
+                      <image mode="scaleToFill" src="https://a.rsd123.com/image/images/right.png" class="page_card_icon" />
+                    </view>
+                  </view>
+                </view>
+              </repeat>
+            </view>
+          </repeat>
+        </view>
+      </view>
+    </view>
+    <tabBarBottom :usertype.sync="usertype" :tabBarIndex.sync="tabBarIndex"></tabBarBottom>
+    <selectModal :isScaleModal.sync="isSelectModal" @selectOk="selectOk" :menus.sync="menusModal" :title.sync="modalTitle"></selectModal>
+  </view>
 </template>
 <script>
 import wepy from 'wepy'
+import { $http } from '@/http.js'
+import { getImgUrl, wxToast, wxRedirectTo } from '@/util.js'
 import tabBarBottom from '@/components/tabBarBottom'
-export default class userCenter extends wepy.page {
-	components = {
-		tabBarBottom: tabBarBottom
-	}
-	config = {
-		navigationBarTitleText: '个人中心'
-	}
-	data = {
-		usertype: '1',
-		tabBarIndex: 2
-	}
+import selectModal from '@/components/selectModal'
+import { connect, getStore } from 'wepy-redux'
+const store = getStore()
+@connect({
+  loginUser: (state) => state.user.loginUser
+})
+export default class my extends wepy.page {
+  components = {
+    tabBarBottom: tabBarBottom,
+    selectModal: selectModal
+  }
+  data = {
+    userInfo: {},
+    head_img: '',
+    menus: [
+      {
+        child: [{
+          title: '切换账号',
+          icon: '../../images/icon6.png',
+          url: '/pages/my/userBind'
+        }]
+      }
+    ],
+    tabBarData: [],
+    usertype: '1',
+		tabBarIndex: 2,
+    isSelectModal: true,
+    modalTitle: '切换身份',
+    menusModal: [
+      {
+        icon: 'https://a.rsd123.com/image/images/team.png',
+        title: '团队账户',
+      },
+      {
+        icon: 'https://a.rsd123.com/image/images/company.png',
+        title: '企业账户'
+      }
+    ],
+    uid: '',
+    type: 1,
+    rendaUserTeamType:1,
+    code: 200
+  }
+  config = {
+    navigationBarTitleText: '个人中心'
+  }
+  methods = {
+    viewInfo (item) {
+      if (item.title === '切换账号') {
+        this.isSelectModal = !this.isSelectModal
+        this.$apply()
+      } else {
+        wx.navigateTo({
+          url: item.url
+        })
+      }
+    }
+  }
+  events = {
+    selectOk: val => {
+			let oldType = wx.getStorageSync('rendaUserType')
+		  let newType = val === 0 ? 2 : 1
+      if (oldType != newType) {
+				this.type = Number(val ) + 1
+        this.$apply()
+        this.switchUser(this.type)
+      } else {
+        this.isSelectModal = !this.isSelectModal
+      }
+    }
+  }
+  switchUser (type) {
+    let params = {
+      uid: this.uid,
+      type
+    }
+    $http('/userinfo/userSwitchRole', params).then(res => {
+      wx.removeStorageSync('userInfo')
+      wx.removeStorageSync('receiptType')
+      if (res) {
+        this.isSelectModal = !this.isSelectModal
+        this.$apply()
+        if(res.data) {
+          wx.setStorageSync('rendaUserType', 2)
+          wxToast('切换身份成功')
+          wxRedirectTo('/pages/my/index')
+        } 
+        // 2800:企业切换到团队
+        // 2801:团队切换到企业
+        if (res.data === 2801) {
+          wxToast('暂无企业账号，请先注册')
+          wxRedirectTo('/pages/register/companyForm')
+        }
+        if (res.data === 2800) {
+          wxToast('暂无团队账号，请先注册')
+          wxRedirectTo('/pages/register/selectUser')
+        }
+      } else {
+        wxToast('切换身份失败')
+      }
+    }).catch(error =>{
+      console.log(error)
+    })
+  }
+  computed = {
+    userName () {
+      let name = wx.getStorageSync('wxInfo')
+        ? JSON.parse(wx.getStorageSync('wxInfo')).user_name
+        : ''
+      return this.userInfo.user_name ? this.userInfo.user_name : name
+    }
+  }
+  onLoad () {
+		console.log(store.getState())
+		let user = store.getState().user
+		console.log(user.loginUser)
+		this.userInfo.mobile = user.loginUser.username
+    this.rendaUserTeamType = wx.getStorageSync('rendaUserTeamType')
+    this.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
+		let wxInfo = wx.getStorageSync('wxInfo')
+		this.head_img = wxInfo ? JSON.parse(wxInfo).head_img : ''
+    // $http('/Userinfo/getUserInfo', { uid: this.uid }).then(res => {
+    //   this.userInfo = res.data || {}
+    //   if (res.data.head_img) {
+    //     this.head_img = getImgUrl(res.data.head_img)
+    //   } else {
+    //     this.head_img = wxInfo ? JSON.parse(wxInfo).head_img : ''
+    //   }
+    //   wx.setStorageSync('userInfo', JSON.stringify(this.userInfo))
+    // })
+    this.$apply()
+  }
 }
 </script>

@@ -16,9 +16,9 @@
           <view class="weui-flex between">
             <view class="my-text  weui-flex__item my-text-require">{{label}}logo：</view>
             <image @tap="uploadImg" src="{{infoImg}}" mode="scaleToFill" class="my-head"  wx:if="{{infoImg}}" />
-						<image @tap="uploadImg" src="../../images/default1.png" mode="scaleToFill" class="my-head" 
+						<image @tap="uploadImg" src="https://a.rsd123.com/image/images/default1.png" mode="scaleToFill" class="my-head" 
             wx:else/>
-						<image mode="scaleToFill" @tap="uploadImg"  src="../../images/right.png"  class="page_down_icon" />
+						<image mode="scaleToFill" @tap="uploadImg"  src="https://a.rsd123.com/image/images/right.png"  class="page_down_icon" />
           </view>
         </view>
     	  <teamCompany @submit="submit"></teamCompany>
@@ -89,11 +89,9 @@ export default class companyForm extends wepy.page {
 		modalObj: {
 			title: '',
 			subTitle: '',
-			imgBg: '../../images/modalIcon.png'
+			imgBg: 'https://a.rsd123.com/image/images/modalIcon.png'
 		},
-		isModal: true,
-		canvasWidth: 0,
-		canvasHeight: 0
+		isModal: true
 	}
 	onLoad(options) {
 		this.registerType = options.query || 2
@@ -164,9 +162,6 @@ export default class companyForm extends wepy.page {
 				sizeType: ['compressed'],
 				success: res => {
 					compressImg(res.tempFilePaths[0]).then(res => {
-						this.canvasWidth = res.cWidth
-						this.canvasHeight = res.cHeight
-						this.$apply()
 						this.getImg([res.url])
 					})
 				}

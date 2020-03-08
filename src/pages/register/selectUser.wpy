@@ -138,10 +138,7 @@ export default class selectUser extends wepy.page {
 				wx.setStorageSync('rendaUserType', 2)
 			}
 			else {
-				// wx.setStorageSync('rendaUserType', 1)
-				// wxNavigateTo('/pages/company/ceateList')
 				wxNavigateTo('/pages/register/companyForm')
-				// wxToast('小程序企业功能待完善，敬请期待！')
 			}
 		}
 	}

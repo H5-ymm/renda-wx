@@ -30,14 +30,14 @@ import modal from '@/components/modal'
 import modalUser from '@/components/modalUser'
 import { $http } from '@/http.js'
 import { wxToast, wxReLaunch, wxNavigateTo, getErrorTip } from '@/util.js'
-import { connect, getStore } from 'wepy-redux'
+import { getStore } from 'wepy-redux'
 import { getAllUser } from '@/store/actions/user.js'
 import { getAllContant } from '@/store/actions/contant.js'
 import { GETALLUSER } from '@/store/types/user.js'
 const store = getStore()
-@connect({
-  loginUser: (state) => state.user.loginUser
-})
+// @connect({
+//   loginUser: (state) => state.user.loginUser
+// })
 export default class Welcome extends wepy.page {
   components = {
     modal: modal,
@@ -76,7 +76,7 @@ export default class Welcome extends wepy.page {
       this.isInviteUser = false
     }
       // let params = {
-      //   uid: 23,
+      //   uid: 54,
       //   type: 1
       // }
       // $http('/userinfo/userSwitchRole', params).then(res => {

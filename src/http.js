@@ -22,9 +22,8 @@ const http = (url, params, method) => {
                         resolve(res.data);
                     } else if (res.data.status.code === 1009 || res.data.status.code === 6001 ||
                         res.data.status.code === 6002 || res.data.status.code === 6006 ||
-                        res.data.status.code === 6007 ||
-                        res.data.status.code === 6010 ||
-                        res.data.status.code === 6100) {
+                        res.data.status.code === 6007 || res.data.status.code === 6010 ||
+                        res.data.status.code === 6100 || res.data.status.code === 3058) {
                         // 需要特殊处理的接口，可以单独列出来返回数据
                         reject(res.data);
                     } else if (url === '/Wxresume/addResume') {
@@ -35,15 +34,11 @@ const http = (url, params, method) => {
                                 url: '/pages/login/login' // 页面 A
                             });
                         }, 300)
-                    } else if (res.data.status.code === 3058) {
-                        reject(res.data);
                     } else {
                         let remind = res.data.status.remind ? res.data.status.remind : '没有信息'
                         wxToast(remind)
                     }
                 } else {
-                    console.log(url + '请求失败')
-                    console.log(params)
                     wxToast('请求失败')
                 }
             },

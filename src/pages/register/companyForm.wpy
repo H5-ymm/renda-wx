@@ -16,12 +16,12 @@
           <view class="weui-flex between">
             <view class="my-text  weui-flex__item my-text-require">企业logo：</view>
             <image @tap="uploadImg" src="{{infoImg}}" mode="scaleToFill" class="my-head"  wx:if="{{infoImg}}" />
-						<image @tap="uploadImg" src="../../images/default1.png" mode="scaleToFill" class="my-head" 
+						<image @tap="uploadImg" src="https://a.rsd123.com/image/images/default1.png" mode="scaleToFill" class="my-head" 
             wx:else/>
-						<image mode="scaleToFill" @tap="uploadImg"  src="../../images/right.png"  class="page_down_icon" />
+						<image mode="scaleToFill" @tap="uploadImg"  src="https://a.rsd123.com/image/images/right.png"  class="page_down_icon" />
           </view>
         </view>
-    	  <teamCompany></teamCompany>
+    	  <company @submit="submit"></company>
 				<view class="page_card_row">
           <view class="weui-flex between">
             <view class="my-text  weui-flex__item my-text-require">联系人：</view>
@@ -56,11 +56,11 @@
 import wepy from 'wepy'
 import company from '@/components/company'
 import modal from '@/components/modal'
-import { wxToast, checkMobile, getImgUrl, validateIdCard, compressImg, getErrorTip } from '@/util.js'
+import { wxToast, checkMobile, getImgUrl, validateIdCard, compressImg, getErrorTip, wxReLaunch } from '@/util.js'
 import { $http, uploadFile } from '@/http.js'
 export default class companyForm extends wepy.page {
 	components = {
-		teamCompany: company,
+		company: company,
 		companyModal: modal
 	}
 	data = {
@@ -86,7 +86,7 @@ export default class companyForm extends wepy.page {
 		modalObj: {
 			title: '',
 			subTitle: '',
-			imgBg: '../../images/modalIcon.png'
+			imgBg: 'https://a.rsd123.com/image/images/modalIcon.png'
 		},
 		isModal: true
 	}
@@ -112,6 +112,11 @@ export default class companyForm extends wepy.page {
 			if (data.phone && data.phoneEnd) {
 				this.form.link_tel = data.phone + '-' + data.phoneEnd
 			}
+		},
+		handleOk() {
+			this.isModal = true
+			this.$apply()
+			wxReLaunch('/pages/login/welcome')
 		}
 	}
 	getImg(tempFilePaths) {
@@ -145,9 +150,6 @@ export default class companyForm extends wepy.page {
 				sizeType: ['compressed'],
 				success: res => {
 					compressImg(res.tempFilePaths[0]).then(res => {
-						this.canvasWidth = res.cWidth
-						this.canvasHeight = res.cHeight
-						this.$apply()
 						this.getImg([res.url])
 					})
 				}
@@ -163,9 +165,9 @@ export default class companyForm extends wepy.page {
 			} else if (!this.form.link_man) {
 				wxToast('请输入联系人')
 			} else if (!this.form.link_phone) {
-				wxToast('请输入手机号码')
+				wxToast('请输入联系人电话')
 			} else if (!checkMobile(this.form.link_phone)) {
-				wxToast('请输入正确的手机号码')
+				wxToast('请输入正确的联系人电话')
 			} else {
 				this.registerCompany()
 			}

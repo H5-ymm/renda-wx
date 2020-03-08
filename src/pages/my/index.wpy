@@ -129,9 +129,10 @@ export default class my extends wepy.page {
     selectOk: val => {
       console.log(val)
       let oldType = wx.getStorageSync('rendaUserType')
-      let newType = this.type === 1 ? 1 : 2
+      // 企业切换团队 1
+      let newType = val === 0 ? 2 : 1
       if (oldType != newType) {
-        this.type = val + 1
+        this.type = Number(val) + 1
         this.$apply()
         this.switchUser(this.type)
       } else {
@@ -145,16 +146,31 @@ export default class my extends wepy.page {
       type
     }
     $http('/userinfo/userSwitchRole', params).then(res => {
+      wx.removeStorageSync('userInfo')
+      wx.removeStorageSync('receiptType')
       if (res) {
-        wxToast('切换身份成功')
-        let userType = this.type === 1 ? 2 : 1
         this.isSelectModal = !this.isSelectModal
-        wx.clearStorageSync()
-        wx.setStorageSync('rendaUserType', userType)
-        wxRedirectTo('/pages/login/welcome')
+        this.$apply()
+        if(res.data) {
+          wxToast('切换身份成功')
+          wx.setStorageSync('rendaUserType', 1)
+          wxRedirectTo('/pages/companyView/userCenter')  
+        }
+        // 2800:企业切换到团队
+        // 2801:团队切换到企业
+        if (res.data === 2801) {
+          wxToast('暂无企业账号，请先注册')
+          wxRedirectTo('/pages/register/companyForm')
+        }
+        if (res.data === 2800) {
+          wxToast('暂无团队账号，请先注册')
+          wxRedirectTo('/pages/register/selectUser')
+        }
       } else {
         wxToast('切换身份失败')
       }
+    }).catch(error =>{
+      console.log(error)
     })
   }
   computed = {
