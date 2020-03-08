@@ -136,6 +136,7 @@ export default class my extends wepy.page {
         this.$apply()
         this.switchUser(this.type)
       } else {
+        wxToast('当前账户身份已登录，无需切换')
         this.isSelectModal = !this.isSelectModal
       }
     }
