@@ -39,23 +39,28 @@
     </view>
     <tabBarBottom :usertype.sync="usertype" :tabBarIndex.sync="tabBarIndex"></tabBarBottom>
     <selectModal :isScaleModal.sync="isSelectModal" @selectOk="selectOk" :menus.sync="menusModal" :title.sync="modalTitle"></selectModal>
+     <modal :isScaleModal.sync="isModal" :height.sync="modalHeight" :modalObj.sync="modalObj"></modal>
   </view>
 </template>
 <script>
 import wepy from 'wepy'
 import { $http } from '@/http.js'
-import { getImgUrl, wxToast, wxRedirectTo } from '@/util.js'
+import { getImgUrl, wxToast, wxRedirectTo, getErrorTip } from '@/util.js'
 import tabBarBottom from '@/components/tabBarBottom'
 import selectModal from '@/components/selectModal'
 import { connect, getStore } from 'wepy-redux'
+import { getAllUser } from '@/store/actions/user.js'
+import { getAllContant } from '@/store/actions/contant.js'
+import modal from '@/components/modal'
 const store = getStore()
 @connect({
   loginUser: (state) => state.user.loginUser
 })
-export default class my extends wepy.page {
+export default class userCenter extends wepy.page {
   components = {
     tabBarBottom: tabBarBottom,
-    selectModal: selectModal
+    selectModal: selectModal,
+    modal: modal
   }
   data = {
     userInfo: {},
@@ -87,7 +92,13 @@ export default class my extends wepy.page {
     uid: '',
     type: 1,
     rendaUserTeamType:1,
-    code: 200
+    isModal: true,
+    modalHeight: 640,
+    modalObj: {
+      title: '',
+      subTitle: '',
+      imgBg: 'https://a.rsd123.com/image/images/modalIcon.png'
+    }
   }
   config = {
     navigationBarTitleText: '个人中心'
@@ -130,9 +141,7 @@ export default class my extends wepy.page {
         this.isSelectModal = !this.isSelectModal
         this.$apply()
         if(res.data) {
-          wx.setStorageSync('rendaUserType', 2)
-          wxToast('切换身份成功')
-          wxRedirectTo('/pages/my/index')
+          this.checkUserLogin()
         } 
         // 2800:企业切换到团队
         // 2801:团队切换到企业
@@ -150,6 +159,38 @@ export default class my extends wepy.page {
     }).catch(error =>{
       console.log(error)
     })
+  }
+  checkUserLogin () {
+    let openid = wx.getStorageSync('rendaOpenId')
+    store.dispatch(getAllUser({ openid })).then(res => {
+      this.checkRouterView(res.payload)
+    }).catch(error => {
+      if (error && error.code) {
+        this.showErrorTip(error.code)
+      }
+    })
+  }
+  checkRouterView (res) {
+    if (res && res.uid) {
+      wxToast('切换身份成功')
+      this.$parent.globalData.uid = res.uid
+      wx.setStorageSync('rendaUserType', 2)
+      wx.setStorageSync('rendaUid', res.uid)
+      wxRedirectTo('/pages/my/index')
+      store.dispatch(getAllContant())
+    }
+  }
+  showErrorTip (code) {
+    let obj = getErrorTip(code)
+    if (code === 6001 || code === 6008) {
+      this.modalHeight = 640
+    } else {
+      this.modalHeight = 580
+    }
+    this.modalObj.title = obj.title
+    this.modalObj.subTitle = obj.subTitle
+    this.isModal = false
+    this.$apply()
   }
   computed = {
     userName () {

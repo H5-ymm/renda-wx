@@ -39,22 +39,36 @@
     </view>
     <tabBarBottom :usertype.sync="usertype" :tabBarIndex.sync="tabBarIndex"></tabBarBottom>
     <selectModal :isScaleModal.sync="isSelectModal" @selectOk="selectOk" :menus.sync="menusModal" :title.sync="modalTitle"></selectModal>
+    <modal :isScaleModal.sync="isModal" :height.sync="modalHeight" :modalObj.sync="modalObj"></modal>
   </view>
 </template>
 <script>
 import wepy from 'wepy'
 import { $http } from '@/http.js'
-import { getImgUrl, wxToast, wxRedirectTo } from '@/util.js'
+import { getImgUrl, wxToast, wxRedirectTo, getErrorTip } from '@/util.js'
 import tabBarBottom from '@/components/tabBarBottom'
+import modal from '@/components/modal'
 import selectModal from '@/components/selectModal'
+import { getStore } from 'wepy-redux'
+import { getAllUser } from '@/store/actions/user.js'
+import { getAllContant } from '@/store/actions/contant.js'
+const store = getStore()
 export default class my extends wepy.page {
   components = {
     tabBarBottom: tabBarBottom,
-    selectModal: selectModal
+    selectModal: selectModal,
+    modal: modal
   }
   data = {
     userInfo: {},
     head_img: '',
+    isModal: true,
+    modalHeight: 640,
+    modalObj: {
+      title: '',
+      subTitle: '',
+      imgBg: 'https://a.rsd123.com/image/images/modalIcon.png'
+    },
     menus: [
       {
         child: [
@@ -127,7 +141,6 @@ export default class my extends wepy.page {
   }
   events = {
     selectOk: val => {
-      console.log(val)
       let oldType = wx.getStorageSync('rendaUserType')
       // 企业切换团队 1
       let newType = val === 0 ? 2 : 1
@@ -153,9 +166,7 @@ export default class my extends wepy.page {
         this.isSelectModal = !this.isSelectModal
         this.$apply()
         if(res.data) {
-          wxToast('切换身份成功')
-          wx.setStorageSync('rendaUserType', 1)
-          wxRedirectTo('/pages/companyView/userCenter')  
+          this.checkUserLogin()
         }
         // 2800:企业切换到团队
         // 2801:团队切换到企业
@@ -182,7 +193,40 @@ export default class my extends wepy.page {
       return this.userInfo.user_name ? this.userInfo.user_name : name
     }
   }
-  onLoad () {
+  checkUserLogin () {
+    let openid = wx.getStorageSync('rendaOpenId')
+    store.dispatch(getAllUser({ openid })).then(res => {
+      this.checkRouterView(res.payload)
+    }).catch(error => {
+      if (error && error.code) {
+        this.showErrorTip(error.code)
+      }
+    })
+  }
+  checkRouterView (res) {
+    if (res && res.uid) {
+      wxToast('切换身份成功') 
+      this.$parent.globalData.uid = res.uid
+      wx.setStorageSync('rendaUserType', 1)
+      wx.setStorageSync('rendaUid', res.uid)
+      // userType 1 企业 2 团队
+      wxRedirectTo('/pages/companyView/userCenter')
+      store.dispatch(getAllContant())
+    }
+  }
+  showErrorTip (code) {
+    let obj = getErrorTip(code)
+    if (code === 6001 || code === 6008) {
+      this.modalHeight = 640
+    } else {
+      this.modalHeight = 580
+    }
+    this.modalObj.title = obj.title
+    this.modalObj.subTitle = obj.subTitle
+    this.isModal = false
+    this.$apply()
+  }
+  onLoad() {
     this.rendaUserTeamType = wx.getStorageSync('rendaUserTeamType')
     if (this.rendaUserTeamType!=1) {
       this.menus[1].child.splice(1,1)
@@ -191,12 +235,14 @@ export default class my extends wepy.page {
     let wxInfo = wx.getStorageSync('wxInfo')
     $http('/Userinfo/getUserInfo', { uid: this.uid }).then(res => {
       this.userInfo = res.data || {}
+      if (res.data.mobile && res.data.user_name) {
+        wx.setStorageSync('userInfo', JSON.stringify(this.userInfo))
+      }
       if (res.data.head_img) {
         this.head_img = getImgUrl(res.data.head_img)
       } else {
         this.head_img = wxInfo ? JSON.parse(wxInfo).head_img : ''
       }
-      wx.setStorageSync('userInfo', JSON.stringify(this.userInfo))
     })
     this.$apply()
   }

@@ -76,8 +76,8 @@ export default class Welcome extends wepy.page {
       this.isInviteUser = false
     }
       // let params = {
-      //   uid: 54,
-      //   type: 1
+      //   uid: 49,
+      //   type: 2
       // }
       // $http('/userinfo/userSwitchRole', params).then(res => {
       //   if (res) {
