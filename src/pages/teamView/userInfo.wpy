@@ -53,7 +53,7 @@
 				<view class="page_card_row">
 					<view class="weui-flex between">
 						<view class="my-text weui-flex__item">身份证</view>
-						<input class="weui-input" placeholder-class="placeholder" data-name="id_card" value="{{form.id_card}}" disabled="{{id!=''}}" @input="changeInput" placeholder="请输入身份证" />
+						<input class="weui-input" placeholder-class="placeholder" data-name="id_card" value="{{form.id_card}}" @input="changeInput" disabled="{{id!=''}}" placeholder="请输入身份证" />
 					</view>
 				</view>
 				<view class="page_card_row">
@@ -79,7 +79,7 @@
 				<view class="page_card_row">
 					<view class="weui-flex between">
 						<view class="my-text weui-flex__item">所在地区</view>
-						<districtSelet @selectCity="selectCity" :address.sync="[]" wx:if="{{uid!=userUid}}" :disabled.sync="disabled"></districtSelet>
+						<districtSelet @selectCity="selectCity" :address.sync="address" wx:if="{{uid!=userUid}}" :disabled.sync="disabled"></districtSelet>
 						<view class="my-text-right" wx:else>{{addressText|| '-'}}</view>
 					</view>
 				</view>
@@ -190,7 +190,8 @@ export default class userInTeam extends wepy.page {
 		userTeamType: '',
 		rendaUidQrcode: '',
 		teamId: '',
-		invite_uid: ''
+		invite_uid: '',
+		address: []
 	}
 	config = {
 		navigationBarTitleText: '成员详情'
@@ -297,9 +298,13 @@ export default class userInTeam extends wepy.page {
 			uid: this.uid
 		}
 		$http('/userinfo/memberdetail', params).then(res => {
-			this.form = res.data.data
+			this.form = res.data.data || {}
 			this.index = res.data.data.status ? res.data.data.status - 1 : 0
 			this.userUid = res.data.data.uid
+			if (this.form.provinceid) {
+				this.address = [Number(this.form.provinceid), Number(this.form.cityid), Number(this.form.three_cityid)]
+			}
+			console.log(this.address)
 			this.form.education = res.data.data.education ? res.data.data.education : 0
 			if (this.jobList.length) {
 				this.form.grade_id = this.jobList[1].id
@@ -346,8 +351,9 @@ export default class userInTeam extends wepy.page {
 	handleUser () {
 		if (this.id) {
 			let params = {
-				uid: this.uid,
+				uid: this.userUid,
 				id: this.id,
+				id_card:this.form.id_card,
 				status: this.form.status,
 				remark: this.form.remark,
 				provinceid: this.form.provinceid,
