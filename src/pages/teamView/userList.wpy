@@ -93,6 +93,7 @@ export default class userList extends wepy.page {
 	getUserList () {
 		$http('/userinfo/teamUserList', this.params).then(res => {
 			this.list = res.data.data || []
+			console.log(this.list)
 			this.count = res.data.count
 			this.$apply()
 		})

@@ -67,7 +67,7 @@
 				<view class="page_card_row">
 					<view class="weui-flex between">
 						<view class="my-text weui-flex__item">学历</view>
-						<picker @change="pickerChange" value="{{eduIndex}}" wx:if="{{!id}}" data-name="education" range="{{eduList}}">
+						<picker @change="pickerChange" value="{{eduIndex}}" wx:if="{{uid!=userUid}}" data-name="education" range="{{eduList}}">
 							<view class="my-text-right weui-flex between">
 								<view class="{{eduList[eduIndex]?'':'placeholder'}}"> {{eduList[eduIndex]?eduList[eduIndex]:'请选择'}}</view>
 								<image mode="scaleToFill" src="https://a.rsd123.com/image/images/down.png" class="page_down_icon" />
@@ -79,8 +79,8 @@
 				<view class="page_card_row">
 					<view class="weui-flex between">
 						<view class="my-text weui-flex__item">所在地区</view>
-						<districtSelet @selectCity="selectCity" :address.sync="[]" wx:if="{{!id}}" :disabled.sync="disabled"></districtSelet>
-						<view class="my-text-right" wx:else>{{addressText}}</view>
+						<districtSelet @selectCity="selectCity" :address.sync="[]" wx:if="{{uid!=userUid}}" :disabled.sync="disabled"></districtSelet>
+						<view class="my-text-right" wx:else>{{addressText|| '-'}}</view>
 					</view>
 				</view>
 			</view>
