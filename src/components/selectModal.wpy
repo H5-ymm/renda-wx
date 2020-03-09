@@ -45,8 +45,10 @@ export default class selectModal extends wepy.component {
 	data = {
 		isShow: false,
 		activeIndex: 0,
-		lock: false,
-		sessionKey: ''
+		rendaUserType: 0
+	}
+	onLoad () {
+		this.rendaUserType = wx.getStorageSync('rendaUserType')
 	}
 	methods = {
 		handleClose () {
@@ -65,6 +67,16 @@ export default class selectModal extends wepy.component {
 		}
 	}
 	watch = {
+		rendaUserType (val) {
+		 if(val) {
+			 	if (this.menus[0].title == '切换团队') {
+				this.activeIndex = val=== 2 ? 1 : 0
+			} else {
+				this.activeIndex = 0
+			}
+			this.$apply()
+		 }
+		},
 		isScaleModal (val) {
 			if (!val) {
 				this.isShow = true

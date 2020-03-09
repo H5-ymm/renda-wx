@@ -63,7 +63,7 @@ export default class Welcome extends wepy.page {
     code: '',
     sessionKey: '',
     isInviteUser: false,
-    teamId:'',
+    teamId: '',
     rendaUidQrcode: '',
     uid: ''
   }
@@ -75,15 +75,16 @@ export default class Welcome extends wepy.page {
     } else {
       this.isInviteUser = false
     }
-      // let params = {
-      //   uid: 49,
-      //   type: 2
-      // }
-      // $http('/userinfo/userSwitchRole', params).then(res => {
-      //   if (res) {
-      //     wxToast('切换身份成功')
-      //   }
-      // })
+    // let params = {
+    //   uid: 49,
+    //   type: 1
+    // }
+    // $http('/userinfo/userSwitchRole', params).then(res => {
+    //   if (res) {
+    //     wxToast('切换身份成功')
+    //   }
+    // })
+    // return
     if (options && options.query) {
       this.checked = options.query
       this.isRead = true
@@ -117,25 +118,25 @@ export default class Welcome extends wepy.page {
       this.$apply()
     }
   }
-  checkQrcode(item) {
+  checkQrcode (item) {
     let params = {
       uid: item.uid,
       team_id: this.rendaUidQrcode,
       invite_uid: this.teamId
     }
     $http('/userinfo/checkbindTeam', params).then(res => {
-     if (res.data.is_bond == 0 && res.data.effect == 0) {
+      if (res.data.is_bond == 0 && res.data.effect == 0) {
         this.isLoginModal = false
         this.$apply()
-     } else {
-        if (res.data.is_bond==1) {
+      } else {
+        if (res.data.is_bond == 1) {
           wxToast('已有团队，不需要加入')
-          this.viewRouter(item) 
+          this.viewRouter(item)
         } else {
           wxToast('二维码已经失败')
         }
       }
-    })  
+    })
   }
   checkUserLogin (openid) {
     let params = {}
@@ -143,7 +144,7 @@ export default class Welcome extends wepy.page {
       params = {
         openid,
         type: 2
-      } 
+      }
     } else {
       params = {
         openid
@@ -175,15 +176,15 @@ export default class Welcome extends wepy.page {
       if (this.isInviteUser) {
         wx.setStorageSync('rendaUserType', 2)
         this.checkQrcode(res)
-      } else {     
+      } else {
         // userType 1 企业 2 团队
-        wx.setStorageSync('rendaUserType', res.usertype)  
-        this.viewRouter(res) 
+        wx.setStorageSync('rendaUserType', res.usertype)
+        this.viewRouter(res)
       }
       store.dispatch(getAllContant())
     }
   }
-  viewRouter(res) {
+  viewRouter (res) {
     if (!res.usertype) {
       wxReLaunch('/pages/register/selectUser')
     } else if (Number(res.usertype) === 2) {
@@ -241,10 +242,10 @@ export default class Welcome extends wepy.page {
         let query = {
           teamId: this.teamId,
           invite_uid: this.rendaUidQrcode,
-          tel:phoneNumber,
+          tel: phoneNumber,
           uid: res.data.uid
         }
-        wxNavigateTo('/pages/teamView/userInfo?query='+ JSON.stringify(query))
+        wxNavigateTo('/pages/teamView/userInfo?query=' + JSON.stringify(query))
       } else {
         this.checkRouterView(res.data)
       }
@@ -274,7 +275,7 @@ export default class Welcome extends wepy.page {
           } else {
             this.getWxPhone(val)
           }
-          
+
         } else {
           wxNavigateTo('/pages/login/login')
         }
@@ -303,7 +304,7 @@ export default class Welcome extends wepy.page {
     getUserInfo (e) {
       // 没有阅读协议
       if (!this.isRead) return
-      if (this.code === 6100 && this.teamId!='') {
+      if (this.code === 6100 && this.teamId != '') {
         this.isLoginModal = !this.isLoginModal
         this.$apply()
         return

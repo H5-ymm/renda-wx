@@ -224,10 +224,11 @@ export default class userInTeam extends wepy.page {
 			this.teamId = ''
 			this.form.mobile = ''
 			this.invite_uid = ''
+			this.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
+
 			if (options.query) {
 				this.userTeamType = wx.getStorageSync('rendaUserTeamType')
-				this.id = options.query		
-				this.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
+				this.id = options.query
 				this.getMembeDetail()
 				this.getDepartmenList()
 			}
@@ -237,12 +238,12 @@ export default class userInTeam extends wepy.page {
 		}
 		this.$apply()
 	}
-	bindMember(params) {
-		let query = Object.assign(params, {uid: this.uid,invite_uid: this.invite_uid})
+	bindMember (params) {
+		let query = Object.assign(params, { uid: this.uid, invite_uid: this.invite_uid })
 		$http('/userinfo/bindMember', query).then(res => {
 			if (res.data) {
 				wx.removeStorageSync('rendaUidQrcode');
-        wx.removeStorageSync('rendaUserTeamId');
+				wx.removeStorageSync('rendaUserTeamId');
 				wxRedirectTo('/pages/teamView/index')
 			} else {
 				wxToast('添加失败')
@@ -266,8 +267,8 @@ export default class userInTeam extends wepy.page {
 			console.log(this.depList)
 			this.jobList = this.getArr(this.depList, this.depId)
 			if (this.jobList.length) {
-					console.log(this.jobList)
-        this.form.grade_id = this.jobList[1].id
+				console.log(this.jobList)
+				this.form.grade_id = this.jobList[1].id
 			}
 			this.$apply()
 		})
@@ -301,8 +302,8 @@ export default class userInTeam extends wepy.page {
 			this.userUid = res.data.data.uid
 			this.form.education = res.data.data.education ? res.data.data.education : 0
 			if (this.jobList.length) {
-        this.form.grade_id = this.jobList[1].id
-			}			
+				this.form.grade_id = this.jobList[1].id
+			}
 			this.$apply()
 		})
 	}
