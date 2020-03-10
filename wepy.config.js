@@ -5,7 +5,7 @@ if (!process.env.NODE_ENV) {
 let prod = process.env.NODE_ENV === 'production';
 console.log(process.env.NODE_ENV + '当前环境')
 
-function resolve(dir) {
+function resolve (dir) {
     return path.join(__dirname, dir)
 }
 module.exports = {
@@ -28,7 +28,7 @@ module.exports = {
         modules: ['node_modules']
     },
     appConfig: {
-        // baseUrl: process.env.NODE_ENV === 'production' ? 'https://a.rsd123.com/' : 'http://tiantianxsg.com:39888/',
+        baseUrl: process.env.NODE_ENV === 'production' ? 'https://a.rsd123.com/' : 'http://tiantianxsg.com:39888/',
         noPromiseAPI: ['createSelectorQuery']
     },
     compilers: {

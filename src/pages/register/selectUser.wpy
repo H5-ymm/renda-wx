@@ -60,18 +60,16 @@
 					<view class="card-item-title">{{item.title}}</view>
 					<view class="card-item-content">
 						<text decode="{{true}}">{{item.content}}</text>
-				  	<text class="card-text" >...</text>
+						<text class="card-text">...</text>
 					</view>
-					<image src="https://a.rsd123.com/image/images/active.png" alt="" wx:if="{{activeIndex==index}}"
-					 mode="aspectFit" class="menu-icon-select" />
+					<image src="https://a.rsd123.com/image/images/active.png" alt="" wx:if="{{activeIndex==index}}" mode="aspectFit" class="menu-icon-select" />
 				</view>
 			</repeat>
 		</view>
 		<view class="weui-cell_btn weui-flex center">
 			<button class="weui-btn_cell weui-btn_primary" @tap="next">下一步</button>
 		</view>
-		<modalUser :isScaleModal.sync="isModal" @handleClose="handleClose" @handleOk="handleOk" 
-		:height.sync="modalHeight" ></modalUser>
+		<modalUser :isScaleModal.sync="isModal" @handleClose="handleClose" @handleOk="handleOk" :height.sync="modalHeight"></modalUser>
 	</view>
 </template>
 
@@ -118,7 +116,7 @@ export default class selectUser extends wepy.page {
 	config = {
 		navigationBarTitleText: '选择身份'
 	}
-	onLoad(options) {
+	onLoad (options) {
 		if (options.query) {
 			this.teamType = options.query
 			this.isModal = false
@@ -126,18 +124,18 @@ export default class selectUser extends wepy.page {
 		}
 	}
 	methods = {
-		selectType(index) {
+		selectType (index) {
 			if (this.teamType === 1) return
 			this.activeIndex = index
 			this.$apply()
 		},
-		next() {
+		next () {
 			if (this.activeIndex === 0) {
 				this.isModal = false
 				this.$apply()
 				wx.setStorageSync('rendaUserType', 2)
-			}
-			else {
+			} else {
+				wx.setStorageSync('rendaUserType', 1)
 				wxNavigateTo('/pages/register/companyForm')
 			}
 		}

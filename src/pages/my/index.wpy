@@ -103,19 +103,24 @@ export default class my extends wepy.page {
     $http('/userinfo/userSwitchRole', params).then(res => {
       wx.removeStorageSync('userInfo')
       wx.removeStorageSync('receiptType')
+      // 2800:企业切换到团队 团队没有账户
+      // 2801:团队切换到企业
       if (res) {
-        if (res.data) {
-          this.checkUserLogin()
-        }
-        // 2800:企业切换到团队 团队没有账户
-        // 2801:团队切换到企业
+        console.log(res.data === 2801)
         if (res.data === 2801) {
           wxToast('暂无企业账号，请先注册')
+          wx.setStorageSync('rendaUserType', 1)
           wxRedirectTo('/pages/register/companyForm')
+          return false
         }
         if (res.data === 2800) {
           wxToast('暂无团队账号，请先注册')
-          wxRedirectTo('/pages/register/selectUser')
+          wx.setStorageSync('rendaUserType', 2)
+          wxRedirectTo('/pages/register/selectUser?query=1')
+          return false
+        }
+        if (res.data) {
+          this.checkUserLogin()
         }
       } else {
         wxToast('切换身份失败')
@@ -139,6 +144,7 @@ export default class my extends wepy.page {
       wxToast('切换身份成功')
       this.$parent.globalData.uid = res.uid
       wx.setStorageSync('rendaUserType', res.usertype)
+      console.log(res.usertype)
       wx.setStorageSync('rendaUid', res.uid)
       this.usertype = res.usertype
       this.tabBarIndex = res.usertype === 2 ? 1 : 2

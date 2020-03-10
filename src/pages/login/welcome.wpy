@@ -75,16 +75,6 @@ export default class Welcome extends wepy.page {
     } else {
       this.isInviteUser = false
     }
-    // let params = {
-    //   uid: 49,
-    //   type: 1
-    // }
-    // $http('/userinfo/userSwitchRole', params).then(res => {
-    //   if (res) {
-    //     wxToast('切换身份成功')
-    //   }
-    // })
-    // return
     if (options && options.query) {
       this.checked = options.query
       this.isRead = true
@@ -321,7 +311,9 @@ export default class Welcome extends wepy.page {
           user_name: this.userInfo.nickName
         }
         this.$parent.globalData.wxInfo = params
-        this.isLoginModal = false
+        if (this.isInviteUser) {
+          this.isLoginModal = false
+        }
         wx.setStorageSync('wxInfo', JSON.stringify(params))
         this.authorize = true
         this.$apply()
