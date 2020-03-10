@@ -1,5 +1,5 @@
 <style lang="less">
-@import "../../style/user.less";
+@import '../../style/user.less';
 .page-my {
   &.page-team-home {
     .my-view-header {
@@ -50,31 +50,31 @@
 </style>
 <template>
   <view class="page-my page-team-home">
-      <view class="my-view-header weui-flex start">
-        <image src="../../images/team/teamBg.png" class="my-view-header-bg" mode="aspectFill" alt="" />
-        <view class="my-avatar-box">
-          <image src="{{teamData.logo}}" wx:if="{{teamData.logo}}" alt="" mode="aspectFill" class="my-avatar" />
-          <image src="https://a.rsd123.com/image/images/header.png" wx:else alt="" mode="aspectFit" class="my-avatar" />
-        </view>
-        <view class="team-info-row">
-          <view class="my-user-name">{{teamData.name}}</view>
-          <view class="weui-flex around team-info-col">
-            <view class="team-info-total">
-              <view class="team-info-num">{{teamData.number}}</view>
-              <view class="team-info-label">团队人数</view>
-            </view>
-             <view class="team-info-total">
-              <view class="team-info-num">{{teamData.export_num}}</view>
-              <view class="team-info-label">简历总数</view>
-            </view>
-             <view class="team-info-total">
-              <view class="team-info-num">{{teamData.entry_num}}</view>
-              <view class="team-info-label">已入职</view>
-            </view>
+    <view class="my-view-header weui-flex start">
+      <image src="../../images/team/teamBg.png" class="my-view-header-bg" mode="aspectFill" alt="" />
+      <view class="my-avatar-box">
+        <image src="{{teamData.logo}}" wx:if="{{teamData.logo}}" alt="" mode="aspectFill" class="my-avatar" />
+        <image src="https://a.rsd123.com/image/images/header.png" wx:else alt="" mode="aspectFit" class="my-avatar" />
+      </view>
+      <view class="team-info-row">
+        <view class="my-user-name">{{teamData.name}}</view>
+        <view class="weui-flex around team-info-col">
+          <view class="team-info-total">
+            <view class="team-info-num">{{teamData.number}}</view>
+            <view class="team-info-label">团队人数</view>
+          </view>
+          <view class="team-info-total">
+            <view class="team-info-num">{{teamData.export_num}}</view>
+            <view class="team-info-label">简历总数</view>
+          </view>
+          <view class="team-info-total">
+            <view class="team-info-num">{{teamData.entry_num}}</view>
+            <view class="team-info-label">已入职</view>
           </view>
         </view>
       </view>
-     <view class="view-content">
+    </view>
+    <view class="view-content">
       <view class="page_margin my-view">
         <view class="my-view-box">
           <view class="page_card">
@@ -93,8 +93,7 @@
         </view>
       </view>
     </view>
-     <tabBarBottom :usertype.sync="usertype" :tabBarIndex.sync="tabBarIndex"></tabBarBottom>
-     <!-- <view @tap="swicthUser">切换身份</view> -->
+    <tabBarBottom :tabBarIndex.sync="tabBarIndex" :usertype.sync="usertype"></tabBarBottom>
   </view>
 </template>
 <script>
@@ -108,8 +107,16 @@ export default class teamView extends wepy.page {
   }
   data = {
     teamData: {},
-    menus: [
-      {
+    usertype: 2,
+    tabBarIndex: 0,
+    rendaUserTeamType: 0
+  }
+  config = {
+    navigationBarTitleText: '首页'
+  }
+  computed = {
+    menus () {
+      let arr = [{
         title: '成员管理',
         icon: '../../images/team/icon1.png',
         url: '/pages/teamView/userList'
@@ -123,25 +130,33 @@ export default class teamView extends wepy.page {
         title: '接单管理',
         icon: '../../images/team/icon3.png',
         url: '/pages/teamView/orderManage/index'
+      }]
+      if (this.rendaUserTeamType) {
+        if (this.rendaUserTeamType == 1) {
+          let dep = {
+            title: '部门管理',
+            icon: '../../images/icon5.png',
+            url: '/pages/teamView/department/index'
+          }
+          arr.splice(1, 0, dep)
+        } else {
+          arr = arr.splice(0)
+        }
       }
-    ],
-    tabBarData: [],
-    usertype: 2,
-    tabBarIndex: 0
-  }
-  config = {
-    navigationBarTitleText: '首页'
+      return arr
+    }
   }
   methods = {
-    viewInfo(item) {
+    viewInfo (item) {
       wx.navigateTo({
         url: item.url
       })
     }
   }
-  getTeamInfoAPi(uid) {
+  getTeamInfoAPi (uid) {
     $http('/Userinfo/getteaminfo', { uid }).then(res => {
       this.teamData = res.data || {}
+      this.rendaUserTeamType = res.data.grade_num
       wx.setStorageSync('rendaUserTeamId', res.data.team_id)
       wx.setStorageSync('rendaUserTeamType', res.data.grade_num)
       wx.setStorageSync('rendaDradeId', res.data.grade_id)
@@ -151,7 +166,7 @@ export default class teamView extends wepy.page {
       this.$apply()
     })
   }
-  onLoad() {
+  onShow () {
     let uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
     this.getTeamInfoAPi(uid)
   }

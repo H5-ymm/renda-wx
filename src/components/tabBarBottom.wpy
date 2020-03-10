@@ -31,15 +31,12 @@
 	<view class="tabBarBox weui-flex center">
 		<!-- 首页 -->
 		<repeat wx:for="{{tabBarList.list}}" wx:key="index">
-			<navigator class="itemView  weui-flex__item"
-				url="{{item.pagePath}}"
-				open-type="redirect"
-				hover-class="none">
-				<image class="item_icon" src="{{item.selected ? item.selectedIconPath : item.iconPath}}"/>
+			<navigator class="itemView  weui-flex__item" url="{{item.pagePath}}" open-type="redirect" hover-class="none">
+				<image class="item_icon" src="{{item.selected ? item.selectedIconPath : item.iconPath}}" />
 				<view class="item_text {{item.selected ? 'c-y' : 'c-gray'}}">
 					{{item.text}}
 				</view>
-	  	</navigator>
+			</navigator>
 		</repeat>
 	</view>
 </template>
@@ -49,11 +46,11 @@ import { list1, list2 } from '@/base/base'
 export default class tabBarBottom extends wepy.component {
 	// props 接收父组件传递过来的值
 	props = {
-		usertype: {
-			type: String,
-			default: '0'
-		},
 		tabBarIndex: {
+			type: Number,
+			default: 0
+		},
+		usertype: {
 			type: Number,
 			default: 0
 		}
@@ -61,12 +58,12 @@ export default class tabBarBottom extends wepy.component {
 	data = {
 		tabBarList: {}
 	}
-	onLoad() {
+	onLoad () {
 		this.geTabBar(this.usertype)
 	}
-	geTabBar(val) {
+	geTabBar (val) {
 		let type = val ? val : wx.getStorageSync('rendaUserType')
-		if (type === '1') {
+		if (type === 1) {
 			this.$parent.$parent.globalData.tabBar.list = list1
 		} else {
 			this.$parent.$parent.globalData.tabBar.list = list2
@@ -75,12 +72,17 @@ export default class tabBarBottom extends wepy.component {
 		this.$apply()
 	}
 	watch = {
-		usertype(val) {
+		usertype (val) {
+			console.log(val)
 			if (val) {
 				this.geTabBar(val)
 			} else {
 				this.tabBarList = this.$parent.$parent.tabBarClickHandle(this.tabBarIndex, this);
 			}
+			this.$apply()
+		},
+		tabBarIndex (val) {
+			this.tabBarList = this.$parent.$parent.tabBarClickHandle(val, this);
 			this.$apply()
 		}
 	}
