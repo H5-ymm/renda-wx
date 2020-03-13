@@ -36,8 +36,7 @@ page {
 				<teamUser :list.sync="list"></teamUser>
 			</scroll-view>
 		</view>
-		<view class="weui-flex between only-btn"
-		 wx:if="{{rendaUserTeamType==1||rendaUserTeamType==2}}">
+		<view class="weui-flex between only-btn" wx:if="{{rendaUserTeamType==1||rendaUserTeamType==2}}">
 			<view class="weui-flex center weui-flex__item only-btn-item">
 				<button class="weui-btn_cell  weui-flex__item weui-btn_primary" @tap="addUser">
 					添加成员
@@ -54,7 +53,7 @@ import { $http } from '@/http.js'
 import search from '@/components/search'
 import teamUser from '@/components/teamUser'
 import modalAddUser from '@/components/modalAddUser'
-import { getList, wxNavigateTo, wxShowModal, wxToast, wxReLaunch, getImgUrl } from '@/util'
+import { getList, wxNavigateTo, wxToast, wxReLaunch, getImgUrl } from '@/util'
 export default class userList extends wepy.page {
 	components = {
 		search: search,
@@ -79,7 +78,7 @@ export default class userList extends wepy.page {
 		qrCode: '',
 		type: 0,
 		teamId: '',
-		rendaUserTeamType:1
+		rendaUserTeamType: 1
 	}
 	config = {
 		navigationBarTitleText: '成员列表'
@@ -112,7 +111,7 @@ export default class userList extends wepy.page {
 			if (res.data) {
 				this.type = 1
 				this.isModal = false
-				 wx.removeStorageSync('rendaUserTeamId')
+				wx.removeStorageSync('rendaUserTeamId')
 				this.qrCode = getImgUrl(res.data)
 				this.$apply()
 			}
@@ -138,7 +137,7 @@ export default class userList extends wepy.page {
 			title: '转发',
 			imageUrl: this.qrCode,
 			// path: '/pages/teamView/userInfo?uid=' + this.uid
-			 path: `/pages/login/welcome?uid=${this.params.uid}&teamId=${this.teamId}`
+			path: `/pages/login/welcome?uid=${this.params.uid}&teamId=${this.teamId}`
 		}
 	}
 	methods = {

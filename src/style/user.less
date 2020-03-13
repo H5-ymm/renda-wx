@@ -46,7 +46,79 @@
             }
         }
     }
-
+    &.page-team-home {
+        .my-view-header {
+          padding: 0 24rpx;
+          color: #333333;
+          height: 256rpx;
+          .my-avatar-box {
+            height: 180rpx;
+            width: 180rpx;
+            position: relative;
+            z-index: 222;
+            .my-avatar {
+              width: 100%;
+              height: 100%;
+              border-radius: 50%;
+            }
+          }
+          .team-info-row {
+            margin-left: 20rpx;
+            line-height: 70rpx;
+            position: relative;
+            z-index: 222;
+            .my-user-name {
+              font-size: 40rpx;
+            }
+            .team-info-col {
+              line-height: 48rpx;
+            }
+            .team-info-total {
+              margin-right: 50rpx;
+              margin-top: 16rpx;
+              .team-info-num {
+                font-weight: bold;
+                font-size: 36rpx;
+              }
+              .team-info-label {
+                font-size: 26rpx;
+                font-weight: 200;
+              }
+            }
+          }
+        }
+        .page_margin {
+          margin: 0 24rpx 24rpx;
+        }
+        &.page-cmpany-home {
+            .my-view-header {
+                background: @weuiColorPrimary;
+                color:@weuiBgColorWhite ;
+                height: 280rpx;
+                padding-top: 50rpx;
+                .my-avatar-box {
+                    width: 140rpx;
+                    height: 140rpx;
+                }
+                .icon-company {
+                    width: 90rpx;
+                    height: 32rpx;
+                }
+               .team-info-row{
+                  line-height: 80rpx;
+                }
+            }
+            .view-content {
+                margin-top: -90rpx;
+                position: relative;
+                z-index: 333;
+                height: 63%;
+            }
+        }
+      }
+      .view-content {
+          height: 57%;
+      }
     .my-view {
         &.my-view-main {
             margin: 60rpx 48rpx 0;

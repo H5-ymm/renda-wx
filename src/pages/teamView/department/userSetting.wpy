@@ -42,19 +42,9 @@
 </style>
 <template>
 	<view class="home-view page_margin">
-		<!-- <view class="page_margin"> -->
 		<scroll-view scroll-y="true" @scrolltolower="searchScrollLower" style="height: 100%;">
 			<userSettingList @settingRole="settingRole" :list.sync="list"></userSettingList>
 		</scroll-view>
-		<!-- </view> -->
-		<!-- <view class="weui-flex between only-btn">
-			<view class="weui-flex center weui-flex__item only-btn-item">
-				<button class="weui-btn_cell  weui-flex__item weui-btn_primary" @tap="addDep">
-					确定
-				</button>
-			</view>
-		</view> -->
-		<!-- </view> -->
 		<view class="picker" wx:if="{{isPicker}}">
 			<view class="weui-flex between picker-btn">
 				<view class="weui-flex center" @tap="selectClose">
@@ -121,6 +111,7 @@ export default class department extends wepy.page {
 		$http('/team/editTeamUserRole', params).then(res => {
 			if (res.data) {
 				wxToast('人员调整成功')
+				this.gradeId = ''
 			}
 			this.isPicker = false
 			this.$broadcast('editSuccess')
@@ -183,13 +174,15 @@ export default class department extends wepy.page {
 			this.isPicker = true
 			this.depId = val.depart_id
 			this.userId = val.uid
-			this.gradeId = val.grade_id
+			// this.gradeId = val.grade_id
+			// console.log(this.gradeId)
 			this.$apply()
 			this.getDepartmenList()
 		}
 	}
 	methods = {
 		bindChange (e) {
+			console.log(e)
 			this.depIndex = e.detail.value
 		},
 		selectClose () {

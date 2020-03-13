@@ -51,20 +51,32 @@ import wxs from '../../filterWxs/dateFilter.wxs'
 export default class userBind extends wepy.page {
   wxs = { wxs }
   data = {
-    bindInfo: {}
+    bindInfo: {},
+    usertype: '',
+    urlApi: ''
   }
   config = {
     navigationBarTitleText: '账户绑定'
   }
+  watch = {
+    usertype (val) {
+      if (val) {
+        this.urlApi = val == 1 ? '/company/companyBinkInfo' : '/Userinfo/userBinkInfo'
+        this.getBindInfo()
+      }
+    }
+  }
   getBindInfo () {
     let uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
-    $http('/Userinfo/userBinkInfo', { uid }).then(res => {
+    $http(this.urlApi, { uid }).then(res => {
       this.bindInfo = res.data
       this.$apply()
     })
   }
   onLoad () {
-    this.getBindInfo()
+    this.usertype = wx.getStorageSync('rendaUserType')
+    console.log(this.usertype)
+    this.$apply()
   }
 }
 </script>

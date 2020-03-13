@@ -2,8 +2,8 @@
 @import '../../style/user.less';
 </style>
 <template>
-  <view class="page-my">
-    <view class="my-view-header">
+  <view class="page-my {{usertype==1?'page-team-home page-cmpany-home':''}} page">
+    <view class="my-view-header" wx:if="{{usertype==2}}">
       <image src="https://a.rsd123.com/image/images/bg.png" class="my-view-header-bg" mode="aspectFill" alt="" />
       <view class="my-view-userInfo">
         <view class="my-avatar-box">
@@ -12,6 +12,18 @@
         </view>
         <view class="my-user-name">{{userName}}</view>
         <view class="my-user-mobile">{{userInfo.mobile?userInfo.mobile:''}}</view>
+      </view>
+    </view>
+    <view class="my-view-header weui-flex start-between" wx:else>
+      <view class="my-avatar-box">
+        <image src="{{head_img}}" wx:if="{{head_img}}" alt="" mode="aspectFill" class="my-avatar" />
+        <image src="https://a.rsd123.com/image/images/header.png" wx:else alt="" mode="aspectFit" class="my-avatar" />
+      </view>
+      <view class="team-info-row">
+        <view class="my-user-name">{{userInfo.user_name}}</view>
+        <view class="weui-flex start">
+          <image src="../../images/ok.png" alt="" mode="aspectFill" class="icon-company" />
+        </view>
       </view>
     </view>
     <view class="view-content">
@@ -38,6 +50,9 @@
         </view>
       </view>
     </view>
+    <view class="weui-cell_btn weui-flex between page_margin">
+      <button class="weui-btn_cell weui-btn_primary" @tap="outLogin">退出登录</button>
+    </view>
     <tabBarBottom :usertype.sync="usertype" :tabBarIndex.sync="tabBarIndex"></tabBarBottom>
     <modal :isScaleModal.sync="isModal" :height.sync="modalHeight" :modalObj.sync="modalObj"></modal>
   </view>
@@ -50,6 +65,7 @@ import tabBarBottom from '@/components/tabBarBottom'
 import modal from '@/components/modal'
 import { getStore, connect } from 'wepy-redux'
 import { getAllUser } from '@/store/actions/user.js'
+import { GETALLUSER } from '@/store/types'
 import { getAllContant } from '@/store/actions/contant.js'
 const store = getStore()
 @connect({
@@ -93,6 +109,13 @@ export default class my extends wepy.page {
           url: item.url
         })
       }
+    },
+    outLogin () {
+      wxShowModal('退出登录', `确定退出登录吗?`, '确定').then(res => {
+        this.loginOut()
+      }).catch(() => {
+        console.log('取消')
+      })
     }
   }
   switchUser (type) {
@@ -106,7 +129,6 @@ export default class my extends wepy.page {
       // 2800:企业切换到团队 团队没有账户
       // 2801:团队切换到企业
       if (res) {
-        console.log(res.data === 2801)
         if (res.data === 2801) {
           wxToast('暂无企业账号，请先注册')
           wx.setStorageSync('rendaUserType', 1)
@@ -129,6 +151,16 @@ export default class my extends wepy.page {
       console.log(error)
     })
   }
+  loginOut () {
+    $http('/login/UntyingOpenid', { uid: this.uid }).then(res => {
+      wx.clearStorageSync()
+      wxToast('退出登录成功')
+      wxRedirectTo('/pages/login/welcome')
+      store.dispatch({ type: GETALLUSER, payload: {} })
+    }).catch(error => {
+      console.log(error)
+    })
+  }
   checkUserLogin () {
     let openid = wx.getStorageSync('rendaOpenId')
     store.dispatch(getAllUser({ openid })).then(res => {
@@ -144,7 +176,6 @@ export default class my extends wepy.page {
       wxToast('切换身份成功')
       this.$parent.globalData.uid = res.uid
       wx.setStorageSync('rendaUserType', res.usertype)
-      console.log(res.usertype)
       wx.setStorageSync('rendaUid', res.uid)
       this.usertype = res.usertype
       this.tabBarIndex = res.usertype === 2 ? 1 : 2
@@ -207,6 +238,20 @@ export default class my extends wepy.page {
       } else {
         arr = [
           {
+            child: [
+              {
+                title: '账户信息',
+                icon: 'https://a.rsd123.com/image/images/icon1.png',
+                url: '/pages/my/companyInfo'
+              },
+              {
+                title: '账户绑定',
+                icon: 'https://a.rsd123.com/image/images/icon2.png',
+                url: '/pages/my/userBind'
+              }
+            ]
+          },
+          {
             child: [{
               title: '切换账号',
               icon: '../../images/icon6.png',
@@ -232,6 +277,29 @@ export default class my extends wepy.page {
       this.$apply()
     })
   }
+  getCompanyInfo () {
+    $http('/company/selectCompanyInfo', { uid: this.uid }).then(res => {
+      let data = res.data || {}
+      this.userInfo.user_name = data.com_name
+      this.head_img = getImgUrl(data.logo_url)
+      this.$apply()
+      wx.setStorageSync('userInfo', JSON.stringify(data))
+    })
+  }
+  getDetail (val) {
+    if (val == 2) {
+      this.getUser()
+    } else {
+      this.getCompanyInfo()
+    }
+  }
+  watch = {
+    usertype (val) {
+      if (val) {
+        this.getDetail(val)
+      }
+    }
+  }
   onLoad () {
     this.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
     this.wxInfo = wx.getStorageSync('wxInfo')
@@ -241,14 +309,6 @@ export default class my extends wepy.page {
     wx.setNavigationBarTitle({
       title: title
     })
-    if (this.usertype == 2) {
-      this.getUser()
-    } else {
-      let user = store.getState().user
-      this.userInfo.mobile = user.loginUser.username
-      this.rendaUserTeamType = wx.getStorageSync('rendaUserTeamType')
-      this.head_img = this.wxInfo ? JSON.parse(this.wxInfo).head_img : ''
-    }
     this.$apply()
   }
 }

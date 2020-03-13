@@ -1,5 +1,5 @@
 <style lang="less">
-@import "../../style/user.less";
+@import '../../style/user.less';
 .page_card_row {
   .my-text {
     flex: 1;
@@ -36,13 +36,13 @@
           <view class="page_card_row">
             <view class="weui-flex between">
               <view class="my-text">简历数量</view>
-              <view class="my-text-right">{{teamData.export_num}}</view>
+              <view class="my-text-right">{{teamData.export_num||0}}</view>
             </view>
           </view>
           <view class="page_card_row">
             <view class="weui-flex between">
               <view class="my-text">已入职</view>
-              <view class="my-text-right">{{teamData.entry_num}}</view>
+              <view class="my-text-right">{{teamData.entry_num||0}}</view>
             </view>
           </view>
           <view class="page_card_row">
@@ -86,14 +86,14 @@ export default class TeamInfo extends wepy.page {
     teamData: {}
   }
   computed = {
-    userName() {
+    userName () {
       let name = wx.getStorageSync('wxInfo')
         ? JSON.parse(wx.getStorageSync('wxInfo')).user_name
         : ''
       return this.teamData.user_name ? this.teamData.user_name : name
     }
   }
-  getTeamInfoAPi(uid) {
+  getTeamInfoAPi (uid) {
     $http('/Userinfo/getteaminfo', { uid }).then(res => {
       this.teamData = res.data || {}
       if (res.data.logo) {
@@ -102,7 +102,7 @@ export default class TeamInfo extends wepy.page {
       this.$apply()
     })
   }
-  onLoad() {
+  onLoad () {
     let uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
     this.getTeamInfoAPi(uid)
   }
