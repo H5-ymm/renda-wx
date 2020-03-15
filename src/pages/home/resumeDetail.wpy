@@ -240,7 +240,6 @@ export default class resumeDetail extends wepy.page {
         uid: this.uid,
         ids: this.id
       }
-      console.log(urlApi)
       wxShowModal('', `确定${text}?`, '确定').then(res => {
         this.changeResumeStatus(urlApi, params)
       }).catch(() => {

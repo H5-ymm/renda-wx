@@ -106,11 +106,11 @@ export default class home extends wepy.page {
     modalTitle: '请选择岗位性质',
     menus: [
       {
-        icon: '../../images/modal/icon3.png',
+        icon: 'https://a.rsd123.com/image/images/modal/icon3.png',
         title: '内部发单',
       },
       {
-        icon: '../../images/modal/icon4.png',
+        icon: 'https://a.rsd123.com/image/images/modal/icon4.png',
         title: '团队接单'
       }
     ],
@@ -147,11 +147,11 @@ export default class home extends wepy.page {
       this.modalTitle = '请选择岗位方式'
       this.menus = [
         {
-          icon: '../../images/modal/icon3.png',
+          icon: 'https://a.rsd123.com/image/images/modal/icon3.png',
           title: '内部发单',
         },
         {
-          icon: '../../images/modal/icon4.png',
+          icon: 'https://a.rsd123.com/image/images/modal/icon4.png',
           title: '团队接单'
         }
       ]
@@ -252,11 +252,11 @@ export default class home extends wepy.page {
       this.modalTitle = '请选择简历方式'
       this.menus = [
         {
-          icon: '../../images/modal/icon1.png',
+          icon: 'https://a.rsd123.com/image/images/modal/icon1.png',
           title: '手动添加',
         },
         {
-          icon: '../../images/modal/icon2.png',
+          icon: 'https://a.rsd123.com/image/images/modal/icon2.png',
           title: '二维码添加'
         }
       ]

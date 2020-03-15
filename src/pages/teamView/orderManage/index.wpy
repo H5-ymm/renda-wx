@@ -72,14 +72,14 @@ export default class orderManage extends wepy.page {
 			arr = [{
 				title: '申请接单',
 				subTitle: '已申请接单的审核情况',
-				icon: '../../../images/orderTaking/icon6.png',
+				icon: 'https://a.rsd123.com/image/images/orderTaking/icon6.png',
 				url: '/pages/teamView/orderManage/list?query=0',
 				badgeNum: 0
 			},
 			{
 				title: '接单分配',
 				subTitle: '已确定合作企业接单',
-				icon: '../../../images/orderTaking/icon7.png',
+				icon: 'https://a.rsd123.com/image/images/orderTaking/icon7.png',
 				url: '/pages/teamView/orderManage/list?query=1',
 				badgeNum: 0
 			}]
@@ -88,7 +88,7 @@ export default class orderManage extends wepy.page {
 				arr = [{
 					title: '接单分配',
 					subTitle: '已确定合作企业接单',
-					icon: '../../../images/orderTaking/icon7.png',
+					icon: 'https://a.rsd123.com/image/images/orderTaking/icon7.png',
 					url: '/pages/companyView/checkTeam',
 					badgeNum: 0
 				}]

@@ -65,21 +65,28 @@ export default class Welcome extends wepy.page {
     isInviteUser: false,
     teamId: '',
     rendaUidQrcode: '',
-    uid: ''
+    uid: '',
+    isLoginOut: false
   }
   onLoad (options) {
     this.rendaUidQrcode = wx.getStorageSync('rendaUidQrcode') || this.$parent.globalData.rendaUidQrcode
     this.teamId = wx.getStorageSync('rendaUserTeamId') || this.$parent.globalData.teamId
     if (this.rendaUidQrcode && this.teamId) {
+      this.isLoginOut = false
       this.isInviteUser = true
     } else {
       this.isInviteUser = false
     }
     if (options && options.query) {
-      this.checked = options.query
-      this.isRead = true
+      if (options.query=='loginout') {
+        this.isLoginOut = true
+      } else {
+        this.checked = options.query
+        this.isRead = true
+      }
     } else {
       this.isRead = false
+      this.isLoginOut = false
     }
     this.openid = wx.getStorageSync('rendaOpenId') || this.$parent.globalData.openid
     this.$apply()
@@ -148,7 +155,7 @@ export default class Welcome extends wepy.page {
       if (error && error.code) {
         this.code = error.code
         this.isView = false
-        if (this.code === 6100 && this.authorize) {
+        if (this.code === 6100 && this.authorize && this.isRead && this.isLoginOut) {
           this.isLoginModal = false
         }
         this.$apply()
@@ -178,13 +185,13 @@ export default class Welcome extends wepy.page {
     if (!res.usertype) {
       wxReLaunch('/pages/register/selectUser')
     } else if (Number(res.usertype) === 2) {
-      if (res.is_team !== '0') {
+      if (Number(res.is_team) !== 0) {
         wxReLaunch('/pages/teamView/index')
       } else {
         wxReLaunch('/pages/register/selectUser?query=1')
       }
     } else {
-      if (res.is_company !== '0') {
+      if (Number(res.is_company) !==0) {
         wxReLaunch('/pages/companyView/index')
       } else {
         wxReLaunch('/pages/register/companyForm')
@@ -192,6 +199,11 @@ export default class Welcome extends wepy.page {
     }
   }
   showErrorTip (code) {
+    if (code === 6100) {
+      this.isLoginModal = false
+      this.$apply()
+      return
+    }
     let obj = getErrorTip(code)
     if (code === 6001 || code === 6008) {
       this.modalHeight = 640
@@ -294,6 +306,7 @@ export default class Welcome extends wepy.page {
     getUserInfo (e) {
       // 没有阅读协议
       if (!this.isRead) return
+      this.$apply()
       if (this.code === 6100 && this.teamId != '') {
         this.isLoginModal = !this.isLoginModal
         this.$apply()

@@ -58,11 +58,11 @@ export default class modalAddUser extends wepy.component {
     isShow: false,
     menus: [
       {
-        icon: '/images/modal/icon2.png',
+        icon: 'https://a.rsd123.com/image/images/modal/icon2.png',
         title: '手动添加'
       },
       {
-        icon: '/images/modal/icon1.png',
+        icon: 'https://a.rsd123.com/image/images/modal/icon1.png',
         title: '二维码添加'
       }
     ],

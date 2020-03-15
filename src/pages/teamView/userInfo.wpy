@@ -80,7 +80,7 @@
 					<view class="weui-flex between">
 						<view class="my-text weui-flex__item">所在地区</view>
 						<districtSelet @selectCity="selectCity" :address.sync="address" wx:if="{{uid!=userUid}}" :disabled.sync="disabled"></districtSelet>
-						<view class="my-text-right" wx:else>{{addressText|| '-'}}</view>
+						<view class="my-text-right" wx:else>{{addressText?addressText:'-'}}</view>
 					</view>
 				</view>
 			</view>

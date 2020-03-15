@@ -22,7 +22,7 @@
       <view class="team-info-row">
         <view class="my-user-name">{{userInfo.user_name}}</view>
         <view class="weui-flex start">
-          <image src="../../images/ok.png" alt="" mode="aspectFill" class="icon-company" />
+          <image src="https://a.rsd123.com/image/images/ok.png" alt="" mode="aspectFill" class="icon-company" />
         </view>
       </view>
     </view>
@@ -155,7 +155,7 @@ export default class my extends wepy.page {
     $http('/login/UntyingOpenid', { uid: this.uid }).then(res => {
       wx.clearStorageSync()
       wxToast('退出登录成功')
-      wxRedirectTo('/pages/login/welcome')
+      wxRedirectTo('/pages/login/welcome?query=loginout')
       store.dispatch({ type: GETALLUSER, payload: {} })
     }).catch(error => {
       console.log(error)
@@ -230,7 +230,7 @@ export default class my extends wepy.page {
           {
             child: [{
               title: '切换账号',
-              icon: '../../images/icon6.png',
+              icon: 'https://a.rsd123.com/image/images/icon6.png',
               url: '/pages/my/userBind'
             }]
           }
@@ -254,7 +254,7 @@ export default class my extends wepy.page {
           {
             child: [{
               title: '切换账号',
-              icon: '../../images/icon6.png',
+              icon: 'https://a.rsd123.com/image/images/icon6.png',
               url: '/pages/my/userBind'
             }]
           }
@@ -281,7 +281,11 @@ export default class my extends wepy.page {
     $http('/company/selectCompanyInfo', { uid: this.uid }).then(res => {
       let data = res.data || {}
       this.userInfo.user_name = data.com_name
-      this.head_img = getImgUrl(data.logo_url)
+      if (data.logo_url.indexOf('http')>-1) {
+        this.head_img = data.logo_url
+      } else {
+        this.head_img = getImgUrl(data.logo_url)
+      }
       this.$apply()
       wx.setStorageSync('userInfo', JSON.stringify(data))
     })

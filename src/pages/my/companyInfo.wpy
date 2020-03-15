@@ -48,7 +48,7 @@
           <view class="page_card_row">
             <view class="weui-flex between">
               <view class="my-text">从事行业</view>
-              <view class="my-text-right weui-flex__item">{{companyData.com_typeName}}</view>
+              <view class="my-text-right weui-flex__item">{{companyData.com_sortName}}</view>
             </view>
           </view>
           <view class="page_card_row">
@@ -112,9 +112,16 @@ export default class companyInfo extends wepy.page {
   onLoad () {
     if (wx.getStorageSync('userInfo')) {
       this.companyData = JSON.parse(wx.getStorageSync('userInfo'))
-      this.companyData.logo_url = getImgUrl(this.companyData.logo_url)
-      this.companyData.license_url = getImgUrl(this.companyData.license_url)
-      console.log(this.companyData)
+      if (this.companyData.logo_url.indexOf('http')>-1) {
+        this.companyData.logo_url = this.companyData.logo_url
+      } else {
+        this.companyData.logo_url = getImgUrl(this.companyData.logo_url)
+      }
+      if (this.companyData.license_url.indexOf('http')>-1) {
+        this.companyData.license_url = this.companyData.license_url
+      } else {
+        this.companyData.license_url = getImgUrl(this.companyData.license_url)
+      }
       this.$apply()
     }
   }

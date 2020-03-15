@@ -90,7 +90,7 @@
 }
 </style>
 <template>
-  <view class="home-view page_botttom">
+  <view class="home-view page">
     <view class="home-view-header"></view>
     <view class="page page_margin">
       <view class="weui-flex between">

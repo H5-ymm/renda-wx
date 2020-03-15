@@ -51,7 +51,7 @@
 <template>
   <view class="page-my page-team-home">
     <view class="my-view-header weui-flex start">
-      <image src="../../images/team/teamBg.png" class="my-view-header-bg" mode="aspectFill" alt="" />
+      <image src="https://a.rsd123.com/image/images/team/teamBg.png" class="my-view-header-bg" mode="aspectFill" alt="" />
       <view class="my-avatar-box">
         <image src="{{teamData.logo}}" wx:if="{{teamData.logo}}" alt="" mode="aspectFill" class="my-avatar" />
         <image src="https://a.rsd123.com/image/images/header.png" wx:else alt="" mode="aspectFit" class="my-avatar" />
@@ -118,24 +118,24 @@ export default class teamView extends wepy.page {
     menus () {
       let arr = [{
         title: '成员管理',
-        icon: '../../images/team/icon1.png',
+        icon: 'https://a.rsd123.com/image/images/team/icon1.png',
         url: '/pages/teamView/userList'
       },
       {
         title: '简历列表',
-        icon: '../../images/team/icon2.png',
+        icon: 'https://a.rsd123.com/image/images/team/icon2.png',
         url: '/pages/home/index'
       },
       {
         title: '接单管理',
-        icon: '../../images/team/icon3.png',
+        icon: 'https://a.rsd123.com/image/images/team/icon3.png',
         url: '/pages/teamView/orderManage/index'
       }]
       if (this.rendaUserTeamType) {
         if (this.rendaUserTeamType == 1) {
           let dep = {
             title: '部门管理',
-            icon: '../../images/team/icon4.png',
+            icon: 'https://a.rsd123.com/image/images/team/icon4.png',
             url: '/pages/teamView/department/index'
           }
           arr.splice(1, 0, dep)
