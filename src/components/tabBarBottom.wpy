@@ -68,6 +68,7 @@ export default class tabBarBottom extends wepy.component {
 		} else {
 			this.$parent.$parent.globalData.tabBar.list = list2
 		}
+		console.log(this.tabBarIndex)
 		this.tabBarList = this.$parent.$parent.tabBarClickHandle(this.tabBarIndex, this);
 		this.$apply()
 	}

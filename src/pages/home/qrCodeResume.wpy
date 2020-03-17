@@ -1,10 +1,7 @@
 <style lang="less">
-@import "../../style/home.less";
-.selected {
-  width: 44rpx;
-  height: 44rpx;
-}
+@import '../../style/home.less';
 .qrcode-view {
+  height: 100%;
   .add-view {
     height: 86%;
     .home-view-box {
@@ -17,17 +14,9 @@
 }
 </style>
 <template>
-  <view class="home-view page_botttom qrcode-view">
-    <view class="page page_margin">
-      <addResume :stepActive.sync="stepActive" @submit="submit"></addResume>
-    </view>
-    <modal
-      :isScaleModal.sync="isModal"
-      :height.sync="height"
-      @handleOk="handleOk"
-      :openType.sync="openType"
-      :modalObj.sync="modalObj"
-    ></modal>
+  <view class="home-view page_botttom qrcode-view page_margin">
+    <addResume :stepActive.sync="stepActive" @submit="submit"></addResume>
+    <modal :isScaleModal.sync="isModal" :height.sync="height" @handleOk="handleOk" :openType.sync="openType" :modalObj.sync="modalObj"></modal>
   </view>
 </template>
 <script>
@@ -99,7 +88,7 @@ export default class qrCodeResume extends wepy.page {
     }
   }
   // 添加简历接口
-  addResume() {
+  addResume () {
     lock = true
     $http('/Wxresume/qrcodeAddResume', this.params)
       .then(res => {
@@ -119,7 +108,7 @@ export default class qrCodeResume extends wepy.page {
       })
     this.$apply()
   }
-  updateResume() {
+  updateResume () {
     this.params.resume_id = this.resumeId
     lock = true
     $http('/Wxresume/editruseme', this.params).then(res => {
@@ -135,7 +124,7 @@ export default class qrCodeResume extends wepy.page {
     })
   }
   // 页面的生命周期函数
-  onShow(options) {
+  onShow (options) {
     this.stepActive = 2
     this.uid = wx.getStorageSync('rendaUidQrcode') || this.$parent.globalData.rendaUidQrcode
     this.$apply()
