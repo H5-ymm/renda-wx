@@ -24,25 +24,25 @@
       <view class="page_card">
         <view class="page_card_row">
           <view class="weui-flex between">
-            <view class="my-text  weui-flex__item my-text-require">姓名：</view>
+            <view class="my-text  weui-flex__item {{form.entry_status!=2?'my-text-require':''}}">姓名</view>
             <input class="weui-input" placeholder-class="placeholder" disabled="{{form.entry_status!=1&&id}}" data-name="name" value="{{form.name}}" @input="changeInput" placeholder="请输入姓名" />
           </view>
         </view>
         <view class="page_card_row">
           <view class="weui-flex between ">
-            <view class="my-text weui-flex__item my-text-require">手机号码：</view>
+            <view class="my-text weui-flex__item {{form.entry_status!=2?'my-text-require':''}}">手机号码</view>
             <input class="weui-input" data-name="mobile" placeholder-class="placeholder" disabled="{{form.entry_status!=1&&id}}" value="{{form.mobile}}" @input="changeInput" placeholder="请输入手机号码" />
           </view>
         </view>
         <view class="page_card_row">
           <view class="weui-flex between">
-            <view class="my-text  weui-flex__item">年龄：</view>
+            <view class="my-text  weui-flex__item">年龄</view>
             <input class="weui-input" placeholder-class="placeholder" disabled="{{form.entry_status!=1&&id}}" data-name="age" value="{{form.age}}" @input="changeInput" placeholder="请输入年龄" />
           </view>
         </view>
         <view class="page_card_row">
           <view class="weui-flex between">
-            <view class="my-text weui-flex__item">性别：</view>
+            <view class="my-text weui-flex__item">性别</view>
             <view class="my-text-right weui-flex__item" wx:if="{{form.entry_status!=1&&id}}">{{array[index]}}</view>
             <picker @change="bindPickerChange" value="{{index}}" range="{{array}}" wx:else>
               <view class="my-text-right weui-flex between">
@@ -54,7 +54,7 @@
         </view>
         <view class="page_card_row">
           <view class="weui-flex between">
-            <view class="my-text weui-flex__item">学历：</view>
+            <view class="my-text weui-flex__item">学历</view>
             <view class="my-text-right weui-flex__item" wx:if="{{form.entry_status!=1&&id}}">{{form.edu}}</view>
             <picker @change="eduPickerChange" value="{{eduIndex}}" range="{{eduList}}" wx:else>
               <view class="my-text-right weui-flex between">
@@ -66,20 +66,20 @@
         </view>
         <view class="page_card_row">
           <view class="weui-flex between">
-            <view class="my-text  weui-flex__item">工作地址：</view>
+            <view class="my-text  weui-flex__item">工作地址</view>
             <view class="my-text-right weui-flex__item" wx:if="{{form.entry_status!=1&&id}}">{{form.provinceName?form.provinceName:'-'}}{{form.cityName?form.cityName:''}}</view>
             <districtSelet @selectCity="selectCity" :address.sync="[]" wx:else></districtSelet>
           </view>
         </view>
         <view class="page_card_row">
           <view class="weui-flex between">
-            <view class="my-text  weui-flex__item">详细地址：</view>
+            <view class="my-text  weui-flex__item">详细地址</view>
             <input class="weui-input" data-name="address" disabled="{{form.entry_status!=1&&id}}" placeholder-class="placeholder" value="{{form.address}}" @input="changeInput" placeholder="请输入详细住址" />
           </view>
         </view>
         <view class="page_card_row">
           <view class="weui-flex between">
-            <view class="my-text weui-flex__item">身份证号码：</view>
+            <view class="my-text weui-flex__item">身份证号码</view>
             <input class="weui-input" placeholder-class="placeholder" data-name="idcard" disabled="{{form.entry_status!=1&&id}}" value="{{form.idcard}}" @input="changeInput" placeholder="请输入身份证号码" />
           </view>
         </view>
@@ -87,13 +87,13 @@
       <view class="page_card">
         <view class="page_card_row">
           <view class="weui-flex between">
-            <view class="my-text  weui-flex__item my-text-require">岗位名称：</view>
+            <view class="my-text  weui-flex__item {{form.entry_status!=2?'my-text-require':''}}">岗位名称</view>
             <input class="weui-input" data-name="post" placeholder-class="placeholder" disabled="{{form.entry_status!=1&&id}}" value="{{form.post}}" @input="changeInput" placeholder="请输入岗位名称" />
           </view>
         </view>
         <view class="page_card_row">
           <view class="weui-flex between">
-            <view class="my-text  weui-flex__item">入职时间：</view>
+            <view class="my-text  weui-flex__item">入职时间</view>
             <view class="weui-input" wx:if="{{form.entry_status!=1&&id}}">{{entry_time}}</view>
             <picker mode="date" value="{{entry_time}}" data-name="entry_time" @change="bindTimeChange" wx:else>
               <view class="my-text-right weui-flex between">
@@ -105,7 +105,7 @@
         </view>
         <view class="page_card_row" wx:if="{{id}}">
           <view class="weui-flex between">
-            <view class="my-text  weui-flex__item my-text-require">当前状态</view>
+            <view class="my-text weui-flex__item">当前状态</view>
             <view class="my-text my-text-right weui-input">{{form.entry_status==1?'在职':'离职'}}</view>
           </view>
         </view>
@@ -149,12 +149,12 @@ export default class addStaff extends wepy.page {
     },
     form: {
       name: '',
-      idcard: '41022119931209182X',
+      idcard: '',
       age: '',
       mobile: '',
       sex: 1,
       education: 0,
-      post: '前端',
+      post: '',
       provinceid: '',
       cityid: '',
       entry_time: ''
