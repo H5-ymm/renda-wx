@@ -13,11 +13,11 @@
 				<view class="home-view-box weui-flex between wrap">
 					<view class="modal-title ">{{title}} </view>
 					<repeat wx:for="{{menus}}" wx:key="index">
-						<view class="card-item weui-flex between wrap">
+						<view class="card-item weui-flex between wrap" @tap="selectType({{index}})">
 							<image src="{{item.icon}}" alt="" mode="aspectFill" class="menu-icon" />
 							<view class="card-item-title">{{item.title}}</view>
-							<image src="https://a.rsd123.com/image/images/user/radio2.png" alt="" mode="aspectFill" wx:if="{{index==activeIndex}}" @tap="selectType({{index}})" class="radio-icon" />
-							<image src="https://a.rsd123.com/image/images/user/radio1.png" @tap="selectType({{index}})" wx:else alt="" mode="aspectFill" class="radio-icon" />
+							<image src="https://a.rsd123.com/image/images/user/radio2.png" alt="" mode="aspectFill" wx:if="{{index==activeIndex}}" class="radio-icon" />
+							<image src="https://a.rsd123.com/image/images/user/radio1.png" wx:else alt="" mode="aspectFill" class="radio-icon" />
 						</view>
 					</repeat>
 				</view>
@@ -68,14 +68,14 @@ export default class selectModal extends wepy.component {
 	}
 	watch = {
 		rendaUserType (val) {
-		 if(val) {
-			 	if (this.menus[0].title == '切换团队') {
-				this.activeIndex = val=== 2 ? 1 : 0
-			} else {
-				this.activeIndex = 0
+			if (val) {
+				if (this.menus[0].title == '切换团队') {
+					this.activeIndex = val === 2 ? 1 : 0
+				} else {
+					this.activeIndex = 0
+				}
+				this.$apply()
 			}
-			this.$apply()
-		 }
 		},
 		isScaleModal (val) {
 			if (!val) {

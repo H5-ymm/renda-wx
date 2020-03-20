@@ -77,8 +77,8 @@ const getErrorTip = code => {
     return obj;
 };
 const getImgUrl = imgUrl => {
-    const baseUrl = 'https://a.rsd123.com/'
-    // const baseUrl = 'http://tiantianxsg.com:39888/'
+    // const baseUrl = 'https://a.rsd123.com/'
+    const baseUrl = 'http://tiantianxsg.com:39888/'
     return baseUrl + imgUrl;
 };
 const compressImg = (photoSrc, ratio = 2) => {
@@ -90,7 +90,7 @@ const compressImg = (photoSrc, ratio = 2) => {
     return new Promise((resolve, reject) => {
         wx.getImageInfo({
             src: photoSrc,
-            success(res) {
+            success (res) {
                 let canvasWidth = res.width // 图片原始长宽
                 let canvasHeight = res.height
                 canvasWidth = 300
@@ -104,18 +104,18 @@ const compressImg = (photoSrc, ratio = 2) => {
                     false,
                     setTimeout(() => {
                         wx.canvasToTempFilePath({
-                                canvasId: 'canvas',
-                                destWidth: canvasWidth,
-                                destHeight: canvasHeight,
-                                success: function (res) {
-                                    console.log(res.tempFilePath)
-                                    obj.url = res.tempFilePath
-                                    resolve(obj)
-                                },
-                                fail: function (res) {
-                                    console.log(res.errMsg)
-                                }
+                            canvasId: 'canvas',
+                            destWidth: canvasWidth,
+                            destHeight: canvasHeight,
+                            success: function (res) {
+                                console.log(res.tempFilePath)
+                                obj.url = res.tempFilePath
+                                resolve(obj)
                             },
+                            fail: function (res) {
+                                console.log(res.errMsg)
+                            }
+                        },
                             this
                         )
                     }, 100)
@@ -238,7 +238,7 @@ const wxShowModal = (title, content, confirmText) => {
             confirmText: confirmText || '确定',
             cancelColor: '#666666',
             confirmColor: '#1890FF',
-            success(res) {
+            success (res) {
                 if (res.confirm) {
                     resove()
                 } else if (res.cancel) {

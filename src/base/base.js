@@ -14,7 +14,7 @@ export const list1 = [{
 },
 {
     pagePath: '/pages/my/index',
-    text: '个人中心',
+    text: '企业中心',
     selected: false,
     iconPath: '/images/orderTaking/my.png',
     selectedIconPath: '/images/orderTaking/my-active.png'

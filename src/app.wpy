@@ -60,7 +60,8 @@ export default class extends wepy.app {
       navigationBarTextStyle: 'white',
       navigationBarTitleText: '人事达',
       navigationBarBackgroundColor: '#1890FF',
-      backgroundColor: '#1890FF'
+      backgroundColor: '#1890FF',
+      enablePullDownRefresh: true
     },
     networkTimeout: {
       request: 10000,
@@ -89,10 +90,11 @@ export default class extends wepy.app {
     let teamId = ''
     if (options.scene) {
       if (typeof options.scene != 'number') {
-        let arr = str.splite('?')
-        let arr1 = str.splite('&')
+        let arr = options.scene.splite('?')
+        let arr1 = options.scene.splite('&')
         uid = arr[1]
         teamId = arr1[1]
+        console.log(options.scene)
       }
       wx.setStorageSync('rendaUidQrcode', uid)
       wx.setStorageSync('rendaUserTeamId', teamId)
@@ -103,6 +105,7 @@ export default class extends wepy.app {
       wx.setStorageSync('rendaUidQrcode', options.query.uid)
       this.globalData.rendaUidQrcode = options.query.uid
       if (options.query.teamId) {
+        console.log(options.query + 'ddd')
         this.globalData.teamId = options.query.teamId
         wx.setStorageSync('rendaUserTeamId', options.query.teamId)
       }
@@ -188,6 +191,8 @@ export default class extends wepy.app {
     }
   }
   globalData = {
+    headerHeight: 0,
+    statusBarHeight: 0,
     userInfo: null,
     uid: '',
     openId: '',

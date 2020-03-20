@@ -1,5 +1,5 @@
 <style lang="less">
-@import "../../style/login.less";
+@import '../../style/login.less';
 </style>
 <template>
   <view class="login_page page_botttom">
@@ -15,21 +15,17 @@
             <view class="weui-cell_label weui-flex between">
               +86<label class="weui-cell_line">|</label>
             </view>
-            <input class="weui-input" value="{{form.tel}}"
-            @input="changeInput" data-name="tel" placeholder="输入您的手机号" />
+            <input class="weui-input" value="{{form.tel}}" @input="changeInput" data-name="tel" placeholder="输入您的手机号" />
           </view>
           <view class="weui-cell weui-flex start weui-cell_input page_botttom">
             <view class="weui-cell_label weui-flex between">
               验证码<label class="weui-cell_line">|</label>
             </view>
-            <input class="weui-input" value="{{form.code}}"
-             @input="changeInput" data-name="code" placeholder="输入验证码" />
+            <input class="weui-input" value="{{form.code}}" @input="changeInput" data-name="code" placeholder="输入验证码" />
             <text class="code-btn" @tap="getCode">{{sendAuthCode?'获取验证码':auth_time+'s'}}</text>
           </view>
           <view class="weui-cell_btn weui-flex center login-btn">
-            <button disabled="{{!checked}}"
-            class="weui-btn_cell weui-btn_cell-gradient {{!checked?'weui-btn_cell-disabled':''}}"  
-            @tap="getUserInfo">登录</button>
+            <button disabled="{{!checked}}" class="weui-btn_cell weui-btn_cell-gradient {{!checked?'weui-btn_cell-disabled':''}}" @tap="getUserInfo">登录</button>
           </view>
         </view>
       </view>
@@ -68,17 +64,17 @@ export default class Login extends wepy.page {
     auth_timetimer: null
   }
   computed = {
-    checked() {
+    checked () {
       return this.form.tel && this.form.code
     }
   }
-  getCodeApi() {
+  getCodeApi () {
     $http('/Login/sendVerification', { mobile: this.form.tel })
       .then(res => {
         this.form.token = res.data.token || ''
       })
   }
-  checkRouterView(res) {
+  checkRouterView (res) {
     if (res && res.uid) {
       this.$parent.globalData.uid = res.uid
       // userType 1 企业 2 团队
@@ -106,7 +102,7 @@ export default class Login extends wepy.page {
       store.dispatch(getAllContant())
     }
   }
-  login() {
+  login () {
     wx.removeStorageSync('auth_time')
     wx.removeStorageSync('sendAuthCode')
     let openid = wx.getStorageSync('rendaOpenId') || this.$parent.globalData.openId
@@ -128,7 +124,7 @@ export default class Login extends wepy.page {
       }
     })
   }
-  onLoad(options) {
+  onLoad (options) {
     if (wx.getStorageSync('sendAuthCode')) {
       this.auth_time = wx.getStorageSync('auth_time') - 3
       clearInterval(this.auth_timetimer)
@@ -136,7 +132,7 @@ export default class Login extends wepy.page {
     }
     this.$apply()
   }
-  onShow() {
+  onShow () {
     if (!this.isRead) {
       this.checked = false
       if (wx.getStorageSync('sendAuthCode')) {
@@ -153,7 +149,7 @@ export default class Login extends wepy.page {
       this.$apply()
     }
   }
-  getTime() {
+  getTime () {
     if (!this.sendAuthCode) return
     this.sendAuthCode = false
     this.auth_timetimer = setInterval(() => {
@@ -169,18 +165,18 @@ export default class Login extends wepy.page {
       }
     }, 1000)
   }
-  onHide() {
+  onHide () {
     clearInterval(this.auth_timetimer)
   }
-  onUnload() {
+  onUnload () {
     clearInterval(this.auth_timetimer)
   }
   methods = {
-    changeInput(e) {
+    changeInput (e) {
       let key = e.target.dataset.name
       this.form[key] = e.detail.value
     },
-    getCode() {
+    getCode () {
       if (!this.form.tel) {
         wxToast('请输入手机号码')
       } else if (!checkMobile(this.form.tel)) {
@@ -190,7 +186,7 @@ export default class Login extends wepy.page {
         this.getTime()
       }
     },
-    getUserInfo() {
+    getUserInfo () {
       if (!this.form.tel) {
         wxToast('请输入手机号码')
       } else if (!checkMobile(this.form.tel)) {

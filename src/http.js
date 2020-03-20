@@ -1,10 +1,11 @@
 import {
     wxToast
 } from '@/util.js'
-const baseUrl = 'https://a.rsd123.com/';
-// const baseUrl = 'http://tiantianxsg.com:39888/'
+// const baseUrl = 'https://a.rsd123.com/';
+const baseUrl = 'http://tiantianxsg.com:39888/'
 const apiUrl = baseUrl + 'wx.php';
 const http = (url, params, method) => {
+    console.log(params)
     return new Promise((resolve, reject) => {
         wx.request({
             url: `${apiUrl}${url}`, // 服务器url+参数中携带的接口具体地址

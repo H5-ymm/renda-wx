@@ -70,7 +70,9 @@ export default class Welcome extends wepy.page {
   }
   onLoad (options) {
     this.rendaUidQrcode = wx.getStorageSync('rendaUidQrcode') || this.$parent.globalData.rendaUidQrcode
+    console.log(this.rendaUidQrcode)
     this.teamId = wx.getStorageSync('rendaUserTeamId') || this.$parent.globalData.teamId
+    console.log(this.teamId)
     if (this.rendaUidQrcode && this.teamId) {
       this.isLoginOut = false
       this.isInviteUser = true
@@ -78,7 +80,7 @@ export default class Welcome extends wepy.page {
       this.isInviteUser = false
     }
     if (options && options.query) {
-      if (options.query=='loginout') {
+      if (options.query == 'loginout') {
         this.isLoginOut = true
       } else {
         this.checked = options.query
@@ -113,6 +115,11 @@ export default class Welcome extends wepy.page {
     if (!this.isRead) {
       this.checked = false
       this.$apply()
+    }
+  }
+  onPullDownRefresh () {
+    if (this.openid) {
+      this.checkUserLogin(this.openid)
     }
   }
   checkQrcode (item) {
@@ -191,7 +198,7 @@ export default class Welcome extends wepy.page {
         wxReLaunch('/pages/register/selectUser?query=1')
       }
     } else {
-      if (Number(res.is_company) !==0) {
+      if (Number(res.is_company) !== 0) {
         wxReLaunch('/pages/companyView/index')
       } else {
         wxReLaunch('/pages/register/companyForm')

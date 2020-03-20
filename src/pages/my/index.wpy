@@ -281,7 +281,7 @@ export default class my extends wepy.page {
     $http('/company/selectCompanyInfo', { uid: this.uid }).then(res => {
       let data = res.data || {}
       this.userInfo.user_name = data.com_name
-      if (data.logo_url.indexOf('http')>-1) {
+      if (data.logo_url.indexOf('http') > -1) {
         this.head_img = data.logo_url
       } else {
         this.head_img = getImgUrl(data.logo_url)
@@ -309,7 +309,7 @@ export default class my extends wepy.page {
     this.wxInfo = wx.getStorageSync('wxInfo')
     this.usertype = wx.getStorageSync('rendaUserType')
     this.tabBarIndex = this.usertype === 2 ? 1 : 2
-    let title = this.usertype == 2 ? '我的' : '个人中心'
+    let title = this.usertype == 2 ? '我的' : '企业中心'
     wx.setNavigationBarTitle({
       title: title
     })

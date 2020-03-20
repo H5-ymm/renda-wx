@@ -87,10 +87,10 @@
 			<view class="page_card" wx:if="{{!invite_uid}}">
 				<view class="page_card_row">
 					<view class="weui-flex between">
-						<view class="my-text weui-flex__item">当前职位</view>
+						<view class="my-text weui-flex__item">部门</view>
 						<picker @change="pickerChange" value="{{depIndex}}" wx:if="{{uid!=userUid&&userTeamType==1&&form.grade_num!=2}}" range-key="depart_name" data-name="depId" range="{{depList}}">
 							<view class="my-text-right weui-flex between">
-								<view class="{{depList[depIndex]?'':'placeholder'}}"> {{depList[depIndex]?depList[depIndex].depart_name:'请选择职位'}}</view>
+								<view class="{{depId?'':'placeholder'}}"> {{depId?depList[depIndex].depart_name:'请选择职位'}}</view>
 								<image mode="scaleToFill" src="https://a.rsd123.com/image/images/down.png" class="page_down_icon" />
 							</view>
 						</picker>
@@ -99,10 +99,10 @@
 				</view>
 				<view class="page_card_row" wx:if="{{!invite_uid}}">
 					<view class="weui-flex between">
-						<view class="my-text weui-flex__item">部门</view>
+						<view class="my-text weui-flex__item">当前职位</view>
 						<picker @change="pickerChange" value="{{jobIndex}}" range-key="grade_name" wx:if="{{uid!=userUid&&userTeamType==1&&form.grade_num!=2}}" data-name="grade_id" range="{{jobList}}">
 							<view class="my-text-right weui-flex between">
-								<view class="{{jobList[jobIndex]?'':'placeholder'}}"> {{jobList[jobIndex]?jobList[jobIndex].grade_name:'请选择部门'}}</view>
+								<view class="{{form.grade_id?'':'placeholder'}}"> {{form.grade_id?jobList[jobIndex].grade_name:'请选择部门'}}</view>
 								<image mode="scaleToFill" src="https://a.rsd123.com/image/images/down.png" class="page_down_icon" />
 							</view>
 						</picker>
@@ -258,11 +258,12 @@ export default class userInTeam extends wepy.page {
 			let list = res.data || []
 			if (this.userTeamType == 1) {
 				this.depList = list
-				if (this.depList.length) {
-					this.depId = this.depList[0].id
-				} else {
-					this.depId = ''
-				}
+				// if (this.depList.length) {
+				// 	this.depId = this.depList[0].id
+				// } else {
+				// 	this.depId = ''
+				// }
+				this.depId = ''
 			} else {
 				this.depId = wx.getStorageSync('rendaDradeId')
 				this.depList = this.getCurrentDepList(list, this.depId)

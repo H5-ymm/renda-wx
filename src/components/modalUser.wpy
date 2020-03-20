@@ -1,5 +1,5 @@
 <style lang="less">
-@import "../style/modal.less";
+@import '../style/modal.less';
 .modal_box {
   .card-item {
     border: none;
@@ -23,17 +23,16 @@
       <view class="modal-content" wx:if="{{!type}}">
         <view class="home-view-box weui-flex between wrap">
           <view class="modal-title ">请选择团队性质</view>
-					<repeat wx:for="{{menus}}" wx:key="index">
-						<view class="card-item weui-flex between wrap">
-							<image src="{{item.icon}}" alt="" mode="aspectFill" class="menu-icon" />
-							<view class="card-item-title">{{item.title}}</view>
-							<text class="card-item-content" decode="{{true}}">{{item.content}}</text>
-							<image src="https://a.rsd123.com/image/images/user/radio2.png" alt="" mode="aspectFill" 
-							wx:if="{{index==activeIndex}}" @tap="selectType({{index}})" class="radio-icon" />
-							<image src="https://a.rsd123.com/image/images/user/radio1.png" @tap="selectType({{index}})" wx:else alt="" mode="aspectFill" class="radio-icon" />
-						</view>
-					</repeat>
-		    </view>
+          <repeat wx:for="{{menus}}" wx:key="index">
+            <view class="card-item weui-flex between wrap" @tap="selectType({{index}})">
+              <image src="{{item.icon}}" alt="" mode="aspectFill" class="menu-icon" />
+              <view class="card-item-title">{{item.title}}</view>
+              <text class="card-item-content" decode="{{true}}">{{item.content}}</text>
+              <image src="https://a.rsd123.com/image/images/user/radio2.png" alt="" mode="aspectFill" wx:if="{{index==activeIndex}}" class="radio-icon" />
+              <image src="https://a.rsd123.com/image/images/user/radio1.png" wx:else alt="" mode="aspectFill" class="radio-icon" />
+            </view>
+          </repeat>
+        </view>
         <view class="weui-cell_btn weui-flex center user-btn">
           <button class="weui-btn_cell weui-btn_cell-gradient" @tap="handleOk">确定</button>
         </view>
@@ -41,19 +40,19 @@
       <view class="modal-content" wx:if="{{type}}">
         <view class="home-view-box weui-flex between wrap">
           <view class="modal-title">{{!isInviteUser?'请选择登录/注册方式':'微信授权登录'}}</view>
-					<view class="weui-cell_btn weui-flex center wrap login-way {{isInviteUser?'login-way-add':''}}">
-              <button class="weui-btn_cell weui-flex center weui-btn_cell-gradient"   @getphonenumber="bindgetphonenumber" open-type="getPhoneNumber">
-                <image src="https://a.rsd123.com/image/images/welcome/wx-active.png" alt="" class="login-icon" />
-                <text>微信登录/注册 </text>
-              </button>
-              <button class="weui-btn_cell weui-flex center" wx:if="{{!isInviteUser}}" @tap="handleOk">
-                <image src="https://a.rsd123.com/image/images/welcome/phone.png" alt="" class="login-icon" />
-                <text>手机号登录/注册</text>
-             </button>
+          <view class="weui-cell_btn weui-flex center wrap login-way {{isInviteUser?'login-way-add':''}}">
+            <button class="weui-btn_cell weui-flex center weui-btn_cell-gradient" @getphonenumber="bindgetphonenumber" open-type="getPhoneNumber">
+              <image src="https://a.rsd123.com/image/images/welcome/wx-active.png" alt="" class="login-icon" />
+              <text>微信登录/注册 </text>
+            </button>
+            <button class="weui-btn_cell weui-flex center" wx:if="{{!isInviteUser}}" @tap="handleOk">
+              <image src="https://a.rsd123.com/image/images/welcome/phone.png" alt="" class="login-icon" />
+              <text>手机号登录/注册</text>
+            </button>
           </view>
-		    </view>
+        </view>
       </view>
-      <image src="https://a.rsd123.com/image/images/close.png" @tap="handleClose" class="close-icon"/>
+      <image src="https://a.rsd123.com/image/images/close.png" @tap="handleClose" class="close-icon" />
     </view>
   </view>
 </template>
@@ -86,16 +85,16 @@ export default class modalUser extends wepy.component {
     sessionKey: '',
     isInviteUser: false
   }
-  onLoad() {
+  onLoad () {
     console.log(wx.getStorageSync('rendaUidQrcode') != '')
-    console.log(wx.getStorageSync('rendaUserTeamId')!='')
-     if (wx.getStorageSync('rendaUidQrcode') != ''&& wx.getStorageSync('rendaUserTeamId')!='') {
+    console.log(wx.getStorageSync('rendaUserTeamId') != '')
+    if (wx.getStorageSync('rendaUidQrcode') != '' && wx.getStorageSync('rendaUserTeamId') != '') {
       this.isInviteUser = true
     } else {
       this.isInviteUser = false
     }
   }
-  getSessionKey(detail) {
+  getSessionKey (detail) {
     wx.login({
       success: res => {
         if (res.code) {
@@ -118,7 +117,7 @@ export default class modalUser extends wepy.component {
     })
   }
   methods = {
-    bindgetphonenumber(e) {
+    bindgetphonenumber (e) {
       if (e.detail.errMsg == 'getPhoneNumber:ok') {
         this.getSessionKey(e.detail)
       }
@@ -126,16 +125,16 @@ export default class modalUser extends wepy.component {
         this.$emit('handleOkLogin', 0)
       }
     },
-    handleClose() {
+    handleClose () {
       this.isShow = false
       this.$apply()
       this.$emit('handleClose')
     },
-    selectType(index) {
+    selectType (index) {
       this.activeIndex = index
       this.$apply()
     },
-    handleOk() {
+    handleOk () {
       this.isShow = false
       this.$apply()
       if (this.type) {
@@ -147,7 +146,7 @@ export default class modalUser extends wepy.component {
     }
   }
   watch = {
-    isScaleModal(val) {
+    isScaleModal (val) {
       if (!val) {
         this.isShow = true
       } else {

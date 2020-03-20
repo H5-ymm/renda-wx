@@ -86,8 +86,8 @@ export default class userList extends wepy.page {
 	onLoad (options) {
 		this.params.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
 		this.rendaUserTeamType = Number(wx.getStorageSync('rendaUserTeamType'))
-		this.$apply()
 		this.teamId = wx.getStorageSync('rendaUserTeamId')
+		this.$apply()
 	}
 	getUserList () {
 		$http('/userinfo/teamUserList', this.params).then(res => {
@@ -133,8 +133,9 @@ export default class userList extends wepy.page {
 		}
 	}
 	onShareAppMessage (res) {
+		console.log(this.teamId + '我的团队id')
 		return {
-			title: '转发',
+			title: '邀请成员加入团队',
 			imageUrl: this.qrCode,
 			// path: '/pages/teamView/userInfo?uid=' + this.uid
 			path: `/pages/login/welcome?uid=${this.params.uid}&teamId=${this.teamId}`
@@ -142,7 +143,8 @@ export default class userList extends wepy.page {
 	}
 	methods = {
 		addUser () {
-			this.isModal = !this.isModal
+			this.type = 0
+			this.isModal = false
 			this.$apply()
 		},
 		searchScrollLower () {

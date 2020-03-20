@@ -157,7 +157,9 @@ export default class teamView extends wepy.page {
     $http('/Userinfo/getteaminfo', { uid }).then(res => {
       this.teamData = res.data || {}
       this.rendaUserTeamType = res.data.grade_num
+      console.log(res + '我的团队')
       wx.setStorageSync('rendaUserTeamId', res.data.team_id)
+      console.log(res.data.team_id + '我的团队id')
       wx.setStorageSync('rendaUserTeamType', res.data.grade_num)
       wx.setStorageSync('rendaDradeId', res.data.grade_id)
       if (res.data.logo) {
