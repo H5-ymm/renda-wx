@@ -144,7 +144,7 @@
 					<image src="https://a.rsd123.com/image/images/orderTaking/warn.png" class="tipIcon" />
 					<text class="tip">部门可在添加成员成功之后新增</text>
 				</view>
-		</view>
+	  	</view>
 		<view class="weui-cell_btn weui-flex between register-btn"
 		wx:if="{{uid!=userUid||invite_uid!=''}}">
 			<button class="weui-btn_cell weui-flex__item  weui-btn_primary" @tap="save">

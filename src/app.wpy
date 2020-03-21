@@ -1,5 +1,5 @@
 <style lang="less">
-@import './style/common.less';
+@import "./style/common.less";
 </style>
 <script>
 import wepy from 'wepy';
@@ -70,19 +70,19 @@ export default class extends wepy.app {
       downloadFile: 10000
     }
   };
-  onLaunch (options) {
+  onLaunch(options) {
     this.removeData()
     this.autoUpdate()
     this.isCheckSession()
   }
-  removeData () {
+  removeData() {
     wx.removeStorageSync('preForm')
     wx.removeStorageSync('resumeType');
     wx.removeStorageSync('sendAuthCode');;
     // wx.removeStorageSync('rendaUidQrcode');
     // wx.removeStorageSync('rendaUidQrcodeTeamId');
   }
-  onShow (options) {
+  onShow(options) {
     wx.removeStorageSync('rendaUidQrcode');
     wx.removeStorageSync('rendaUserTeamId');
     let str = ''
@@ -111,7 +111,7 @@ export default class extends wepy.app {
       }
     }
   }
-  autoUpdate () {
+  autoUpdate() {
     var self = this
     // 获取小程序更新机制兼容
     if (wx.canIUse('getUpdateManager')) {
@@ -155,7 +155,7 @@ export default class extends wepy.app {
       })
     }
   }
-  downLoadAndUpdate (updateManager) {
+  downLoadAndUpdate(updateManager) {
     wx.showLoading();
     // 静默下载更新小程序新版本
     updateManager.onUpdateReady(function () {
@@ -224,7 +224,7 @@ export default class extends wepy.app {
     }
     // 处理tabBar中点击, 被点击,将当前的数据对象中 selected 改成true, 其余的就得改成 false;  这里的id是标识, 在
   };
-  tabBarClickHandle (id, that) {
+  tabBarClickHandle(id, that) {
     let tbList = this.globalData.tabBar.list;
     tbList.forEach((item, index) => {
       if (id === index) {
@@ -236,7 +236,7 @@ export default class extends wepy.app {
     that.$apply();
     return this.globalData.tabBar;
   }
-  isCheckSession () {
+  isCheckSession() {
     wx.checkSession({
       success: () => {
         console.log('没有过期')
@@ -246,10 +246,10 @@ export default class extends wepy.app {
       }
     })
   }
-  getOpenId () {
+  getOpenId() {
     let that = this
     wx.login({
-      success (res) {
+      success(res) {
         if (res.code) {
           console.log(res.code)
           $http('/Login/getopenid', { code: res.code }).then(res => {

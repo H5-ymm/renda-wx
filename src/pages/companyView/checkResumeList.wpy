@@ -1,6 +1,44 @@
 <style lang="less">
 @import '../../style/home.less';
 @import '../../style/resume.less';
+.video-tip {
+	width:100%;
+	height:38rpx;
+	line-height: 38rpx;
+	margin: 10rpx auto;
+	background:rgba(255,186,189,0.5);
+	border-radius:19rpx;
+	font-size: 22rpx;
+	text-align: center;
+	color: #EE696E;
+}
+.video-switch  {
+	width: 50%;
+	height:58rpx;
+	line-height: 58rpx;
+	box-shadow:0px 2px 2px 0px rgba(0, 0, 0, 0.2);
+	border-radius:29rpx;
+	font-size: 28rpx;
+	margin: 0 auto 10rpx;
+	.video-switch-col1 {
+		text-align: center;
+		color: #fff;
+		width: 50%;
+		line-height: 58rpx;
+		text-align: center;
+		color: #999999;
+		background: #fff;
+		border-radius:29px 0px 0px 29px;
+		&.video-switch-active {
+			color: #fff;
+      background:rgba(24,144,255,1);
+		}
+		&.video-switch-col2 {
+			border-radius:0 29px 29px 0px ;
+			overflow: hidden;
+		}
+	}
+}
 </style>
 <template>
 	<view class="detail-view">
@@ -11,7 +49,12 @@
 		</view>
 		<view class="page_margin view-detail">
 			<scroll-view scroll-y="true" style="height:100%">
-				<companyResumeList :list.sync="newList" :receiptType.sync="receiptType" :isBatch.sync="isBatch" :isCheck.sync="isCheck" @handleResume="handleResume">
+				<!-- <view class="video-tip">提示：每次视频面试最多邀请8人 建议：根据实际情况设置面试时间</view> -->
+				<view class="video-switch weui-flex between">
+					<view class="video-switch-col1 {{viewType==1?'video-switch-active':''}}" @tap="switchView(1)">正常面试</view>
+					<view class="video-switch-col1 video-switch-col2 {{viewType==2?'video-switch-active':''}}" @tap="switchView(2)">视频面试</view>
+				</view>
+				<companyResumeList :list.sync="newList" :receiptTpe.sync="receiptType" :isBatch.sync="isBatch" :isCheck.sync="isCheck" @handleResume="handleResume">
 				</companyResumeList>
 			</scroll-view>
 		</view>
@@ -19,13 +62,15 @@
 			<view wx:if="{{isCheckBtn || (check&&!isShowOverBtn)}}" class="create-btn footer-box">
 				<view class="weui-flex center footer-box-item" wx:if="{{!isBatch}}">
 					<view class="weui-flex__item item-btn weui-flex center" @tap="batchHandle" wx:if="{{!check}}">
-						批量操作
+						<!-- 批量操作 -->
+						{{viewType==1?'批量正常面试':'批量视频面试'}}
 					</view>
 					<view wx:if="{{check&&(statusObj.interview_status==1||statusObj.entry_status==1)}}" class="weui-flex__item weui-text_primary item-btn weui-flex center" @tap="overView">
 						{{receiptType===1?'提前结束面试':'提前结束入职'}}
 					</view>
 					<view wx:else class="weui-flex__item footer-box-item weui-flex center item-btn" @tap="viewNotice">
-						{{receiptType==1?'查看面试通知':'查看入职通知'}}
+						<text wx:if="{{receiptType==1}}">{{viewType==1?'查看面试通知':'通知记录'}}</text>
+						<text wx:else>查看入职通知</text>
 					</view>
 				</view>
 				<view class="weui-flex between footer-box-item" wx:if="{{isBatch}}">
@@ -58,12 +103,16 @@
 			</view>
 		</view>
 	</view>
+	<noticeModal :isScaleModal.sync="isNoticeModal"
+	:height.sync="modalHeight" :title.sync="title" 
+	:type.sync="viewType"></noticeModal>
 	<viewNoticeModal :isScaleModal.sync="isModal" :height.sync="modalHeight" :timeInfo.sync="timeInfo" :title.sync="title"></viewNoticeModal>
 	</view>
 </template>
 <script>
 import wepy from 'wepy'
 import { $http } from '@/http.js'
+import noticeModal from '@/components/noticeModal'
 import tabBar from '@/components/tabBar'
 import search from '@/components/search'
 import companyResumeList from '@/components/companyResumeList'
@@ -72,6 +121,7 @@ import { getList, wxNavigateTo, wxShowModal, wxToast, wxReLaunch } from '@/util'
 export default class checkResumeList extends wepy.page {
 	components = {
 		tabBar: tabBar,
+		noticeModal:noticeModal,
 		search: search,
 		companyResumeList: companyResumeList,
 		viewNoticeModal: viewNoticeModal
@@ -91,14 +141,16 @@ export default class checkResumeList extends wepy.page {
 		activeIndex: 0,
 		isSeachWidth: false,
 		isModal: true,
-		modalHeight: 860,
-		title: '查看面试时间',
+		modalHeight: 920,
+		title: '',
 		receiptType: 1,
 		statusObj: {},
 		job_id: '',
 		timeInfo: {},
 		id: '',
-		check: false
+		check: false,
+		viewType: 1,
+		isNoticeModal: true
 	}
 	computed = {
 		newList () {
@@ -126,10 +178,18 @@ export default class checkResumeList extends wepy.page {
 	}
 	onLoad (options) {
 		this.receiptType = Number(options.query)
-		this.job_id = options.job_id
+		// this.isNoticeModal = false
+		// if (this.viewType == 1) {
+		// 	this.modalHeight = 930
+		// } else {
+		// 	this.modalHeight = 750
+		// }
+		this.job_id = options.job_id || 1
 		if (this.receiptType === 1) {
+			this.title = '面试'
 			this.params.job_id = options.job_id
 		} else {
+			this.title = '入职'
 			this.params.jobId = options.job_id
 		}
 		this.$apply()
@@ -219,6 +279,10 @@ export default class checkResumeList extends wepy.page {
 		})
 	}
 	methods = {
+		switchView(index){
+			this.viewType = index
+			this.$apply()
+		},
 		batchHandle () {
 			this.isBatch = true
 			this.list = this.checkAll(this.list, false)

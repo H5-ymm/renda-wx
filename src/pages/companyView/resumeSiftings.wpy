@@ -12,7 +12,12 @@
 				</view>
 			</scroll-view>
 		</view>
-		<noticeModal :isScaleModal.sync="isModal" :height.sync="modalHeight" :title.sync="title"></noticeModal>
+		<selectModal
+			:isScaleModal.sync="isSelectModal"
+			:menus.sync="menus"
+			@selectOk="selectOk"
+			:title.sync="modalTitle"
+		></selectModal>
 	</view>
 </template>
 <script>
@@ -20,13 +25,13 @@ import wepy from 'wepy'
 import { $http } from '@/http.js'
 import search from '@/components/search'
 import receiptList from '@/components/receiptList'
-import noticeModal from '@/components/noticeModal'
+import selectModal from '@/components/selectModal'
 import { wxToast } from '@/util.js'
 export default class resumeSiftings extends wepy.page {
 	components = {
 		search: search,
-		receiptAllList: receiptList,
-		noticeModal: noticeModal
+		selectModal: selectModal,
+		receiptAllList: receiptList
 	}
 	data = {
 		list: [],
@@ -40,7 +45,19 @@ export default class resumeSiftings extends wepy.page {
 		isModal: true,
 		modalHeight: 900,
 		title: '',
-		job_id: ''
+		job_id: '',
+		isSelectModal: true,
+		modalTitle: '请选择面试方式',
+		menus: [
+			{
+				icon: '../../images/orderTaking/icon2.png',
+				title: '正常面试',
+			},
+			{
+				icon: '../../images/orderTaking/icon1.png',
+				title: '视频面试'
+			}
+		]
 	}
 	getTitle(val) {
 		return val === 1 ? '简历初筛' : val === 2 ? '面试结果' : '入职名单'
@@ -72,6 +89,7 @@ export default class resumeSiftings extends wepy.page {
 		})
 	}
 	onLoad(options) {
+		// this.isSelectModal = false
 		if (options.jobId) {
 			this.params.jobId = options.jobId
 		}

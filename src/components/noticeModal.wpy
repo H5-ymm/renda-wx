@@ -2,11 +2,17 @@
 @import '../style/modal.less';
 @import '../style/form.less';
 .modal-view-box {
-  padding: 20rpx 0 60rpx;
-  position: relative;
+  padding: 20rpx 0 70rpx;
+	position: relative;
+	margin-bottom: 30rpx;
+	&.modal-view-box1 {
+		height: 460rpx;
+		margin-bottom: 10rpx;
+	}
   .notice-tip {
     position: absolute;
-    bottom: 20rpx;
+		bottom: 0;
+		width: 100%;
     left: 32rpx;
     margin-left: -50rpx;
     margin-right: -40rpx;
@@ -58,13 +64,13 @@
 		<view @tap=" handleClose" wx:if="{{isShow}}" class="modal_mask"></view>
 		<view class="modal_box modal-notice_box transition3s {{ isShow ? 'g_scale1': ''}}" style="height:{{height}}rpx">
 			<view class="modal-content">
-				<view class="modal-title">选择{{title}}时间</view>
-				<view class="modal-view-box">
+				<view class="modal-title">设置{{title}}通知</view>
+				<view class="modal-view-box {{type==2?'modal-view-box1':''}}">
 					<view class="modal-row">
 						<text>{{title}}时间</text>
 						<datePicker @setDate="setDate"></datePicker>
 					</view>
-					<view class="modal-row">
+					<view class="modal-row" wx:if="{{type==1}}">
 						<text>{{title}}地址</text>
 						<districtSelet @selectCityText="selectCityText" :disabled.sync="disabled" class="modal-col"></districtSelet>
 						<view class="modal-col modal-col-input">
@@ -75,9 +81,16 @@
 						<text>通知内容</text>
 						<textarea data-name="content" placeholder-class="placeholder" disable-default-padding="true" class="weui-input weui-textarea modal-col" value="{{form.content}}" @input="changeInput" placeholder="请输入{{title}}通知的内容" maxlength="-1" />
 						</view>
-					<view class="weui-flex start notice-tip">
+					<view class="weui-flex start notice-tip" wx:if="{{type==1}}">
 						<image src="https://a.rsd123.com/image/images/orderTaking/warn.png" class="tipIcon" />
 						<text class="tip">审核通过简历会直接发送短信通知{{title}}，谨慎操作</text>
+					</view>
+					<view class="weui-flex start notice-tip" wx:else>
+						<image src="https://a.rsd123.com/image/images/orderTaking/warn.png" class="tipIcon" />
+					 <view>
+						 	<text class="tip">1.筛选通过简历直接短信通知视频面试信息，谨慎 操作</text>
+						<view class="tip">2.可根据实际情况修改面试通知，分批面试</view>
+					 </view>
 					</view>
 		    </view>
         <view class="weui-cell_btn weui-flex between create-btn">
@@ -98,7 +111,8 @@ export default class noticeModal extends wepy.component {
 	props = {
 		isScaleModal: Boolean,
 		height: Number,
-		title: String
+		title: String,
+		type:Number
 	}
 	components = {
 		datePicker: datePicker,

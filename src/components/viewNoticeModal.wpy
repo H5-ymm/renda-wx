@@ -36,7 +36,7 @@
 		<view @tap=" handleClose" wx:if="{{isShow}}" class="modal_mask"></view>
 		<view class="modal_box modal-notice_box modal-viewNotice_box transition3s {{ isShow ? 'g_scale1': ''}}" style="height:{{height}}rpx">
 			<view class="modal-content">
-				<view class="modal-title">{{title}}</view>
+				<view class="modal-title">查看{{title}}通知</view>
 				<view class="modal-view-box">
 					<view class="modal-row">
 						<text>面试时间</text>
