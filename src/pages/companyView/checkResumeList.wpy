@@ -2,42 +2,42 @@
 @import '../../style/home.less';
 @import '../../style/resume.less';
 .video-tip {
-	width:100%;
-	height:38rpx;
-	line-height: 38rpx;
-	margin: 10rpx auto;
-	background:rgba(255,186,189,0.5);
-	border-radius:19rpx;
-	font-size: 22rpx;
-	text-align: center;
-	color: #EE696E;
+  width: 100%;
+  height: 38rpx;
+  line-height: 38rpx;
+  margin: 10rpx auto;
+  background: rgba(255, 186, 189, 0.5);
+  border-radius: 19rpx;
+  font-size: 22rpx;
+  text-align: center;
+  color: #ee696e;
 }
-.video-switch  {
-	width: 50%;
-	height:58rpx;
-	line-height: 58rpx;
-	box-shadow:0px 2px 2px 0px rgba(0, 0, 0, 0.2);
-	border-radius:29rpx;
-	font-size: 28rpx;
-	margin: 0 auto 10rpx;
-	.video-switch-col1 {
-		text-align: center;
-		color: #fff;
-		width: 50%;
-		line-height: 58rpx;
-		text-align: center;
-		color: #999999;
-		background: #fff;
-		border-radius:29px 0px 0px 29px;
-		&.video-switch-active {
-			color: #fff;
-      background:rgba(24,144,255,1);
-		}
-		&.video-switch-col2 {
-			border-radius:0 29px 29px 0px ;
-			overflow: hidden;
-		}
-	}
+.video-switch {
+  width: 50%;
+  height: 58rpx;
+  line-height: 58rpx;
+  box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.2);
+  border-radius: 29rpx;
+  font-size: 28rpx;
+  margin: 0 auto 20rpx;
+  .video-switch-col1 {
+    text-align: center;
+    color: #fff;
+    width: 50%;
+    line-height: 58rpx;
+    text-align: center;
+    color: #999999;
+    background: #fff;
+    border-radius: 29px 0px 0px 29px;
+    &.video-switch-active {
+      color: #fff;
+      background: rgba(24, 144, 255, 1);
+    }
+    &.video-switch-col2 {
+      border-radius: 0 29px 29px 0px;
+      overflow: hidden;
+    }
+  }
 }
 </style>
 <template>
@@ -49,12 +49,12 @@
 		</view>
 		<view class="page_margin view-detail">
 			<scroll-view scroll-y="true" style="height:100%">
-				<!-- <view class="video-tip">提示：每次视频面试最多邀请8人 建议：根据实际情况设置面试时间</view> -->
-				<view class="video-switch weui-flex between">
+				<view class="video-tip" wx:if="{{isBatch&&viewType==2}}">提示：每次视频面试最多邀请8人 建议：根据实际情况设置面试时间</view>
+				<view class="video-switch weui-flex between" wx:if="{{!isBatch}}">
 					<view class="video-switch-col1 {{viewType==1?'video-switch-active':''}}" @tap="switchView(1)">正常面试</view>
 					<view class="video-switch-col1 video-switch-col2 {{viewType==2?'video-switch-active':''}}" @tap="switchView(2)">视频面试</view>
 				</view>
-				<companyResumeList :list.sync="newList" :receiptTpe.sync="receiptType" :isBatch.sync="isBatch" :isCheck.sync="isCheck" @handleResume="handleResume">
+				<companyResumeList :list.sync="newList" :receiptTpe.sync="receiptType" :isBatch.sync="isBatch" :isCheck.sync="isCheck" @viewDetail="viewDetail" @handleResume="handleResume" @selectResume="selectResume">
 				</companyResumeList>
 			</scroll-view>
 		</view>
@@ -103,9 +103,7 @@
 			</view>
 		</view>
 	</view>
-	<noticeModal :isScaleModal.sync="isNoticeModal"
-	:height.sync="modalHeight" :title.sync="title" 
-	:type.sync="viewType"></noticeModal>
+	<noticeModal :isScaleModal.sync="isNoticeModal" :height.sync="modalHeight" @setAllTime="setAllTime" :title.sync="title" :type.sync="viewType"></noticeModal>
 	<viewNoticeModal :isScaleModal.sync="isModal" :height.sync="modalHeight" :timeInfo.sync="timeInfo" :title.sync="title"></viewNoticeModal>
 	</view>
 </template>
@@ -121,7 +119,7 @@ import { getList, wxNavigateTo, wxShowModal, wxToast, wxReLaunch } from '@/util'
 export default class checkResumeList extends wepy.page {
 	components = {
 		tabBar: tabBar,
-		noticeModal:noticeModal,
+		noticeModal: noticeModal,
 		search: search,
 		companyResumeList: companyResumeList,
 		viewNoticeModal: viewNoticeModal
@@ -133,7 +131,8 @@ export default class checkResumeList extends wepy.page {
 			uid: '',
 			page: 1,
 			limit: 500,
-			status: ''
+			status: '',
+			type: 1
 		},
 		count: 0,
 		isBatch: false,
@@ -150,7 +149,8 @@ export default class checkResumeList extends wepy.page {
 		id: '',
 		check: false,
 		viewType: 1,
-		isNoticeModal: true
+		isNoticeModal: true,
+		userSign: ''
 	}
 	computed = {
 		newList () {
@@ -178,13 +178,8 @@ export default class checkResumeList extends wepy.page {
 	}
 	onLoad (options) {
 		this.receiptType = Number(options.query)
-		// this.isNoticeModal = false
-		// if (this.viewType == 1) {
-		// 	this.modalHeight = 930
-		// } else {
-		// 	this.modalHeight = 750
-		// }
-		this.job_id = options.job_id || 1
+		this.viewType = options.setTime
+		this.job_id = options.job_id
 		if (this.receiptType === 1) {
 			this.title = '面试'
 			this.params.job_id = options.job_id
@@ -198,6 +193,7 @@ export default class checkResumeList extends wepy.page {
 		})
 	}
 	onShow () {
+		this.params.type = this.viewType ? this.viewType : '1'
 		this.params.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
 		this.statusObj = JSON.parse(wx.getStorageSync('statusObj'))
 		this.tabBarList = this.getTabBarList(this.receiptType)
@@ -226,15 +222,62 @@ export default class checkResumeList extends wepy.page {
 		handleResume: data => {
 			this.auditResumeRecommend(data)
 		},
+		setAllTime: data => {
+			console.log(data)
+			let params = Object.assign(data, { uid: this.params.uid, job_id: this.job_id, resume_list: this.id })
+			this.getUserSign(data.room_name)
+			this.setVideoNotice(params)
+		},
 		selectResume: data => {
-			if (data.length === this.newList.length) {
+			console.log(data)
+			if (data.length == this.newList.length) {
 				this.isCheck = true
 				this.$apply()
 			}
 			if (data.length) {
 				this.id = data.join(',')
 			}
+		},
+		viewDetail: data => {
+			let query = `?resume_id=${data}`
+			wx.navigateTo({
+				url: '/pages/companyView/checkResumeDetail' + query
+			})
 		}
+	}
+	getUserSign (name) {
+		$http('/Tencentcloud/createQuanjian', { name }).then(res => {
+			this.userSign = res.data
+		})
+	}
+	setVideoNotice (params) {
+		$http('/company/setVideoInterviewTime', params).then(res => {
+			if (res.data) {
+				console.log(data)
+				const url = `/pages/room/room?roomID=${params.room_num}` +
+					`&userSig=${this.userSig}` +
+					`&template=grid&debugMode=false&cloudenv=PRO` +
+					`&localVideo=true` +
+					`&localAudio=true` +
+					`&enableEarMonitor=false` +
+					`&enableAutoFocus=true` +
+					`&localMirror=auto` +
+					`&enableAgc=true` +
+					`&enableAns=true` +
+					`&encsmall=true` +
+					`&frontCamera=front` +
+					`&videoWidth=360` +
+					`&videoHeight=640` +
+					`&scene=rtc` +
+					`&userID=${params.room_name}` +
+					`&minBitrate=600&maxBitrate=900`
+				wx.navigateTo({
+					url: url,
+				})
+			} else {
+				wxToast('设置失败')
+			}
+		})
 	}
 	auditResumeRecommend (params) {
 		$http(this.checkUrlAPI, params).then(res => {
@@ -242,6 +285,12 @@ export default class checkResumeList extends wepy.page {
 				if (this.isCheck || this.check) {
 					if (this.receiptType === 1) {
 						this.statusObj.invoice_status = 4
+						this.isNoticeModal = false
+						if (this.viewType == 1) {
+							this.modalHeight = 930
+						} else {
+							this.modalHeight = 750
+						}
 					}
 					if (this.receiptType === 2) {
 						this.statusObj.interview_status = 4
@@ -279,8 +328,10 @@ export default class checkResumeList extends wepy.page {
 		})
 	}
 	methods = {
-		switchView(index){
+		switchView (index) {
 			this.viewType = index
+			this.params.type = this.viewType
+			this.getCheckList()
 			this.$apply()
 		},
 		batchHandle () {
@@ -289,7 +340,11 @@ export default class checkResumeList extends wepy.page {
 			this.$apply()
 		},
 		viewNotice () {
-			this.viewTimeInfo()
+			if (this.viewType == 1) {
+				this.viewTimeInfo()
+			} else {
+				wxNavigateTo('/pages/companyView/noticeRecord?jobId=' + this.job_id)
+			}
 		},
 		selectResumeAll (check) {
 			this.isCheck = !check
@@ -313,13 +368,14 @@ export default class checkResumeList extends wepy.page {
 			})
 		},
 		setResumeStatus (status) {
-			if (!this.isCheck) {
+			if (!this.isCheck || !this.id) {
 				return wxToast('请选择简历')
 			}
 			let parasm = {
 				status,
 				uid: wx.getStorageSync('rendaUid'),
 				id: this.id,
+				type: this.viewType
 			}
 			this.auditResumeRecommend(parasm)
 		},
@@ -396,6 +452,7 @@ export default class checkResumeList extends wepy.page {
 	}
 	getCheckList () {
 		$http(this.urlApi, this.params).then(res => {
+			console.log(res)
 			this.list = res.data.data || []
 			if (this.receiptType) {
 				this.check = this.checkStatus(this.list, this.receiptType)

@@ -1,5 +1,5 @@
 <style lang="less">
-@import "../../style/home.less";
+@import '../../style/home.less';
 </style>
 <template>
 	<view class="home-view">
@@ -12,12 +12,8 @@
 				</view>
 			</scroll-view>
 		</view>
-		<selectModal
-			:isScaleModal.sync="isSelectModal"
-			:menus.sync="menus"
-			@selectOk="selectOk"
-			:title.sync="modalTitle"
-		></selectModal>
+		<noticeModal :isScaleModal.sync="isModal" :height.sync="modalHeight" :title.sync="title" :type.sync="viewType"></noticeModal>
+		<selectModal :isScaleModal.sync="isSelectModal" :menus.sync="menus" @selectOk="selectOk" :title.sync="modalTitle"></selectModal>
 	</view>
 </template>
 <script>
@@ -26,12 +22,14 @@ import { $http } from '@/http.js'
 import search from '@/components/search'
 import receiptList from '@/components/receiptList'
 import selectModal from '@/components/selectModal'
+import noticeModal from '@/components/noticeModal'
 import { wxToast } from '@/util.js'
 export default class resumeSiftings extends wepy.page {
 	components = {
 		search: search,
 		selectModal: selectModal,
-		receiptAllList: receiptList
+		receiptAllList: receiptList,
+		noticeModal: noticeModal
 	}
 	data = {
 		list: [],
@@ -43,8 +41,9 @@ export default class resumeSiftings extends wepy.page {
 		count: 0,
 		receiptType: 0,
 		isModal: true,
-		modalHeight: 900,
-		title: '',
+		viewType: 1,
+		modalHeight: 930,
+		title: '设置面试通知',
 		job_id: '',
 		isSelectModal: true,
 		modalTitle: '请选择面试方式',
@@ -59,10 +58,10 @@ export default class resumeSiftings extends wepy.page {
 			}
 		]
 	}
-	getTitle(val) {
+	getTitle (val) {
 		return val === 1 ? '简历初筛' : val === 2 ? '面试结果' : '入职名单'
 	}
-	getJobList() {
+	getJobList () {
 		this.list = []
 		$http(this.urlApi, this.params).then(res => {
 			this.list = res.data.data || []
@@ -71,7 +70,7 @@ export default class resumeSiftings extends wepy.page {
 		})
 	}
 	// 设置面试和入职时间
-	setDate(data) {
+	setDate (data) {
 		let params = {
 			uid: this.params.uid,
 			job_id: this.job_id,
@@ -88,8 +87,7 @@ export default class resumeSiftings extends wepy.page {
 			}
 		})
 	}
-	onLoad(options) {
-		// this.isSelectModal = false
+	onLoad (options) {
 		if (options.jobId) {
 			this.params.jobId = options.jobId
 		}
@@ -100,15 +98,15 @@ export default class resumeSiftings extends wepy.page {
 		this.params.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
 		this.$apply()
 	}
-	onShow() {
+	onShow () {
 		this.getJobList()
 	}
 	computed = {
 		// 获取简历初筛，面试名单，入职名单列表url
-		urlApi() {
+		urlApi () {
 			return this.receiptType === 1 ? '/company/CompanyResumeList' : this.receiptType === 2 ? '/company/invoiceInterviewList' : '/company/entryInvoiceList'
 		},
-		timeUrlApi() {
+		timeUrlApi () {
 			return this.receiptType === 1 ? '/company/editInterviewTime' : '/company/editEntryTime'
 		}
 	}
@@ -119,8 +117,7 @@ export default class resumeSiftings extends wepy.page {
 		},
 		setTime: data => {
 			this.job_id = data
-			this.isModal = !this.isModal
-			this.title = this.receiptType === 1 ? '面试' : '入职'
+			this.isSelectModal = !this.isSelectModal
 			this.$apply()
 		},
 		handleClose: () => {
@@ -129,10 +126,21 @@ export default class resumeSiftings extends wepy.page {
 		},
 		setAllTime: data => {
 			this.setDate(data)
+		},
+		selectOk: data => {
+			if (data == 0) {
+				this.isModal = !this.isModal
+				this.$apply()
+			} else {
+				let num = Number(data) + 1
+				wx.navigateTo({
+					url: '/pages/companyView/checkResumeList?query=' + this.receiptType + '&job_id=' + this.job_id + '&setTime=' + num
+				})
+			}
 		}
 	}
 	methods = {
-		searchScrollLower() {
+		searchScrollLower () {
 			if (this.count > this.list.length && this.count > this.params.limit) {
 				this.params.limit = this.params.limit + 10
 				this.getJobList()

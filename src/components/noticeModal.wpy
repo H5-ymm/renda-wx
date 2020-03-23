@@ -3,16 +3,16 @@
 @import '../style/form.less';
 .modal-view-box {
   padding: 20rpx 0 70rpx;
-	position: relative;
-	margin-bottom: 30rpx;
-	&.modal-view-box1 {
-		height: 460rpx;
-		margin-bottom: 10rpx;
-	}
+  position: relative;
+  margin-bottom: 30rpx;
+  &.modal-view-box1 {
+    height: 460rpx;
+    margin-bottom: 10rpx;
+  }
   .notice-tip {
     position: absolute;
-		bottom: 0;
-		width: 100%;
+    bottom: 0;
+    width: 100%;
     left: 32rpx;
     margin-left: -50rpx;
     margin-right: -40rpx;
@@ -112,7 +112,7 @@ export default class noticeModal extends wepy.component {
 		isScaleModal: Boolean,
 		height: Number,
 		title: String,
-		type:Number
+		type: Number
 	}
 	components = {
 		datePicker: datePicker,
@@ -149,14 +149,25 @@ export default class noticeModal extends wepy.component {
 		handleOk () {
 			this.isShow = false
 			this.$apply()
-			let params = {
-				time: this.form.time,
-				content:
-					this.address +
-					'/' +
-					this.form.address +
-					'&' +
-					this.form.content
+			let params = {}
+			if (this.type == 1) {
+				params = {
+					time: this.form.time,
+					content:
+						this.address +
+						'/' +
+						this.form.address +
+						'&' +
+						this.form.content
+				}
+			} else {
+				params = {
+					view_time: this.form.time,
+					content: this.form.content,
+					room_num: wx.getStorageSync('rendaOpenId').substring(0, 5),
+					room_name: wx.getStorageSync('rendaOpenId'),
+					type: 1
+				}
 			}
 			this.$emit('setAllTime', params)
 		}

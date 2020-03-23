@@ -20,7 +20,7 @@
         </view>
         <view class="page_card_row">
           <view class="weui-flex between">
-            <view class="my-text  weui-flex__item"> 谁送给我</view>
+            <view class="my-text  weui-flex__item">谁送给我</view>
             <input class="weui-input" placeholder-class="placeholder" data-name="from_user" value="{{form.from_user}}" @input="changeInput" placeholder="请输入送给人" />
           </view>
         </view>
@@ -37,7 +37,7 @@
         </view>
         <view class="page_card_row">
           <view class="weui-flex between ">
-            <view class="my-text weui-flex__item"> 姓名</view>
+            <view class="my-text weui-flex__item">姓名</view>
             <view class="my-text-right"> {{form.name}}</view>
           </view>
         </view>
@@ -49,7 +49,7 @@
         </view>
         <view class="page_card_row">
           <view class="weui-flex between ">
-            <view class="my-text weui-flex__item"> 手机号</view>
+            <view class="my-text weui-flex__item">手机号</view>
             <input class="weui-input" placeholder-class="placeholder" data-name="mobile" value="{{form.mobile}}" @input="changeInput" placeholder="请输入手机号" />
           </view>
         </view>

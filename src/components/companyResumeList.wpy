@@ -33,11 +33,11 @@
 	<view class="resume-list">
 		<repeat wx:for="{{list}}" wx:key="index">
 			<view class="page_card" wx:if="{{list.length}}">
-				<view class="page_card_row weui-flex between">
+				<view class="page_card_row weui-flex between" @tap="viewDetail({{item}})">
 					<view class="weui-flex start">
 						<view wx:if="{{isBatch}}">
-							<image src="https://a.rsd123.com/image/images/user/radio2.png" alt="" mode="aspectFill" class="radio-icon" @tap="selectResume({{item}},{{index}})" wx:if="{{item.disabled}}" />
-							<image src="https://a.rsd123.com/image/images/user/radio1.png" wx:else @tap="selectResume({{item}},{{index}})" mode="aspectFill" class="radio-icon" />
+							<image src="https://a.rsd123.com/image/images/user/radio2.png" alt="" mode="aspectFill" class="radio-icon" @tap.stop="selectResume({{item}},{{index}})" wx:if="{{item.disabled}}" />
+							<image src="https://a.rsd123.com/image/images/user/radio1.png" wx:else @tap.stop="selectResume({{item}},{{index}})" mode="aspectFill" class="radio-icon" />
 						</view>
 						<view>
 							<view class="page_card_name">{{item.name}}</view>
@@ -49,23 +49,26 @@
 						</view>
 					</view>
 					<view class="weui-flex end wrap page_card_end">
-						<view wx:if="{{isShowBtn}}" class="page_card_status-resume">
-							<view class="page_card_status-item weui-flex between" wx:if="{{(receiptType==1&&!item.status)||(receiptType==2&&!item.interview_status)||(receiptType==3&&!item.entry_status)}}">
-								<button class="weui-btn_cell weui-flex__item weui-btn_primary" @tap="handleResume({{item}},1)">
-									{{text}}
-								</button>
-								<button class="weui-btn_cell weui-flex__item weui-btn_primary_plain" @tap="handleResume({{item}},2)">
-									{{receiptType===1?'拒绝':receiptType===2?'未通过':'未入职'}}
-								</button>
-							</view>
-							<view wx:else class="page_card_status-text weui-flex center-start">
-								<view wx:if="{{item.status==1||item.interview_status==1||item.entry_status==1}}" class="page_card_receipt_status page_card_receipt_status2">已{{text}}</view>
-								<view wx:else class="page_card_receipt_status page_card_receipt_status3">
-									{{refuseText}}
+						<view>
+							<view wx:if="{{isShowBtn}}" class="page_card_status-resume">
+								<view class="page_card_status-item weui-flex between" wx:if="{{(receiptType==1&&!item.status)||(receiptType==2&&!item.interview_status)||(receiptType==3&&!item.entry_status)}}">
+									<button class="weui-btn_cell weui-flex__item weui-btn_primary" @tap.stop="handleResume({{item}},1)">
+										{{text}}
+									</button>
+									<button class="weui-btn_cell weui-flex__item weui-btn_primary_plain" @tap.stop="handleResume({{item}},2)">
+										{{receiptType===1?'拒绝':receiptType===2?'未通过':'未入职'}}
+									</button>
+								</view>
+								<view wx:else class="page_card_status-text weui-flex center-start">
+									<view wx:if="{{item.status==1||item.interview_status==1||item.entry_status==1}}" class="page_card_receipt_status page_card_receipt_status2">已{{text}}</view>
+									<view wx:else class="page_card_receipt_status page_card_receipt_status3">
+										{{refuseText}}
+									</view>
 								</view>
 							</view>
+							<view class="page_card_time">{{item.addtime}}</view>
 						</view>
-						<view class="page_card_time">{{item.addtime}}</view>
+						<image mode="scaleToFill" class="weui-flex__item" src="https://a.rsd123.com/image/images/right.png" class="page_down_icon" />
 					</view>
 				</view>
 			</view>
@@ -121,6 +124,8 @@ export default class companyResumeList extends wepy.component {
 		list (val) {
 			if (val) {
 				this.resumeList = val
+				console.log(this.resumeList)
+				this.$apply()
 			}
 		}
 	}
@@ -133,9 +138,13 @@ export default class companyResumeList extends wepy.component {
 			}
 			this.$emit('handleResume', query)
 		},
+		viewDetail (item) {
+			this.$emit('viewDetail', item.id)
+		},
 		selectResume (item, index) {
 			let arr = []
-			item.disabled = !item.disabled
+			this.resumeList[index].disabled = !item.disabled
+			console.log(item.disabled)
 			this.$apply()
 			if (arr.indexOf(item.id) === -1) {
 				arr.push(item.id)
