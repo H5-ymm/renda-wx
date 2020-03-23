@@ -2,7 +2,7 @@
 @import '../../style/login.less';
 </style>
 <template>
-  <view class="login_page welcome-page page_botttom">
+  <view class="login_page welcome-page page_bottom">
     <view class="login-view welcome-view">
       <image src="https://a.rsd123.com/image/images/welcome/welcomeBg.png" mode="aspectFill" class="login-view-bg welcome-view-bg" />
       <view class="login-view-box welcome-view-box">

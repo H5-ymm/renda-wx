@@ -178,7 +178,7 @@ export default class my extends wepy.page {
       wx.setStorageSync('rendaUserType', res.usertype)
       wx.setStorageSync('rendaUid', res.uid)
       this.usertype = res.usertype
-      this.tabBarIndex = res.usertype === 2 ? 1 : 2
+      this.tabBarIndex = res.usertype === 2 ? 1 : 3
       this.$apply()
       store.dispatch(getAllContant())
     }
@@ -308,7 +308,7 @@ export default class my extends wepy.page {
     this.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
     this.wxInfo = wx.getStorageSync('wxInfo')
     this.usertype = wx.getStorageSync('rendaUserType')
-    this.tabBarIndex = this.usertype === 2 ? 1 : 2
+    this.tabBarIndex = this.usertype === 2 ? 1 : 3
     let title = this.usertype == 2 ? '我的' : '企业中心'
     wx.setNavigationBarTitle({
       title: title

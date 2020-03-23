@@ -38,9 +38,12 @@
     }
     .page_record_row {
       background: #fff;
-      padding: 18rpx 20rpx;
+      padding: 0 20rpx;
       line-height: 40rpx;
       font-size: 32rpx;
+      .page_record_col {
+        padding: 18rpx 20rpx;
+      }
       .my-text {
         font-size: 26rpx;
         color: #6a6a6a;
@@ -53,14 +56,11 @@
   <view class="detail-view record-view">
     <view class="weui-flex between header-box">
       <view class="date">
-        今日
+        {{dateValue?dateValue:'今日'}}
       </view>
-      <picker mode="date" value="{{dateValue}}" start="{{startValue}}" @change="bindDateChange" class="modal-col picker-col">
-        <view class="picker weui-flex between">
-          <view class="weui-flex between weui-flex__item">
-            <view class="{{!params.date?'placeholder':''}}">{{dateValue}}</view>
-            <image src="https://a.rsd123.com/image/images/orderTaking/date.png" class="dateIcon" />
-          </view>
+      <picker mode="date" value="{{dateValue}}" @change="bindDateChange" class="modal-col picker-col">
+        <view class="picker weui-flex end">
+          <image src="https://a.rsd123.com/image/images/orderTaking/date.png" class="dateIcon" />
         </view>
       </picker>
     </view>
@@ -73,10 +73,12 @@
               <view>面试内容 : {{item.content}}</view>
             </view>
             <repeat wx:for="{{item.children}}" wx:key="index" wx:for-item="newitem">
-              <view class="page_record_row page_botttom" @tap="viewInfo({{newitem}})">
-                <view>{{newitem.name}}</view>
-                <view class="my-text">
-                  女 25
+              <view class="page_record_row" @tap="viewInfo({{newitem}})">
+                <view class="page_bottom page_record_col">
+                  <view>{{newitem.name}}</view>
+                  <view class="my-text">
+                    女 25
+                  </view>
                 </view>
               </view>
             </repeat>
@@ -148,7 +150,7 @@ export default class noticeRecord extends wepy.page {
     check: false,
     viewType: 1,
     isNoticeModal: true,
-    userSign: ''
+    dateValue:''
   }
   computed = {
     newList () {
@@ -158,7 +160,7 @@ export default class noticeRecord extends wepy.page {
   onLoad (options) {
     this.params.jobId = options.jobId
     let dateValue = new Date().getTime() + ''
-    dateValue = date.substr(0, 10)
+    dateValue = dateValue.substr(0, 10)
     this.params.time = dateValue
     this.$apply()
     wx.setNavigationBarTitle({
@@ -169,274 +171,21 @@ export default class noticeRecord extends wepy.page {
     this.params.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
     this.getCheckList()
   }
-  events = {
-    searchValue: val => {
-      this.params = Object.assign(this.params, { where: val })
-      this.getCheckList()
-    },
-    inputFocus: () => {
-      this.isSeachWidth = true
-      this.$apply()
-    },
-    switchTab: index => {
-      this.activeIndex = index
-      if (this.activeIndex) {
-        this.params.status = index - 1
-      } else {
-        this.params.status = ''
-      }
-      this.getCheckList()
-      this.$apply()
-    },
-    handleResume: data => {
-      this.auditResumeRecommend(data)
-    },
-    setAllTime: data => {
-      console.log(data)
-      let params = Object.assign(data, { uid: this.params.uid, job_id: this.job_id, resume_list: this.id })
-      this.getUserSign(data.room_name)
-      this.setVideoNotice(params)
-    },
-    selectResume: data => {
-      console.log(data)
-      if (data.length == this.newList.length) {
-        this.isCheck = true
-        this.$apply()
-      }
-      if (data.length) {
-        this.id = data.join(',')
-      }
-    },
-    viewDetail: data => {
-      let query = `?resume_id=${data}`
-      wx.navigateTo({
-        url: '/pages/companyView/checkResumeDetail' + query
-      })
-    }
-  }
-  setVideoNotice (params) {
-    $http('/company/setVideoInterviewTime', params).then(res => {
-      if (res.data) {
-        console.log(data)
-        const url = `/pages/room/room?roomID=${params.room_num}` +
-          `&userSig=${this.userSig}` +
-          `&template=grid&debugMode=false&cloudenv=PRO` +
-          `&localVideo=true` +
-          `&localAudio=true` +
-          `&enableEarMonitor=false` +
-          `&enableAutoFocus=true` +
-          `&localMirror=auto` +
-          `&enableAgc=true` +
-          `&enableAns=true` +
-          `&encsmall=true` +
-          `&frontCamera=front` +
-          `&videoWidth=360` +
-          `&videoHeight=640` +
-          `&scene=rtc` +
-          `&userID=${params.room_name}` +
-          `&minBitrate=600&maxBitrate=900`
-        wx.navigateTo({
-          url: url,
-        })
-      } else {
-        wxToast('设置失败')
-      }
-    })
-  }
-  auditResumeRecommend (params) {
-    $http(this.checkUrlAPI, params).then(res => {
-      if (res.data) {
-        if (this.isCheck || this.check) {
-          if (this.receiptType === 1) {
-            this.statusObj.invoice_status = 4
-            this.isNoticeModal = false
-            if (this.viewType == 1) {
-              this.modalHeight = 930
-            } else {
-              this.modalHeight = 750
-            }
-          }
-          if (this.receiptType === 2) {
-            this.statusObj.interview_status = 4
-          }
-          this.isBatch = false
-          this.$apply()
-        }
-        this.getTotal(this.tabBarList)
-        this.getCheckList()
-      } else {
-        wxToast('操作失败')
-      }
-    })
-  }
-  overInterview () {
-    let params = {
-      jobId: this.job_id,
-      uid: this.params.uid
-    }
-    $http(this.overViewAndEntry, params).then(res => {
-      if (res.data) {
-        if (this.receiptType === 1) {
-          this.statusObj.invoice_status = 2
-        }
-        if (this.receiptType === 2) {
-          this.statusObj.interview_status = 2
-        }
-        this.$apply()
-        wx.setStorageSync('receiptType', this.receiptType)
-        wx.setStorageSync('statusObj', JSON.stringify(this.statusObj))
-        wxReLaunch('/pages/companyView/resumeSiftings?query=' + this.receiptType)
-      } else {
-        wxToast('操作失败')
-      }
-    })
-  }
   methods = {
-    switchView (index) {
-      this.viewType = index
-      this.params.type = this.viewType
-      this.getCheckList()
-      this.$apply()
-    },
-    batchHandle () {
-      this.isBatch = true
-      this.list = this.checkAll(this.list, false)
-      this.$apply()
-    },
-    viewNotice () {
-      this.viewTimeInfo()
-    },
-    selectResumeAll (check) {
-      this.isCheck = !check
-      this.list = this.checkAll(this.list, this.isCheck)
-      let arr = this.list.map(item => {
-        if (item.disabled) {
-          return item.id
-        }
-      })
-      if (arr.length) {
-        this.id = arr.join(',')
-      }
-      this.$apply()
-    },
-    overView () {
-      let text = this.receiptType === 1 ? '面试' : '入职'
-      wxShowModal('', `确定提前结束${text}`).then(res => {
-        this.overInterview()
-      }).catch(() => {
-        console.log('取消')
-      })
-    },
-    setResumeStatus (status) {
-      if (!this.isCheck || !this.id) {
-        return wxToast('请选择简历')
-      }
-      let parasm = {
-        status,
-        uid: wx.getStorageSync('rendaUid'),
-        id: this.id,
-        type: this.viewType
-      }
-      this.auditResumeRecommend(parasm)
-    },
-    viewEntry () {
-      wx.setStorageSync('receiptType', 3)
-      wxNavigateTo('/pages/companyView/resumeSiftings?query=3&jobId=' + this.job_id)
-    }
-  }
-  checkAll (list, status) {
-    return list.filter(item => {
-      if (!item.status) {
-        item.disabled = status
-        return item
-      }
-    })
-  }
-  getTabBarList (val) {
-    let arr = []
-    let arr1 = [
-      { name: '全部简历', num: 0 },
-      { name: '待审核', num: 0 }]
-    if (val === 1) {
-      arr = [
-        { name: '已同意', num: 0 },
-        { name: '已拒绝', num: 0 }]
-    } else if (val === 2) {
-      arr = [
-        { name: '已通过', num: 0 },
-        { name: '未通过', num: 0 }]
-    } else {
-      arr = [
-        { name: '已入职', num: 0 },
-        { name: '未入职', num: 0 }]
-    }
-    let newArr = arr1.concat(arr)
-    this.getTotal(newArr)
-    return newArr
-  }
-  getTotal (arr) {
-    let params = {
-      uid: this.params.uid,
-      job_id: this.job_id,
-      type: this.receiptType
-    }
-    $http('/company/getAuditResumeNum', params).then(res => {
-      if (res.data) {
-        arr[0].num = res.data.allNum
-        arr[1].num = res.data.auditedNum
-        arr[2].num = res.data.adoptNum
-        arr[3].num = res.data.referNum
-        this.$apply()
-      }
-    })
-  }
-  // 查看面试和入职时间
-  viewTimeInfo () {
-    $http('/company/selectInterviewEntryInfo', { id: this.job_id }).then(res => {
-      let query = {}
-      if (this.receiptType === 1) {
-        query = {
-          time: res.data.view_time,
-          content: res.data.content
-        }
-      } else {
-        query = {
-          time: res.data.entry_time,
-          content: res.data.entry_comtent
-        }
-      }
-      this.timeInfo = query
-      this.isModal = !this.isModal
-      this.$apply()
-    })
+    bindDateChange (e) {
+      let date = e.detail.value
+      this.dateValue = date
+      date= new Date(date).getTime() + ''
+      date = date.substring(0, 10)
+      this.params.time = date
+			this.$apply()
+		}
   }
   getCheckList () {
     $http('/videointerview/videoInterviewNoticeRecord', this.params).then(res => {
-      console.log(res)
       this.list = res.data.data || []
-      if (this.receiptType) {
-        this.check = this.checkStatus(this.list, this.receiptType)
-      }
-      this.tabBarList[this.activeIndex].num = this.list.length
-      this.count = res.data.count
       this.$apply()
     })
-  }
-  checkStatus (list, type) {
-    let status = ''
-    if (type === 1) {
-      status = 'status'
-    } else if (type == 2) {
-      status = 'interview_status'
-    } else {
-      status = 'entry_status'
-    }
-    return list.every(item => {
-      return item[status]
-    })
-  }
-  getTitle (val) {
-    return val === 1 ? '简历列表' : val === 2 ? '面试审核' : '入职审核'
   }
 }
 </script>

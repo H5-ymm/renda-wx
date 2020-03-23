@@ -1,0 +1,135 @@
+<style lang="less">
+@import "../../style/resume.less";
+.detail-view {
+  &.message-view {
+    background: #fff;
+  }
+  .message-row {
+    font-size: 32rpx;
+    color: #333;
+  }
+  .message-col-1 {
+    width: 94rpx;
+    height: 94rpx;
+    border-radius: 50%;
+    background: #1890ff;
+    position: relative;
+    .bage {
+      width: 24rpx;
+      height: 24rpx;
+      text-align: center;
+      line-height: 24rpx;
+      font-size: 20rpx;
+      color: #fff;
+      background: #f41800;
+      border-radius: 50%;
+      position: absolute;
+      top: 6rpx;
+      right: 0;
+    }
+  }
+  .message-col-2 {
+    line-height: 50rpx;
+    margin-left: 20rpx;
+    padding: 12rpx 0;
+    .message-col-small {
+      font-size: 26rpx;
+      color: #888888;
+    }
+    .message-col-time {
+      margin-top: 10rpx;
+    }
+  }
+}
+</style>
+<template>
+	<view class="detail-view message-view">
+		<view class="page_margin view-content">
+			<scroll-view scroll-y="true" style="height:100%" @scrolltolower="searchScrollLower">
+				<view class="weui-flex start message-row" @tap="viewMessage(1)">
+					<view class="message-col-1">
+						<view></view>
+						<view class="bage">1</view>
+					</view>
+					<view class="weui-flex between-start wrap message-col-2 weui-flex__item page_bottom">
+						<view>
+							<view>yangmeng</view>
+							<view class="message-col-small">20</view>
+						</view>
+						<view class="message-col-small message-col-time">20</view>
+					</view>
+				</view>
+				<view class="weui-flex start message-row" @tap="viewMessage(2)">
+					<view class="message-col-1">
+						<view></view>
+						<view class="bage">1</view>
+					</view>
+					<view class="weui-flex between-start wrap message-col-2 weui-flex__item page_bottom">
+						<view>
+							<view>yangmeng</view>
+							<view class="message-col-small">20</view>
+						</view>
+						<view class="message-col-small message-col-time">20</view>
+					</view>
+				</view>
+			</scroll-view>
+		</view>
+		<tabBarBottom :tabBarIndex.sync="tabBarIndex" :usertype.sync="usertype"></tabBarBottom>
+	</view>
+</template>
+<script>
+import wepy from 'wepy'
+import { $http } from '@/http.js'
+import { getImgUrl, wxNavigateTo } from '@/util.js'
+import tabBarBottom from '@/components/tabBarBottom'
+export default class message extends wepy.page {
+	components = {
+		tabBarBottom: tabBarBottom
+	}
+	data = {
+		teamData: {},
+		usertype: 1,
+		tabBarIndex: 2,
+		rendaUserTeamType: 0,
+		params: {
+			uid: ''
+		},
+		list: [],
+		count: 0
+	}
+	config = {
+		navigationBarTitleText: '首页'
+	}
+	onLoad() {
+		this.params.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
+	}
+	onShow() {
+		this.getResumeList()
+	}
+	getResumeList() {
+		$http('/resume/teamUserResumeList', this.params).then(res => {
+			this.list = res.data.data || []
+			this.count = res.data.count
+			this.$apply()
+		})
+	}
+	methods = {
+		viewMessage(index) {
+			if (index == 1) {
+				wxNavigateTo('/pages/message/dialogBox')
+			} else {
+				wxNavigateTo('/pages/message/personalDialogBox')
+			}
+		},
+		searchScrollLower() {
+			if (this.count > this.list.length && this.count > this.params.limit) {
+				this.isScoll = true
+				this.params.limit = this.params.limit + 10
+				this.getResumeList()
+			} else {
+				this.isScoll = false
+			}
+		}
+	}
+}
+</script>

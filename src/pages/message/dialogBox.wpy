@@ -1,0 +1,175 @@
+<style lang="less">
+@import "../../style/resume.less";
+.detail-view {
+  &.dialogBox-view {
+    .register-btn {
+      margin: 0 24rpx;
+      .weui-btn_cell {
+        margin: 0 10rpx;
+      }
+    }
+  }
+  .dialogBox-row {
+    color: #333;
+    text-align: center;
+    .dialogBox-row-time {
+      font-size: 22rpx;
+    }
+  }
+  .dialogBox-col-header {
+    width: 94rpx;
+    height: 94rpx;
+    border-radius: 50%;
+    background: #1890ff;
+    position: relative;
+  }
+  .dialogBox-col {
+		margin: 12rpx 0;
+    padding: 12rpx 0;
+    .dialogBox-content {
+      margin-right: 30rpx;
+      background: rgba(24, 144, 255, 0.3);
+      border-radius: 12rpx;
+      font-size: 24rpx;
+      padding: 18rpx 24rpx;
+			color: #000;
+			position: relative;
+      &.dialogBox-content-right {
+				margin-left:0;
+        &::before {
+          content: "";
+          width: 0px;
+          height: 0px;
+          position: absolute;
+          right: -32rpx;
+          top: 32%;
+          border-top: 16rpx solid rgba(0, 0, 0, 0);
+          border-right: 16rpx solid rgba(0, 0, 0, 0);
+          border-bottom: 16rpx solid rgba(0, 0, 0, 0);
+          border-left: 16rpx solid rgba(24, 144, 255, 0.3);
+        }
+      }
+      &.dialogBox-content-left {
+        background: #fff;
+				margin-left: 30rpx;
+				margin-right: 0;
+				text-align: left;
+        &::before {
+          content: "";
+          width: 0px;
+          height: 0px;
+          position: absolute;
+          left: -32rpx;
+          top: 32%;
+          border-top: 16rpx solid rgba(0, 0, 0, 0);
+          border-right: 16rpx solid #fff;
+          border-bottom: 16rpx solid rgba(0, 0, 0, 0);
+          border-left: 16rpx solid rgba(0, 0, 0, 0);
+        }
+      }
+    }
+    .message-col-small {
+      font-size: 26rpx;
+      color: #888888;
+		}
+		.dialogBox_icon {
+			width: 40rpx;
+			height: 22rpx;
+			margin-left: 20rpx
+		}
+  }
+}
+</style>
+<template>
+	<view class="detail-view dialogBox-view">
+		<view class="page_margin view-content">
+			<scroll-view scroll-y="true" style="height:100%" @scrolltolower="searchScrollLower">
+				<view class="dialogBox-row">
+					<view>
+						<view class="dialogBox-row-time">2019-10-10</view>
+						<view class="weui-flex end wrap dialogBox-col weui-flex__item">
+							<view class="dialogBox-content dialogBox-content-right">ykkk可敬可嘉angmeng紧急集合集合</view>
+							<view class="dialogBox-col-header"></view>
+						</view>
+					</view>
+					<view>
+						<view class="dialogBox-row-time">2019-10-10</view>
+						<view class="weui-flex end dialogBox-col weui-flex__item">
+							<view class="dialogBox-content weui-flex between dialogBox-content-right" @tap="videoView">
+								视频面试
+								<image mode="scaleToFill" src="../../images/video.png" class="dialogBox_icon" />
+								</view>
+							<view class="dialogBox-col-header"></view>
+						</view>
+					</view>
+					<view class="weui-flex start dialogBox-col weui-flex__item"   wx:if="{{isView}}">
+						<view class="dialogBox-col-header"></view>
+						<view class="dialogBox-content dialogBox-content-left">已完成面试</view>
+					</view>
+				</view>
+			</scroll-view>
+		</view>
+		<view class="weui-cell_btn weui-flex between register-btn" wx:if="{{isView}}">
+			<button class="weui-btn_cell weui-flex__item weui-btn_primary" @tap="recommend">待定</button>
+			<button class="weui-btn_cell weui-flex__item weui-btn_primary_plain" @tap="contactPhone">通过</button>
+			<button class="weui-btn_cell weui-flex__item weui-btn_primary_plain" @tap="handleDelete">未通过</button>
+		</view>
+		<view class="weui-cell_btn weui-flex between register-btn" wx:else>
+			<button class="weui-btn_cell weui-flex__item weui-btn_primary" @tap="recommend">视频面试</button>
+		</view>
+	</view>
+</template>
+<script>
+import wepy from 'wepy'
+import { $http } from '@/http.js'
+import { getImgUrl } from '@/util.js'
+import tabBarBottom from '@/components/tabBarBottom'
+export default class dialogBox extends wepy.page {
+	components = {
+		tabBarBottom: tabBarBottom
+	}
+	data = {
+		teamData: {},
+		usertype: 1,
+		tabBarIndex: 2,
+		rendaUserTeamType: 0,
+		params: {
+			uid: ''
+		},
+		list: [],
+		count: 0,
+		isView: false
+	}
+	config = {
+		navigationBarTitleText: '首页'
+	}
+	onLoad() {
+		this.params.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
+	}
+	onShow() {
+		this.getResumeList()
+	}
+	getResumeList() {
+		$http('/resume/teamUserResumeList', this.params).then(res => {
+			this.list = res.data.data || []
+			this.count = res.data.count
+			this.$apply()
+		})
+	}
+	methods = {
+		videoView() {
+			this.isView = true
+			this.$apply()
+		},
+		searchScrollLower() {
+			if (this.count > this.list.length && this.count > this.params.limit) {
+				this.isScoll = true
+				this.params.limit = this.params.limit + 10
+				this.getResumeList()
+			} else {
+				this.isScoll = false
+			}
+		}
+	}
+}
+</script>

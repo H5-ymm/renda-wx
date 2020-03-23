@@ -7,7 +7,7 @@
 }
 </style>
 <template>
-  <view class="page_botttom page page_margin">
+  <view class="page_bottom page page_margin">
     <view class="my-view">
       <view class="my-view-box">
         <view class="page_card">

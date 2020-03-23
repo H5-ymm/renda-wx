@@ -2,7 +2,7 @@
 @import '../../style/home.less';
 </style>
 <template>
-  <scroll-view scroll-y="true" @scrolltolower="searchScrollLower" class="home-view page page_botttom">
+  <scroll-view scroll-y="true" @scrolltolower="searchScrollLower" class="home-view page page_bottom">
     <view class="page_margin page">
       <view class="home-view-box">
         <repeat wx:for="{{list}}" wx:key="index">
