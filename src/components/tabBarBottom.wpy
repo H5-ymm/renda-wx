@@ -42,7 +42,7 @@
 </template>
 <script>
 import wepy from 'wepy';
-import { list1, list2 } from '@/base/base'
+import { list1, list2, list3 } from '@/base/base'
 export default class tabBarBottom extends wepy.component {
 	// props 接收父组件传递过来的值
 	props = {
@@ -65,8 +65,10 @@ export default class tabBarBottom extends wepy.component {
 		let type = val ? val : wx.getStorageSync('rendaUserType')
 		if (type === 1) {
 			this.$parent.$parent.globalData.tabBar.list = list1
-		} else {
+		} else if (type ===2) {
 			this.$parent.$parent.globalData.tabBar.list = list2
+		}else {
+			this.$parent.$parent.globalData.tabBar.list = list3
 		}
 		console.log(this.tabBarIndex)
 		this.tabBarList = this.$parent.$parent.tabBarClickHandle(this.tabBarIndex, this);

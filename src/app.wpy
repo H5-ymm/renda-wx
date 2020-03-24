@@ -48,6 +48,7 @@ export default class extends wepy.app {
       'pages/companyView/checkTeam',
       'pages/companyView/resumeSiftings',
       'pages/companyView/checkResumeList',
+      'pages/companyView/viewResult',
       'pages/companyView/checkResumeDetail',
       'pages/companyView/noticeRecord',
       'pages/companyView/teamDetail',

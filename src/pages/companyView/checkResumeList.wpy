@@ -321,7 +321,7 @@ export default class checkResumeList extends wepy.page {
 				this.$apply()
 				wx.setStorageSync('receiptType', this.receiptType)
 				wx.setStorageSync('statusObj', JSON.stringify(this.statusObj))
-				wxReLaunch('/pages/companyView/resumeSiftings?query=' + this.receiptType)
+				wxNavigateTo('/pages/companyView/resumeSiftings?query=' + this.receiptType)
 			} else {
 				wxToast('操作失败')
 			}

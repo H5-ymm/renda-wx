@@ -43,6 +43,21 @@ export const list2 = [{
         selectedIconPath: '/images/my-active.png'
     }
 ]
+export const list3 = [{
+        pagePath: '/pages/message/index',
+        text: '消息',
+        selected: true,
+        iconPath: '/images/team/home.png',
+        selectedIconPath: '/images/team/home-active.png'
+    },
+    {
+        pagePath: '/pages/my/index',
+        text: '我的',
+        selected: false,
+        iconPath: '/images/my.png',
+        selectedIconPath: '/images/my-active.png'
+    }
+]
 export const welfareList = [{
         label: '是',
         value: 1

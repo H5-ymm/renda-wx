@@ -98,9 +98,11 @@ export default class message extends wepy.page {
 		count: 0
 	}
 	config = {
-		navigationBarTitleText: '首页'
+		navigationBarTitleText: '消息管理'
 	}
 	onLoad() {
+		this.usertype = 3
+		this.$apply()
 		this.params.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
 	}
 	onShow() {
