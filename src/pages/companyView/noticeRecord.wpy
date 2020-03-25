@@ -64,7 +64,7 @@
         </view>
       </picker>
     </view>
-    <view class="view-detail">
+    <view class="view-detail" wx:if="{{list.length}}">
       <scroll-view scroll-y="true" style="height:100%">
         <repeat wx:for="{{list}}" wx:key="index">
           <view class="page_record">
@@ -92,7 +92,10 @@
         </repeat>
       </scroll-view>
     </view>
-  </view>
+    <view wx:else class="page_list">
+      <image src="https://a.rsd123.com/image/images/noBg.png" class="page_noData" mode="scaleToFill" />
+      <view class="page_noData_text">暂无记录！</view>
+    </view>
   </view>
 </template>
 <script>
