@@ -42,7 +42,8 @@ export default class receiptList extends wepy.component {
           invoice_status: item.invoice_status,
           interview_status: item.interview_status,
           view_time: item.view_time,
-          entry_time: item.entry_time
+          entry_time: item.entry_time,
+          is_video: item.is_video
         }
         wx.setStorageSync('statusObj', JSON.stringify(obj))
         if ((!item.view_time && this.receiptType === 1) || (this.receiptType === 2 && item.interview_status <= 1 && !item.entry_time)) {

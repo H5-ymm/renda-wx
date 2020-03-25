@@ -83,11 +83,11 @@ export default class home extends wepy.page {
     },
     statusList: [
       {
-        label: '初筛已通过',
+        label: '(内)初筛已通过',
         value: 1
       },
       {
-        label: '面试已通过',
+        label: '(内)面试已通过',
         value: 2
       },
       {
@@ -129,7 +129,7 @@ export default class home extends wepy.page {
     qrCode: '',
     type: 0,
     isScoll: false,
-    resumeInfo:{}
+    resumeInfo: {}
   }
   events = {
     searchValue: val => {

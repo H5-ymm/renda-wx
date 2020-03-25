@@ -11,6 +11,9 @@
     text-align: right;
     font-size: 22rpx;
     color: #999;
+    &.page_card_time1 {
+      color: red;
+    }
   }
   .page_card_status-resume {
     width: 70%;
@@ -66,7 +69,8 @@
 									</view>
 								</view>
 							</view>
-							<view class="page_card_time">{{item.addtime}}</view>
+							<view class="page_card_time" wx:if="{{item.is_time}}">{{item.addtime}}</view>
+							<view class="page_card_time page_card_time1" wx:else>未设置视频面试</view>
 						</view>
 						<image mode="scaleToFill" class="weui-flex__item" src="https://a.rsd123.com/image/images/right.png" class="page_down_icon" />
 					</view>

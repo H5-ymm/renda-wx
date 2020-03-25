@@ -49,7 +49,7 @@
 					需求人数：{{itemValue.required_number}}
 				</view>
 				<view class="page_card_time" wx:if="{{!receiptType}}">{{itemValue.addtime||itemValue.ctime}}</view>
-				<view class="page_card_receipt_status page_card_receipt_status3" wx:if="{{receiptType==1&&!itemValue.view_time}}">
+				<view class="page_card_receipt_status page_card_receipt_status3" wx:if="{{receiptType==1&!itemValue.view_time&&!itemValue.is_video}}">
 					未筛选简历
 				</view>
 				<view class="page_card_receipt_status page_card_receipt_status3" wx:elif="{{receiptType==2&&itemValue.interview_status<=1&&!itemValue.entry_time}}">

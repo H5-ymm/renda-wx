@@ -66,18 +66,24 @@
     </view>
     <view class="view-detail">
       <scroll-view scroll-y="true" style="height:100%">
-        <repeat wx:for="{{list1}}" wx:key="index">
+        <repeat wx:for="{{list}}" wx:key="index">
           <view class="page_record">
             <view class="page_record-content">
               <view class="view-time">面试时间 : {{item.time}}</view>
               <view>面试内容 : {{item.content}}</view>
             </view>
-            <repeat wx:for="{{item.children}}" wx:key="index" wx:for-item="newitem">
+            <repeat wx:for="{{item.data}}" wx:key="index" wx:for-item="newitem">
               <view class="page_record_row" @tap="viewInfo({{newitem}})">
-                <view class="page_bottom page_record_col">
-                  <view>{{newitem.name}}</view>
-                  <view class="my-text">
-                    女 25
+                <view class="page_bottom page_record_col weui-flex start">
+                  <view wx:if="{{receiptType==2}}">
+                    <image src="https://a.rsd123.com/image/images/user/radio2.png" alt="" mode="aspectFill" class="radio-icon" @tap.stop="selectResume({{item}},{{index}})" wx:if="{{item.disabled}}" />
+                    <image src="https://a.rsd123.com/image/images/user/radio1.png" wx:else @tap.stop="selectResume({{item}},{{index}})" mode="aspectFill" class="radio-icon" />
+                  </view>
+                  <view>
+                    <view>{{newitem.name}}</view>
+                    <view class="my-text">
+                      女 25
+                    </view>
                   </view>
                 </view>
               </view>
@@ -117,23 +123,6 @@ export default class noticeRecord extends wepy.page {
       time: '',
       jobId: ''
     },
-    list1: [{
-      content: 'sss',
-      time: '2019-10',
-      children: [{
-        name: '杨萌萌'
-      }, {
-        name: '杨萌萌'
-      }
-      ]
-    }, {
-      content: 'sss',
-      time: '2019-10',
-      children: [{
-        name: '杨萌萌'
-      },
-      ]
-    }],
     count: 0,
     isBatch: false,
     isCheck: false,
@@ -150,11 +139,14 @@ export default class noticeRecord extends wepy.page {
     check: false,
     viewType: 1,
     isNoticeModal: true,
-    dateValue:''
+    dateValue: ''
   }
   computed = {
     newList () {
-      return getList(this.list, 'addtime')
+      return getList(this.list, 'time')
+    },
+    apiUrl () {
+      return this.receiptType === 1 ? '/videointerview/videoInterviewNoticeRecord' : '/videointerview/videoInterviewList'
     }
   }
   onLoad (options) {
@@ -162,6 +154,7 @@ export default class noticeRecord extends wepy.page {
     let dateValue = new Date().getTime() + ''
     dateValue = dateValue.substr(0, 10)
     this.params.time = dateValue
+    this.receiptType = Number(wx.getStorageSync('receiptType'))
     this.$apply()
     wx.setNavigationBarTitle({
       title: '通知记录'
@@ -175,14 +168,14 @@ export default class noticeRecord extends wepy.page {
     bindDateChange (e) {
       let date = e.detail.value
       this.dateValue = date
-      date= new Date(date).getTime() + ''
+      date = new Date(date).getTime() + ''
       date = date.substring(0, 10)
       this.params.time = date
-			this.$apply()
-		}
+      this.getCheckList()
+    }
   }
   getCheckList () {
-    $http('/videointerview/videoInterviewNoticeRecord', this.params).then(res => {
+    $http(this.apiUrl, this.params).then(res => {
       this.list = res.data.data || []
       this.$apply()
     })
