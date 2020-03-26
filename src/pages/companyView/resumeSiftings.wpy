@@ -123,6 +123,7 @@ export default class resumeSiftings extends wepy.page {
 			} else {
 				this.title = '入职'
 				this.isModal = !this.isModal
+				wx.setStorageSync('rendaViewType', 1)
 			}
 			this.$apply()
 		},

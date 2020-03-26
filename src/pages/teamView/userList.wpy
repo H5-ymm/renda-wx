@@ -103,7 +103,7 @@ export default class userList extends wepy.page {
 	createQrcode () {
 		let params = {
 			scene: `uid?${this.params.uid}&teamId=${this.teamId}`,
-			page: 'pages/login/welcome',
+			page: `pages/login/welcome?uid=${this.params.uid}&teamId=${this.teamId}`,
 			width: 300
 		}
 		this.isModal = false

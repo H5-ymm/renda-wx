@@ -37,7 +37,7 @@ export default class datePicker extends wepy.component {
 			date: '',
 			time: ''
 		},
-		viewType: ''
+		viewType: 1
 	}
 	watch = {
 		params (val) {
@@ -50,6 +50,7 @@ export default class datePicker extends wepy.component {
 				}
 				date = date.substr(0, 10)
 				this.$emit('setDate', date)
+				this.viewType = 1
 			}
 		}
 	}
@@ -62,7 +63,6 @@ export default class datePicker extends wepy.component {
 		}
 		this.params.date = this.dateValue
 		this.startValue = this.dateValue
-
 		this.$apply()
 	}
 	methods = {

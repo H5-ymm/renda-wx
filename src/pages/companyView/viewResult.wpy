@@ -10,8 +10,8 @@
 				</viewResultList>
 			</scroll-view>
 		</view>
-	 </view>
-</view>
+	</view>
+	</view>
 </template>
 <script>
 import wepy from 'wepy'
@@ -23,13 +23,11 @@ export default class viewResult extends wepy.page {
 		viewResultList: viewResultList
 	}
 	data = {
-		list: [{"id":3,"com_isread":0,"name":"测试002","age":18,"sex":1,"education":"高中以下","provinceid":"0","cityid":"0","addtime":1584959850,"is_time":0,"status":1,"citys":""},{"id":4,"com_isread":0,"name":"测试005","age":18,"sex":1,"education":"高中以下","provinceid":"0","cityid":"0","addtime":1584959850,"is_time":0,"status":1,"citys":""}],
+		list: [{ "id": 3, "com_isread": 0, "name": "测试002", "age": 18, "sex": 1, "education": "高中以下", "provinceid": "0", "cityid": "0", "addtime": 1584959850, "is_time": 0, "status": 1, "citys": "" }, { "id": 4, "com_isread": 0, "name": "测试005", "age": 18, "sex": 1, "education": "高中以下", "provinceid": "0", "cityid": "0", "addtime": 1584959850, "is_time": 0, "status": 1, "citys": "" }],
 		params: {
 			uid: '',
-			page: 1,
-			limit: 500,
-			status: '',
-			type: 1
+			jobId: '',
+			time: ''
 		},
 		count: 0,
 		viewType: 1
@@ -40,40 +38,19 @@ export default class viewResult extends wepy.page {
 		}
 	}
 	onLoad (options) {
+		let query = JSON.parse(wx.getStorageSync('viewList'))
+		this.params.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
+		this.params.jobId = query.jobId
+		this.params.time = query.time
+		this.$apply()
 		wx.setNavigationBarTitle({
 			title: '面试结果'
 		})
 	}
 	onShow () {
-		// this.params.type = this.viewType ? this.viewType : '1'
-		// this.params.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
-		// this.statusObj = JSON.parse(wx.getStorageSync('statusObj'))
-		// this.tabBarList = this.getTabBarList(this.receiptType)
-		// this.getCheckList()
-		// this.$apply()
+		this.getCheckList()
 	}
 	methods = {
-		selectResumeAll (check) {
-			this.isCheck = !check
-			this.list = this.checkAll(this.list, this.isCheck)
-			let arr = this.list.map(item => {
-				if (item.disabled) {
-					return item.id
-				}
-			})
-			if (arr.length) {
-				this.id = arr.join(',')
-			}
-			this.$apply()
-		},
-		overView () {
-			let text = this.receiptType === 1 ? '面试' : '入职'
-			wxShowModal('', `确定提前结束${text}`).then(res => {
-				this.overInterview()
-			}).catch(() => {
-				console.log('取消')
-			})
-		},
 		setResumeStatus (status) {
 			if (!this.isCheck || !this.id) {
 				return wxToast('请选择简历')
@@ -81,8 +58,7 @@ export default class viewResult extends wepy.page {
 			let parasm = {
 				status,
 				uid: wx.getStorageSync('rendaUid'),
-				id: this.id,
-				type: this.viewType
+				id: this.id
 			}
 			this.auditResumeRecommend(parasm)
 		},
@@ -91,15 +67,15 @@ export default class viewResult extends wepy.page {
 			wxNavigateTo('/pages/companyView/resumeSiftings?query=3&jobId=' + this.job_id)
 		}
 	}
+	auditResumeRecommend (params) {
+		$http('/videointerview/videoInterviewEditStatus', this.params).then(res => {
+			wxNavigateTo('/pages/companyView/noticeRecord')
+		})
+	}
 	getCheckList () {
-		$http(this.urlApi, this.params).then(res => {
+		$http('/videointerview/getInterviewResumeList', this.params).then(res => {
 			console.log(res)
 			// this.list = res.data.data || []
-			if (this.receiptType) {
-				this.check = this.checkStatus(this.list, this.receiptType)
-			}
-			this.tabBarList[this.activeIndex].num = this.list.length
-			this.count = res.data.count
 			this.$apply()
 		})
 	}

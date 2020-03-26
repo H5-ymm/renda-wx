@@ -16,6 +16,13 @@
     color: #1890ff;
     font-size: 28rpx;
   }
+  .register-btn {
+    margin: 0 24rpx;
+  }
+  .checkAll {
+    margin: 24rpx 40rpx;
+    font-size: 26rpx;
+  }
   .page_record {
     .page_record-content {
       margin: 20rpx 40rpx;
@@ -72,22 +79,30 @@
               <view class="view-time">面试时间 : {{item.time}}</view>
               <view>面试内容 : {{item.content}}</view>
             </view>
-            <repeat wx:for="{{item.data}}" wx:key="index" wx:for-item="newitem">
+            <repeat wx:for="{{item.data}}" wx:for-index="ind" wx:key="ind" wx:for-item="newitem">
               <view class="page_record_row" @tap="viewInfo({{newitem}})">
                 <view class="page_bottom page_record_col weui-flex start">
                   <view wx:if="{{receiptType==2}}">
-                    <image src="https://a.rsd123.com/image/images/user/radio2.png" alt="" mode="aspectFill" class="radio-icon" @tap.stop="selectResume({{item}},{{index}})" wx:if="{{item.disabled}}" />
-                    <image src="https://a.rsd123.com/image/images/user/radio1.png" wx:else @tap.stop="selectResume({{item}},{{index}})" mode="aspectFill" class="radio-icon" />
+                    <image src="https://a.rsd123.com/image/images/user/radio2.png" alt="" mode="aspectFill" class="radio-icon" @tap.stop="selectResume({{item}},{{index}},{{newitem}},{{ind}})" wx:if="{{newitem.disabled}}" />
+                    <image src="https://a.rsd123.com/image/images/user/radio1.png" wx:else @tap.stop="selectResume({{item}},{{index}},{{newitem}},{{ind}})" mode="aspectFill" class="radio-icon" />
                   </view>
-                  <view>
-                    <view>{{newitem.name}}</view>
-                    <view class="my-text">
-                      {{newitem.sex==2?'女':'男'}} {{newitem.age}} {{newitem.eduName}}
+                  <view class="weui-flex between">
+                    <view>
+                      <view>{{newitem.name}}</view>
+                      <view class="my-text">
+                        {{newitem.sex==2?'女':'男'}} {{newitem.age}} {{newitem.eduName}}
+                      </view>
                     </view>
+                    <view wx:if="{{newitem.interview_status}}">{{newitem.interview_status==1?'已通过':newitem.interview_status==2?'未通过':'待定'}}</view>
                   </view>
                 </view>
               </view>
             </repeat>
+            <view wx:if="{{receiptType==2}}" class="checkAll weui-flex start">
+              <image src="https://a.rsd123.com/image/images/user/radio2.png" alt="" mode="aspectFill" class="radio-icon" @tap.stop="selectResume({{item}},{{index}},0,-1)" wx:if="{{item.disabled}}" />
+              <image src="https://a.rsd123.com/image/images/user/radio1.png" wx:else @tap.stop="selectResume({{item}},{{index}},0,-1)" mode="aspectFill" class="radio-icon" />
+              <text>全选</text>
+            </view>
           </view>
         </repeat>
       </scroll-view>
@@ -95,6 +110,9 @@
     <view wx:else class="page_list">
       <image src="https://a.rsd123.com/image/images/noBg.png" class="page_noData" mode="scaleToFill" />
       <view class="page_noData_text">暂无记录！</view>
+    </view>
+    <view class="weui-cell_btn weui-flex between register-btn" wx:if="{{receiptType==2&&list.length}}">
+      <button class="weui-btn_cell weui-flex__item weui-btn_primary" @tap="videoView">视频面试</button>
     </view>
   </view>
 </template>
@@ -107,7 +125,7 @@ import search from '@/components/search'
 import companyResumeList from '@/components/companyResumeList'
 import viewNoticeModal from '@/components/viewNoticeModal'
 import $moment from 'moment'
-import { getList, wxNavigateTo, wxShowModal, wxToast, wxReLaunch } from '@/util'
+import { getList, wxNavigateTo, wxShowModal, wxToast } from '@/util'
 export default class noticeRecord extends wepy.page {
   components = {
     tabBar: tabBar,
@@ -119,21 +137,13 @@ export default class noticeRecord extends wepy.page {
   data = {
     dateValue: '',
     startValue: '',
-    tabBarList: [],
     list: [],
     params: {
       uid: '',
       time: '',
       jobId: ''
     },
-    count: 0,
-    isBatch: false,
     isCheck: false,
-    activeIndex: 0,
-    isSeachWidth: false,
-    isModal: true,
-    modalHeight: 920,
-    title: '',
     receiptType: 1,
     statusObj: {},
     job_id: '',
@@ -141,13 +151,11 @@ export default class noticeRecord extends wepy.page {
     id: '',
     check: false,
     viewType: 1,
-    isNoticeModal: true,
-    dateValue: ''
+    resume_id: '',
+    room_num: '',
+    time: ''
   }
   computed = {
-    newList () {
-      return getList(this.list, 'time')
-    },
     apiUrl () {
       return this.receiptType === 1 ? '/videointerview/videoInterviewNoticeRecord' : '/videointerview/videoInterviewList'
     }
@@ -160,28 +168,117 @@ export default class noticeRecord extends wepy.page {
     this.receiptType = Number(wx.getStorageSync('receiptType'))
     this.$apply()
     wx.setNavigationBarTitle({
-      title: '通知记录'
+      title: this.receiptType == 1 ? '通知记录' : '视频列表'
     })
   }
   onShow () {
     this.params.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
     this.getCheckList()
   }
-  methods = {
-    bindDateChange (e) {
-      let date = e.detail.value
-      date = new Date(date).getTime() + ''
-      this.dateValue = date
-      date = date.substring(0, 10)
-      this.params.time = date
-      this.getCheckList()
-    }
+  getuserSig (params) {
+    $http('/Tencentcloud/createQuanjian', { name: params.room_name }).then(res => {
+      params.userSig = res.data
+      let params1 = {
+        jobId: this.job_id,
+        time: this.room_num
+      }
+      wx.setStorageSync('viewList', JSON.stringify(params1))
+      this.routerView(params)
+    })
+  }
+  routerView (params) {
+    const url = `/pages/room/room?roomID=${params.room_num}` +
+      `&userSig=${params.userSig}` +
+      `&template=grid&debugMode=false&cloudenv=PRO` +
+      `&localVideo=true` +
+      `&localAudio=true` +
+      `&enableEarMonitor=false` +
+      `&enableAutoFocus=true` +
+      `&localMirror=auto` +
+      `&enableAgc=true` +
+      `&enableAns=true` +
+      `&encsmall=true` +
+      `&frontCamera=front` +
+      `&videoWidth=360` +
+      `&videoHeight=640` +
+      `&scene=rtc` +
+      `&userID=${params.room_name}` +
+      `&minBitrate=600&maxBitrate=900`
+    wxNavigateTo(url)
   }
   getCheckList () {
     $http(this.apiUrl, this.params).then(res => {
-      this.list = res.data.data || []
+      if (this.receiptType == 2) {
+        this.list = this.checkAll(res.data.data, false)
+      } else {
+        this.list = res.data.data || []
+      }
+      this.list = getList(this.list, 'time')
+      console.log(this.list)
       this.$apply()
     })
+  }
+  checkAll (list, status) {
+    return list.map(item => {
+      let arr = item.data.filter(val => {
+        if (!val.interview_status) {
+          val.disabled = status
+          return val
+        }
+      })
+      return Object.assign(item, { data: arr, disabled: false })
+    })
+  }
+  methods = {
+    bindDateChange (e) {
+      let date = e.detail.value
+      this.dateValue = e.detail.value
+      date = new Date(date).getTime() + ''
+      date = date.substring(0, 10)
+      this.params.time = date
+      this.getCheckList()
+    },
+    selectResume (item, index, val, childIndex) {
+      let arr = []
+      if (val && childIndex != -1) {
+        this.list[index].data[childIndex].disabled = !val.disabled
+      } else {
+        this.list[index].disabled = !item.disabled
+        this.list[index].data.forEach(value => {
+          value.disabled = this.list[index].disabled
+        })
+      }
+      this.$apply()
+      if (arr.indexOf(val.id) === -1) {
+        arr.push(val.id)
+      } else {
+        this.list[index].data[childIndex].disabled = !val.disabled
+        let ret = arr.findIndex(v => {
+          return v === val.id
+        })
+        arr.splice(ret, 1)
+      }
+      arr = Array.from(new Set(arr))
+      if (arr.length == item.data.length) {
+        this.list[index].disabled = true
+      }
+      this.room_num = val.room_num
+      this.job_id = item.job_id
+    },
+    videoView () {
+      if (!this.job_id) {
+        return wxToast('请选择视频面试人员')
+      }
+      let params = {
+        room_name: wx.getStorageSync('phone'),
+        room_num: this.room_num
+      }
+      wxShowModal('', `确定视频面试吗?`).then(res => {
+        this.getuserSig(params)
+      }).catch(() => {
+        console.log('取消')
+      })
+    }
   }
 }
 </script>

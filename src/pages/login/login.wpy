@@ -89,15 +89,14 @@ export default class Login extends wepy.page {
         } else {
           wxReLaunch('/pages/register/selectUser?query=1')
         }
-      }
-      else {
-        if (res.is_company !== '0') {
+      } else if (Number(res.usertype) === 1) {
+        if (Number(res.is_company) !== 0) {
           wxReLaunch('/pages/companyView/index')
-          // wxReLaunch('/pages/company/ceateList')
         } else {
           wxReLaunch('/pages/register/companyForm')
         }
-        // wxToast('小程序企业功能待完善，敬请期待！')
+      } else {
+        wxReLaunch('/pages/message/index')
       }
       store.dispatch(getAllContant())
     }

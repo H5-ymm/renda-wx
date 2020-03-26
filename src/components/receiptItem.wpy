@@ -32,7 +32,10 @@
 						<view wx:if="{{receiptType==2&&itemValue.interview_status<=1}}">
 							面试开始
 						</view>
-						<view wx:if="{{receiptType==2&&itemValue.interview_status>=2}}">
+						<view wx:if="{{receiptType==2&&itemValue.interview_status==2}}">
+							面试待定
+						</view>
+						<view wx:if="{{receiptType==2&&itemValue.interview_status>=2&&itemValue.interview_status!=5}}">
 							{{!itemValue.entry_status?'面试结束':itemValue.entry_status==1?'入职开始':'入职结束'}}
 						</view>
 						<view wx:if="{{receiptType==3&&itemValue.entry_status<=1}}">
