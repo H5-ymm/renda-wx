@@ -154,8 +154,8 @@ export default class Login extends wepy.page {
     this.sendAuthCode = false
     this.auth_timetimer = setInterval(() => {
       this.auth_time--
-      wx.setStorageSync('auth_time', this.auth_time)
       this.$apply()
+      wx.setStorageSync('auth_time', this.auth_time)
       wx.setStorageSync('sendAuthCode', true)
       if (this.auth_time <= 0) {
         this.sendAuthCode = true

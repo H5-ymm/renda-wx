@@ -6,6 +6,9 @@
   }
 }
 .page_card_end {
+  .page_card_col {
+    width: 100%;
+  }
   .page_card_time {
     width: 100%;
     text-align: right;
@@ -16,7 +19,7 @@
     }
   }
   .page_card_status-resume {
-    width: 70%;
+    width: 100%;
     .page_card_status-item {
       width: 100%;
     }
@@ -51,8 +54,8 @@
 							</view>
 						</view>
 					</view>
-					<view class="weui-flex end wrap page_card_end">
-						<view>
+					<view class="weui-flex end page_card_end">
+						<view class="page_card_col">
 							<view wx:if="{{isShowBtn}}" class="page_card_status-resume">
 								<view class="page_card_status-item weui-flex between" wx:if="{{(receiptType==1&&!item.status)||(receiptType==2&&!item.interview_status)||(receiptType==3&&!item.entry_status)}}">
 									<button class="weui-btn_cell weui-flex__item weui-btn_primary" @tap.stop="handleResume({{item}},1)">
@@ -69,7 +72,7 @@
 									</view>
 								</view>
 							</view>
-							<view class="page_card_time" wx:if="{{item.is_time}}">{{item.addtime}}</view>
+							<view class="page_card_time" wx:if="{{item.is_time||viewType==1}}">{{item.addtime}}</view>
 							<view class="page_card_time page_card_time1" wx:else>未设置视频面试</view>
 						</view>
 						<image mode="scaleToFill" class="weui-flex__item" src="https://a.rsd123.com/image/images/right.png" class="page_down_icon" />
@@ -90,7 +93,8 @@ export default class companyResumeList extends wepy.component {
 		list: Array,
 		isBatch: Boolean,
 		isCheck: Boolean,
-		receiptType: Number
+		receiptType: Number,
+		viewType: String
 	}
 	data = {
 		isCheck: false,

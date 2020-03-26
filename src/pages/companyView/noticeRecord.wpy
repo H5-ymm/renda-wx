@@ -82,7 +82,7 @@
                   <view>
                     <view>{{newitem.name}}</view>
                     <view class="my-text">
-                      女 25
+                      {{newitem.sex==2?'女':'男'}} {{newitem.age}} {{newitem.eduName}}
                     </view>
                   </view>
                 </view>
@@ -170,8 +170,8 @@ export default class noticeRecord extends wepy.page {
   methods = {
     bindDateChange (e) {
       let date = e.detail.value
-      this.dateValue = date
       date = new Date(date).getTime() + ''
+      this.dateValue = date
       date = date.substring(0, 10)
       this.params.time = date
       this.getCheckList()

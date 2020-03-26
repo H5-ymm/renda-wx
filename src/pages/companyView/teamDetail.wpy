@@ -182,7 +182,7 @@
 <script>
 import wepy from 'wepy'
 import { $http } from '@/http.js'
-import { wxShowModal, wxReLaunch } from '@/util.js'
+import { wxShowModal, wxReLaunch, wxNavigateTo } from '@/util.js'
 import wxs from '../../filterWxs/receiptFilter.wxs'
 import $moment from 'moment';
 export default class teamDetail extends wepy.page {
@@ -203,12 +203,12 @@ export default class teamDetail extends wepy.page {
 	}
 	auditInvoiceInfo (params) {
 		$http('/company/auditInvoiceInfo', params).then(res => {
-			wxReLaunch('/pages/companyView/checkTeam')
+			wxNavigateTo('/pages/companyView/checkTeam')
 		})
 	}
 	delCompanyTeamApply (params) {
 		$http('/company/delCompanyTeamApply', params).then(res => {
-			wxReLaunch('/pages/companyView/checkTeam')
+			wxNavigateTo('/pages/companyView/checkTeam')
 		})
 	}
 	getTeamInfo (teamId) {

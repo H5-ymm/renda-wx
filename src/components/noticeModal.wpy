@@ -164,8 +164,8 @@ export default class noticeModal extends wepy.component {
 				params = {
 					view_time: this.form.time,
 					content: this.form.content,
-					room_num: wx.getStorageSync('rendaOpenId').substring(0, 5),
-					room_name: wx.getStorageSync('rendaOpenId'),
+					room_num: this.form.time,
+					room_name: wx.getStorageSync('phone'),
 					type: 1
 				}
 			}

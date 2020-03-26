@@ -43,7 +43,7 @@ export default class resumeSiftings extends wepy.page {
 		isModal: true,
 		viewType: 1,
 		modalHeight: 930,
-		title: '设置面试通知',
+		title: '面试',
 		job_id: '',
 		isSelectModal: true,
 		modalTitle: '请选择面试方式',
@@ -117,7 +117,13 @@ export default class resumeSiftings extends wepy.page {
 		},
 		setTime: data => {
 			this.job_id = data
-			this.isSelectModal = !this.isSelectModal
+			if (this.receiptType == 1) {
+				this.title = '面试'
+				this.isSelectModal = !this.isSelectModal
+			} else {
+				this.title = '入职'
+				this.isModal = !this.isModal
+			}
 			this.$apply()
 		},
 		handleClose: () => {
@@ -137,6 +143,7 @@ export default class resumeSiftings extends wepy.page {
 					url: '/pages/companyView/checkResumeList?query=' + this.receiptType + '&job_id=' + this.job_id + '&setTime=' + num
 				})
 			}
+			wx.setStorageSync('rendaViewType', Number(data) + 1)
 		}
 	}
 	methods = {

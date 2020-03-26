@@ -36,7 +36,8 @@ export default class datePicker extends wepy.component {
 		params: {
 			date: '',
 			time: ''
-		}
+		},
+		viewType: ''
 	}
 	watch = {
 		params (val) {
@@ -44,24 +45,38 @@ export default class datePicker extends wepy.component {
 				let newDate = val.date + ' ' + val.time
 				newDate = newDate + ''
 				let date = new Date(newDate).getTime() + ''
+				if (this.viewType == 2 && date - new Date().getTime() < 0) {
+					return wxToast('不能选择小于当前的时间')
+				}
 				date = date.substr(0, 10)
 				this.$emit('setDate', date)
 			}
 		}
 	}
 	onLoad () {
-		this.dateValue = $moment().add(1, 'days').format('YYYY-MM-DD')
+		this.viewType = wx.getStorageSync('rendaViewType')
+		if (this.viewType == 1) {
+			this.dateValue = $moment().add(1, 'days').format('YYYY-MM-DD')
+		} else {
+			this.dateValue = $moment().format('YYYY-MM-DD')
+		}
 		this.params.date = this.dateValue
 		this.startValue = this.dateValue
+
 		this.$apply()
 	}
 	methods = {
 		bindDateChange (e) {
 			let date = e.detail.value
-			if ($moment(date).valueOf() - $moment(this.startValue).valueOf() < 0) {
+			if (this.viewType == 1 && $moment(date).valueOf() - $moment(this.startValue).valueOf() <= 0) {
 				this.dateValue = this.startValue
 				this.params.date = this.startValue
 				return wxToast('请选择大于当天的时间')
+			}
+			if (this.viewType == 2 && $moment(date).valueOf() - $moment(this.startValue).valueOf() < 0) {
+				this.dateValue = this.startValue
+				this.params.date = this.startValue
+				return wxToast('不能选择小于当天的时间')
 			}
 			this.dateValue = date
 			this.params.date = date
