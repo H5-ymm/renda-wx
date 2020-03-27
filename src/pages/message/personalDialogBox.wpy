@@ -1,5 +1,5 @@
 <style lang="less">
-@import "../../style/resume.less";
+@import '../../style/resume.less';
 .detail-view {
   &.dialogBox-view {
     .register-btn {
@@ -38,7 +38,7 @@
       &.dialogBox-content-right {
         margin-left: 0;
         &::before {
-          content: "";
+          content: '';
           width: 0px;
           height: 0px;
           position: absolute;
@@ -56,7 +56,7 @@
         margin-right: 0;
         margin-left: 30rpx;
         &::before {
-          content: "";
+          content: '';
           width: 0px;
           height: 0px;
           position: absolute;
@@ -81,20 +81,20 @@
   }
   .dialogBox-btn {
     width: 46%;
-		margin-bottom: 30rpx;
-		margin-left: 120rpx;
+    margin-bottom: 30rpx;
+    margin-left: 120rpx;
     .weui-btn_cell {
       border-radius: 5rpx;
       font-size: 24rpx;
       padding: 24rpx 0;
-			margin: 0 10rpx;
+      margin: 0 10rpx;
       &.weui-btn_primary {
         border: 1px solid #1890ff;
-			}
-			&.weui-btn_default {
-				background: #ccc;
-				color: #fff;
-			}
+      }
+      &.weui-btn_default {
+        background: #ccc;
+        color: #fff;
+      }
     }
   }
 }
@@ -119,10 +119,8 @@
 						<view class="dialogBox-row-time">2019-10-10</view>
 						<view class="weui-flex start dialogBox-col weui-flex__item">
 							<view class="dialogBox-col-header"></view>
-							<view
-								class="dialogBox-content weui-flex between dialogBox-content-left"
-								@tap="videoView"
-							>	<image mode="scaleToFill" src="../../images/video.png" class="dialogBox_icon" /> 视频面试未接听</view>	
+							<view class="dialogBox-content weui-flex between dialogBox-content-left" @tap="videoView">
+								<image mode="scaleToFill" src="../../images/video.png" class="dialogBox_icon" /> 视频面试未接听</view>
 						</view>
 					</view>
 					<view>
@@ -169,27 +167,30 @@ export default class personalDialogBox extends wepy.page {
 		isView: false
 	}
 	config = {
-		navigationBarTitleText: '首页'
+		navigationBarTitleText: '消息'
 	}
-	onLoad() {
+	onLoad (options) {
+		// this.params.uid = options.query
 		this.params.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
 	}
-	onShow() {
-		this.getResumeList()
+	onShow () {
+		this.getMsgDetail()
 	}
-	getResumeList() {
-		$http('/resume/teamUserResumeList', this.params).then(res => {
+	getMsgDetail () {
+		$http('/personinfo/getMsg', this.params).then(res => {
+			console.log(res)
 			this.list = res.data.data || []
+
 			this.count = res.data.count
 			this.$apply()
 		})
 	}
 	methods = {
-		videoView() {
+		videoView () {
 			this.isView = true
 			this.$apply()
 		},
-		searchScrollLower() {
+		searchScrollLower () {
 			if (this.count > this.list.length && this.count > this.params.limit) {
 				this.isScoll = true
 				this.params.limit = this.params.limit + 10

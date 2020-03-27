@@ -1,5 +1,5 @@
 <style lang="less">
-@import "../../style/resume.less";
+@import '../../style/resume.less';
 .detail-view {
   &.dialogBox-view {
     .register-btn {
@@ -24,7 +24,7 @@
     position: relative;
   }
   .dialogBox-col {
-		margin: 12rpx 0;
+    margin: 12rpx 0;
     padding: 12rpx 0;
     .dialogBox-content {
       margin-right: 30rpx;
@@ -32,12 +32,12 @@
       border-radius: 12rpx;
       font-size: 24rpx;
       padding: 18rpx 24rpx;
-			color: #000;
-			position: relative;
+      color: #000;
+      position: relative;
       &.dialogBox-content-right {
-				margin-left:0;
+        margin-left: 0;
         &::before {
-          content: "";
+          content: '';
           width: 0px;
           height: 0px;
           position: absolute;
@@ -51,11 +51,11 @@
       }
       &.dialogBox-content-left {
         background: #fff;
-				margin-left: 30rpx;
-				margin-right: 0;
-				text-align: left;
+        margin-left: 30rpx;
+        margin-right: 0;
+        text-align: left;
         &::before {
-          content: "";
+          content: '';
           width: 0px;
           height: 0px;
           position: absolute;
@@ -71,12 +71,12 @@
     .message-col-small {
       font-size: 26rpx;
       color: #888888;
-		}
-		.dialogBox_icon {
-			width: 40rpx;
-			height: 22rpx;
-			margin-left: 20rpx
-		}
+    }
+    .dialogBox_icon {
+      width: 40rpx;
+      height: 22rpx;
+      margin-left: 20rpx;
+    }
   }
 }
 </style>
@@ -98,11 +98,11 @@
 							<view class="dialogBox-content weui-flex between dialogBox-content-right" @tap="videoView">
 								视频面试
 								<image mode="scaleToFill" src="../../images/video.png" class="dialogBox_icon" />
-								</view>
+							</view>
 							<view class="dialogBox-col-header"></view>
 						</view>
 					</view>
-					<view class="weui-flex start dialogBox-col weui-flex__item"   wx:if="{{isView}}">
+					<view class="weui-flex start dialogBox-col weui-flex__item" wx:if="{{isView}}">
 						<view class="dialogBox-col-header"></view>
 						<view class="dialogBox-content dialogBox-content-left">已完成面试</view>
 					</view>
@@ -134,41 +134,36 @@ export default class dialogBox extends wepy.page {
 		tabBarIndex: 2,
 		rendaUserTeamType: 0,
 		params: {
-			uid: ''
+			uid: '',
+			com_uid: ''
 		},
 		list: [],
 		count: 0,
-		isView: false
+		isView: false,
+		com_uid: ''
 	}
 	config = {
-		navigationBarTitleText: '首页'
+		navigationBarTitleText: '消息'
 	}
-	onLoad() {
-		this.params.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
+	onLoad (options) {
+		this.params.com_uid = options.query
+		this.params.uid =options.uid
 	}
-	onShow() {
-		this.getResumeList()
+	onShow () {
+		this.getMsgDetail()
 	}
-	getResumeList() {
-		$http('/resume/teamUserResumeList', this.params).then(res => {
+	getMsgDetail () {
+		$http('/personinfo/getMsg', this.params).then(res => {
+			console.log(res)
 			this.list = res.data.data || []
 			this.count = res.data.count
 			this.$apply()
 		})
 	}
 	methods = {
-		videoView() {
+		videoView () {
 			this.isView = true
 			this.$apply()
-		},
-		searchScrollLower() {
-			if (this.count > this.list.length && this.count > this.params.limit) {
-				this.isScoll = true
-				this.params.limit = this.params.limit + 10
-				this.getResumeList()
-			} else {
-				this.isScoll = false
-			}
 		}
 	}
 }

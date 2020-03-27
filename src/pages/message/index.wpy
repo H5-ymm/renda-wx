@@ -1,5 +1,5 @@
 <style lang="less">
-@import "../../style/resume.less";
+@import '../../style/resume.less';
 .detail-view {
   &.message-view {
     background: #fff;
@@ -14,6 +14,11 @@
     border-radius: 50%;
     background: #1890ff;
     position: relative;
+    .message-col-header {
+      height: 100%;
+      width: 100%;
+      border-radius: 50%;
+    }
     .bage {
       width: 24rpx;
       height: 24rpx;
@@ -46,32 +51,23 @@
 	<view class="detail-view message-view">
 		<view class="page_margin view-content">
 			<scroll-view scroll-y="true" style="height:100%" @scrolltolower="searchScrollLower">
-				<view class="weui-flex start message-row" @tap="viewMessage(1)">
-					<view class="message-col-1">
-						<view></view>
-						<view class="bage">1</view>
-					</view>
-					<view class="weui-flex between-start wrap message-col-2 weui-flex__item page_bottom">
-						<view>
-							<view>yangmeng</view>
-							<view class="message-col-small">20</view>
+				<repeat wx:for="{{list}}" wx:key="index">
+					<view class="weui-flex start message-row" @tap="viewMessage({{item}})">
+						<view class="message-col-1">
+							<view></view>
+							<image mode="scaleToFill" src="{{item.logo_url}}" class="message-col-header" />
+							<view class="bage" wx:if="{{item.com_read||item.readnum}}">{{usertype==1?item.com_read:item.readnum}}</view>
 						</view>
-						<view class="message-col-small message-col-time">20</view>
-					</view>
-				</view>
-				<view class="weui-flex start message-row" @tap="viewMessage(2)">
-					<view class="message-col-1">
-						<view></view>
-						<view class="bage">1</view>
-					</view>
-					<view class="weui-flex between-start wrap message-col-2 weui-flex__item page_bottom">
-						<view>
-							<view>yangmeng</view>
-							<view class="message-col-small">20</view>
+						<view class="weui-flex between-start wrap message-col-2 weui-flex__item page_bottom">
+							<view>
+								<view>{{usertype==1?item.user_name:item.com_name}}</view>
+								<view class="message-col-small">{{item.job_name}}</view>
+							</view>
+							<view class="message-col-small message-col-time">{{item.view_time}}</view>
 						</view>
-						<view class="message-col-small message-col-time">20</view>
 					</view>
-				</view>
+
+				</repeat>
 			</scroll-view>
 		</view>
 		<tabBarBottom :tabBarIndex.sync="tabBarIndex" :usertype.sync="usertype"></tabBarBottom>
@@ -80,7 +76,7 @@
 <script>
 import wepy from 'wepy'
 import { $http } from '@/http.js'
-import { getImgUrl, wxNavigateTo } from '@/util.js'
+import { getImgUrl, wxNavigateTo, getList } from '@/util.js'
 import tabBarBottom from '@/components/tabBarBottom'
 export default class message extends wepy.page {
 	components = {
@@ -100,36 +96,80 @@ export default class message extends wepy.page {
 	config = {
 		navigationBarTitleText: '消息管理'
 	}
-	onLoad() {
-		this.usertype = 3
+	computed = {
+		urlApi () {
+			return this.usertype == 1 ? '/personinfo/getcom_msglist' : '/personinfo/getcom_msg'
+		},
+		newList () {
+			return getList(this.list, 'view_time', 'YYYY-MM-DD HH:mm')
+		}
+	}
+	onLoad () {
+		// this.usertype = 3
 		this.$apply()
 		this.params.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
+		// this.params.uid = 15
 	}
-	onShow() {
-		this.getResumeList()
+	onShow () {
+		this.getMsglist()
 	}
-	getResumeList() {
-		$http('/resume/teamUserResumeList', this.params).then(res => {
+	getMsglist () {
+		$http(this.urlApi, this.params).then(res => {
 			this.list = res.data.data || []
+			this.list.forEach(item => {
+				if (item.logo_url) {
+					item.logo_url = getImgUrl(item.logo_url)
+				}
+			})
 			this.count = res.data.count
 			this.$apply()
 		})
 	}
+	getuserSig (params) {
+		$http('/Tencentcloud/createQuanjian', { name: params.room_name }).then(res => {
+			params.userSig = res.data
+			let params1 = {
+				jobId: this.job_id,
+				time: this.room_num
+			}
+			wx.setStorageSync('viewList', JSON.stringify(params1))
+			this.routerView(params)
+		})
+	}
+	routerView (params) {
+		const url = `/pages/room/room?roomID=${params.room_num}` +
+			`&userSig=${params.userSig}` +
+			`&template=grid&debugMode=false&cloudenv=PRO` +
+			`&localVideo=true` +
+			`&localAudio=true` +
+			`&enableEarMonitor=false` +
+			`&enableAutoFocus=true` +
+			`&localMirror=auto` +
+			`&enableAgc=true` +
+			`&enableAns=true` +
+			`&encsmall=true` +
+			`&frontCamera=front` +
+			`&videoWidth=360` +
+			`&videoHeight=640` +
+			`&scene=rtc` +
+			`&userID=${params.room_name}` +
+			`&minBitrate=600&maxBitrate=900`
+		wxNavigateTo(url)
+	}
 	methods = {
-		viewMessage(index) {
-			if (index == 1) {
-				wxNavigateTo('/pages/message/dialogBox')
+		viewMessage (item) {
+			if (this.usertype == 1) {
+				wxNavigateTo('/pages/message/dialogBox?query=' + item.com_uid + '&uid' + item.uid)
 			} else {
-				wxNavigateTo('/pages/message/personalDialogBox')
+				if (item.readnum) {
+					wxNavigateTo('/pages/message/personalDialogBox?query=' + item.com_uid + '&uid' + item.uid)
+				}
 			}
 		},
-		searchScrollLower() {
+		searchScrollLower () {
 			if (this.count > this.list.length && this.count > this.params.limit) {
-				this.isScoll = true
 				this.params.limit = this.params.limit + 10
-				this.getResumeList()
-			} else {
-				this.isScoll = false
+				this.getMsglist()
 			}
 		}
 	}
