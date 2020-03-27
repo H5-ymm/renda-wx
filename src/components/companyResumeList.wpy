@@ -158,7 +158,8 @@ export default class companyResumeList extends wepy.component {
 			if (item.view_type == 1) {
 				this.$emit('handleResume', query)
 			} else {
-				query.room_num = ''
+				console.log(item.room_num)
+				query.room_num = item.room_num
 				this.$emit('handleResumeVideo', query)
 			}
 		},

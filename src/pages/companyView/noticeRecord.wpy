@@ -244,7 +244,6 @@ export default class noticeRecord extends wepy.page {
         this.list[index].data[childIndex].disabled = !val.disabled
       } else {
         this.list[index].disabled = !item.disabled
-        console.log(item.disabled)
         this.list[index].data.forEach(value => {
           value.disabled = this.list[index].disabled
         })
@@ -264,9 +263,9 @@ export default class noticeRecord extends wepy.page {
       } else {
         this.list[index].disabled = false
       }
-      this.$apply()
-      this.room_num = val.room_num
+      this.room_num = item.room_num
       this.job_id = item.job_id
+      this.$apply()
     },
     videoView () {
       if (!this.job_id) {

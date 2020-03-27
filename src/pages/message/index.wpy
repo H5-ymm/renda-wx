@@ -58,7 +58,7 @@
 							<image mode="scaleToFill" src="../../images/header.png" class="message-col-header" wx-if="{{!item.header_img}}" />
 							<image mode="scaleToFill" src="{{item.header_img}}" class="message-col-header" wx-if="{{item.header_img}}" />
 							<image mode="scaleToFill" src="{{item.logo_url}}" class="message-col-header" wx:if="{{item.logo_url}}" />
-							<view class="bage" wx:if="{{item.com_read||item.readnum}}">{{usertype==1?item.com_read:item.readnum}}</view>
+							<view class="bage" wx:if="{{item.person_read||item.readnum}}">{{usertype==1?item.person_read:item.readnum}}</view>
 						</view>
 						<view class="weui-flex between-start wrap message-col-2 weui-flex__item page_bottom">
 							<view>

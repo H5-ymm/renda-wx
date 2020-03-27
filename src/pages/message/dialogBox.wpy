@@ -117,9 +117,9 @@
 			</scroll-view>
 		</view>
 		<view class="weui-cell_btn weui-flex between register-btn" wx:if="{{isView}}">
-			<button class="weui-btn_cell weui-flex__item weui-btn_primary" @tap="recommend">待定</button>
-			<button class="weui-btn_cell weui-flex__item weui-btn_primary_plain" @tap="contactPhone">通过</button>
-			<button class="weui-btn_cell weui-flex__item weui-btn_primary_plain" @tap="handleDelete">未通过</button>
+			<button class="weui-btn_cell weui-flex__item weui-btn_primary" @tap="handleResume(5)">待定</button>
+			<button class="weui-btn_cell weui-flex__item weui-btn_primary_plain" @tap="handleResume(1)">通过</button>
+			<button class="weui-btn_cell weui-flex__item weui-btn_primary_plain" @tap="handleResume(2)">未通过</button>
 		</view>
 		<view class="weui-cell_btn weui-flex between register-btn" wx:else>
 			<button class="weui-btn_cell weui-flex__item weui-btn_primary" @tap="videoView">视频面试</button>
@@ -160,15 +160,16 @@ export default class dialogBox extends wepy.page {
 		// this.params.uid =options.uid
 	}
 	onShow () {
+		if (wx.getStorageSync('isView')) {
+			this.isView = true
+		} else {
+			this.isView = false
+		}
 		this.getMsgDetail()
 	}
 	getuserSig (params) {
 		$http('/Tencentcloud/createQuanjian', { name: params.room_name }).then(res => {
 			params.userSig = res.data
-			// let params1 = {
-			// 	jobId: this.messageDetail.job_id,
-			// 	time: this.messageDetail.room_num
-			// }
 			wx.setStorageSync('viewList', '')
 			this.routerView(params)
 		})
@@ -203,7 +204,16 @@ export default class dialogBox extends wepy.page {
 			this.$apply()
 		})
 	}
-
+	auditResumeRecommend (status) {
+		let params = {
+			uid: wx.getStorageSync('rendaUid'),
+			id: this.messageDetail.id,
+			status
+		}
+		$http('/videointerview/videoInterviewEditStatus', params).then(res => {
+			this.getCheckList()
+		})
+	}
 	methods = {
 		videoView () {
 			// this.isView = true
@@ -214,6 +224,14 @@ export default class dialogBox extends wepy.page {
 			}
 			wxShowModal('', `确定视频面试吗?`).then(res => {
 				this.getuserSig(params)
+			}).catch(() => {
+				console.log('取消')
+			})
+		},
+		handleResume (status) {
+			let text = status == 1 ? '通过' : status == 2 ? '未通过' : '待定'
+			wxShowModal('', `确定面试结果为${text}`).then(res => {
+				this.auditResumeRecommend(status)
 			}).catch(() => {
 				console.log('取消')
 			})

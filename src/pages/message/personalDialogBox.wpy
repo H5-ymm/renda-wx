@@ -186,16 +186,23 @@ export default class personalDialogBox extends wepy.page {
 		this.params.id = options.query
 	}
 	onShow () {
+		if (wx.getStorageSync('isView')) {
+			this.isView = true
+		} else {
+			this.isView = false
+		}
 		this.getMsgDetail()
 	}
 	getuserSig (params) {
 		$http('/Tencentcloud/createQuanjian', { name: params.room_name }).then(res => {
 			params.userSig = res.data
+			console.log(params.userSig)
 			wx.setStorageSync('viewList', '')
 			this.routerView(params)
 		})
 	}
 	routerView (params) {
+		console.log(params)
 		const url = `/pages/room/room?roomID=${params.room_num}` +
 			`&userSig=${params.userSig}` +
 			`&template=grid&debugMode=false&cloudenv=PRO` +
@@ -213,7 +220,9 @@ export default class personalDialogBox extends wepy.page {
 			`&scene=rtc` +
 			`&userID=${params.room_name}` +
 			`&minBitrate=600&maxBitrate=900`
-		wxNavigateTo(url)
+		wx.navigateTo({
+			url: url
+		})
 	}
 	getMsgDetail () {
 		$http('/personinfo/getperson_msgdetail', this.params).then(res => {
@@ -231,6 +240,7 @@ export default class personalDialogBox extends wepy.page {
 				room_name: wx.getStorageSync('phone'),
 				room_num: this.messageDetail.room_num
 			}
+			console.log(wx.getStorageSync('phone') + '手机号')
 			wxShowModal('', `确定视频面试吗?`).then(res => {
 				this.getuserSig(params)
 			}).catch(() => {
@@ -238,15 +248,6 @@ export default class personalDialogBox extends wepy.page {
 			})
 			// this.isView = true
 			// this.$apply()
-		},
-		searchScrollLower () {
-			if (this.count > this.list.length && this.count > this.params.limit) {
-				this.isScoll = true
-				this.params.limit = this.params.limit + 10
-				this.getResumeList()
-			} else {
-				this.isScoll = false
-			}
 		}
 	}
 }
