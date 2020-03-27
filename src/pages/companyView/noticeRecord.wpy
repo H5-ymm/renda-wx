@@ -244,11 +244,11 @@ export default class noticeRecord extends wepy.page {
         this.list[index].data[childIndex].disabled = !val.disabled
       } else {
         this.list[index].disabled = !item.disabled
+        console.log(item.disabled)
         this.list[index].data.forEach(value => {
           value.disabled = this.list[index].disabled
         })
       }
-      this.$apply()
       if (arr.indexOf(val.id) === -1) {
         arr.push(val.id)
       } else {
@@ -261,7 +261,10 @@ export default class noticeRecord extends wepy.page {
       arr = Array.from(new Set(arr))
       if (arr.length == item.data.length) {
         this.list[index].disabled = true
+      } else {
+        this.list[index].disabled = false
       }
+      this.$apply()
       this.room_num = val.room_num
       this.job_id = item.job_id
     },

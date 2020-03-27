@@ -12,7 +12,7 @@
     width: 94rpx;
     height: 94rpx;
     border-radius: 50%;
-    background: #1890ff;
+    background: #eeeeee;
     position: relative;
     .message-col-header {
       height: 100%;
@@ -54,8 +54,10 @@
 				<repeat wx:for="{{list}}" wx:key="index">
 					<view class="weui-flex start message-row" @tap="viewMessage({{item}})">
 						<view class="message-col-1">
-							<view></view>
-							<image mode="scaleToFill" src="{{item.logo_url}}" class="message-col-header" />
+							<!-- <view></view> -->
+							<image mode="scaleToFill" src="../../images/header.png" class="message-col-header" wx-if="{{!item.header_img}}" />
+							<image mode="scaleToFill" src="{{item.header_img}}" class="message-col-header" wx-if="{{item.header_img}}" />
+							<image mode="scaleToFill" src="{{item.logo_url}}" class="message-col-header" wx:if="{{item.logo_url}}" />
 							<view class="bage" wx:if="{{item.com_read||item.readnum}}">{{usertype==1?item.com_read:item.readnum}}</view>
 						</view>
 						<view class="weui-flex between-start wrap message-col-2 weui-flex__item page_bottom">
@@ -66,11 +68,10 @@
 							<view class="message-col-small message-col-time">{{item.view_time}}</view>
 						</view>
 					</view>
-
 				</repeat>
 			</scroll-view>
 		</view>
-		<tabBarBottom :tabBarIndex.sync="tabBarIndex" :usertype.sync="usertype"></tabBarBottom>
+		<tabBarBottom :tabBarIndex.sync="tabBarIndex" :usertype.sync="usertype" wx:if="{{usertype==1}}"></tabBarBottom>
 	</view>
 </template>
 <script>
@@ -84,7 +85,7 @@ export default class message extends wepy.page {
 	}
 	data = {
 		teamData: {},
-		usertype: 1,
+		usertype: 0,
 		tabBarIndex: 2,
 		rendaUserTeamType: 0,
 		params: {
@@ -98,14 +99,18 @@ export default class message extends wepy.page {
 	}
 	computed = {
 		urlApi () {
-			return this.usertype == 1 ? '/personinfo/getcom_msglist' : '/personinfo/getcom_msg'
+			return this.usertype == 1 ? '/personinfo/getcom_msglist' : '/personinfo/getMsg'
 		},
 		newList () {
 			return getList(this.list, 'view_time', 'YYYY-MM-DD HH:mm')
 		}
 	}
 	onLoad () {
+		this.usertype = wx.getStorageSync('rendaUserType')
 		// this.usertype = 3
+		if (this.usertype == 1) {
+			this.tabBarIndex = 2
+		}
 		this.$apply()
 		this.params.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
 		// this.params.uid = 15
@@ -120,50 +125,20 @@ export default class message extends wepy.page {
 				if (item.logo_url) {
 					item.logo_url = getImgUrl(item.logo_url)
 				}
+				// if (item.header_img) {
+				// 	item.header_img = getImgUrl(item.header_img)
+				// }
 			})
 			this.count = res.data.count
 			this.$apply()
 		})
 	}
-	getuserSig (params) {
-		$http('/Tencentcloud/createQuanjian', { name: params.room_name }).then(res => {
-			params.userSig = res.data
-			let params1 = {
-				jobId: this.job_id,
-				time: this.room_num
-			}
-			wx.setStorageSync('viewList', JSON.stringify(params1))
-			this.routerView(params)
-		})
-	}
-	routerView (params) {
-		const url = `/pages/room/room?roomID=${params.room_num}` +
-			`&userSig=${params.userSig}` +
-			`&template=grid&debugMode=false&cloudenv=PRO` +
-			`&localVideo=true` +
-			`&localAudio=true` +
-			`&enableEarMonitor=false` +
-			`&enableAutoFocus=true` +
-			`&localMirror=auto` +
-			`&enableAgc=true` +
-			`&enableAns=true` +
-			`&encsmall=true` +
-			`&frontCamera=front` +
-			`&videoWidth=360` +
-			`&videoHeight=640` +
-			`&scene=rtc` +
-			`&userID=${params.room_name}` +
-			`&minBitrate=600&maxBitrate=900`
-		wxNavigateTo(url)
-	}
 	methods = {
 		viewMessage (item) {
 			if (this.usertype == 1) {
-				wxNavigateTo('/pages/message/dialogBox?query=' + item.com_uid + '&uid' + item.uid)
+				wxNavigateTo('/pages/message/dialogBox?query=' + item.id)
 			} else {
-				if (item.readnum) {
-					wxNavigateTo('/pages/message/personalDialogBox?query=' + item.com_uid + '&uid' + item.uid)
-				}
+				wxNavigateTo('/pages/message/personalDialogBox?query=' + item.id)
 			}
 		},
 		searchScrollLower () {
