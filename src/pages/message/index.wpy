@@ -1,5 +1,5 @@
 <style lang="less">
-@import "../../style/resume.less";
+@import '../../style/resume.less';
 .detail-view {
   &.message-view {
     background: #fff;
@@ -12,8 +12,13 @@
     width: 94rpx;
     height: 94rpx;
     border-radius: 50%;
-    background: #1890ff;
+    background: #eeeeee;
     position: relative;
+    .message-col-header {
+      height: 100%;
+      width: 100%;
+      border-radius: 50%;
+    }
     .bage {
       width: 24rpx;
       height: 24rpx;
@@ -46,41 +51,33 @@
 	<view class="detail-view message-view">
 		<view class="page_margin view-content">
 			<scroll-view scroll-y="true" style="height:100%" @scrolltolower="searchScrollLower">
-				<view class="weui-flex start message-row" @tap="viewMessage(1)">
-					<view class="message-col-1">
-						<view></view>
-						<view class="bage">1</view>
-					</view>
-					<view class="weui-flex between-start wrap message-col-2 weui-flex__item page_bottom">
-						<view>
-							<view>yangmeng</view>
-							<view class="message-col-small">20</view>
+				<repeat wx:for="{{list}}" wx:key="index">
+					<view class="weui-flex start message-row" @tap="viewMessage({{item}})">
+						<view class="message-col-1">
+							<!-- <view></view> -->
+							<image mode="scaleToFill" src="../../images/header.png" class="message-col-header" wx-if="{{!item.header_img&&usertype==1}}" />
+							<image mode="scaleToFill" src="{{item.header_img}}" class="message-col-header" wx-if="{{item.header_img}}" />
+							<image mode="scaleToFill" src="{{item.logo_url}}" class="message-col-header" wx:if="{{item.logo_url}}" />
+							<view class="bage" wx:if="{{item.person_read||item.readnum}}">{{usertype==1?item.person_read:item.readnum}}</view>
 						</view>
-						<view class="message-col-small message-col-time">20</view>
-					</view>
-				</view>
-				<view class="weui-flex start message-row" @tap="viewMessage(2)">
-					<view class="message-col-1">
-						<view></view>
-						<view class="bage">1</view>
-					</view>
-					<view class="weui-flex between-start wrap message-col-2 weui-flex__item page_bottom">
-						<view>
-							<view>yangmeng</view>
-							<view class="message-col-small">20</view>
+						<view class="weui-flex between-start wrap message-col-2 weui-flex__item page_bottom">
+							<view>
+								<view>{{usertype==1?item.user_name:item.com_name}}</view>
+								<view class="message-col-small">{{item.job_name}}</view>
+							</view>
+							<view class="message-col-small message-col-time">{{item.view_time}}</view>
 						</view>
-						<view class="message-col-small message-col-time">20</view>
 					</view>
-				</view>
+				</repeat>
 			</scroll-view>
 		</view>
-		<tabBarBottom :tabBarIndex.sync="tabBarIndex" :usertype.sync="usertype"></tabBarBottom>
+		<tabBarBottom :tabBarIndex.sync="tabBarIndex" :usertype.sync="usertype" wx:if="{{usertype==1}}"></tabBarBottom>
 	</view>
 </template>
 <script>
 import wepy from 'wepy'
 import { $http } from '@/http.js'
-import { getImgUrl, wxNavigateTo } from '@/util.js'
+import { getImgUrl, wxNavigateTo, getList } from '@/util.js'
 import tabBarBottom from '@/components/tabBarBottom'
 export default class message extends wepy.page {
 	components = {
@@ -88,7 +85,7 @@ export default class message extends wepy.page {
 	}
 	data = {
 		teamData: {},
-		usertype: 1,
+		usertype: 0,
 		tabBarIndex: 2,
 		rendaUserTeamType: 0,
 		params: {
@@ -100,36 +97,54 @@ export default class message extends wepy.page {
 	config = {
 		navigationBarTitleText: '消息管理'
 	}
-	onLoad() {
-		this.usertype = 3
+	computed = {
+		urlApi () {
+			return this.usertype == 1 ? '/personinfo/getcom_msglist' : '/personinfo/getMsg'
+		},
+		newList () {
+			return getList(this.list, 'view_time', 'YYYY-MM-DD HH:mm')
+		}
+	}
+	onLoad () {
+		this.usertype = wx.getStorageSync('rendaUserType')
+		// this.usertype = 3
+		if (this.usertype == 1) {
+			this.tabBarIndex = 2
+		}
 		this.$apply()
 		this.params.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
+		// this.params.uid = 15
 	}
-	onShow() {
-		this.getResumeList()
+	onShow () {
+		this.getMsglist()
 	}
-	getResumeList() {
-		$http('/resume/teamUserResumeList', this.params).then(res => {
+	getMsglist () {
+		$http(this.urlApi, this.params).then(res => {
 			this.list = res.data.data || []
+			this.list.forEach(item => {
+				if (item.logo_url) {
+					item.logo_url = getImgUrl(item.logo_url)
+				}
+				// if (item.header_img) {
+				// 	item.header_img = getImgUrl(item.header_img)
+				// }
+			})
 			this.count = res.data.count
 			this.$apply()
 		})
 	}
 	methods = {
-		viewMessage(index) {
-			if (index == 1) {
-				wxNavigateTo('/pages/message/dialogBox')
+		viewMessage (item) {
+			if (this.usertype == 1) {
+				wxNavigateTo('/pages/message/dialogBox?query=' + item.id)
 			} else {
-				wxNavigateTo('/pages/message/personalDialogBox')
+				wxNavigateTo('/pages/message/personalDialogBox?query=' + item.id)
 			}
 		},
-		searchScrollLower() {
+		searchScrollLower () {
 			if (this.count > this.list.length && this.count > this.params.limit) {
-				this.isScoll = true
 				this.params.limit = this.params.limit + 10
-				this.getResumeList()
-			} else {
-				this.isScoll = false
+				this.getMsglist()
 			}
 		}
 	}

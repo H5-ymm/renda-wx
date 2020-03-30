@@ -54,7 +54,7 @@
 					<view class="video-switch-col1 {{viewType==1?'video-switch-active':''}}" @tap="switchView(1)">正常面试</view>
 					<view class="video-switch-col1 video-switch-col2 {{viewType==2?'video-switch-active':''}}" @tap="switchView(2)">视频面试</view>
 				</view>
-				<companyResumeList :list.sync="newList" :viewType.sync="viewType" :receiptType.sync="receiptType" :isBatch.sync="isBatch" :isCheck.sync="isCheck" @viewDetail="viewDetail" @handleResume="handleResume" @selectResume="selectResume">
+				<companyResumeList :list.sync="newList" @handleResumeVideo="handleResumeVideo" :viewType.sync="viewType" :receiptType.sync="receiptType" :isBatch.sync="isBatch" :isCheck.sync="isCheck" @viewDetail="viewDetail" @handleResume="handleResume" @selectResume="selectResume">
 				</companyResumeList>
 			</scroll-view>
 		</view>
@@ -156,9 +156,10 @@ export default class checkResumeList extends wepy.page {
 		check: false,
 		viewType: '1',
 		isNoticeModal: true,
-		userSign: '',
+		userSig: '',
 		checkObj: {},
-		isCheckAll: false
+		isCheckAll: false,
+		resume_id: ''
 	}
 	computed = {
 		newList () {
@@ -234,33 +235,44 @@ export default class checkResumeList extends wepy.page {
 				this.modalHeight = 750
 				this.checkObj = data
 				this.id = data.id
+				this.resume_id = data.resume_id
 				this.isNoticeModal = !this.isNoticeModal
 				this.$apply()
 			} else {
 				this.auditResumeRecommend(data)
 			}
 		},
+		handleResumeVideo: data => {
+			let parasm = {
+				room_name: wx.getStorageSync('phone'),
+				room_num: data.room_num
+			}
+			wxShowModal('', `确定视频面试吗?`).then(res => {
+				this.getuserSig(parasm)
+			}).catch(() => {
+				console.log('取消')
+			})
+		},
 		setAllTime: data => {
-			console.log(data)
-			let params = Object.assign(data, { uid: this.params.uid, job_id: this.job_id, resume_list: this.id, type: 1 })
+			let params = Object.assign(data, { uid: this.params.uid, job_id: this.job_id, resume_list: this.resume_id, type: 1 })
 			if (this.viewType == 1) {
 				this.auditResumeRecommend(params)
 			} else {
-				this.getUserSign(data.room_name)
 				this.setVideoNotice(params)
 			}
 		},
 		selectResume: data => {
 			console.log(data)
-			if (this.viewType == 2 && data.length > 8) {
+			if (this.viewType == 2 && data.id.length > 8) {
 				return wxToast('视频面试最多选择8个简历')
 			}
-			if (data.length == this.newList.length) {
+			if (data.id.length == this.newList.length) {
 				this.isCheck = true
 				this.$apply()
 			}
-			if (data.length) {
-				this.id = data.join(',')
+			if (data && data.id.length) {
+				this.id = data.id.join(',')
+				this.resume_id = data.resume_id.join(',')
 			}
 		},
 		viewDetail: data => {
@@ -270,24 +282,24 @@ export default class checkResumeList extends wepy.page {
 			})
 		}
 	}
-	getUserSign (name) {
-		$http('/Tencentcloud/createQuanjian', { name }).then(res => {
-			this.userSign = res.data
-		})
-	}
 	setVideoNotice (params) {
 		$http('/company/setVideoInterviewTime', params).then(res => {
 			if (res.data) {
-				this.getCheckList()
 				this.auditResumeRecommend(this.checkObj, params)
 			} else {
 				wxToast('设置失败')
 			}
 		})
 	}
+	getuserSig (params) {
+		$http('/Tencentcloud/createQuanjian', { name: params.room_name }).then(res => {
+			params.userSig = res.data
+			this.routerView(params)
+		})
+	}
 	routerView (params) {
 		const url = `/pages/room/room?roomID=${params.room_num}` +
-			`&userSig=${this.userSig}` +
+			`&userSig=${params.userSig}` +
 			`&template=grid&debugMode=false&cloudenv=PRO` +
 			`&localVideo=true` +
 			`&localAudio=true` +
@@ -311,7 +323,7 @@ export default class checkResumeList extends wepy.page {
 		$http(this.checkUrlAPI, params).then(res => {
 			if (res.data) {
 				if (obj) {
-					this.routerView(obj)
+					this.getuserSig(obj)
 					return
 				}
 				if (this.isCheck || this.check) {
@@ -367,11 +379,13 @@ export default class checkResumeList extends wepy.page {
 			this.$apply()
 		},
 		batchHandle () {
-			this.isBatch = true
-			console.log(this.list)
-			this.list = this.checkAll(this.list, false)
-			console.log(this.list)
-			this.$apply()
+			if (this.receiptType != 2) {
+				this.isBatch = true
+				this.list = this.checkAll(this.list, false)
+				this.$apply()
+			} else {
+				wxNavigateTo('/pages/companyView/noticeRecord?jobId=' + this.job_id)
+			}
 		},
 		viewNotice () {
 			if (this.viewType == 1) {
@@ -388,8 +402,16 @@ export default class checkResumeList extends wepy.page {
 					return item.id
 				}
 			})
+			let arr1 = this.list.map(item => {
+				if (item.disabled) {
+					return item.resume_id
+				}
+			})
 			if (arr.length) {
 				this.id = arr.join(',')
+			}
+			if (arr1.length) {
+				this.resume_id = arr1.join(',')
 			}
 			this.$apply()
 		},
@@ -421,7 +443,7 @@ export default class checkResumeList extends wepy.page {
 			}
 		},
 		setNotice () {
-			if (!this.isCheck || !this.id) {
+			if (!this.isCheck || !this.resume_id) {
 				return wxToast('请选择简历')
 			}
 			this.modalHeight = 750

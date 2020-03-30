@@ -38,7 +38,7 @@
 					</view>
 					<view class="weui-flex end wrap page_card_end view-page_card">
 							<view class="page_card_status-resume weui-flex end">
-								<button class="weui-btn_cell weui-flex__item weui-btn_primary" @tap.stop="handleResume({{item}},1)">
+								<button class="weui-btn_cell weui-flex__item weui-btn_primary" @tap.stop="handleResume({{item}},5)">
 										待定
 									</button>
 									<button class="weui-btn_cell weui-flex__item weui-btn_primary_plain" @tap.stop="handleResume({{item}},2)">
@@ -61,6 +61,7 @@
 </template>
 <script>
 import wepy from 'wepy'
+import { wxShowModal } from '@/util'
 export default class companyResumeList extends wepy.component {
 	props = {
 		list: Array
@@ -75,7 +76,12 @@ export default class companyResumeList extends wepy.component {
 				id: item.id,
 				status
 			}
-			this.$emit('handleResume', query)
+			let text = status==1?'通过':status==2?'未通过':'待定'
+			wxShowModal('', `确定面试结果为${text}`).then(res => {
+				this.$emit('handleResume', query)
+			}).catch(() => {
+				console.log('取消')
+			})
 		}
 	}
 }

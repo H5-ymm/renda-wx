@@ -197,12 +197,14 @@ export default class Welcome extends wepy.page {
       } else {
         wxReLaunch('/pages/register/selectUser?query=1')
       }
-    } else {
+    } else if (Number(res.usertype) === 1) {
       if (Number(res.is_company) !== 0) {
         wxReLaunch('/pages/companyView/index')
       } else {
         wxReLaunch('/pages/register/companyForm')
       }
+    } else {
+      wxReLaunch('/pages/message/index')
     }
   }
   showErrorTip (code) {

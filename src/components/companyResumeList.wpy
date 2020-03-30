@@ -6,6 +6,7 @@
   }
 }
 .page_card_end {
+  width: 46%;
   .page_card_col {
     width: 100%;
   }
@@ -25,9 +26,15 @@
     }
     .weui-btn_cell {
       margin-bottom: 40rpx;
+      &.weui-btn_cell1 {
+        width: 160rpx;
+        margin-left: 50px;
+      }
     }
     .page_card_receipt_status {
       text-align: center;
+      position: relative;
+      left: 36px;
     }
   }
   .page_card_status-text {
@@ -57,11 +64,11 @@
 					<view class="weui-flex end page_card_end">
 						<view class="page_card_col">
 							<view wx:if="{{isShowBtn}}" class="page_card_status-resume">
-								<view class="page_card_status-item weui-flex between" wx:if="{{(receiptType==1&&!item.status)||(receiptType==2&&!item.interview_status)||(receiptType==3&&!item.entry_status)}}">
-									<button class="weui-btn_cell weui-flex__item weui-btn_primary" @tap.stop="handleResume({{item}},1)">
-										{{text}}
+								<view class="page_card_status-item weui-flex between" wx:if="{{(receiptType==1&&!item.status)||(receiptType==2&&(!item.interview_status))||(receiptType==3&&!item.entry_status)}}">
+									<button class="weui-btn_cell weui-btn_primary {{item.view_type==2?'weui-btn_cell1':''}} " @tap.stop="handleResume({{item}},1)">
+										{{item.view_type==1?text:'视频面试'}}
 									</button>
-									<button class="weui-btn_cell weui-flex__item weui-btn_primary_plain" @tap.stop="handleResume({{item}},2)">
+									<button wx:if="{{item.view_type==1}}" class="weui-btn_cell weui-flex__item weui-btn_primary_plain" @tap.stop="handleResume({{item}},2)">
 										{{receiptType===1?'拒绝':receiptType===2?'未通过':'未入职'}}
 									</button>
 								</view>
@@ -72,8 +79,11 @@
 									</view>
 								</view>
 							</view>
-							<view class="page_card_time" wx:if="{{item.is_time||viewType==1}}">{{item.addtime}}</view>
-							<view class="page_card_time page_card_time1" wx:else>未设置视频面试</view>
+							<view wx:if="{{item.interview_status!=5}}">
+								<view class="page_card_time" wx:if="{{item.is_time||viewType==1||receiptType>0}}">{{item.addtime}}</view>
+								<view class="page_card_time page_card_time1" wx:else>未设置视频面试</view>
+							</view>
+							<view class="page_card_time page_card_time1" wx:else>面试待定</view>
 						</view>
 						<image mode="scaleToFill" class="weui-flex__item" src="https://a.rsd123.com/image/images/right.png" class="page_down_icon" />
 					</view>
@@ -102,17 +112,20 @@ export default class companyResumeList extends wepy.component {
 		refuseText: '',
 		text: '',
 		isShowBtn: true,
-		resumeList: []
+		resumeList: [],
+		viewType: 1
 	}
 	onLoad () {
 		this.getText(this.receiptType)
+		this.viewType = wx.getStorageSync('rendaViewType')
 		let statusObj = JSON.parse(wx.getStorageSync('statusObj'))
-		if (this.receiptType === 2 && !statusObj.view_time) {
+		if (this.receiptType === 2 && !statusObj.view_time && this.viewType == 1) {
 			this.isShowBtn = false
 		}
-		if (this.receiptType === 3 && !statusObj.entry_time && tstatusObj.interview_status == 1) {
+		if (this.receiptType === 3 && !statusObj.entry_time && statusObj.interview_status == 1) {
 			this.isShowBtn = false
 		}
+		this.$apply()
 	}
 	getText (val) {
 		if (val === 3) {
@@ -142,15 +155,23 @@ export default class companyResumeList extends wepy.component {
 			let query = {
 				uid: wx.getStorageSync('rendaUid'),
 				id: item.id,
+				resume_id: item.resume_id,
 				status
 			}
-			this.$emit('handleResume', query)
+			if (item.view_type == 1) {
+				this.$emit('handleResume', query)
+			} else {
+				console.log(item.room_num)
+				query.room_num = item.room_num
+				this.$emit('handleResumeVideo', query)
+			}
 		},
 		viewDetail (item) {
 			this.$emit('viewDetail', item.id)
 		},
 		selectResume (item, index) {
 			let arr = []
+			let arr1 = []
 			this.resumeList[index].disabled = !item.disabled
 			console.log(item.disabled)
 			this.$apply()
@@ -162,7 +183,21 @@ export default class companyResumeList extends wepy.component {
 				})
 				arr.splice(ret, 1)
 			}
-			this.$emit('selectResume', Array.from(new Set(arr)))
+			if (arr1.indexOf(item.resume_id) === -1) {
+				arr1.push(item.resume_id)
+			} else {
+				let ret = arr1.findIndex(v => {
+					return v === item.resume_id
+				})
+				arr1.splice(ret, 1)
+			}
+			arr = Array.from(new Set(arr))
+			arr1 = Array.from(new Set(arr1))
+			let params = {
+				id: arr,
+				resume_id: arr2
+			}
+			this.$emit('selectResume', params)
 		}
 	}
 }
