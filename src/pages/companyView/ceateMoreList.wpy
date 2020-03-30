@@ -1,6 +1,6 @@
 <style lang="less">
-@import "../../style/home.less";
-@import "../../style/form.less";
+@import '../../style/home.less';
+@import '../../style/form.less';
 .input-text-end {
   margin-left: 10rpx;
 }
@@ -15,16 +15,16 @@
     text-align: center;
   }
 }
+.orderModal {
+  .navigator {
+    margin-top: 20rpx;
+  }
+}
 </style>
 <template>
 	<view class="home-view register-view page_margin">
 		<createForm :typeBtn.sync="typeBtn" @submit="submit" @prePage="prePage"></createForm>
-		<teamModal
-			:isScaleModal.sync="isModal"
-			@handleOk="handleOk"
-			:height.sync="modalHeight"
-			:modalObj.sync="modalObj"
-		></teamModal>
+		<teamModal :isScaleModal.sync="isModal" @handleOk="handleOk" :height.sync="modalHeight" :modalObj.sync="modalObj" class="orderModal"></teamModal>
 	</view>
 </template>
 <script>
@@ -74,10 +74,10 @@ export default class ceateList extends wepy.page {
 			wxReLaunch('/pages/companyView/ceateList')
 		}
 	}
-	onLoad(options) {
+	onLoad (options) {
 		this.preForm = options.query
 	}
-	createOrderApi(params) {
+	createOrderApi (params) {
 		lock = true
 		$http('/enterpriseinvoice/createInvoice', params).then(res => {
 			if (res.data) {

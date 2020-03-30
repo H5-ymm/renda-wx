@@ -79,8 +79,11 @@
 									</view>
 								</view>
 							</view>
-							<view class="page_card_time" wx:if="{{item.is_time||viewType==1||receiptType>0}}">{{item.addtime}}</view>
-							<view class="page_card_time page_card_time1" wx:else>未设置视频面试</view>
+							<view wx:if="{{item.interview_status!=5}}">
+								<view class="page_card_time" wx:if="{{item.is_time||viewType==1||receiptType>0}}">{{item.addtime}}</view>
+								<view class="page_card_time page_card_time1" wx:else>未设置视频面试</view>
+							</view>
+							<view class="page_card_time page_card_time1" wx:else>面试待定</view>
 						</view>
 						<image mode="scaleToFill" class="weui-flex__item" src="https://a.rsd123.com/image/images/right.png" class="page_down_icon" />
 					</view>

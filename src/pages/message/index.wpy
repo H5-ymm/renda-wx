@@ -55,7 +55,7 @@
 					<view class="weui-flex start message-row" @tap="viewMessage({{item}})">
 						<view class="message-col-1">
 							<!-- <view></view> -->
-							<image mode="scaleToFill" src="../../images/header.png" class="message-col-header" wx-if="{{!item.header_img}}" />
+							<image mode="scaleToFill" src="../../images/header.png" class="message-col-header" wx-if="{{!item.header_img&&usertype==1}}" />
 							<image mode="scaleToFill" src="{{item.header_img}}" class="message-col-header" wx-if="{{item.header_img}}" />
 							<image mode="scaleToFill" src="{{item.logo_url}}" class="message-col-header" wx:if="{{item.logo_url}}" />
 							<view class="bage" wx:if="{{item.person_read||item.readnum}}">{{usertype==1?item.person_read:item.readnum}}</view>

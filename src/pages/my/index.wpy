@@ -232,6 +232,10 @@ export default class my extends wepy.page {
               title: '切换账号',
               icon: 'https://a.rsd123.com/image/images/icon6.png',
               url: '/pages/my/userBind'
+            }, {
+              title: '我的消息',
+              icon: 'https://a.rsd123.com/image/images/icon6.png',
+              url: '/pages/message/index'
             }]
           }
         ]
