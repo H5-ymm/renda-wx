@@ -9,7 +9,7 @@
         <view class="page_card_row">
           <view class="weui-flex between ">
             <view class="my-text weui-flex__item">姓名</view>
-            <view class="my-text-right"> {{form.user_name}}</view>
+            <view class="my-text-right"> {{form.name}}</view>
           </view>
         </view>
         <view class="page_card_row">

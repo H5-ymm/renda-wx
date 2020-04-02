@@ -191,7 +191,7 @@ export default class checkResumeList extends wepy.page {
 	onLoad (options) {
 		console.log(options)
 		this.receiptType = Number(options.query) || Number(wx.getStorageSync('receiptType'))
-		this.viewType = options.setTime
+		this.viewType = options.setTime || '1'
 		console.log(this.viewType + '面试类型')
 		this.job_id = options.job_id
 		if (this.receiptType === 1) {
@@ -207,7 +207,7 @@ export default class checkResumeList extends wepy.page {
 		})
 	}
 	onShow () {
-		this.params.type = this.viewType ? this.viewType : '1'
+		this.params.type = this.viewType
 		this.params.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
 		this.statusObj = JSON.parse(wx.getStorageSync('statusObj'))
 		this.tabBarList = this.getTabBarList(this.receiptType)
@@ -234,7 +234,7 @@ export default class checkResumeList extends wepy.page {
 			this.$apply()
 		},
 		handleResume: data => {
-			data.type = this.viewType ? this.viewType : '1'
+			data.type = this.viewType
 			console.log(data.status == 1 && this.viewType == 2 +'判断')
 			if (data.status == 1 && this.viewType == 2) {
 				this.modalHeight = 750
@@ -353,7 +353,7 @@ export default class checkResumeList extends wepy.page {
 		})
 	}
 	auditResumeRecommend (params, obj) {
-		params.type = this.viewType ? this.viewType : 1
+		params.type = this.viewType
 		console.log(params)
 		$http(this.checkUrlAPI, params).then(res => {
 			if (res.data) {
@@ -412,6 +412,7 @@ export default class checkResumeList extends wepy.page {
 			this.params.type = this.viewType
 			this.$apply()
 			this.getCheckList()
+			this.getTotal(this.tabBarList)
 		},
 		batchHandle () {
 			if (this.receiptType != 2) {
@@ -530,6 +531,9 @@ export default class checkResumeList extends wepy.page {
 			job_id: this.job_id,
 			type: this.receiptType
 		}
+		if (this.receiptType != 3) {
+			params.view_type = this.viewType
+		}
 		$http('/company/getAuditResumeNum', params).then(res => {
 			if (res.data) {
 				arr[0].num = res.data.allNum
@@ -570,21 +574,16 @@ export default class checkResumeList extends wepy.page {
 	}
 	getCheckList () {
 		$http(this.urlApi, this.params).then(res => {
-			console.log(res)
 			this.list = res.data.data || []
 			let check = this.list.some(item => {
 				if (!item.is_time) {
 					return false
 				}
 			})
-			console.log(check)
-			// this.isCheckAll
-			// this.statusObj.is_video = check ? 1 : 0
 			if (this.receiptType) {
 				this.check = this.checkStatus(this.list, this.receiptType)
-				console.log(this.check)
 			}
-			this.tabBarList[this.activeIndex].num = this.list.length
+			// this.tabBarList[this.activeIndex].num = this.list.length
 			this.count = res.data.count
 			this.$apply()
 		})
