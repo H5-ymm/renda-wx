@@ -13,22 +13,23 @@
       }
     }
   }
-}
-.modal-row {
-  margin-bottom: 16rpx;
-  .modal-col {
-    border: 1px solid #eee;
-    border-radius: 5rpx;
-    padding: 16rpx 24rpx;
-    margin-top: 10rpx;
-    font-size: 26rpx;
-    .weui-input {
+  .modal-row {
+    margin-bottom: 16rpx;
+    .modal-col {
+      border: 1px solid #eee;
+      border-radius: 5rpx;
+      padding: 16rpx 24rpx;
+      margin-top: 10rpx;
+      font-size: 26rpx;
+      .weui-input {
       text-align: left;
       &.weui-textarea {
         margin: 10rpx 0;
+        line-height: 0;
+      }
       }
     }
-  }
+	}
 }
 </style>
 <template>
@@ -96,12 +97,12 @@ export default class viewNoticeModal extends wepy.component {
 		timeInfo (val) {
 			if (val && val.content) {
 				let reg = /^[0-9]+.?[0-9]*$/
+        console.log(val.time)
 				if (reg.test(val.time)) {
-					this.form.time = val.time
+          this.form.time = $moment.unix(val.time).format('YYYY-MM-DD HH:mm')		
 				} else {
-					this.form.time = $moment.unix(val.time).format('YYYY-MM-DD HH:mm')
+			  	this.form.time = val.time
 				}
-
 				let arr = val.content.split('&')
 				this.form.content = arr[1]
 				let address = arr[0].split('/')
@@ -109,7 +110,7 @@ export default class viewNoticeModal extends wepy.component {
 				this.form.detailAddress = address[1]
 				this.$apply()
 			}
-		},
+    },
 		isScaleModal (val) {
 			if (!val) {
 				this.isShow = true

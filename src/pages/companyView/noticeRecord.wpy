@@ -48,6 +48,36 @@
       padding: 0 20rpx;
       line-height: 40rpx;
       font-size: 32rpx;
+      .weui-flex__row {
+        width: 100%;
+      }
+      .weui-flex__info {
+        width: 85%;
+      }
+      .page_card_receipt_status {
+        font-size: 28rpx;
+        color: @weuiTextColorTips;
+
+        &.page_card_receipt_status1 {
+            color: @weuiColorPrimary;
+        }
+
+        &.page_card_receipt_status2 {
+            color: @weuiColorSuccess;
+        }
+
+        &.page_card_receipt_status3 {
+            color: @weuiColorWarn;
+        }
+
+        &.page_card_receipt_status4 {
+            color: @weuiColorError;
+        }
+
+        &.page_card_receipt_status5 {
+            color: @weuiColorPurple;
+        }
+    }
       .page_record_col {
         padding: 18rpx 20rpx;
       }
@@ -83,22 +113,22 @@
               <view class="page_record_row" @tap="viewInfo({{newitem}})">
                 <view class="page_bottom page_record_col weui-flex start">
                   <view wx:if="{{receiptType==2}}">
-                    <image src="https://a.rsd123.com/image/images/user/radio2.png" alt="" mode="aspectFill" class="radio-icon" @tap.stop="selectResume({{item}},{{index}},{{newitem}},{{ind}})" wx:if="{{newitem.disabled}}" />
-                    <image src="https://a.rsd123.com/image/images/user/radio1.png" wx:else @tap.stop="selectResume({{item}},{{index}},{{newitem}},{{ind}})" mode="aspectFill" class="radio-icon" />
+                    <image src="https://a.rsd123.com/image/images/user/radio2.png" alt="" mode="aspectFill" class="radio-icon" @tap.stop="selectResume({{item}},{{index}},{{newitem}},{{ind}})" wx:if="{{newitem.disabled&&!newitem.interview_status}}" />
+                    <image src="https://a.rsd123.com/image/images/user/radio1.png" wx:if="{{!newitem.disabled&&!newitem.interview_status}}"  @tap.stop="selectResume({{item}},{{index}},{{newitem}},{{ind}})" mode="aspectFill" class="radio-icon" />
                   </view>
-                  <view class="weui-flex between">
-                    <view>
+                  <view class="weui-flex between weui-flex__row">
+                    <view class="weui-flex__info">
                       <view>{{newitem.name}}</view>
                       <view class="my-text">
                         {{newitem.sex==2?'女':'男'}} {{newitem.age}} {{newitem.eduName}}
                       </view>
                     </view>
-                    <view wx:if="{{newitem.interview_status}}">{{newitem.interview_status==1?'已通过':newitem.interview_status==2?'未通过':'待定'}}</view>
+                    <view class="page_card_receipt_status {{'page_card_receipt_status' + newitem.interview_status}} weui-flex__item" wx:if="{{newitem.interview_status}}">{{newitem.interview_status==1?'已通过':newitem.interview_status==2?'未通过':'待定'}}</view>
                   </view>
                 </view>
               </view>
             </repeat>
-            <view wx:if="{{receiptType==2}}" class="checkAll weui-flex start">
+            <view wx:if="{{receiptType==2&&!item.type}}" class="checkAll weui-flex start">
               <image src="https://a.rsd123.com/image/images/user/radio2.png" alt="" mode="aspectFill" class="radio-icon" @tap.stop="selectResume({{item}},{{index}},0,-1)" wx:if="{{item.disabled}}" />
               <image src="https://a.rsd123.com/image/images/user/radio1.png" wx:else @tap.stop="selectResume({{item}},{{index}},0,-1)" mode="aspectFill" class="radio-icon" />
               <text>全选</text>
@@ -208,23 +238,24 @@ export default class noticeRecord extends wepy.page {
   }
   getCheckList () {
     $http(this.apiUrl, this.params).then(res => {
+      let arr = []
       if (this.receiptType == 2) {
-        this.list = this.checkAll(res.data.data, false)
+        arr = this.checkAll(res.data.data, false)
       } else {
-        this.list = res.data.data || []
+        arr = res.data.data || []
       }
-      this.list = getList(this.list, 'time')
-      console.log(this.list)
+      this.list = getList(arr, 'time')
       this.$apply()
     })
   }
   checkAll (list, status) {
     return list.map(item => {
-      let arr = item.data.filter(val => {
+      let arr = item.data.filter((val, index) => {
         if (!val.interview_status) {
           val.disabled = status
-          return val
         }
+        return val
+        console.log(val)
       })
       return Object.assign(item, { data: arr, disabled: false })
     })
@@ -242,22 +273,25 @@ export default class noticeRecord extends wepy.page {
       let arr = []
       if (val && childIndex != -1) {
         this.list[index].data[childIndex].disabled = !val.disabled
+        if (arr.indexOf(val.id) === -1) {
+        arr.push(val.id)
+      } else {
+        this.list[index].data[childIndex].disabled = !val.disabled
+          let ret = arr.findIndex(v => {
+            return v === val.id
+          })
+          arr.splice(ret, 1)
+        }
+        arr = Array.from(new Set(arr))
       } else {
         this.list[index].disabled = !item.disabled
+        if (!val.interview_status) {
+          arr.push(val.id)
+        }
         this.list[index].data.forEach(value => {
           value.disabled = this.list[index].disabled
         })
       }
-      if (arr.indexOf(val.id) === -1) {
-        arr.push(val.id)
-      } else {
-        this.list[index].data[childIndex].disabled = !val.disabled
-        let ret = arr.findIndex(v => {
-          return v === val.id
-        })
-        arr.splice(ret, 1)
-      }
-      arr = Array.from(new Set(arr))
       if (arr.length == item.data.length) {
         this.list[index].disabled = true
       } else {

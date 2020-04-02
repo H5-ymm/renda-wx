@@ -38,13 +38,13 @@
 				<view class="page_card">
 					<view class="page_card_row">
 						<view class="weui-flex between">
-							<view class="my-text  weui-flex__item">职位名称</view>
+							<view class="my-text weui-flex__item">职位名称</view>
 							<view class="my-text-right">{{formJob.name}}</view>
 						</view>
 					</view>
 					<view class="page_card_row">
 						<view class="weui-flex between">
-							<view class="my-text  weui-flex__item">招聘人数</view>
+							<view class="my-text weui-flex__item">招聘人数</view>
 							<view class="my-text-right">{{formJob.required_number}}人</view>
 						</view>
 					</view>

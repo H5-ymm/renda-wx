@@ -234,12 +234,12 @@ export default class my extends wepy.page {
               url: '/pages/my/userBind'
             }, {
               title: '我的消息',
-              icon: 'https://a.rsd123.com/image/images/icon6.png',
+              icon: '../../images/icon7.png',
               url: '/pages/message/index'
             }]
           }
         ]
-      } else if (this.usertype == 2) {
+      } else {
         arr = [
           {
             child: [
@@ -261,18 +261,6 @@ export default class my extends wepy.page {
               icon: 'https://a.rsd123.com/image/images/icon6.png',
               url: '/pages/my/userBind'
             }]
-          }
-        ]
-      } else {
-        arr = [
-          {
-            child: [
-              {
-                title: '个人简历',
-                icon: 'https://a.rsd123.com/image/images/icon1.png',
-                url: '/pages/my/companyInfo'
-              }
-            ]
           }
         ]
       }
@@ -297,10 +285,12 @@ export default class my extends wepy.page {
     $http('/company/selectCompanyInfo', { uid: this.uid }).then(res => {
       let data = res.data || {}
       this.userInfo.user_name = data.com_name
-      if (data.logo_url.indexOf('http') > -1) {
-        this.head_img = data.logo_url
-      } else {
-        this.head_img = getImgUrl(data.logo_url)
+      if (data.logo_url) {
+        if ( data.logo_url.indexOf('http') > -1) {
+          this.head_img = data.logo_url
+        } else {
+          this.head_img = getImgUrl(data.logo_url)
+        }
       }
       this.$apply()
       wx.setStorageSync('userInfo', JSON.stringify(data))

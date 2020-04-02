@@ -64,11 +64,11 @@
 					<view class="weui-flex end page_card_end">
 						<view class="page_card_col">
 							<view wx:if="{{isShowBtn}}" class="page_card_status-resume">
-								<view class="page_card_status-item weui-flex between" wx:if="{{(receiptType==1&&!item.status)||(receiptType==2&&(!item.interview_status))||(receiptType==3&&!item.entry_status)}}">
-									<button class="weui-btn_cell weui-btn_primary {{item.view_type==2?'weui-btn_cell1':''}} " @tap.stop="handleResume({{item}},1)">
-										{{item.view_type==1?text:'视频面试'}}
+								<view class="page_card_status-item weui-flex between" wx:if="{{(receiptType==1&&!item.status)||(receiptType==2&&!item.interview_status)||(receiptType==3&&!item.entry_status)}}">
+									<button class="weui-btn_cell weui-btn_primary {{item.view_type==2&&!item.is_item&&receiptType!=3?'weui-btn_cell1':'weui-flex__item'}}" @tap.stop="handleResume({{item}},1)">
+										{{item.view_type==1||(receiptType===1&&!item.is_item) ||receiptType===3?text:'视频面试'}}
 									</button>
-									<button wx:if="{{item.view_type==1}}" class="weui-btn_cell weui-flex__item weui-btn_primary_plain" @tap.stop="handleResume({{item}},2)">
+									<button class="weui-btn_cell weui-flex__item weui-btn_primary_plain" wx:if="{{item.view_type!=2||(!item.entry_status&&receiptType==3)}}" @tap.stop="handleResume({{item}},2)">
 										{{receiptType===1?'拒绝':receiptType===2?'未通过':'未入职'}}
 									</button>
 								</view>
@@ -80,7 +80,7 @@
 								</view>
 							</view>
 							<view wx:if="{{item.interview_status!=5}}">
-								<view class="page_card_time" wx:if="{{item.is_time||viewType==1||receiptType>0}}">{{item.addtime}}</view>
+								<view class="page_card_time" wx:if="{{item.is_time||type==1||receiptType>0}}">{{item.addtime}}</view>
 								<view class="page_card_time page_card_time1" wx:else>未设置视频面试</view>
 							</view>
 							<view class="page_card_time page_card_time1" wx:else>面试待定</view>
@@ -113,18 +113,19 @@ export default class companyResumeList extends wepy.component {
 		text: '',
 		isShowBtn: true,
 		resumeList: [],
-		viewType: 1
+    type: '1',
+    statusObj: {}
 	}
 	onLoad () {
 		this.getText(this.receiptType)
-		this.viewType = wx.getStorageSync('rendaViewType')
-		let statusObj = JSON.parse(wx.getStorageSync('statusObj'))
-		if (this.receiptType === 2 && !statusObj.view_time && this.viewType == 1) {
+		// this.viewType = wx.getStorageSync('rendaViewType')
+		this.statusObj = JSON.parse(wx.getStorageSync('statusObj'))
+		if (this.receiptType === 2 && !this.statusObj.view_time && this.type == 1) {
 			this.isShowBtn = false
 		}
-		if (this.receiptType === 3 && !statusObj.entry_time && statusObj.interview_status == 1) {
+		if (this.receiptType === 3 && !this.statusObj.entry_time && this.statusObj.interview_status == 1 && this.type == 1) {
 			this.isShowBtn = false
-		}
+    }
 		this.$apply()
 	}
 	getText (val) {
@@ -145,9 +146,24 @@ export default class companyResumeList extends wepy.component {
 		list (val) {
 			if (val) {
 				this.resumeList = val
-				console.log(this.resumeList)
 				this.$apply()
 			}
+    },
+    viewType(val){
+		  if (val) {
+        this.type = val
+        if (this.receiptType === 2 && !this.statusObj.view_time && val == 1) {
+          this.isShowBtn = false
+        } else {
+          this.isShowBtn = true
+        }
+        if (this.receiptType === 3 && !this.statusObj.entry_time && this.statusObj.interview_status == 1 && val == 1) {
+          this.isShowBtn = false
+        } else {
+          this.isShowBtn = true
+        }
+      }
+			this.$apply()
 		}
 	}
 	methods = {
@@ -158,16 +174,16 @@ export default class companyResumeList extends wepy.component {
 				resume_id: item.resume_id,
 				status
 			}
-			if (item.view_type == 1) {
-				this.$emit('handleResume', query)
+			console.log(item.is_time + '设置成功了吗')
+			if (item.view_type == 1 || (!item.is_time&&this.receiptType === 1)) {
+        this.$emit('handleResume', query)
 			} else {
-				console.log(item.room_num)
 				query.room_num = item.room_num
 				this.$emit('handleResumeVideo', query)
 			}
 		},
 		viewDetail (item) {
-			this.$emit('viewDetail', item.id)
+			this.$emit('viewDetail', item.resume_id)
 		},
 		selectResume (item, index) {
 			let arr = []
@@ -195,7 +211,7 @@ export default class companyResumeList extends wepy.component {
 			arr1 = Array.from(new Set(arr1))
 			let params = {
 				id: arr,
-				resume_id: arr2
+				resume_id: arr1
 			}
 			this.$emit('selectResume', params)
 		}

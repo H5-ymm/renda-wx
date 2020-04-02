@@ -57,7 +57,11 @@ export default class viewResult extends wepy.page {
 	}
 	auditResumeRecommend (params) {
 		$http('/videointerview/videoInterviewEditStatus', params).then(res => {
-			this.getCheckList()
+			if(res.data) {
+				this.getCheckList()
+		    } else {
+				wxToast('操作失败')
+			}
 		})
 	}
 	getCheckList () {

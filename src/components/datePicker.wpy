@@ -29,6 +29,9 @@ import wepy from 'wepy'
 import $moment from 'moment'
 import { wxToast } from '@/util.js'
 export default class datePicker extends wepy.component {
+	props = {
+		date: String
+	}
 	data = {
 		dateValue: '请选择日期',
 		timeValue: '请选择时间',
@@ -51,6 +54,13 @@ export default class datePicker extends wepy.component {
 				date = date.substr(0, 10)
 				this.$emit('setDate', date)
 				this.viewType = 1
+			} 
+		},
+		date(val) {
+			if(val) {
+				this.dateValue = $moment(val).format('YYYY-MM-DD')
+				this.timeValue = $moment(val).format('HH:ss')
+				this.$apply()
 			}
 		}
 	}

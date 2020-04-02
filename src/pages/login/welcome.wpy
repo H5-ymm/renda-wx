@@ -66,13 +66,12 @@ export default class Welcome extends wepy.page {
     teamId: '',
     rendaUidQrcode: '',
     uid: '',
-    isLoginOut: false
+    isLoginOut: false,
+    isHandleBtn: false
   }
   onLoad (options) {
     this.rendaUidQrcode = wx.getStorageSync('rendaUidQrcode') || this.$parent.globalData.rendaUidQrcode
-    console.log(this.rendaUidQrcode)
     this.teamId = wx.getStorageSync('rendaUserTeamId') || this.$parent.globalData.teamId
-    console.log(this.teamId)
     if (this.rendaUidQrcode && this.teamId) {
       this.isLoginOut = false
       this.isInviteUser = true
@@ -162,6 +161,9 @@ export default class Welcome extends wepy.page {
       if (error && error.code) {
         this.code = error.code
         this.isView = false
+        if (this.code == 6100 && this.authorize && this.isHandleBtn && this.isRead) {
+          this.isLoginModal = false
+        }
         if (this.code === 6100 && this.authorize && this.isRead && this.isLoginOut) {
           this.isLoginModal = false
         }
@@ -315,7 +317,6 @@ export default class Welcome extends wepy.page {
     getUserInfo (e) {
       // 没有阅读协议
       if (!this.isRead) return
-      this.$apply()
       if (this.code === 6100 && this.teamId != '') {
         this.isLoginModal = !this.isLoginModal
         this.$apply()
@@ -327,6 +328,7 @@ export default class Welcome extends wepy.page {
       }
       this.userInfo = e.detail.userInfo
       if (this.userInfo) {
+        this.isHandleBtn = true
         let params = {
           head_img: this.userInfo.avatarUrl,
           address: this.userInfo.province + this.userInfo.city,

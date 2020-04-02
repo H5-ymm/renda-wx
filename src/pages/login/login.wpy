@@ -61,7 +61,8 @@ export default class Login extends wepy.page {
     },
     auth_time: 60, // 倒计时
     sendAuthCode: true, // 控制
-    auth_timetimer: null
+    auth_timetimer: null,
+    openid: ''
   }
   computed = {
     checked () {
@@ -104,8 +105,7 @@ export default class Login extends wepy.page {
   login () {
     wx.removeStorageSync('auth_time')
     wx.removeStorageSync('sendAuthCode')
-    let openid = wx.getStorageSync('rendaOpenId') || this.$parent.globalData.openId
-    let params = Object.assign(this.form, { openid })
+    let params = Object.assign(this.form, { openid: this.openid })
     $http('/login/is_register_manu', params).then(res => {
       this.checkRouterView(res.data)
     }).catch(error => {
@@ -129,6 +129,8 @@ export default class Login extends wepy.page {
       clearInterval(this.auth_timetimer)
       this.getTime()
     }
+    this.openid = this.$parent.getOpenId()
+    console.log(this.openid)
     this.$apply()
   }
   onShow () {

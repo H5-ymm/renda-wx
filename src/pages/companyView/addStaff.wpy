@@ -88,7 +88,7 @@
         <view class="page_card_row">
           <view class="weui-flex between">
             <view class="my-text  weui-flex__item {{form.entry_status!=2?'my-text-require':''}}">岗位名称</view>
-            <input class="weui-input" data-name="post" placeholder-class="placeholder" disabled="{{form.entry_status!=1&&id}}" value="{{form.post}}" @input="changeInput" placeholder="请输入岗位名称" />
+            <input class="weui-input" data-name="post" placeholder-class="placeholder" disabled="{{form.entry_status!=1&&id}}" value="{{form.post||form.jobName}}" @input="changeInput" placeholder="请输入岗位名称" />
           </view>
         </view>
         <view class="page_card_row">

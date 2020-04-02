@@ -36,7 +36,7 @@
   .message-col-2 {
     line-height: 50rpx;
     margin-left: 20rpx;
-    padding: 12rpx 0;
+    padding: 14rpx 0;
     .message-col-small {
       font-size: 26rpx;
       color: #888888;
@@ -50,15 +50,15 @@
 <template>
 	<view class="detail-view message-view">
 		<view class="page_margin view-content">
-			<scroll-view scroll-y="true" style="height:100%" @scrolltolower="searchScrollLower">
+			<scroll-view scroll-y="true" style="height:100%" wx:if="{{list.length}}" @scrolltolower="searchScrollLower">
 				<repeat wx:for="{{list}}" wx:key="index">
 					<view class="weui-flex start message-row" @tap="viewMessage({{item}})">
 						<view class="message-col-1">
-							<!-- <view></view> -->
 							<image mode="scaleToFill" src="../../images/header.png" class="message-col-header" wx-if="{{!item.header_img&&usertype==1}}" />
 							<image mode="scaleToFill" src="{{item.header_img}}" class="message-col-header" wx-if="{{item.header_img}}" />
 							<image mode="scaleToFill" src="{{item.logo_url}}" class="message-col-header" wx:if="{{item.logo_url}}" />
-							<view class="bage" wx:if="{{item.person_read||item.readnum}}">{{usertype==1?item.person_read:item.readnum}}</view>
+							<image mode="scaleToFill" src="https://a.rsd123.com/image/images/default1.png" class="message-col-header" wx:if="{{!item.logo_url&&usertype!=1}}"/>
+							<view class="bage" wx:if="{{item.person_read||item.com_read}}">{{usertype==1?item.com_read:item.person_read}}</view>
 						</view>
 						<view class="weui-flex between-start wrap message-col-2 weui-flex__item page_bottom">
 							<view>
@@ -70,6 +70,10 @@
 					</view>
 				</repeat>
 			</scroll-view>
+			<view wx:else class="page_list" >
+				<image src="https://a.rsd123.com/image/images/noBg.png" class="page_noData" mode="scaleToFill" />
+				<view class="page_noData_text">暂无消息！</view>
+		   </view>
 		</view>
 		<tabBarBottom :tabBarIndex.sync="tabBarIndex" :usertype.sync="usertype" wx:if="{{usertype==1}}"></tabBarBottom>
 	</view>
@@ -113,7 +117,7 @@ export default class message extends wepy.page {
 		}
 		this.$apply()
 		this.params.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
-		// this.params.uid = 15
+		// this.params.uid = 4
 	}
 	onShow () {
 		this.getMsglist()
@@ -125,9 +129,6 @@ export default class message extends wepy.page {
 				if (item.logo_url) {
 					item.logo_url = getImgUrl(item.logo_url)
 				}
-				// if (item.header_img) {
-				// 	item.header_img = getImgUrl(item.header_img)
-				// }
 			})
 			this.count = res.data.count
 			this.$apply()

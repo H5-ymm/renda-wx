@@ -49,10 +49,10 @@
 		</view>
 		<view class="page_margin view-detail">
 			<scroll-view scroll-y="true" style="height:100%">
-				<view class="video-tip" wx:if="{{isBatch&&viewType==2}}">提示：每次视频面试最多邀请8人 建议：根据实际情况设置面试时间</view>
-				<view class="video-switch weui-flex between" wx:if="{{!isBatch}}">
-					<view class="video-switch-col1 {{viewType==1?'video-switch-active':''}}" @tap="switchView(1)">正常面试</view>
-					<view class="video-switch-col1 video-switch-col2 {{viewType==2?'video-switch-active':''}}" @tap="switchView(2)">视频面试</view>
+				<view class="video-tip" wx:if="{{isBatch&&viewType==2&&receiptType!=3}}">提示：每次视频面试最多邀请8人 建议：根据实际情况设置面试时间</view>
+				<view class="video-switch weui-flex between" wx:if="{{!isBatch&&receiptType!=3}}">
+					<view class="video-switch-col1 {{viewType==1?'video-switch-active':''}}" @tap="switchView('1')">正常面试</view>
+					<view class="video-switch-col1 video-switch-col2 {{viewType==2?'video-switch-active':''}}" @tap="switchView('2')">视频面试</view>
 				</view>
 				<companyResumeList :list.sync="newList" @handleResumeVideo="handleResumeVideo" :viewType.sync="viewType" :receiptType.sync="receiptType" :isBatch.sync="isBatch" :isCheck.sync="isCheck" @viewDetail="viewDetail" @handleResume="handleResume" @selectResume="selectResume">
 				</companyResumeList>
@@ -61,13 +61,13 @@
 		<view wx:if="{{list.length}}">
 			<view wx:if="{{isCheckBtn || (check&&!isShowOverBtn)}}" class="create-btn footer-box">
 				<view class="weui-flex center footer-box-item" wx:if="{{!isBatch}}">
-					<view class="weui-flex__item item-btn weui-flex center" @tap="batchHandle" wx:if="{{!check||!statusObj.is_video}}">
+					<view class="weui-flex__item item-btn weui-flex center" @tap="batchHandle" wx:if="{{(!check||!statusObj.is_video&&viewType==2)&&receiptType<3}}">
 						<!-- 批量操作 -->
 						{{viewType==1?'批量正常面试':'批量视频面试'}}
 					</view>
-					<!-- <view wx:if="{{check&&(statusObj.interview_status==1||statusObj.entry_status==1)}}" class="weui-flex__item weui-text_primary item-btn weui-flex center" @tap="overView">
-						{{receiptType===2?'提前结束面试':'提前结束入职'}}
-					</view> -->
+					<view wx:if="{{receiptType==3&&!check}}" class="weui-flex__item item-btn weui-flex center" @tap="batchHandle">
+						批量操作
+					</view>
 					<view wx:if="{{statusObj.view_time||statusObj.is_video}}" class="weui-flex__item footer-box-item weui-flex center item-btn" @tap="viewNotice">
 						<text wx:if="{{receiptType==1&&viewType==1}}">查看面试通知</text>
 						<text wx:if="{{receiptType==1&&viewType==2}}">通知记录</text>
@@ -80,7 +80,7 @@
 						<image src="https://a.rsd123.com/image/images/user/radio1.png" wx:else @tap="selectResumeAll({{isCheck}})" mode="aspectFill" class="radio-icon" />
 						全选
 					</view>
-					<view class="page_card_status-resume weui-flex center item-col" wx:if="{{!statusObj.invoice_status}}">
+					<view class="page_card_status-resume weui-flex center item-col" wx:if="{{!statusObj.invoice_status||viewType==1}}">
 						<button class="weui-btn_cell  weui-flex__item weui-btn_primary" @tap="setResumeStatus(1)">
 							通过
 						</button>
@@ -96,11 +96,11 @@
 				</view>
 			</view>
 			<view wx:if="{{!isCheckBtn&&check}}" class="weui-flex between only-btn">
-				<view wx:if="{{isShowOverBtn}}" class="weui-flex center weui-flex__item only-btn-item">
+				<!-- <view wx:if="{{isShowOverBtn}}" class="weui-flex center weui-flex__item only-btn-item">
 					<button class="weui-btn_cell  weui-flex__item weui-btn_primary" @tap="overView">
 						{{receiptType===1?'提前结束面试':'提前结束入职'}}
 					</button>
-				</view>
+				</view> -->
 				<view wx:if="{{receiptType==2&&statusObj.interview_status>=3&&statusObj.entry_status}}" class="weui-flex weui-flex__item center only-btn-item">
 					<button class="weui-btn_cell  weui-flex__item weui-btn_primary_plain" @tap="viewEntry">
 						查看入职
@@ -108,9 +108,9 @@
 				</view>
 			</view>
 		</view>
-	</view>
-	<noticeModal :isScaleModal.sync="isNoticeModal" :height.sync="modalHeight" @setAllTime="setAllTime" :title.sync="title" :type.sync="viewType"></noticeModal>
-	<viewNoticeModal :isScaleModal.sync="isModal" :height.sync="modalHeight" :timeInfo.sync="timeInfo" :title.sync="title"></viewNoticeModal>
+	 <!-- </view> -->
+		<noticeModal :isScaleModal.sync="isNoticeModal" :height.sync="modalHeight" @setAllTime="setAllTime" :timeInfo.sync="timeInfo" :title.sync="title" :type.sync="viewType"></noticeModal>
+		<viewNoticeModal :isScaleModal.sync="isModal" :height.sync="modalHeight" :timeInfo.sync="timeInfo" :title.sync="title"></viewNoticeModal>
 	</view>
 </template>
 <script>
@@ -172,23 +172,27 @@ export default class checkResumeList extends wepy.page {
 		checkUrlAPI () {
 			return this.receiptType === 1 ? '/company/auditResumeRecommend' : this.receiptType === 2 ? '/company/auditInterviewResumeRecommend' : '/company/updateEntryUser'
 		},
+		timeUrlApi () {
+			return this.receiptType === 1 ? '/company/editInterviewTime' : '/company/editEntryTime'
+		},
 		overViewAndEntry () {
 			return this.receiptType === 1 ? '/company/endInterview' : '/company/endEntry'
 		},
 		isCheckBtn () {
 			return (this.receiptType === 1 && this.statusObj.invoice_status < 2) ||
-				(this.receiptType === 2 && this.statusObj.interview_status < 4) ||
+				(this.receiptType === 2 && this.statusObj.interview_status < 5) ||
 				(this.receiptType === 3 && this.statusObj.entry_status < 2)
 		},
 		isShowOverBtn () {
 			return (this.statusObj.view_time && this.statusObj.interview_status == 1 && this.check) ||
-				(this.statusObj.entry_time && this.statusObj.entry_status == 1 && this.check)
+				(this.statusObj.entry_time && (this.statusObj.entry_status == 1 || this.statusObj.entry_status >2) && this.check)
 		}
 	}
 	onLoad (options) {
 		console.log(options)
 		this.receiptType = Number(options.query) || Number(wx.getStorageSync('receiptType'))
 		this.viewType = options.setTime
+		console.log(this.viewType + '面试类型')
 		this.job_id = options.job_id
 		if (this.receiptType === 1) {
 			this.title = '面试'
@@ -230,16 +234,28 @@ export default class checkResumeList extends wepy.page {
 			this.$apply()
 		},
 		handleResume: data => {
-			data.type = this.viewType
+			data.type = this.viewType ? this.viewType : '1'
+			console.log(data.status == 1 && this.viewType == 2 +'判断')
 			if (data.status == 1 && this.viewType == 2) {
 				this.modalHeight = 750
-				this.checkObj = data
+				this.checkObj = {
+					status: data.status,
+					id: data.id,
+					type: data.type,
+					uid: wx.getStorageSync('rendaUid')
+				}
 				this.id = data.id
 				this.resume_id = data.resume_id
 				this.isNoticeModal = !this.isNoticeModal
 				this.$apply()
 			} else {
-				this.auditResumeRecommend(data)
+				if (!this.statusObj.view_time&&this.receiptType!=3) {
+					this.isNoticeModal = !this.isNoticeModal
+					this.$apply()
+					return
+				} else {
+					this.auditResumeRecommend(data)
+				}
 			}
 		},
 		handleResumeVideo: data => {
@@ -247,22 +263,29 @@ export default class checkResumeList extends wepy.page {
 				room_name: wx.getStorageSync('phone'),
 				room_num: data.room_num
 			}
-			wxShowModal('', `确定视频面试吗?`).then(res => {
+      let params1 = {
+        jobId: this.job_id,
+        time: data.room_num
+      }
+      wx.setStorageSync('viewList', JSON.stringify(params1))
+			let text = this.viewType==1 ? '正常':'视频'
+			wxShowModal('', `确定${text}面试吗?`).then(res => {
 				this.getuserSig(parasm)
+				// this.auditResumeRecommend(this.checkObj, params)
 			}).catch(() => {
 				console.log('取消')
 			})
 		},
 		setAllTime: data => {
-			let params = Object.assign(data, { uid: this.params.uid, job_id: this.job_id, resume_list: this.resume_id, type: 1 })
-			if (this.viewType == 1) {
-				this.auditResumeRecommend(params)
+			let params = Object.assign(data, { uid: this.params.uid, job_id: this.job_id})
+			if (this.viewType != 2) {
+				this.setDate(params)
 			} else {
+				params.resume_list = this.resume_id
 				this.setVideoNotice(params)
 			}
 		},
 		selectResume: data => {
-			console.log(data)
 			if (this.viewType == 2 && data.id.length > 8) {
 				return wxToast('视频面试最多选择8个简历')
 			}
@@ -281,6 +304,16 @@ export default class checkResumeList extends wepy.page {
 				url: '/pages/companyView/checkResumeDetail' + query
 			})
 		}
+	}
+	setDate (params) {
+		$http(this.timeUrlApi, params).then(res => {
+			if (res.data) {
+				this.isNoticeModal = true
+				this.$apply()
+			} else {
+				wxToast('设置时间失败')
+			}
+		})
 	}
 	setVideoNotice (params) {
 		$http('/company/setVideoInterviewTime', params).then(res => {
@@ -320,6 +353,8 @@ export default class checkResumeList extends wepy.page {
 		})
 	}
 	auditResumeRecommend (params, obj) {
+		params.type = this.viewType ? this.viewType : 1
+		console.log(params)
 		$http(this.checkUrlAPI, params).then(res => {
 			if (res.data) {
 				if (obj) {
@@ -375,20 +410,24 @@ export default class checkResumeList extends wepy.page {
 		switchView (index) {
 			this.viewType = index
 			this.params.type = this.viewType
-			this.getCheckList()
 			this.$apply()
+			this.getCheckList()
 		},
 		batchHandle () {
 			if (this.receiptType != 2) {
+				if (this.viewType==1&&!this.statusObj.view_time) {
+					this.isNoticeModal = !this.isNoticeModal
+					return
+				}
 				this.isBatch = true
 				this.list = this.checkAll(this.list, false)
 				this.$apply()
 			} else {
 				wxNavigateTo('/pages/companyView/noticeRecord?jobId=' + this.job_id)
 			}
-		},
+    },
 		viewNotice () {
-			if (this.viewType == 1) {
+			if (this.viewType !=2 ||(this.receiptType==2&&this.statusObj.is_video)) {
 				this.viewTimeInfo()
 			} else {
 				wxNavigateTo('/pages/companyView/noticeRecord?jobId=' + this.job_id)
@@ -457,7 +496,7 @@ export default class checkResumeList extends wepy.page {
 	}
 	checkAll (list, status) {
 		return list.filter(item => {
-			if (!item.status || !item.is_time) {
+			if (!item.status || (!item.is_time&&this.viewType==2)) {
 				item.disabled = status
 				return item
 			}
@@ -508,16 +547,24 @@ export default class checkResumeList extends wepy.page {
 			if (this.receiptType === 1) {
 				query = {
 					time: res.data.view_time,
-					content: res.data.content
+					content: res.data.content,
+					provinceid: res.data.interview_provinceid,
+					cityid: res.data.interview_cityid,
+					three_cityid:  res.data.interview_three_cityid
 				}
 			} else {
 				query = {
 					time: res.data.entry_time,
-					content: res.data.entry_comtent
+					content: res.data.entry_comtent,
+					provinceid: res.data.entry_provinceid,
+					cityid: res.data.entry_cityid,
+					three_cityid: res.data.entry_three_cityid
 				}
 			}
+			this.modalHeight = 930
 			this.timeInfo = query
-			this.isModal = !this.isModal
+			this.viewType = '1'
+			this.isNoticeModal = !this.isNoticeModal
 			this.$apply()
 		})
 	}

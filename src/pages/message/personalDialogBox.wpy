@@ -20,7 +20,7 @@
     width: 94rpx;
     height: 94rpx;
     border-radius: 50%;
-    background: #1890ff;
+    // background: #1890ff;
     position: relative;
   }
   .dialogBox-col {
@@ -67,7 +67,13 @@
           border-bottom: 16rpx solid rgba(0, 0, 0, 0);
           border-left: 16rpx solid rgba(0, 0, 0, 0);
         }
-      }
+	  }
+	   &.dialogBox-content-left1 {
+		width: 70%;
+		 &::before {
+			top: 48%;
+		 }
+	  }
     }
     .message-col-small {
       font-size: 26rpx;
@@ -107,15 +113,10 @@
 					<view>
 						<view class="dialogBox-row-time">{{messageDetail.addtime}}</view>
 						<view class="weui-flex start dialogBox-col weui-flex__item">
-							<image mode="scaleToFill" src="{{messageDetail.logo_url}}" class="dialogBox-col-header" />
-							<view class="dialogBox-content dialogBox-content-left">
-								<text decode="{{true}}">
-									联系电话：{{messageDetail.com_name}}\n
-									您好，你已预约视频面试，通知：{{messageDetail.content}},\n
-									面试职位:{{messageDetail.job_name}}\n
-									面试时间 {{messageDetail.view_time}}\n
-									联系电话：{{messageDetail.link_tel}}
-								</text>
+							<image mode="scaleToFill" src="{{messageDetail.header_img}}" class="dialogBox-col-header" wx:if="{{messageDetail.header_img}}"/>
+							<image mode="scaleToFill" src="https://a.rsd123.com/image/images/default1.png" class="dialogBox-col-header" wx:else/>
+							<view class="dialogBox-content dialogBox-content-left dialogBox-content-left1">
+								<text decode="{{true}}">公司：{{messageDetail.com_name}}\n您好，你已预约视频面试，通知：{{messageDetail.content}},\n面试职位:{{messageDetail.job_name}}\n面试时间 {{messageDetail.view_time}}\n联系电话：{{messageDetail.link_tel}}</text>
 							</view>
 						</view>
 						<view class="dialogBox-btn weui-flex between">
@@ -123,32 +124,26 @@
 							<button class="weui-btn_cell weui-btn_default" @tap="videoView">进入面试</button>
 						</view>
 					</view>
-					<!-- <view>
-						<view class="dialogBox-row-time">2019-10-10</view>
+					<view wx:if="{{isView || messageDetail.status}}">
 						<view class="weui-flex start dialogBox-col weui-flex__item">
-							<view class="dialogBox-col-header"></view>
-							<view class="dialogBox-content weui-flex between dialogBox-content-left" @tap="videoView">
-								<image mode="scaleToFill" src="../../images/video.png" class="dialogBox_icon" /> 视频面试未接听</view>
-						</view>
-					</view> -->
-					<view>
-						<view class="weui-flex start dialogBox-col weui-flex__item">
-							<view class="dialogBox-col-header"></view>
+							<image mode="scaleToFill" src="{{messageDetail.header_img}}" class="dialogBox-col-header" wx:if="{{messageDetail.header_img}}"/>
+							<image mode="scaleToFill" src="https://a.rsd123.com/image/images/default1.png" class="dialogBox-col-header" wx:else/>
 							<view class="dialogBox-content dialogBox-content-left">您已退出面试</view>
 						</view>
-						<view class="dialogBox-btn weui-flex between">
-							<button class="weui-btn_cell weui-btn_primary">重新进入</button>
+						<view class="dialogBox-btn weui-flex between" wx:if="{{isView || messageDetail.status}}">
+							<button class="weui-btn_cell weui-btn_primary" @tap="videoView">重新进入</button>
 							<button class="weui-btn_cell weui-btn_primary_plain">已完成面试</button>
 						</view>
 					</view>
 					<view class="weui-flex end wrap dialogBox-col weui-flex__item" wx:if="{{isView}}">
-						<view class="dialogBox-col-header"></view>
 						<view class="dialogBox-content dialogBox-content-right">已完成面试</view>
+						<image mode="scaleToFill" src="{{messageDetail.logo_url}}" class="dialogBox-col-header" wx:if="{{messageDetail.logo_url}}"/>
+						<image mode="scaleToFill" src="https://a.rsd123.com/image/images/default1.png" class="dialogBox-col-header" wx:else/>
 					</view>
 				</view>
 			</scroll-view>
 		</view>
-		<view class="weui-cell_btn weui-flex between register-btn" wx:if="{{!isView}}">
+		<view class="weui-cell_btn weui-flex between register-btn" wx:if="{{!isView || messageDetail.status}}">
 			<button class="weui-btn_cell weui-flex__item weui-btn_primary" @tap="videoView">视频面试</button>
 		</view>
 	</view>
@@ -157,7 +152,7 @@
 import wepy from 'wepy'
 import { $http } from '@/http.js'
 import $moment from 'moment'
-import { getImgUrl, wxShowModal } from '@/util.js'
+import { getImgUrl, wxShowModal, wxNavigateTo } from '@/util.js'
 import tabBarBottom from '@/components/tabBarBottom'
 export default class personalDialogBox extends wepy.page {
 	components = {
@@ -182,6 +177,7 @@ export default class personalDialogBox extends wepy.page {
 		navigationBarTitleText: '消息'
 	}
 	onLoad (options) {
+		wx.setStorageSync('isView', false)
 		this.params.uid = options.query
 		this.params.id = options.query
 	}
@@ -191,6 +187,8 @@ export default class personalDialogBox extends wepy.page {
 		} else {
 			this.isView = false
 		}
+		console.log(this.isView)
+		this.$apply()
 		this.getMsgDetail()
 	}
 	getuserSig (params) {
@@ -228,7 +226,9 @@ export default class personalDialogBox extends wepy.page {
 		$http('/personinfo/getperson_msgdetail', this.params).then(res => {
 			console.log(res)
 			this.messageDetail = res.data
-			this.messageDetail.logo_url = getImgUrl(this.messageDetail.logo_url)
+			if (this.messageDetail.logo_url) {
+        this.messageDetail.logo_url = getImgUrl(this.messageDetail.logo_url)
+			}
 			this.messageDetail.view_time = $moment(this.messageDetail.view_time).format('YYYY/MM/DD HH:mm')
 			this.messageDetail.addtime = $moment(this.messageDetail.addtime).format('YYYY-MM-DD HH:mm')
 			this.$apply()
@@ -241,13 +241,18 @@ export default class personalDialogBox extends wepy.page {
 				room_num: this.messageDetail.room_num
 			}
 			console.log(wx.getStorageSync('phone') + '手机号')
-			wxShowModal('', `确定视频面试吗?`).then(res => {
+			wxShowModal('视频面试', `请确认已与企业电话沟通时间，未沟通可能造成视频面试失败?`).then(res => {
 				this.getuserSig(params)
 			}).catch(() => {
 				console.log('取消')
 			})
 			// this.isView = true
 			// this.$apply()
+		},
+		recommend() {
+			wx.navigateTo ({
+				url: '/pages/companyView/viewJob?query=' + this.messageDetail.job_id + '&room_num=' + this.messageDetail.room_num
+			})
 		}
 	}
 }

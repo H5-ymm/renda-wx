@@ -11,7 +11,8 @@
     .weui-textarea {
       text-align: left;
       line-height: 32rpx;
-      margin-top: 10rpx;
+			margin-top: 10rpx;
+			display: block;
     }
   }
   .register-btn {
@@ -29,9 +30,14 @@
 		<view class="weui-cell_btn weui-flex between register-btn">
 			<button
 				class="weui-btn_cell weui-btn_primary {{form.job_status==1?'weui-btn_primary_plain':''}}"
-				wx:if="{{form.status==2}}"
+				wx:if="{{form.status==2&&!room_num}}"
 				@tap="handleShelf"
 			>{{form.job_status==1?'下架':'上架'}}</button>
+			<button
+				class="weui-btn_cell weui-btn_primary"
+				wx:if="{{room_num}}"
+				@tap="entryVideo"
+			>进入面试</button>
 			<button
 				class="weui-btn_cell weui-btn_primary_plain"
 				wx:if="{{form.status!=2||form.job_status==2}}"
@@ -51,13 +57,18 @@ export default class viewJob extends wepy.page {
 	}
 	data = {
 		form: {},
-		id: ''
+		id: '',
+		room_num: ''
 	}
 	config = {
 		navigationBarTitleText: '发单详情'
 	}
 	onLoad(options) {
 		this.id = options.query
+		if (options.room_num) {
+			this.room_num = options.room_num
+		}
+		this.$apply()
 		this.getInvoiceDetail()
 	}
 	getInvoiceDetail() {
@@ -80,6 +91,36 @@ export default class viewJob extends wepy.page {
 			wxReLaunch('/pages/companyView/checkReceipt')
 		})
 	}
+	getuserSig (params) {
+		$http('/Tencentcloud/createQuanjian', { name: params.room_name }).then(res => {
+			params.userSig = res.data
+			wx.setStorageSync('viewList', '')
+			this.routerView(params)
+		})
+	}
+	routerView (params) {
+		console.log(params)
+		const url = `/pages/room/room?roomID=${params.room_num}` +
+			`&userSig=${params.userSig}` +
+			`&template=grid&debugMode=false&cloudenv=PRO` +
+			`&localVideo=true` +
+			`&localAudio=true` +
+			`&enableEarMonitor=false` +
+			`&enableAutoFocus=true` +
+			`&localMirror=auto` +
+			`&enableAgc=true` +
+			`&enableAns=true` +
+			`&encsmall=true` +
+			`&frontCamera=front` +
+			`&videoWidth=360` +
+			`&videoHeight=640` +
+			`&scene=rtc` +
+			`&userID=${params.room_name}` +
+			`&minBitrate=600&maxBitrate=900`
+		wx.navigateTo({
+			url: url
+		})
+	}
 	methods = {
 		handleShelf() {
 			let params = {
@@ -90,6 +131,17 @@ export default class viewJob extends wepy.page {
 			let text = this.form.job_status == 1 ? '下架' : '上架'
 			wxShowModal('', `确定${text}的申请单子`).then(res => {
 				this.setReceiptShelf(params)
+			}).catch(() => {
+				console.log('取消')
+			})
+		},
+		entryVideo() {
+			let params = {
+				room_name: wx.getStorageSync('phone'),
+				room_num: this.room_num
+			}
+	    wxShowModal('视频面试', `请确认已与企业电话沟通时间，未沟通可能造成视频面试失败?`).then(res => {
+				this.getuserSig(params)
 			}).catch(() => {
 				console.log('取消')
 			})

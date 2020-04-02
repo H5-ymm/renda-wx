@@ -53,7 +53,8 @@
       &.weui-textarea {
         height: 100rpx;
         line-height: 100rpx;
-        margin: 10rpx 0;
+				margin: 10rpx 0;
+				text-align: left;
       }
     }
   }
@@ -68,11 +69,11 @@
 				<view class="modal-view-box {{type==2?'modal-view-box1':''}}">
 					<view class="modal-row">
 						<text>{{title}}时间</text>
-						<datePicker @setDate="setDate"></datePicker>
+						<datePicker @setDate="setDate" :date.sync="time"></datePicker>
 					</view>
 					<view class="modal-row" wx:if="{{type==1}}">
 						<text>{{title}}地址</text>
-						<districtSelet @selectCityText="selectCityText" :disabled.sync="disabled" class="modal-col"></districtSelet>
+						<districtSelet @selectCityText="selectCityText" @selectCity="selectCity" :address.sync="addressList" :disabled.sync="disabled" class="modal-col"></districtSelet>
 						<view class="modal-col modal-col-input">
 							<input class="weui-input" placeholder-class="placeholder" data-name="address" value="{{form.address}}" @input="changeInput" placeholder="请输入详细地址" />
 						</view>
@@ -95,7 +96,7 @@
 		    </view>
         <view class="weui-cell_btn weui-flex between create-btn">
           <button class="weui-btn_cell weui-btn_primary_plain" @tap="handleClose">取消</button>
-					 <button class="weui-btn_cell weui-btn_primary" @tap="handleOk">确定</button>
+					<button class="weui-btn_cell weui-btn_primary" @tap="handleOk">{{timeInfo&&type==1?'修改':'确定'}}</button>
         </view>
       </view>
       <image src="https://a.rsd123.com/image/images/close.png" @tap="handleClose" class="close-icon" />
@@ -107,12 +108,14 @@
 import wepy from 'wepy'
 import datePicker from './datePicker'
 import districtSelet from './districtSelet'
+import $moment from 'moment'
 export default class noticeModal extends wepy.component {
 	props = {
 		isScaleModal: Boolean,
 		height: Number,
 		title: String,
-		type: Number
+		type: Number,
+		timeInfo: Object
 	}
 	components = {
 		datePicker: datePicker,
@@ -126,7 +129,10 @@ export default class noticeModal extends wepy.component {
 			time: ''
 		},
 		address: '',
-		disabled: true
+		disabled: true,
+		addressList: [],
+		time: '',
+		statusObj: {}
 	}
 	events = {
 		setDate: data => {
@@ -134,8 +140,16 @@ export default class noticeModal extends wepy.component {
 		},
 		selectCityText: data => {
 			this.address = data
+			console.log(	this.address )
+		},
+		selectCity: data => {
+			this.addressList = data
 		}
 	}
+	// onLoad() {
+	// 	this.statusObj = JSON.parse(wx.getStorageSync('statusObj'))
+	// 	this.$apply()
+	// }
 	methods = {
 		changeInput (e) {
 			let key = e.currentTarget.dataset.name
@@ -151,14 +165,20 @@ export default class noticeModal extends wepy.component {
 			this.$apply()
 			let params = {}
 			if (this.type == 1) {
+				let time = ''
+				console.log(this.form.time)
+				if (this.form.time.toString().indexOf('-') == -1) {
+					time = this.form.time
+				} else {
+					time = $moment(this.form.time).valueOf()+ ''
+					time = time.substr(0, 10)
+				}
 				params = {
-					time: this.form.time,
-					content:
-						this.address +
-						'/' +
-						this.form.address +
-						'&' +
-						this.form.content
+					time: time,
+					content: this.address +'/'+this.form.address+'&'+this.form.content,
+					provindeid: this.addressList[0],
+					cityid: this.addressList[1],
+					threecity: this.addressList[2]
 				}
 			} else {
 				params = {
@@ -173,6 +193,25 @@ export default class noticeModal extends wepy.component {
 		}
 	}
 	watch = {
+		timeInfo (val) {
+			if (val && val.content) {
+				if (val.time.toString().indexOf('-') == -1) {
+          this.form.time = $moment.unix(val.time).format('YYYY-MM-DD HH:mm')		
+				} else {
+			  	this.form.time = val.time
+				}
+				if (val.provinceid) {
+          this.addressList = [val.provinceid, val.cityid, val.three_cityid]
+				}
+				this.time = this.form.time 
+				let arr = val.content.split('&')
+				this.form.content = arr[1]
+				let address = arr[0].split('/')
+				this.address = address[0] + '/' + address[1] + '/' + address[2]
+				this.form.detailAddress = address[3]
+				this.$apply()
+			}
+    },
 		isScaleModal (val) {
 			if (!val) {
 				this.isShow = true

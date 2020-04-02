@@ -200,20 +200,9 @@ export default class extends wepy.app {
             user_name: res.userInfo.nickName
           }
           this.globalData.wxInfo = params
-          this.saveUser(res.userInfo.avatarUrl)
-          wx.setStorageSync('wxInfo', JSON.stringify(params))
         }
       })
     }
-  }
-  saveUser (head_img) {
-    let params = {
-      uid: this.globalData.uid,
-      head_img
-    }
-    $http('/userinfo/editUserInfo', saveUser).then(res => {
-      console.log(res)
-    })
   }
   globalData = {
     headerHeight: 0,
@@ -276,7 +265,6 @@ export default class extends wepy.app {
     wx.login({
       success (res) {
         if (res.code) {
-          console.log(res.code)
           $http('/Login/getopenid', { code: res.code }).then(res => {
             let data = JSON.parse(res.data)
             that.globalData.openid = data.openid

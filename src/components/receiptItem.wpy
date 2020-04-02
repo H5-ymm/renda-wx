@@ -30,10 +30,10 @@
 						{{!itemValue.invoice_status?'收集中':itemValue.invoice_status==1?'审核中':'审核结束'}}
 					</view>
 					<view wx:if="{{receiptType==2}}" class="page_card_receipt_status {{'page_card_receipt_status'+(!itemValue.interview_status?0:itemValue.interview_status==1?1:2)}}">
-						{{!itemValue.interview_status?'等待面试':itemValue.interview_status==1?'面试开始':'面试结束'}}
+						{{itemValue.interview_status==4?'面试结束':'面试开始'}}
 					</view>
 					<view wx:if="{{receiptType==3}}" class="page_card_receipt_status {{'page_card_receipt_status'+(!itemValue.entry_status?0:itemValue.entry_status==1?1:2)}}">
-						{{!itemValue.entry_status?'等待入职':itemValue.entry_status==1?'入职开始':'入职结束'}} </view>
+						{{itemValue.entry_status!=4?'入职开始':'入职结束'}} </view>
 					<!-- <view wx:if="{{receiptType==3&&itemValue.entry_status>1}}">
 							{{itemValue.entry_status==2?'入职结束':itemValue.entry_status==3?'审核入职':'审核结束'}}
 					</view> -->
