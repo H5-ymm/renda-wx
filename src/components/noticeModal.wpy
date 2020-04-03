@@ -48,16 +48,16 @@
     &.weui-textarea {
       width: 90%;
     }
-    .weui-input {
-      text-align: left;
-      &.weui-textarea {
-        height: 100rpx;
-        line-height: 100rpx;
-				margin: 10rpx 0;
-				text-align: left;
-      }
-    }
-  }
+	}
+	.weui-input {
+		text-align: left;
+		&.weui-textarea {
+			height: 100rpx;
+			line-height: 100rpx;
+			margin: 10rpx 0;
+			text-align: left;
+		}
+	}
 }
 </style>
 <template>

@@ -116,7 +116,7 @@
 							<image mode="scaleToFill" src="https://a.rsd123.com/image/images/default1.png" class="dialogBox-col-header" wx:else/>
 						</view>
 					</view>
-					<view class="weui-flex start dialogBox-col weui-flex__item" wx:if="{{isView}}">
+					<view class="weui-flex start dialogBox-col weui-flex__item" wx:if="{{isView||messageDetail.status}}">
 						<image mode="scaleToFill" src="{{messageDetail.header_img}}" class="dialogBox-col-header" wx:if="{{messageDetail.header_img}}"/>
 					    <image mode="scaleToFill" src="../../images/header.png" class="dialogBox-col-header" wx:else/>
 						<view class="dialogBox-content dialogBox-content-left">已完成面试</view>
@@ -129,7 +129,7 @@
 			<button class="weui-btn_cell weui-flex__item weui-btn_primary_plain" @tap="handleResume(1)">通过</button>
 			<button class="weui-btn_cell weui-flex__item weui-btn_primary_plain" @tap="handleResume(2)">未通过</button>
 		</view>
-		<view class="weui-cell_btn weui-flex between register-btn" wx:if="{{!isView}}">
+		<view class="weui-cell_btn weui-flex between register-btn" wx:if="{{!isView&&!messageDetail.status}}">
 			<button class="weui-btn_cell weui-flex__item weui-btn_primary" @tap="videoView">视频面试</button>
 		</view>
 	</view>
@@ -209,7 +209,9 @@ export default class dialogBox extends wepy.page {
 			console.log(res)
 			this.messageDetail = res.data
 			if (this.messageDetail.logo_url) {
-        this.messageDetail.logo_url = getImgUrl(this.messageDetail.logo_url)
+				if (this.messageDetail.logo_url.indexOf('http')==-1) {
+          this.messageDetail.logo_url = getImgUrl(this.messageDetail.logo_url)
+				}
 			}
 			this.messageDetail.view_time = $moment.unix(this.messageDetail.view_time).format('YYYY/MM/DD HH:mm')
 			this.$apply()
@@ -218,13 +220,12 @@ export default class dialogBox extends wepy.page {
 	auditResumeRecommend (status) {
 		let params = {
 			uid: wx.getStorageSync('rendaUid'),
-			id: this.messageDetail.id,
+			id: this.messageDetail.recommendId,
 			status
 		}
 		$http('/videointerview/videoInterviewEditStatus', params).then(res => {
 			if (res.data) {
-				this.messageDetail.status = status
-				this.$apply()
+			  wxNavigateTo('/pages/message/index')
 			}
 		})
 	}

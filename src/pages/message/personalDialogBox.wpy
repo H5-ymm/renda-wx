@@ -226,7 +226,9 @@ export default class personalDialogBox extends wepy.page {
 		$http('/personinfo/getperson_msgdetail', this.params).then(res => {
 			this.messageDetail = res.data
 			if (this.messageDetail.logo_url) {
-        this.messageDetail.logo_url = getImgUrl(this.messageDetail.logo_url)
+        if (this.messageDetail.logo_url.indexOf('http')==-1) {
+          this.messageDetail.logo_url = getImgUrl(this.messageDetail.logo_url)
+				}
 			}
 			this.messageDetail.view_time = $moment.unix(this.messageDetail.view_time).format('YYYY/MM/DD HH:mm')
 			this.messageDetail.addtime = $moment.unix(this.messageDetail.addtime).format('YYYY-MM-DD HH:mm')

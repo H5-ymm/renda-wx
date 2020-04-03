@@ -77,8 +77,8 @@ const getErrorTip = code => {
     return obj;
 };
 const getImgUrl = imgUrl => {
-    // const baseUrl = 'https://a.rsd123.com/'
-    const baseUrl = 'http://tiantianxsg.com:39888/'
+    const baseUrl = 'https://a.rsd123.com/'
+    // const baseUrl = 'http://tiantianxsg.com:39888/'
     return baseUrl + imgUrl;
 };
 const compressImg = (photoSrc, ratio = 2) => {
