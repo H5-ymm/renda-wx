@@ -139,7 +139,7 @@ import scanIdCard from '@/components/scanIdCard'
 import actionSheet from '@/components/actionSheet'
 import modal from '@/components/modal'
 import { $http } from '@/http.js'
-import { wxReLaunch, wxToast } from '@/util.js'
+import { wxNavigateTo, wxToast } from '@/util.js'
 let lock = false
 // 通过继承自wepy.page的类创建页面逻辑
 export default class addInfo extends wepy.page {
@@ -188,7 +188,7 @@ export default class addInfo extends wepy.page {
     handleOk: () => {
       this.isModal = true
       this.$apply()
-      wxReLaunch('/pages/home/index')
+      wxNavigateTo('/pages/home/index')
     },
     submitForm: data => {
       this.stepActive = 3
@@ -198,7 +198,6 @@ export default class addInfo extends wepy.page {
     submit: data => {
       // 发请求
       this.params = Object.assign(this.params, data)
-      console.log(data)
       if (this.stepActive === 2) {
         this.resumeInfo = data
         this.stepActive = this.stepActive + 1

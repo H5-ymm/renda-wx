@@ -37,13 +37,13 @@ page {
 			</scroll-view>
 		</view>
 		<view class="weui-flex between only-btn" wx:if="{{rendaUserTeamType==1||rendaUserTeamType==2}}">
-			<view class="weui-flex center weui-flex__item only-btn-item">
-				<button class="weui-btn_cell  weui-flex__item weui-btn_primary" @tap="addUser">
+			<view class="weui-flex center weui-flex__item only-btn-item" @tap="addUser">
+				<button class="weui-btn_cell  weui-flex__item weui-btn_primary" >
 					添加成员
 				</button>
 			</view>
 		</view>
-	</view>
+	<!-- </view> -->
 	<modalAddUser :isScaleModal.sync="isModal" @handleClose="handleClose" @handleOk="handleOk" :title.sync="title" :height.sync="modalHeight" :type.sync="type" :imgUrl.sync="qrCode"></modalAddUser>
 	</view>
 </template>
@@ -110,7 +110,7 @@ export default class userList extends wepy.page {
 		$http('/login/get_qrcode', params).then(res => {
 			if (res.data) {
 				this.type = 1
-				this.isModal = false
+				// this.isModal = !this.isModal
 				wx.removeStorageSync('rendaUserTeamId')
 				this.qrCode = getImgUrl(res.data)
 				this.$apply()
@@ -124,27 +124,28 @@ export default class userList extends wepy.page {
 		},
 		handleOk: data => {
 			if (data === 0) {
-				this.isModal = true
+				this.isModal = !this.isModal
 				wxNavigateTo('/pages/teamView/userInfo')
 			} else {
 				this.activeIndex = data
 				this.createQrcode()
 			}
+		},
+		handleClose: ()=>{
+			this.isModal = !this.isModal
 		}
 	}
 	onShareAppMessage (res) {
-		console.log(this.teamId + '我的团队id')
 		return {
 			title: '邀请成员加入团队',
 			imageUrl: this.qrCode,
-			// path: '/pages/teamView/userInfo?uid=' + this.uid
 			path: `/pages/login/welcome?uid=${this.params.uid}&teamId=${this.teamId}`
 		}
 	}
 	methods = {
 		addUser () {
 			this.type = 0
-			this.isModal = false
+			this.isModal = !this.isModal
 			this.$apply()
 		},
 		searchScrollLower () {

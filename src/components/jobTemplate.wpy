@@ -24,7 +24,7 @@
 					<view class="my-text weui-flex__item">所在地区</view>
 					<view class="my-text-right">
 						{{form.provinceName}}{{form.cityName}}
-						{{form.aresName}}{{form.address}}
+						{{form.aresName}}{{form.address||''}}
 					</view>
 				</view>
 			</view>

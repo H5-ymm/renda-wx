@@ -12,7 +12,9 @@ export const getAllUser = createAction(GETALLUSER, (data) => {
     return new Promise((resolve, reject) => {
         $http('/login/is_autologin', data).then(res => {
             wx.setStorageSync('phone', res.data.phone)
-            saveUser(res.data.uid)
+            if (!res.data.head_img) {
+              saveUser(res.data.uid)
+            }
             resolve(res.data);
         }).catch(error => {
             reject(error.status)

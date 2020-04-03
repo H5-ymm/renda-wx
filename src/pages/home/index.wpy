@@ -47,7 +47,7 @@
       <view class="home-add-text">添加简历</view>
     </view>
     <homeModal :isScaleModal.sync="isModal" @handleOk="handleOk" :height.sync="modalHeight" :type.sync="type" :modalObj.sync="modalObj" :imgUrl.sync="qrCode"></homeModal>
-    <selectModal :isScaleModal.sync="isSelectModal" :menus.sync="menus" @selectOk="selectOk" :title.sync="modalTitle"></selectModal>
+    <selectModal :isScaleModal.sync="isSelectModal" :menus.sync="menus" @handleClose="handleClose" @selectOk="selectOk" :title.sync="modalTitle"></selectModal>
   </view>
 </template>
 <script>
@@ -142,7 +142,6 @@ export default class home extends wepy.page {
       this.$apply()
     },
     applyResume: data => {
-      console.log(data)
       this.resumeInfo = data
       this.modalTitle = '请选择岗位方式'
       this.menus = [
@@ -188,6 +187,10 @@ export default class home extends wepy.page {
           url: `/pages/teamView/internalInvoice/list?query=${val}&resumeId=${this.resumeInfo.id}&recommendId=${this.resumeInfo.recommendId}`
         })
       }
+    },
+    handleClose: ()=>{
+      this.isSelectModal = !this.isSelectModal
+      this.$apply()
     }
   }
   onLoad () {

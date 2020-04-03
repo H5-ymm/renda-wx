@@ -42,8 +42,8 @@
           width: 0px;
           height: 0px;
           position: absolute;
-          right: -32rpx;
-          top: 32%;
+          right: -30rpx;
+          top: 25%;
           border-top: 16rpx solid rgba(0, 0, 0, 0);
           border-right: 16rpx solid rgba(0, 0, 0, 0);
           border-bottom: 16rpx solid rgba(0, 0, 0, 0);
@@ -60,8 +60,8 @@
           width: 0px;
           height: 0px;
           position: absolute;
-          left: -32rpx;
-          top: 32%;
+          left: -30rpx;
+          top: 25%;
           border-top: 16rpx solid rgba(0, 0, 0, 0);
           border-right: 16rpx solid #fff;
           border-bottom: 16rpx solid rgba(0, 0, 0, 0);
@@ -116,7 +116,7 @@
 							<image mode="scaleToFill" src="{{messageDetail.header_img}}" class="dialogBox-col-header" wx:if="{{messageDetail.header_img}}"/>
 							<image mode="scaleToFill" src="https://a.rsd123.com/image/images/default1.png" class="dialogBox-col-header" wx:else/>
 							<view class="dialogBox-content dialogBox-content-left dialogBox-content-left1">
-								<text decode="{{true}}">公司：{{messageDetail.com_name}}\n您好，你已预约视频面试，通知：{{messageDetail.content}},\n面试职位:{{messageDetail.job_name}}\n面试时间 {{messageDetail.view_time}}\n联系电话：{{messageDetail.link_tel}}</text>
+								<text decode="{{true}}">公司：{{messageDetail.com_name}}\n您好，你已预约视频面试，通知：{{messageDetail.content}},\n面试职位:{{messageDetail.job_name}}\n面试时间 {{messageDetail.view_time}}\n</text><text @tap="concat">联系电话：{{messageDetail.link_tel}}</text>
 							</view>
 						</view>
 						<view class="dialogBox-btn weui-flex between">
@@ -224,13 +224,12 @@ export default class personalDialogBox extends wepy.page {
 	}
 	getMsgDetail () {
 		$http('/personinfo/getperson_msgdetail', this.params).then(res => {
-			console.log(res)
 			this.messageDetail = res.data
 			if (this.messageDetail.logo_url) {
         this.messageDetail.logo_url = getImgUrl(this.messageDetail.logo_url)
 			}
-			this.messageDetail.view_time = $moment(this.messageDetail.view_time).format('YYYY/MM/DD HH:mm')
-			this.messageDetail.addtime = $moment(this.messageDetail.addtime).format('YYYY-MM-DD HH:mm')
+			this.messageDetail.view_time = $moment.unix(this.messageDetail.view_time).format('YYYY/MM/DD HH:mm')
+			this.messageDetail.addtime = $moment.unix(this.messageDetail.addtime).format('YYYY-MM-DD HH:mm')
 			this.$apply()
 		})
 	}
@@ -252,6 +251,19 @@ export default class personalDialogBox extends wepy.page {
 		recommend() {
 			wx.navigateTo ({
 				url: '/pages/companyView/viewJob?query=' + this.messageDetail.job_id + '&room_num=' + this.messageDetail.room_num
+			})
+		},
+		concat() {
+			wx.showActionSheet({
+				itemList: [`拨打${this.messageDetail.link_tel}`],
+				success(res) {
+					wx.makePhoneCall({
+						phoneNumber: this.messageDetail.link_tel
+					})
+				},
+				fail(res) {
+					console.log(res.errMsg)
+				}
 			})
 		}
 	}

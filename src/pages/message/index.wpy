@@ -20,16 +20,13 @@
       border-radius: 50%;
     }
     .bage {
-      width: 24rpx;
-      height: 24rpx;
-      text-align: center;
-      line-height: 24rpx;
-      font-size: 20rpx;
+      width: 16rpx;
+      height: 16rpx;
       color: #fff;
       background: #f41800;
       border-radius: 50%;
       position: absolute;
-      top: 6rpx;
+      top: 8rpx;
       right: 0;
     }
   }
@@ -58,7 +55,7 @@
 							<image mode="scaleToFill" src="{{item.header_img}}" class="message-col-header" wx-if="{{item.header_img}}" />
 							<image mode="scaleToFill" src="{{item.logo_url}}" class="message-col-header" wx:if="{{item.logo_url}}" />
 							<image mode="scaleToFill" src="https://a.rsd123.com/image/images/default1.png" class="message-col-header" wx:if="{{!item.logo_url&&usertype!=1}}"/>
-							<view class="bage" wx:if="{{item.person_read||item.com_read}}">{{usertype==1?item.com_read:item.person_read}}</view>
+							<view class="bage" wx:if="{{item.person_read||item.com_read}}"></view>
 						</view>
 						<view class="weui-flex between-start wrap message-col-2 weui-flex__item page_bottom">
 							<view>

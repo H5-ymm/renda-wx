@@ -14,7 +14,7 @@
         <view class="my-user-mobile">{{userInfo.mobile?userInfo.mobile:''}}</view>
       </view>
     </view>
-    <view class="my-view-header weui-flex start-between" wx:else>
+    <view class="my-view-header weui-flex start-between" wx:if="{{usertype==1}}">
       <view class="my-avatar-box">
         <image src="{{head_img}}" wx:if="{{head_img}}" alt="" mode="aspectFill" class="my-avatar" />
         <image src="https://a.rsd123.com/image/images/header.png" wx:else alt="" mode="aspectFit" class="my-avatar" />
@@ -274,7 +274,11 @@ export default class my extends wepy.page {
         wx.setStorageSync('userInfo', JSON.stringify(this.userInfo))
       }
       if (res.data.head_img) {
-        this.head_img = getImgUrl(res.data.head_img)
+        if (res.data.head_img.indexOf('http') > -1) {
+          this.head_img = res.data.head_img
+        } else {
+          this.head_img = getImgUrl(res.data.head_img)
+        }    
       } else {
         this.head_img = this.wxInfo ? JSON.parse(this.wxInfo).head_img : ''
       }
