@@ -32,12 +32,8 @@
 					<view wx:if="{{receiptType==2}}" class="page_card_receipt_status {{'page_card_receipt_status'+(!itemValue.interview_status?0:itemValue.interview_status==1?1:2)}}">
 						{{itemValue.interview_status==4?'面试结束':'面试开始'}}
 					</view>
-					<view wx:if="{{receiptType==3}}" class="page_card_receipt_status {{'page_card_receipt_status'+(!itemValue.entry_status?0:itemValue.entry_status==1?1:2)}}">
+					<view wx:if="{{receiptType==3}}" class="page_card_receipt_status {{'page_card_receipt_status'+(itemValue.entry_status==4?2:1)}}">
 						{{itemValue.entry_status!=4?'入职开始':'入职结束'}} </view>
-					<!-- <view wx:if="{{receiptType==3&&itemValue.entry_status>1}}">
-							{{itemValue.entry_status==2?'入职结束':itemValue.entry_status==3?'审核入职':'审核结束'}}
-					</view> -->
-					<!-- </view> -->
 				</view>
 			</view>
 			<view class="weui-flex between">
@@ -64,7 +60,6 @@
 			</view>
 		</view>
 		<image mode="scaleToFill" class="weui-flex__item" src="https://a.rsd123.com/image/images/right.png" class="page_down_icon" />
-	</view>
 	</view>
 </template>
 <script>

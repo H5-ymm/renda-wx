@@ -416,7 +416,7 @@ export default class checkResumeList extends wepy.page {
 		},
 		batchHandle () {
 			if (this.receiptType != 2) {
-				if (this.viewType==1&&!this.statusObj.view_time) {
+				if (this.viewType==1&&!this.statusObj.view_time&&this.receiptType!=3) {
 					this.isNoticeModal = !this.isNoticeModal
 					return
 				}

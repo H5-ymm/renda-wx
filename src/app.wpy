@@ -101,21 +101,25 @@ export default class extends wepy.app {
       let userId = scene.split("&")[0];
       console.log(userId + 'ddddddd')
       let recommendId = scene.split('&')[1];
+      this.globalData.rendaUidQrcode = userId
+      this.globalData.teamId = recommendId
+      wx.setStorageSync('rendaUidQrcode', userId)
+      wx.setStorageSync('rendaUserTeamId', recommendId)
       //其他逻辑处理。。。。。
     }
-    if (options.scene) {
-      if (typeof options.scene != 'number') {
-        let arr = options.scene.splite('?')
-        let arr1 = options.scene.splite('&')
-        uid = arr[1]
-        teamId = arr1[1]
-        console.log(options.scene)
-      }
-      wx.setStorageSync('rendaUidQrcode', uid)
-      wx.setStorageSync('rendaUserTeamId', teamId)
-      this.globalData.rendaUidQrcode = uid
-      this.globalData.teamId = teamId
-    }
+    // if (options.scene) {
+    //   if (typeof options.scene != 'number') {
+    //     let arr = options.scene.splite('?')
+    //     let arr1 = options.scene.splite('&')
+    //     uid = arr[1]
+    //     teamId = arr1[1]
+    //     console.log(options.scene)
+    //   }
+    //   wx.setStorageSync('rendaUidQrcode', uid)
+    //   wx.setStorageSync('rendaUserTeamId', teamId)
+    //   this.globalData.rendaUidQrcode = uid
+    //   this.globalData.teamId = teamId
+    // }
     if (options.query && options.query.uid) {
       wx.setStorageSync('rendaUidQrcode', options.query.uid)
       this.globalData.rendaUidQrcode = options.query.uid
