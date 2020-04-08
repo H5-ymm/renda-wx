@@ -30,24 +30,17 @@
 					</view>
 				</view>
 				<view wx:if="{{receiptType>1}}">
-					<view class="page_card_receipt_status {{'page_card_receipt_status'+(!itemValue.interview_status&&!itemValue.entry_status?itemValue.invoice_status:!itemValue.entry_status?itemValue.interview_status:itemValue.entry_status)}}">
-						<view wx:if="{{receiptType==2}}">
-							{{!itemValue.invoice_status?'收集中':itemValue.invoice_status==1?'审核中':'面试开始'}}
+					<!-- <view> -->
+						<view wx:if="{{receiptType==2}}" class="page_card_receipt_status {{'page_card_receipt_status'+ (!itemValue.invoice_status?0:itemValue.invoice_status==1?1:2)}}">
+							{{!itemValue.invoice_status?'收集中':itemValue.invoice_status==1?'审核中':'审核结束'}}
 						</view>
-						<view wx:if="{{receiptType==3&&itemValue.interview_status<=1}}">
-							面试开始
+						<view wx:if="{{receiptType==3}}"  class="page_card_receipt_status {{'page_card_receipt_status'+(!itemValue.interview_status?0:itemValue.interview_status==1?1:2)}}">
+							{{itemValue.interview_status==4?'面试结束':'面试开始'}}
 						</view>
-						<view wx:if="{{receiptType==3&&itemValue.interview_status>=2}}">
-							{{!itemValue.entry_status?'面试结束':itemValue.entry_status==1?'入职开始':'入职结束'}}
-						</view>
-						<view wx:if="{{receiptType==4&&itemValue.entry_status<=1}}">
-							入职开始
-						</view>
-						<view wx:if="{{receiptType==4&&itemValue.entry_status>1}}">
-							{{itemValue.entry_status==2?'入职结束':itemValue.entry_status==3?'审核入职':'审核结束'}}
-						</view>
+						<view wx:if="{{receiptType==4}}" class="page_card_receipt_status {{'page_card_receipt_status'+(itemValue.entry_status==4?2:1)}}">
+						 {{itemValue.entry_status!=4?'入职开始':'入职结束'}} </view>
 					</view>
-				</view>
+				<!-- </view> -->
 			</view>
 			<view class="weui-flex between">
 				<view class="weui-flex start weui-flex__item">
@@ -55,7 +48,7 @@
 				</view>
 				<view class="page_card_time" wx:if="{{receiptType<2}}">{{itemValue.addtime||itemValue.ctime}}</view>
 				<view class="page_card_receipt_status page_card_receipt_status3" wx:if="{{receiptType==2&&!itemValue.view_time}}">
-					未设置面试时间
+					未筛选简历
 				</view>
 				<view class="page_card_receipt_status page_card_receipt_status3" wx:elif="{{receiptType==3&&itemValue.interview_status<=1&&!itemValue.entry_time}}">
 					未设置入职时间

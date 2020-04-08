@@ -53,7 +53,7 @@
     <view class="my-view-header weui-flex start">
       <image src="https://a.rsd123.com/image/images/team/teamBg.png" class="my-view-header-bg" mode="aspectFill" alt="" />
       <view class="my-avatar-box">
-        <image src="{{teamData.logo}}" wx:if="{{teamData.logo}}" alt="" mode="aspectFit" class="my-avatar" />
+        <image src="{{teamData.logo}}" wx:if="{{teamData.logo}}" alt="" mode="aspectFill" class="my-avatar" />
         <image src="https://a.rsd123.com/image/images/header.png" wx:else alt="" mode="aspectFit" class="my-avatar" />
       </view>
       <view class="team-info-row">

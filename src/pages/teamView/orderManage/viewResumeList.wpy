@@ -45,7 +45,7 @@
 		</view>
 		<view class="only-btn" wx:if="{{list.length}}">
 			<view class="weui-flex center">
-				<button class="weui-btn_cell only-btn-item {{!receiptTime?'weui-btn_cell-disabled':'weui-btn_primary'}}" disaled=" {{!receiptTime}}" @tap="viewNotice">
+				<button class="weui-btn_cell only-btn-item {{!receiptTime?'weui-btn_cell-disabled':'weui-btn_primary'}}" disabled="{{!receiptTime}}" @tap="viewNotice">
 					{{receiptType==2?'查看面试通知':'查看入职通知'}}
 				</button>
 				<button class="weui-btn_cell only-btn-item weui-btn_primary_plain" @tap="recommendResume">
@@ -53,8 +53,8 @@
 				</button>
 			</view>
 		</view>
-	</view>
-	<viewNoticeModal :isScaleModal.sync="isModal" :height.sync="modalHeight" :timeInfo.sync="timeInfo" :title.sync="title"></viewNoticeModal>
+	<!-- </view> -->
+	 <viewNoticeModal :isScaleModal.sync="isModal" :height.sync="modalHeight" :timeInfo.sync="timeInfo" :title.sync="title"></viewNoticeModal>
 	</view>
 </template>
 <script>
@@ -89,7 +89,7 @@ export default class viewResumeList extends wepy.page {
 		isSeachWidth: false,
 		isModal: true,
 		modalHeight: 860,
-		title: '查看面试时间',
+		title: '面试时间',
 		receiptType: 2,
 		job_id: '',
 		timeInfo: {},
@@ -113,6 +113,7 @@ export default class viewResumeList extends wepy.page {
 		this.apply_id = options.apply_id
 		this.params.job_id = options.id
 		this.receiptTime = wx.getStorageSync('receiptTime')
+		console.log(this.receiptTime)
 		this.$apply()
 		wx.setNavigationBarTitle({
 			title: this.getTitle(this.receiptType)

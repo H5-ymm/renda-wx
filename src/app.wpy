@@ -101,9 +101,11 @@ export default class extends wepy.app {
       let userId = scene.split("&")[0];
       console.log(userId + 'ddddddd')
       let recommendId = scene.split('&')[1];
-      this.globalData.rendaUidQrcode = userId
+      if (userId!=1001) {
+        this.globalData.rendaUidQrcode = userId
+        wx.setStorageSync('rendaUidQrcode', userId)
+      }
       this.globalData.teamId = recommendId
-      wx.setStorageSync('rendaUidQrcode', userId)
       wx.setStorageSync('rendaUserTeamId', recommendId)
       //其他逻辑处理。。。。。
     }

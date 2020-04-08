@@ -106,8 +106,8 @@ export default class viewNoticeModal extends wepy.component {
 				let arr = val.content.split('&')
 				this.form.content = arr[1]
 				let address = arr[0].split('/')
-				this.form.address = address[0]
-				this.form.detailAddress = address[1]
+				this.form.address = address[0] + address[1] + address[2]
+				this.form.detailAddress = address[3]
 				this.$apply()
 			}
     },
