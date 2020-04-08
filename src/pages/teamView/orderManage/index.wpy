@@ -30,16 +30,23 @@
 				</view>
 			</view>
 		</view>
+		<tabBarBottom :tabBarIndex.sync="tabBarIndex" :usertype.sync="usertype"></tabBarBottom>
 	</view>
 </template>
 <script>
 import wepy from 'wepy'
 import { $http } from '@/http.js'
 import { wxNavigateTo } from '@/util.js'
-export default class orderManage extends wepy.page {
+import tabBarBottom from '@/components/tabBarBottom'
+export default class teamView extends wepy.page {
+  components = {
+    tabBarBottom: tabBarBottom
+  }
 	data = {
 		userTeamType: 1,
-		menus: []
+		menus: [],
+		usertype: 2,
+    tabBarIndex: 1,
 	}
 	config = {
 		navigationBarTitleText: '接单管理'

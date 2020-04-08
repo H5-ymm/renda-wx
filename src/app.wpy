@@ -34,6 +34,7 @@ export default class extends wepy.app {
       'pages/my/companyInfo',
       'pages/my/teamInfo',
       'pages/my/userBind',
+      'pages/teamView/cityView',
       'pages/teamView/department/index',
       'pages/teamView/orderManage/list',
       'pages/teamView/orderManage/viewResumeList',
