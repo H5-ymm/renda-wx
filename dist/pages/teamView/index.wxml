@@ -72,7 +72,7 @@
             </view>
             <view class="weui-flex between job-col-3">    
               <view class="com-name weui-flex__item">{{item.com_name||'-'}} <text>{{item.utime}}</text></view>
-              <button class="weui-btn_cell  weui-btn_primary" bindtap="applyRecepit" wx:if="{{rendaUserTeamType==1}}" data-wpyapplyrecepit-a="{{item}}">
+              <button class="weui-btn_cell  weui-btn_primary" catchtap="applyRecepit" wx:if="{{rendaUserTeamType==1}}" data-wpyapplyrecepit-a="{{item}}">
                 接单
               </button>
             </view>

@@ -10,11 +10,11 @@
           <view class="weui-cell_btn weui-flex center login-btn">
             <button lang='zh_CN' disabled="{{!isRead}}" class="weui-btn_cell weui-btn_cell-gradient {{!isRead?'weui-btn_cell-disabled':''}}" @getuserinfo="getUserInfo" open-type="getUserInfo">开始使用</button>
           </view>
-          <view class="rule-view weui-flex start wrap">
-            <image wx:if="{{!checked}}" src="https://a.rsd123.com/image/images/check.png" mode="scaleToFill" class="check-icon" @tap="checkedRule({{checked}})" />
-            <image wx:else src="https://a.rsd123.com/image/images/check1.png" mode="scaleToFill" @tap="checkedRule({{checked}})" class="check-icon" />
-            我已认真阅读并同意<view class="text" @tap="router">《用户协议及隐私政策》</view>和
-            <view class="text" @tap="router">《信息保护政策》
+          <view class="rule-view weui-flex start wrap" @tap="checkedRule({{checked}})" >
+            <image wx:if="{{!checked}}" src="https://a.rsd123.com/image/images/check.png" mode="scaleToFill" class="check-icon" />
+            <image wx:else src="https://a.rsd123.com/image/images/check1.png" mode="scaleToFill" class="check-icon" />
+            我已认真阅读并同意<view class="text">《用户协议及隐私政策》</view>和
+            <view class="text">《信息保护政策》
             </view>
           </view>
         </view>
@@ -313,9 +313,6 @@ export default class Welcome extends wepy.page {
         this.isRead = false
       }
       this.$apply()
-    },
-    router () {
-      wxReLaunch('/pages/login/rule')
     },
     getUserInfo (e) {
       // 没有阅读协议

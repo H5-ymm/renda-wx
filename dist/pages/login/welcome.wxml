@@ -7,11 +7,11 @@
           <view class="weui-cell_btn weui-flex center login-btn">
             <button lang="zh_CN" disabled="{{!isRead}}" class="weui-btn_cell weui-btn_cell-gradient {{!isRead?'weui-btn_cell-disabled':''}}" bindgetuserinfo="getUserInfo" open-type="getUserInfo">开始使用</button>
           </view>
-          <view class="rule-view weui-flex start wrap">
-            <image  wx:if="{{!checked}}" src="https://a.rsd123.com/image/images/check.png" mode="scaleToFill" class="check-icon" bindtap="checkedRule" data-wpycheckedrule-a="{{checked}}"/>
-            <image  wx:else src="https://a.rsd123.com/image/images/check1.png" mode="scaleToFill" bindtap="checkedRule" class="check-icon" data-wpycheckedrule-a="{{checked}}"/>
-            我已认真阅读并同意<view class="text" bindtap="router">《用户协议及隐私政策》</view>和
-            <view class="text" bindtap="router">《信息保护政策》
+          <view class="rule-view weui-flex start wrap" bindtap="checkedRule" data-wpycheckedrule-a="{{checked}}">
+            <image  wx:if="{{!checked}}" src="https://a.rsd123.com/image/images/check.png" mode="scaleToFill" class="check-icon"/>
+            <image  wx:else src="https://a.rsd123.com/image/images/check1.png" mode="scaleToFill" class="check-icon"/>
+            我已认真阅读并同意<view class="text">《用户协议及隐私政策》</view>和
+            <view class="text">《信息保护政策》
             </view>
           </view>
         </view>
