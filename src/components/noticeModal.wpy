@@ -139,7 +139,6 @@ export default class noticeModal extends wepy.component {
 		},
 		selectCityText: data => {
 			this.address = data
-			console.log(	this.address )
 		},
 		selectCity: data => {
 			this.addressList = data
@@ -163,13 +162,14 @@ export default class noticeModal extends wepy.component {
 			this.isShow = false
 			this.$apply()
 			let params = {}
+			console.log(this.type)
+			console.log(this.form.time)
 			if (this.type == 1) {
 				let time = ''
-				console.log(this.form.time)
 				if (this.form.time.toString().indexOf('-') == -1) {
 					time = this.form.time
 				} else {
-					time = $moment(this.form.time).valueOf()+ ''
+					time = $moment(this.form.time).valueOf() + ''
 					time = time.substr(0, 10)
 				}
 				params = {
@@ -180,6 +180,7 @@ export default class noticeModal extends wepy.component {
 					threecity: this.addressList[2]
 				}
 			} else {
+				console.log(this.form.time)
 				params = {
 					view_time: this.form.time,
 					content: this.form.content,

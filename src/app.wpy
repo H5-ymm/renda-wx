@@ -192,6 +192,7 @@ export default class extends wepy.app {
             user_name: res.userInfo.nickName
           }
           this.globalData.wxInfo = params
+          wx.setStorageSync('wxInfo', params)
         }
       })
     }

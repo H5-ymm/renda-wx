@@ -47,13 +47,15 @@ export default class datePicker extends wepy.component {
 			if (val.date !== '' && val.time !== '') {
 				let newDate = val.date + ' ' + val.time
 				newDate = newDate + ''
-				let date = new Date(newDate).getTime() + ''
+				let date = $moment(newDate).valueOf() + ''
+				console.log(date + 'kkkkk')
 				if (this.viewType == 2 && date - new Date().getTime() < 0) {
 					return wxToast('不能选择小于当前的时间')
 				}
 				date = date.substr(0, 10)
 				this.$emit('setDate', date)
 				this.viewType = 1
+				this.$apply()
 			} 
 		},
 		date(val) {
