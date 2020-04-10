@@ -214,7 +214,6 @@ export default class userInTeam extends wepy.page {
 		}
 	}
 	onLoad (options) {
-		console.log(options)
 		if (options.query && wx.getStorageSync('rendaUidQrcode')) {
 			let query = JSON.parse(options.query)
 			this.teamId = query.teamId

@@ -1,18 +1,5 @@
 <style lang="less">
 @import '../../../style/home.less';
-// .detail-view {
-//   height: 100%;
-//   overflow: auto;
-//   .page_margin {
-//     margin: 24rpx 24rpx 0;
-//   }
-//   .only-btn {
-//     height: 120rpx;
-//     .only-btn-item {
-//       margin: 0 30rpx;
-//     }
-//   }
-// }
 .picker {
   position: fixed;
   left: 0;
@@ -129,9 +116,6 @@ export default class department extends wepy.page {
 			}
 			this.jobList = this.getArr(this.depList, this.depId)
 			this.depIndex[1] = this.getIndex(this.jobList, this.gradeId)
-			console.log(this.jobList)
-			console.log(this.gradeId)
-			console.log(this.getIndex(this.jobList, this.gradeId))
 			this.$apply()
 		})
 	}
@@ -182,8 +166,9 @@ export default class department extends wepy.page {
 	}
 	methods = {
 		bindChange (e) {
-			console.log(e)
 			this.depIndex = e.detail.value
+			this.jobList = this.getArr(this.depList, this.depList[this.depIndex[0]].id)
+			this.$apply()
 		},
 		selectClose () {
 			this.isPicker = false

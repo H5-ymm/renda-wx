@@ -30,17 +30,22 @@
 					</view>
 				</view>
 				<view wx:if="{{receiptType>1}}">
-					<!-- <view> -->
 						<view wx:if="{{receiptType==2}}" class="page_card_receipt_status {{'page_card_receipt_status'+ (!itemValue.invoice_status?0:itemValue.invoice_status==1?1:2)}}">
 							{{!itemValue.invoice_status?'收集中':itemValue.invoice_status==1?'审核中':'审核结束'}}
 						</view>
-						<view wx:if="{{receiptType==3}}"  class="page_card_receipt_status {{'page_card_receipt_status'+(!itemValue.interview_status?0:itemValue.interview_status==1?1:2)}}">
-							{{itemValue.interview_status==4?'面试结束':'面试开始'}}
+						<view wx:if="{{receiptType==3&&!itemValue.interview_status}}" class="page_card_receipt_status page_card_receipt_status4">
+							等待面试
 						</view>
-						<view wx:if="{{receiptType==4}}" class="page_card_receipt_status {{'page_card_receipt_status'+(itemValue.entry_status==4?2:1)}}">
-						 {{itemValue.entry_status!=4?'入职开始':'入职结束'}} </view>
-					</view>
-				<!-- </view> -->
+            <view wx:if="{{receiptType==3&&itemValue.interview_status}}" class="page_card_receipt_status {{'page_card_receipt_status'+ (itemValue.interview_status-1)}}">
+							{{itemValue.interview_status==4?'面试结束':itemValue.interview_status==3?'面试审核中':'面试开始'}}
+						</view>
+						<view wx:if="{{receiptType==4&&!itemValue.entry_status}}" class="page_card_receipt_status page_card_receipt_status4">
+						  等待入职
+					  </view>
+						<view wx:if="{{receiptType==4&&itemValue.entry_status}}" class="page_card_receipt_status {{'page_card_receipt_status'+ (itemValue.entry_status-1)}}">
+						 {{itemValue.entry_status==4?'入职结束':itemValue.entry_status==3?'入职审核中':'入职开始'}}
+				 	 </view>
+				</view>
 			</view>
 			<view class="weui-flex between">
 				<view class="weui-flex start weui-flex__item">
@@ -65,9 +70,9 @@
 				</view>
 			</view>
 		</view>
-		<image mode="scaleToFill" class="weui-flex__item" src="https://a.rsd123.com/image/images/right.png" class="page_down_icon" />
+		<image mode="scaleToFill" class="page_down_icon" src="https://a.rsd123.com/image/images/right.png" />
 	</view>
-	</view>
+	<!-- </view> -->
 </template>
 <script>
 import wepy from 'wepy'

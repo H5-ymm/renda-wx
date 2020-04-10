@@ -30,7 +30,7 @@
 		<view class="weui-cell_btn weui-flex between register-btn">
 			<button
 				class="weui-btn_cell weui-btn_primary {{form.job_status==1?'weui-btn_primary_plain':''}}"
-				wx:if="{{form.status==2&&!room_num}}"
+				wx:if="{{form.status==2&&!room_num&&!apply}}"
 				@tap="handleShelf"
 			>{{form.job_status==1?'下架':'上架'}}</button>
 			<button
@@ -38,6 +38,11 @@
 				wx:if="{{room_num}}"
 				@tap="entryVideo"
 			>进入面试</button>
+			<button
+				class="weui-btn_cell weui-btn_primary"
+				wx:if="{{apply}}"
+				@tap="handleApply"
+			>申请接单</button>
 			<button
 				class="weui-btn_cell weui-btn_primary_plain"
 				wx:if="{{form.status!=2||form.job_status==2}}"
@@ -49,7 +54,7 @@
 <script>
 import wepy from 'wepy'
 import { $http } from '@/http.js'
-import { wxToast, wxReLaunch, wxShowModal } from '@/util.js'
+import { wxToast, wxReLaunch, wxShowModal, wxNavigateTo } from '@/util.js'
 import jobTemplate from '@/components/jobTemplate'
 export default class viewJob extends wepy.page {
 	components = {
@@ -58,7 +63,8 @@ export default class viewJob extends wepy.page {
 	data = {
 		form: {},
 		id: '',
-		room_num: ''
+		room_num: '',
+		apply: ''
 	}
 	config = {
 		navigationBarTitleText: '发单详情'
@@ -67,6 +73,9 @@ export default class viewJob extends wepy.page {
 		this.id = options.query
 		if (options.room_num) {
 			this.room_num = options.room_num
+		} 
+		if (options.apply) {
+			this.apply = options.apply
 		}
 		this.$apply()
 		this.getInvoiceDetail()
@@ -121,6 +130,17 @@ export default class viewJob extends wepy.page {
 			url: url
 		})
 	}
+	setReceipt(params) {
+    $http('/apply/add_apply', params).then(res => {
+      if(res.data) {
+        wxToast('接单成功')
+        wx.setStorageSync('receiptType', 0)
+        wxNavigateTo('/pages/teamView/orderManage/list?query=0')
+      } else {
+        wxToast('接单失败')
+      }
+    })
+  }
 	methods = {
 		handleShelf() {
 			let params = {
@@ -134,6 +154,13 @@ export default class viewJob extends wepy.page {
 			}).catch(() => {
 				console.log('取消')
 			})
+		},
+		handleApply() {
+			let params = {
+				uid: this.form.uid,
+				job_id: this.id
+			}
+     this.setReceipt(params)
 		},
 		entryVideo() {
 			let params = {

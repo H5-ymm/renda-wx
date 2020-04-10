@@ -548,6 +548,7 @@ export default class checkResumeList extends wepy.page {
 	viewTimeInfo () {
 		$http('/company/selectInterviewEntryInfo', { id: this.job_id }).then(res => {
 			let query = {}
+			this.viewType = '1'
 			if (this.receiptType === 1) {
 				query = {
 					time: res.data.view_time,
@@ -567,7 +568,6 @@ export default class checkResumeList extends wepy.page {
 			}
 			this.modalHeight = 930
 			this.timeInfo = query
-			this.viewType = '1'
 			this.isNoticeModal = !this.isNoticeModal
 			this.$apply()
 		})

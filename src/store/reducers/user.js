@@ -9,7 +9,6 @@ import {
 const loginUser = {}
 export default handleActions({
     [GETALLUSER](state, action) {
-        console.log(action)
         return {
             ...state,
             loginUser: action.payload

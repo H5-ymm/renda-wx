@@ -130,7 +130,6 @@ export default class Login extends wepy.page {
       this.getTime()
     }
     this.openid = this.$parent.getOpenId()
-    console.log(this.openid)
     this.$apply()
   }
   onShow () {
@@ -161,10 +160,10 @@ export default class Login extends wepy.page {
       if (this.auth_time <= 0) {
         this.sendAuthCode = true
         this.auth_time = 60
-        this.$apply()
         clearInterval(this.auth_timetimer)
       }
     }, 1000)
+    this.$apply()
   }
   onHide () {
     clearInterval(this.auth_timetimer)

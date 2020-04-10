@@ -1,11 +1,14 @@
 <style lang="less">
 @import "../../style/home.less";
+.home-view {
+	height: 100%;
+}
 </style>
 <template>
 	<view class="home-view">
 		<view class="home-view-header"></view>
 		<view class="page page_margin">
-			<scroll-view scroll-y="true" class="view-content" @scrolltolower="searchScrollLower">
+			<scroll-view scroll-y="true" style="height:100%"  @scrolltolower="searchScrollLower">
 				<view class="home-view-box">
 					<search @searchValue="searchValue" class="page_card"></search>
 					<checkTeamList :list.sync="newList"></checkTeamList>

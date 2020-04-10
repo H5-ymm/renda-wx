@@ -78,9 +78,13 @@ export default class userInfo extends wepy.page {
       let wxUserinfo = wx.getStorageSync('wxInfo')
       this.wxAddress = wxUserinfo ? JSON.parse(wxUserinfo).address : ''
       if (this.userInfo.head_img) {
-        this.head_img = getImgUrl(this.userInfo.head_img)
+        if (this.userInfo.head_img.indexOf('http') > -1) {
+          this.head_img = this.userInfo.head_img
+        } else {
+          this.head_img = getImgUrl(this.userInfo.head_img)
+        }    
       } else {
-        this.head_img = wxUserinfo ? JSON.parse(wxUserinfo).head_img : ''
+        this.head_img = wxUserinfo ? JSON.parse(this.wxUserinfo).head_img : ''
       }
       this.$apply()
     }

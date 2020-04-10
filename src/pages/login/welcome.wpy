@@ -69,6 +69,9 @@ export default class Welcome extends wepy.page {
     isLoginOut: false,
     isHandleBtn: false
   }
+  config = {
+    enablePullDownRefresh: true
+  }
   onLoad (options) {
     this.rendaUidQrcode = wx.getStorageSync('rendaUidQrcode') || this.$parent.globalData.rendaUidQrcode
     this.teamId = wx.getStorageSync('rendaUserTeamId') || this.$parent.globalData.teamId
@@ -175,10 +178,10 @@ export default class Welcome extends wepy.page {
     if (res && res.uid) {
       this.$parent.globalData.uid = res.uid
       this.uid = res.uid
-      wx.setStorageSync('rendaUid', res.uid)
       this.isRead = true
       this.checked = true
       this.$apply()
+      wx.setStorageSync('rendaUid', res.uid)
       if (this.isInviteUser) {
         wx.setStorageSync('rendaUserType', 2)
         this.checkQrcode(res)

@@ -103,6 +103,16 @@ export default class Index extends wepy.page {
 			this.$apply()
 		})
 	}
+	saveUser(uid) {
+    let userinfo = JSON.parse(wx.getStorageSync('wxInfo'))
+    let params = {
+      uid: wx.getStorageSync('rendaUid') || this.$parent.globalData.uid,
+      head_img: userinfo.head_img
+    }
+    $http('/userinfo/editUserInfo', params).then(res => {
+      console.log(res)
+    })
+  }
 	methods = {
 		viewInfo (item) {
 			if (item.url.indexOf('checkReceipt') > -1) {
@@ -120,6 +130,9 @@ export default class Index extends wepy.page {
 	}
 	onShow () {
 		this.getUnreadNum()
+		 if (!wx.getStorageSync('userInfo') || (wx.getStorageSync('userInfo') && !JSON.parse(wx.getStorageSync('userInfo')).head_img)) {
+      this.saveUser()
+    }
 	}
 }
 </script>

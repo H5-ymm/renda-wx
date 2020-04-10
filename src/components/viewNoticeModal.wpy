@@ -46,7 +46,7 @@
 					<view class="modal-row">
 						<text>面试地址</text>
 						<view class="modal-col"> {{form.address}}</view>
-						<view class="modal-col"> {{form.detailAddress}}</view>
+						<view class="modal-col"> {{form.detailAddress||'-'}}</view>
 					</view>
 					<view class="modal-row">
 						<text>通知内容</text>

@@ -1,8 +1,8 @@
 import {
     wxToast
 } from '@/util.js'
-// const baseUrl = 'https://a.rsd123.com/';
-const baseUrl = 'http://tiantianxsg.com:39888/'
+const baseUrl = 'https://a.rsd123.com/';
+// const baseUrl = 'http://tiantianxsg.com:39888/'
 const apiUrl = baseUrl + 'wx.php';
 const http = (url, params, method) => {
     console.log(params)
@@ -48,7 +48,6 @@ const http = (url, params, method) => {
                 reject(error);
             }
         }).onHeadersReceived(function (res) {
-            console.log('onHeadersReceived')
         })
     });
 };

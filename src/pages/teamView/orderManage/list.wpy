@@ -97,6 +97,7 @@ export default class orderList extends wepy.page {
 	}
 	methods = {
 		searchScrollLower() {
+			console.log(this.params.limit )
 			if (this.count > this.list.length && this.count > this.params.limit) {
 				this.params.limit = this.params.limit + 10
 				this.getJobList()

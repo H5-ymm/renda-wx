@@ -102,7 +102,6 @@
       <image src="https://a.rsd123.com/image/images/close.png" @tap="handleClose" class="close-icon" />
     </view>
   </view>
-
 </template>
 <script>
 import wepy from 'wepy'
@@ -114,7 +113,7 @@ export default class noticeModal extends wepy.component {
 		isScaleModal: Boolean,
 		height: Number,
 		title: String,
-		type: Number,
+		type: String,
 		timeInfo: Object
 	}
 	components = {

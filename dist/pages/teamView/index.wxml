@@ -1,0 +1,101 @@
+
+  <view class="page-team-home">
+    <scroll-view scroll-y="true" bindscrolltolower="searchScrollLower" class="view-content">
+     <view class="page-section page-section-spacing swiper">
+      <swiper indicator-dots="true" indicator-color="#ffffff" indicator-active-color="#ffffff" autoplay="true" class="swiper">
+        <block  wx:for="{{banner}}" wx:key="index">
+          <swiper-item class="swiper-item">
+             <image src="{{item.image}}" alt="" class="swiper-image" mode="aspectFill"/>
+          </swiper-item>
+        </block>
+      </swiper>
+    </view>
+    <view class="section">
+      <view class="nav-card">
+        <view class="weui-flex between">
+          <block  wx:for="{{menus}}" wx:key="index">
+            <view class="weui-flex__item weui-flex center wrap" bindtap="viewInfo" data-wpyviewinfo-a="{{item}}">
+              <view class="nav-item weui-flex center">
+                <image src="{{item.icon}}" alt="" class="my-icon"/>
+              </view>
+              <view class="my-text">{{item.title}}</view>
+            </view>  
+          </block>
+        </view>
+      </view>
+      <view class="job-box">
+        <view class="job-title weui-flex between">
+          <view>职位列表</view>
+          <image src="../../images/team/down.png" alt="" class="page_card_icon"/>
+        </view>
+        <view class="job-search">
+          <view class="job-search-query weui-flex between">
+            <view class="address {{params.three_cityid?'active':''}}" bindtap="selectCity">
+              {{areaName}}
+             <image src="../../images/team/search-icon1.png" alt="" class="search_icon"/>
+            </view>
+            <view class="weui-flex around job-search-item">
+              <view class="item weui-flex center" bindtap="showModal" data-wpyshowmodal-a="1">{{activeIndex>-1?requirePersonList[activeIndex].label:'需求人数'}}<image src="../../images/team/search-icon2.png" alt="" class="search_icon"/></view>
+              <view class="item weui-flex center" bindtap="showModal" data-wpyshowmodal-a="2">{{sexIndex>-1?sexList[sexIndex].label:'性别'}}<image src="../../images/team/search-icon2.png" alt="" class="search_icon"/></view>
+              <view class="item weui-flex center" bindtap="showModal" data-wpyshowmodal-a="3">{{moneyIndex>-1?moneyTypeList[moneyIndex].label:'薪资模式'}}<image src="../../images/team/search-icon2.png" alt="" class="search_icon"/></view>
+              <view class="job-query1" wx:if="{{visibile}}">
+                <block wx:for="{{requirePersonList}}" wx:key="index">
+                  <view bindtap="select" class="{{activeIndex==index?'active':''}}" data-wpyselect-a="{{item}}" data-wpyselect-b="{{index}}" data-wpyselect-c="required_number">{{item.label}}</view>
+                </block>
+              </view>
+              <view class="job-query1 job-query2" wx:if="{{sexVisibile}}">
+                <block wx:for="{{sexList}}" wx:key="index">
+                  <view bindtap="select" class="{{sexIndex==index?'active':''}}" data-wpyselect-a="{{item}}" data-wpyselect-b="{{index}}" data-wpyselect-c="sex">{{item.label}}</view>
+                </block>
+              </view>
+              <view class="job-query1 job-query3" wx:if="{{moneyVisibile}}">
+                <block wx:for="{{moneyTypeList}}" wx:key="index">
+                  <view bindtap="select" class="{{moneyIndex==index?'active':''}}" data-wpyselect-a="{{item}}" data-wpyselect-b="{{index}}" data-wpyselect-c="money_type">{{item.label}}</view>
+                </block>
+              </view>
+            </view>
+          </view>
+         </view>
+         <block wx:for="{{list}}" wx:key="index" wx:if="{{list.length}}">
+          <view class="job-content" bindtap="viewDetail" data-wpyviewdetail-a="{{item}}">
+            <view class="weui-flex between job-col-1">    
+              <view class="name">{{item.name}}</view>
+              <view class="number">{{item.required_number}}人</view>
+            </view>
+            <view class="job-col-2">    
+              <view>
+                <text>{{item.provinceid}}{{item.cityid}}{{item.three_cityid}}</text><text>{{item.sex==1?'男':item.sex==2?'女':'男女不限'}}</text>{{item.min_age}}-{{item.max_age}}岁
+              </view>
+              <view wx:if="{{item.money_type==1}}">月薪： <text>{{item.money_min}}-{{item.money_max}}</text></view>
+              <view wx:else>{{item.money_type==2?'日':'时'}}薪： <text>{{item.money}}</text></view>
+              <view>{{item.reward_type==1?'月':item.reward_type==2?'日':item.reward_type==3?'时':'一次性'}}返： <text>{{item.reward_money}}/人</text></view>
+            </view>
+            <view class="weui-flex between job-col-3">    
+              <view class="com-name weui-flex__item">{{item.com_name||'-'}} <text>{{item.utime}}</text></view>
+              <button class="weui-btn_cell  weui-btn_primary" bindtap="applyRecepit" wx:if="{{rendaUserTeamType==1}}" data-wpyapplyrecepit-a="{{item}}">
+                接单
+              </button>
+            </view>
+          </view>
+         </block>
+         <view wx:if="{{!list.length}}" class="page_list">
+          <image src="https://a.rsd123.com/image/images/noBg.png" class="page_noData" mode="scaleToFill"/>
+          <view class="page_noData_text">暂无数据！</view>
+        </view>
+      </view>
+     </view>
+    </scroll-view>
+    
+	<view class="tabBarBox weui-flex center">
+		<!-- 首页 -->
+		<block  wx:for="{{$tabBarBottom$tabBarList.list}}" wx:key="index">
+			<navigator class="itemView  weui-flex__item" url="{{item.pagePath}}" open-type="redirect" hover-class="none">
+				<image class="item_icon" src="{{item.selected ? item.selectedIconPath : item.iconPath}}"/>
+				<view class="item_text {{item.selected ? 'c-y' : 'c-gray'}}">
+					{{item.text}}
+				</view>
+			</navigator>
+		</block>
+	</view>
+
+  </view>

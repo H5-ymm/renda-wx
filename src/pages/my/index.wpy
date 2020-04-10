@@ -270,7 +270,7 @@ export default class my extends wepy.page {
   getUser () {
     $http('/Userinfo/getUserInfo', { uid: this.uid }).then(res => {
       this.userInfo = res.data || {}
-      if (res.data.mobile && res.data.user_name) {
+      if (res.data.mobile) {
         wx.setStorageSync('userInfo', JSON.stringify(this.userInfo))
       }
       if (res.data.head_img) {

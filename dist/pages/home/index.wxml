@@ -1,0 +1,142 @@
+
+  <view class="detail-view">
+    <view class="weui-flex between header-box">
+      
+  <view class="weui-flex around tabBar"  wx:if="{{!isSeachWidth}}">
+    <block wx:for="{{$tabBar$tabBarList}}" wx:key="index">
+      <view class="{{$tabBar$activeIndex==index?'tabBar_item-active':''}} weui-flex__item tabBar_item" bindtap="$tabBar$switchTab" data-wpyswitchtab-a="{{index}}">
+        <view>{{item.name}}</view>
+        <view wx:if="{{item.num!=-1}}">({{item.num}})</view>
+      </view>
+    </block>
+    <view class="tab-line {{'line'+$tabBar$activeIndex}}"/>
+  </view>
+
+      
+  <view class="weui-cell weui-flex start search-box {{isSeachWidth?'weui-flex__item':''}}">
+		<image src="https://a.rsd123.com/image/images/search.png" class="dateIcon searchIcon"/>
+    <input class="weui-input weui-flex__item search-input" bindinput="$search$inputBind" confirm-type="search" bindfocus="$search$inputFocus" value="{{$search$name}}" placeholder="搜索"/>
+  </view>
+
+    </view>
+    <view class="page_margin view-content">
+      <scroll-view scroll-y="true" style="height:100%" bindscrolltolower="searchScrollLower">
+        <wxs src="../../filterWxs/dateFilter.wxs" module="wxs"/>
+
+  <view>
+    <block wx:for="{{$resumeList$list}}" wx:for-index="$resumeList$index" wx:for-item="$resumeList$item" wx:key="$resumeList$index">
+      <view class="page_card"  wx:if="{{$resumeList$list.length}}" bindtap="$resumeList$viewDetail" data-wpyviewdetail-a="{{$resumeList$item}}">
+        <view class="page_card_row weui-flex between">
+          <view class="weui-flex__item">
+            <view class="weui-flex between">
+              <view class="page_card_name">{{$resumeList$item.name}}</view>
+              <view class="page_card_status-item" wx:if="{{!$resumeList$item.push_status}}">
+                <button class="weui-btn_cell weui-flex__item weui-btn_primary" catchtap="$resumeList$applyResume" data-wpyapplyresume-a="{{$resumeList$item}}">
+                  推荐岗位
+                </button>
+              </view>
+              <view class="page_card_receipt_status {{'page_card_receipt_status'+ $resumeList$item.auditStatus}}" wx:if="{{$resumeList$item.push_status&&!$resumeList$item.interviewStatus}}">{{$resumeList$item.auditStatus==0?'待审核':$resumeList$item.auditStatus==1?'审核通过':'审核未通过'}}</view>
+              <view class="page_card_receipt_status {{'page_card_receipt_status'+ $resumeList$item.interviewStatus}}" wx:if="{{$resumeList$item.push_status&&!$resumeList$item.interviewStatus&&$resumeList$item.status==1&&$resumeList$item.interviewStatus}}">{{$resumeList$item.interviewStatus==1?'面试通过':$resumeList$item.interviewStatus==2?'面试未通过':'面试未参加'}}</view>
+              <view class="page_card_receipt_status {{'page_card_receipt_status'+ $resumeList$item.entryStatus}}" wx:if="{{$resumeList$item.push_status&&$resumeList$item.interviewStatus==1&&$resumeList$item.entryStatus}}">{{$resumeList$item.entryStatus==1?'入职通过':$resumeList$item.entryStatus==2?'入职未通过':'入职未参加'}}</view>
+            </view>
+            <view class="weui-flex between">
+              <view class="text-line weui-flex start">
+                <view>谁送给我：</view>
+                <view class="page_card_col1">{{$resumeList$item.from_user?$resumeList$item.from_user : '-'}}</view>
+                <!-- <view class="page_card_col1" wx:else>{{item?item.com_name : '-'}}</view> -->
+              </view>
+            </view>
+            <view class="weui-flex between">
+              <view class="weui-flex start weui-flex__item">
+                <view>我送给谁：</view>
+                <view class="page_card_col1 text-line">{{$resumeList$item.to_user ? $resumeList$item.to_user : '-'}}</view>
+                <!-- <view class="page_card_col1 text-line" wx:else>{{item?item.job_name:'-'}}</view> -->
+              </view>
+              <view class="page_card_time" wx:if="{{!$resumeList$item.type}}">{{wxs.dateFormat($resumeList$item.addtime,'yyyy-MM-dd')}}</view>
+              <view class="page_card_time" wx:else>{{wxs.dateFormat($resumeList$item.recommendTime,'yyyy-MM-dd')}}</view>
+            </view>
+          </view>
+          <image mode="scaleToFill" src="https://a.rsd123.com/image/images/right.png" class="page_down_icon"/>
+        </view>
+      </view>
+    </block>
+    <view  wx:if="{{!$resumeList$list.length}}" class="page_list">
+      <image src="https://a.rsd123.com/image/images/noBg.png" class="page_noData" mode="scaleToFill"/>
+      <view class="page_noData_text">暂无数据！</view>
+    </view>
+  </view>
+
+      </scroll-view>
+    </view>
+    <view class="status-row" wx:if="{{isStatus}}">
+      <block wx:for="{{statusList}}" wx:key="index">
+        <view class="status-item {{statusIndex==index?'status-item-active':''}}" bindtap="selectStatus" data-wpyselectstatus-a="{{item}}" data-wpyselectstatus-b="{{index}}">{{item.label}}</view>
+      </block>
+    </view>
+    <view class="home-add-resume" bindtap="addResume">
+      <image src="https://a.rsd123.com/image/images/add.png" class="add-icon"/>
+      <view class="home-add-text">添加简历</view>
+    </view>
+    
+  <view hidden="{{$homeModal$isScaleModal}}">
+    <view bindtap="$homeModal$handleOk"  wx:if="{{$homeModal$isShow}}" class="modal_mask"/>
+    <view class="modal_box transition3s {{ $homeModal$isShow ? 'g_scale1': ''}}" id="modal-box" style="height:{{$homeModal$height}}rpx">
+      <view class="modal-content"  wx:if="{{!$homeModal$type}}">
+        <view class="modal-bg">
+          <image src="{{$homeModal$modalObj.imgBg}}" mode="aspectFill" class="modal-img-bg"/>
+        </view>
+        <view class="modal-title">
+          {{$homeModal$modalObj.title}}
+        </view>
+        <text selectable="true" decode="{{$homeModal$true}}" class="modal-subTitle" wx:if="{{$homeModal$modalObj.subTitle}}">{{$homeModal$modalObj.subTitle}}</text>
+        <view class="weui-cell_btn weui-flex center">
+          <navigator open-type="{{$homeModal$openType}}" wx:if="{{$homeModal$openType}}" target="miniProgram" class="navigator">
+            <button class="weui-btn_cell weui-btn_cell-gradient" bindtap="$homeModal$handleOk">我知道啦</button>
+          </navigator>
+          <view class="navigator" wx:else>
+            <button class="weui-btn_cell weui-btn_cell-gradient" bindtap="$homeModal$handleOk">我知道啦</button>
+          </view>
+        </view>
+      </view>
+      <view wx:else class="modal-content modal-content-qrcode">
+        <image src="{{$homeModal$imgUrl}}" bindlongpress="$homeModal$saveImg" class="qrcode-img"/>
+        <view class="weui-cell_btn weui-flex center user-btn">
+          <button open-type="share" class="weui-btn_cell weui-btn_cell-gradient" bindtap="$homeModal$handleOk">长按图片保存二维码并分享</button>
+        </view>
+      </view>
+      <image src="https://a.rsd123.com/image/images/close.png" bindtap="$homeModal$handleOk" class="close-icon"/>
+    </view>
+  </view>
+
+
+    
+	<view hidden="{{$selectModal$isScaleModal}}">
+		<view bindtap="$selectModal$ handleClose"  wx:if="{{$selectModal$isShow}}" class="modal_mask"/>
+		<view class="modal_box transition3s {{ $selectModal$isShow ? 'g_scale1': ''}}" id="modal-box" style="height:{{$selectModal$height}}rpx">
+			<view class="modal-content">
+				<view class="home-view-box weui-flex between wrap">
+					<view class="modal-title ">{{$selectModal$title}} </view>
+					<block  wx:for="{{$selectModal$menus}}" wx:key="index">
+						<view class="card-item weui-flex between wrap" bindtap="$selectModal$selectType" data-wpyselecttype-a="{{index}}">
+							<image src="{{item.icon}}" alt="" mode="aspectFill" class="menu-icon"/>
+							<view class="card-item-title">{{item.title}}</view>
+							<image src="https://a.rsd123.com/image/images/user/radio2.png" alt="" mode="aspectFill" wx:if="{{index==$selectModal$activeIndex}}" class="radio-icon"/>
+							<image src="https://a.rsd123.com/image/images/user/radio1.png" wx:else alt="" mode="aspectFill" class="radio-icon"/>
+						</view>
+					</block>
+				</view>
+				<view class="weui-cell_btn weui-flex center footer-btn">
+					<button class="weui-btn_cell weui-btn_cell-gradient" bindtap="$selectModal$handleOk">确定</button>
+				</view>
+				<view>
+				<view class="weui-flex center notice-tip" wx:if="{{$selectModal$menus[0].title=='正常面试'}}">
+					<image src="https://a.rsd123.com/image/images/orderTaking/warn.png" class="tipIcon"/>
+					<text class="tip">通过简历根据已选择面试类型分类</text>
+				</view>
+				</view>
+			</view>
+			<image src="https://a.rsd123.com/image/images/close.png" bindtap="$selectModal$handleClose" class="close-icon"/>
+		</view>
+	</view>
+
+  </view>

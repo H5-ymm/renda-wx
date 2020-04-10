@@ -58,8 +58,8 @@
 <template>
   <view class="page-team-home">
     <view class="city-title weui-flex between">
-      <image src="../../images/team/clear.png" alt="" class="city_icon" />
-      <view class="addressText">{{address}}</view>
+      <image src="../../images/team/clear.png" alt="" class="city_icon" @tap="close"/>
+      <view class="addressText">{{address?address:addressText}}</view>
     </view>
     <view class="view-list">
       <view class="city-content weui-flex between">
@@ -91,7 +91,7 @@
     </view>
     <view class="city-btn">
 			<view class="weui-flex center">
-				<button class="weui-btn_cell"  @tap="viewNotice">
+				<button class="weui-btn_cell"  @tap="close">
 					取消 
 				</button>
 				<button class="weui-btn_cell weui-btn_primary" @tap="save">
@@ -115,8 +115,15 @@ export default class cityView extends wepy.page {
     cityCode: '',
     areaCode: '',
     areaName: '',
+    provinceName: '',
+    cityName: '',
     address: '全国',
     options: []
+  }
+  computed = {
+    addressText() {
+      return this.provinceName + this.cityName + this.areaName
+    }
   }
   getList(list) {
     return list.map(item => {
@@ -192,12 +199,13 @@ export default class cityView extends wepy.page {
         this.options = []
       } else if (index == 1) {
         this.address = ''
-        this.options = []
         this.code = item.value
+        this.provinceName = item.name
         let arr = [item.value, '']
         this.getCityList(arr)
       } else if (index == 2) {
         if (item.value) {
+          this.cityName = item.name
           this.cityCode = item.value
           let arr = [this.code ,item.value]
           this.getAreaList(arr)
@@ -214,14 +222,16 @@ export default class cityView extends wepy.page {
         if (this.address=='全国') {
           this.address = ''
         }
-        this.options.push(item.name)
-        this.options = Array.from(new Set(this.options))
-        this.address = this.options.join('-')
       }
       this.$apply()
     },
     save() {
       wxNavigateTo('/pages/teamView/index?code='+this.areaCode+'&name=' + this.areaName)
+    },
+    close() {
+      wx.navigateBack({
+       delta: 1,
+      })
     }
   }
 }

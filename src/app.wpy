@@ -67,8 +67,7 @@ export default class extends wepy.app {
       navigationBarTextStyle: 'white',
       navigationBarTitleText: '人事达',
       navigationBarBackgroundColor: '#1890FF',
-      backgroundColor: '#1890FF',
-      enablePullDownRefresh: true
+      backgroundColor: '#1890FF'
     },
     networkTimeout: {
       request: 10000,
@@ -92,42 +91,28 @@ export default class extends wepy.app {
   onShow (options) {
     wx.removeStorageSync('rendaUidQrcode');
     wx.removeStorageSync('rendaUserTeamId');
-    let str = ''
     let uid = ''
     let teamId = ''
-    if (options.scene) {
-      console.log(options.scene)
-      let scene = decodeURIComponent(options.scene);
-      //&是我们定义的参数链接方式
-      let userId = scene.split("&")[0];
-      console.log(userId + 'ddddddd')
-      let recommendId = scene.split('&')[1];
-      if (userId!=1001) {
-        this.globalData.rendaUidQrcode = userId
-        wx.setStorageSync('rendaUidQrcode', userId)
+    let scene = decodeURIComponent(options.scene);
+    //&是我们定义的参数链接方式
+    uid = scene.split("&")[0];
+    teamId = scene.split('&')[1];
+    if (teamId) {
+      this.globalData.rendaUidQrcode = uid
+      wx.setStorageSync('rendaUidQrcode', uid)
+      if (teamId != 'addResume') {
+        this.globalData.teamId = teamId
+        wx.setStorageSync('rendaUserTeamId', teamId)
       }
-      this.globalData.teamId = recommendId
-      wx.setStorageSync('rendaUserTeamId', recommendId)
-      //其他逻辑处理。。。。。
+    } else {
+      wx.setStorageSync('rendaUidQrcode', '')
+      wx.setStorageSync('rendaUserTeamId', '')
     }
-    // if (options.scene) {
-    //   if (typeof options.scene != 'number') {
-    //     let arr = options.scene.splite('?')
-    //     let arr1 = options.scene.splite('&')
-    //     uid = arr[1]
-    //     teamId = arr1[1]
-    //     console.log(options.scene)
-    //   }
-    //   wx.setStorageSync('rendaUidQrcode', uid)
-    //   wx.setStorageSync('rendaUserTeamId', teamId)
-    //   this.globalData.rendaUidQrcode = uid
-    //   this.globalData.teamId = teamId
-    // }
+    
     if (options.query && options.query.uid) {
       wx.setStorageSync('rendaUidQrcode', options.query.uid)
       this.globalData.rendaUidQrcode = options.query.uid
       if (options.query.teamId) {
-        console.log(options.query + 'ddd')
         this.globalData.teamId = options.query.teamId
         wx.setStorageSync('rendaUserTeamId', options.query.teamId)
       }
