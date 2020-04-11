@@ -100,7 +100,7 @@
 						<view class="dialogBox-row-time">{{messageDetail.addtime}}</view>
 						<view class="weui-flex end dialogBox-col weui-flex__item">
 							<view class="dialogBox-content dialogBox-content-right dialogBox-content-right1">
-								<text decode="{{true}}">公司：{{messageDetail.com_name}}\n您好，你已预约视频面试，通知：{{messageDetail.content}},\n面试职位:{{messageDetail.job_name}}\n面试时间 {{messageDetail.view_time}}\n联系电话：{{messageDetail.link_tel}}</text>
+								<text decode="{{true}}">公司：{{messageDetail.com_name}}\n您好，你已预约视频面试，通知：{{messageDetail.content}},\n面试职位:{{messageDetail.job_name}}\n面试时间 {{messageDetail.view_time}}\n</text><text @tap="concatPhone">联系电话：立即拨打</text>
 							</view>
 							<image mode="scaleToFill" src="{{messageDetail.logo_url}}" class="dialogBox-col-header" wx:if="{{messageDetail.logo_url}}"/>
 							<image mode="scaleToFill" src="https://a.rsd123.com/image/images/default1.png" class="dialogBox-col-header" wx:else/>
@@ -248,6 +248,22 @@ export default class dialogBox extends wepy.page {
 				this.auditResumeRecommend(status)
 			}).catch(() => {
 				console.log('取消')
+			})
+		},
+		concatPhone() {
+			let _this = this
+			console.log(_this.messageDetail.mobile)
+			wx.showActionSheet({
+				// itemList: [`拨打${this.messageDetail.link_tel}`],
+				itemList: [`拨打电话`],
+				success:res => {
+					wx.makePhoneCall({
+						phoneNumber: _this.messageDetail.mobile
+					})
+				},
+				fail(res) {
+					console.log(res.errMsg)
+				}
 			})
 		}
 	}

@@ -83,7 +83,6 @@ export default class userBind extends wepy.page {
   }
   onLoad() {
     this.usertype = wx.getStorageSync('rendaUserType')
-    console.log(this.usertype)
     this.$apply()
   }
 }

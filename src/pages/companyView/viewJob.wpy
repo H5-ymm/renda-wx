@@ -11,8 +11,8 @@
     .weui-textarea {
       text-align: left;
       line-height: 32rpx;
-			margin-top: 10rpx;
-			display: block;
+      margin-top: 10rpx;
+      display: block;
     }
   }
   .register-btn {
@@ -27,27 +27,24 @@
 <template>
 	<view class="detail-view">
 		<jobTemplate :form.sync="form"></jobTemplate>
-		<view class="weui-cell_btn weui-flex between register-btn">
+		<view class="weui-cell_btn weui-flex between register-btn" wx:if="{{form.status}}">
 			<button
 				class="weui-btn_cell weui-btn_primary {{form.job_status==1?'weui-btn_primary_plain':''}}"
 				wx:if="{{form.status==2&&!room_num&&!apply}}"
 				@tap="handleShelf"
 			>{{form.job_status==1?'下架':'上架'}}</button>
-			<button
-				class="weui-btn_cell weui-btn_primary"
-				wx:if="{{room_num}}"
-				@tap="entryVideo"
-			>进入面试</button>
-			<button
-				class="weui-btn_cell weui-btn_primary"
-				wx:if="{{apply}}"
-				@tap="handleApply"
-			>申请接单</button>
+			<button class="weui-btn_cell weui-btn_primary" wx:if="{{room_num}}" @tap="entryVideo">进入面试</button>
+			<button class="weui-btn_cell weui-btn_primary" wx:if="{{apply}}" @tap="handleApply">申请接单</button>
 			<button
 				class="weui-btn_cell weui-btn_primary_plain"
 				wx:if="{{form.status!=2||form.job_status==2}}"
 				@tap="handleDelete"
 			>删除</button>
+			<!-- <button
+				class="weui-btn_cell weui-btn_primary"
+				wx:if="{{form.status==0}}"
+				@tap="contactPhone"
+			>联系客服</button>-->
 		</view>
 	</view>
 </template>
@@ -73,7 +70,7 @@ export default class viewJob extends wepy.page {
 		this.id = options.query
 		if (options.room_num) {
 			this.room_num = options.room_num
-		} 
+		}
 		if (options.apply) {
 			this.apply = options.apply
 		}
@@ -100,14 +97,14 @@ export default class viewJob extends wepy.page {
 			wxReLaunch('/pages/companyView/checkReceipt')
 		})
 	}
-	getuserSig (params) {
+	getuserSig(params) {
 		$http('/Tencentcloud/createQuanjian', { name: params.room_name }).then(res => {
 			params.userSig = res.data
 			wx.setStorageSync('viewList', '')
 			this.routerView(params)
 		})
 	}
-	routerView (params) {
+	routerView(params) {
 		console.log(params)
 		const url = `/pages/room/room?roomID=${params.room_num}` +
 			`&userSig=${params.userSig}` +
@@ -131,16 +128,16 @@ export default class viewJob extends wepy.page {
 		})
 	}
 	setReceipt(params) {
-    $http('/apply/add_apply', params).then(res => {
-      if(res.data) {
-        wxToast('接单成功')
-        wx.setStorageSync('receiptType', 0)
-        wxNavigateTo('/pages/teamView/orderManage/list?query=0')
-      } else {
-        wxToast('接单失败')
-      }
-    })
-  }
+		$http('/apply/add_apply', params).then(res => {
+			if (res.data) {
+				wxToast('接单成功')
+				wx.setStorageSync('receiptType', 0)
+				wxNavigateTo('/pages/teamView/orderManage/list?query=0')
+			} else {
+				wxToast('接单失败')
+			}
+		})
+	}
 	methods = {
 		handleShelf() {
 			let params = {
@@ -160,14 +157,14 @@ export default class viewJob extends wepy.page {
 				uid: this.form.uid,
 				job_id: this.id
 			}
-     this.setReceipt(params)
+			this.setReceipt(params)
 		},
 		entryVideo() {
 			let params = {
 				room_name: wx.getStorageSync('phone'),
 				room_num: this.room_num
 			}
-	    wxShowModal('视频面试', `请确认已与企业电话沟通时间，未沟通可能造成视频面试失败?`).then(res => {
+			wxShowModal('视频面试', `请确认已与企业电话沟通时间，未沟通可能造成视频面试失败?`).then(res => {
 				this.getuserSig(params)
 			}).catch(() => {
 				console.log('取消')
@@ -182,6 +179,19 @@ export default class viewJob extends wepy.page {
 				this.deleteReceiptShelf(params)
 			}).catch(() => {
 				console.log('取消')
+			})
+		},
+		contactPhone() {
+			wx.showActionSheet({
+				itemList: ['拨打021-51991869'],
+				success(res) {
+					wx.makePhoneCall({
+						phoneNumber: '021-51991869'
+					})
+				},
+				fail(res) {
+					console.log(res.errMsg)
+				}
 			})
 		}
 	}

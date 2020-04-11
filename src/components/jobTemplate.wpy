@@ -59,7 +59,10 @@
 			<view class="page_card_row">
 				<view class="weui-flex between" wx:if="{{rendaUserTeamType==2}}">
 					<view class="my-text weui-flex__item">薪资金额</view>
-					<view class="my-text-right" wx:if="{{form.money_type==1}}">{{form.money_min}}-{{form.money_max}}/人/月</view>
+					<view
+						class="my-text-right"
+						wx:if="{{form.money_type==1}}"
+					>{{form.money_min}}-{{form.money_max}}/人/月</view>
 					<view class="my-text-right" wx:else>
 						{{form.money?form.money:0}}
 						{{form.money_type==2?'/人/天':'/人/时'}}
@@ -122,36 +125,46 @@
 			<view class="page_card_row" wx:if="{{form.reward_type}}">
 				<view class="weui-flex between">
 					<view class="my-text weui-flex__item">结算方式</view>
-					<view class="my-text-right" wx:if="{{form.reward_type==1}}">{{form.reward_money_type==1?'长期返利':'持续返利'}}</view>
+					<view
+						class="my-text-right"
+						wx:if="{{form.reward_type==1}}"
+					>{{form.reward_money_type==1?'长期返利':'持续返利'}}</view>
 					<view class="my-text-right weui-flex end" wx:if="{{form.reward_type==2||form.reward_type==3}}">
 						按{{wxs.rewardText(form.reward_money_type)}}结算
 						{{form.settlement_type==1?'本':'次'}}{{wxs.rewardText(form.reward_money_type)}}
-						<view wx:if="{{form.reward_money_type!=1}}">{{form.settlement_time}}{{wxs.rewardText(form.reward_money_type)}}</view>
+						<view
+							wx:if="{{form.reward_money_type!=1}}"
+						>{{form.settlement_time}}{{wxs.rewardText(form.reward_money_type)}}</view>
 					</view>
 				</view>
 			</view>
-			<view class="page_card_row" wx:if="{{(form.reward_type==1&&form.reward_money_type==2)||(form.reward_type==2||form.reward_type==3)}}">
+			<view
+				class="page_card_row"
+				wx:if="{{(form.reward_type==1&&form.reward_money_type==2)||(form.reward_type==2||form.reward_type==3)}}"
+			>
 				<view class="weui-flex between">
 					<view class="my-text weui-flex__item">持续时长</view>
-					<view class="my-text-right">
+					<view class="my-text-right" wx:if="{{form.duration_time}}">
 						{{form.duration_time}}
 						{{wxs.rewardTimeText(form.reward_money_type)}}
 					</view>
+					<view class="my-text-right" wx:else>1天</view>
 				</view>
 			</view>
 			<view class="page_card_row" wx:if="{{form.reward_type>1}}">
 				<view class="weui-flex between">
 					<view class="my-text weui-flex__item">需入职</view>
-					<view class="my-text-right">
+					<view class="my-text-right" wx:if="{{form.reward_needtime}}">
 						{{form.reward_needtime}}
 						<text wx:if="{{form.reward_money_type<4}}">{{wxs.rewardTimeText(form.reward_money_type)}}</text>
 						<text wx:else>天</text>
 					</view>
+					<view class="my-text-right" wx:else>1天</view>
 				</view>
 			</view>
 		</view>
 		<view class="page_card">
-			<view class="page_card_row">
+			<view class="page_card_row" wx:if="{{userType!=2}}">
 				<view class="weui-flex between">
 					<view class="my-text weui-flex__item">联系人</view>
 					<view class="my-text-right">{{form.link_name}}</view>
@@ -160,11 +173,12 @@
 			<view class="page_card_row">
 				<view class="weui-flex between">
 					<view class="my-text weui-flex__item">联系人电话</view>
-					<view class="my-text-right">{{form.tel}}</view>
+					<view class="my-text-right" wx:if="{{userType==2}}">{{wxsD.getPhoneNum(form.tel)}}</view>
+					<view class="my-text-right" wx:else>{{form.tel}}</view>
 				</view>
 			</view>
 		</view>
-		<view class="page_card">
+		<view class="page_card" wx:if="{{userType!=2}}">
 			<view class="page_card_row">
 				<view class="weui-flex between">
 					<view class="my-text weui-flex__item">邮箱</view>
@@ -177,16 +191,20 @@
 <script>
 import wepy from 'wepy'
 import wxs from '../filterWxs/rewaryFilter.wxs'
+import wxsD from '../filterWxs/dateFilter.wxs'
 export default class jobTemplate extends wepy.component {
-	wxs = { wxs }
+	wxs = { wxs, wxsD }
 	props = {
 		form: Object
 	}
 	data = {
-		rendaUserTeamType: 0
+		rendaUserTeamType: 0,
+		userType: 0
 	}
-	onLoad () {
+	onLoad() {
 		this.rendaUserTeamType = Number(wx.getStorageSync('rendaUserTeamType'))
+		this.userType = Number(wx.getStorageSync('rendaUserType'))
+		this.$apply()
 	}
 }
 </script>

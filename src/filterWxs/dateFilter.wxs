@@ -44,7 +44,17 @@ var getCardNum = function (card) {
     }
     return str.substring(0, 1) + xing + str.substring(str.length - 1);
 }
+var getPhoneNum = function (phone) {
+    var str = phone ? phone.toString() : ''
+    var len = str.length - 5
+    var xing = '';
+    for (var i = 0; i < len; i++) {
+        xing += '*';
+    }
+    return str.substring(0, 3) + xing + str.substring(str.length - 2);
+}
 module.exports = {
     dateFormat: dateFormat,
-    getCardNum: getCardNum
+    getCardNum: getCardNum,
+    getPhoneNum: getPhoneNum
 };

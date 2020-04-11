@@ -1,6 +1,7 @@
 
 	<view class="detail-view">
 		<wxs src="../../../filterWxs/rewaryFilter.wxs" module="wxs"/>
+<wxs src="../../../filterWxs/dateFilter.wxs" module="wxsD"/>
 
 	<view class="home-view-box page_margin view-detail">
 		<view class="page_card">
@@ -136,25 +137,27 @@
 			<view class="page_card_row" wx:if="{{($jobTemplateTeam$form.reward_type==1&&$jobTemplateTeam$form.reward_money_type==2)||($jobTemplateTeam$form.reward_type==2||$jobTemplateTeam$form.reward_type==3)}}">
 				<view class="weui-flex between">
 					<view class="my-text weui-flex__item">持续时长</view>
-					<view class="my-text-right">
+					<view class="my-text-right" wx:if="{{$jobTemplateTeam$form.duration_time}}">
 						{{$jobTemplateTeam$form.duration_time}}
 						{{wxs.rewardTimeText($jobTemplateTeam$form.reward_money_type)}}
 					</view>
+					<view class="my-text-right" wx:else>1天</view>
 				</view>
 			</view>
 			<view class="page_card_row" wx:if="{{$jobTemplateTeam$form.reward_type>1}}">
 				<view class="weui-flex between">
 					<view class="my-text weui-flex__item">需入职</view>
-					<view class="my-text-right">
+					<view class="my-text-right" wx:if="{{$jobTemplateTeam$form.reward_needtime}}">
 						{{$jobTemplateTeam$form.reward_needtime}}
 						<text wx:if="{{$jobTemplateTeam$form.reward_money_type<4}}">{{wxs.rewardTimeText($jobTemplateTeam$form.reward_money_type)}}</text>
 						<text wx:else>天</text>
 					</view>
+					<view class="my-text-right" wx:else>1天</view>
 				</view>
 			</view>
 		</view>
 		<view class="page_card">
-			<view class="page_card_row">
+			<view class="page_card_row" wx:if="{{$jobTemplateTeam$userType!=2}}">
 				<view class="weui-flex between">
 					<view class="my-text weui-flex__item">联系人</view>
 					<view class="my-text-right">{{$jobTemplateTeam$form.link_name}}</view>
@@ -163,11 +166,12 @@
 			<view class="page_card_row">
 				<view class="weui-flex between">
 					<view class="my-text weui-flex__item">联系人电话</view>
-					<view class="my-text-right">{{$jobTemplateTeam$form.tel}}</view>
+					<view class="my-text-right" wx:if="{{$jobTemplateTeam$userType==2}}">{{wxsD.getPhoneNum($jobTemplateTeam$form.tel)}}</view>
+					<view class="my-text-right" wx:else>{{$jobTemplateTeam$form.tel}}</view>
 				</view>
 			</view>
 		</view>
-		<view class="page_card">
+		<view class="page_card" wx:if="{{$jobTemplateTeam$userType!=2}}">
 			<view class="page_card_row">
 				<view class="weui-flex between">
 					<view class="my-text weui-flex__item">邮箱</view>
@@ -178,9 +182,8 @@
 	</view>
 
 		<view class="weui-cell_btn weui-flex between register-btn">
-			<!-- <button class="weui-btn_cell weui-btn_primary" bindtap="handleDelete">接单分配</button> -->
 			<button class="weui-btn_cell weui-btn_primary"  wx:if="{{receiptType<0}}" bindtap="recommend">推荐岗位</button>
-			<button class="weui-btn_cell weui-btn_primary"  wx:if="{{!receiptType&&form.status==1}}" bindtap="contactPhone">联系客服</button>
+			<button class="weui-btn_cell weui-btn_primary"  wx:if="{{!receiptType&&form.status<=1}}" bindtap="contactPhone">联系客服</button>
 			<button class="weui-btn_cell weui-btn_primary" wx:if="{{!receiptType&&form.status&&form.status!=1}}" bindtap="handleDelete">删除</button>
 		</view>
 	</view>

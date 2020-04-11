@@ -9,7 +9,7 @@
 							<image mode="scaleToFill" src="{{messageDetail.header_img}}" class="dialogBox-col-header"  wx:if="{{messageDetail.header_img}}"/>
 							<image mode="scaleToFill" src="https://a.rsd123.com/image/images/default1.png" class="dialogBox-col-header"  wx:else/>
 							<view class="dialogBox-content dialogBox-content-left dialogBox-content-left1">
-								<text decode="{{true}}">公司：{{messageDetail.com_name}}\n您好，你已预约视频面试，通知：{{messageDetail.content}},\n面试职位:{{messageDetail.job_name}}\n面试时间 {{messageDetail.view_time}}\n</text><text bindtap="concat">联系电话：{{messageDetail.link_tel}}</text>
+								<text decode="{{true}}">公司：{{messageDetail.com_name}}\n您好，你已预约视频面试，通知：{{messageDetail.content}},\n面试职位:{{messageDetail.job_name}}\n面试时间 {{messageDetail.view_time}}\n</text><text bindtap="concat">联系电话：一键拨打</text>
 							</view>
 						</view>
 						<view class="dialogBox-btn weui-flex between">

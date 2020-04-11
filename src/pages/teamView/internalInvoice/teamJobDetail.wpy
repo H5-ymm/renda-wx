@@ -28,11 +28,10 @@
 	<view class="detail-view">
 		<jobTemplateTeam :form.sync="form"></jobTemplateTeam>
 		<view class="weui-cell_btn weui-flex between register-btn">
-			<!-- <button class="weui-btn_cell weui-btn_primary" @tap="handleDelete">接单分配</button> -->
 			<button class="weui-btn_cell weui-btn_primary" wx:if="{{receiptType<0}}" @tap="recommend">推荐岗位</button>
 			<button
 				class="weui-btn_cell weui-btn_primary"
-				wx:if="{{!receiptType&&form.status==1}}"
+				wx:if="{{!receiptType&&form.status<=1}}"
 				@tap="contactPhone"
 			>联系客服</button>
 			<button

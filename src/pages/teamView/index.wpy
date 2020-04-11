@@ -363,11 +363,18 @@ export default class teamView extends wepy.page {
     showModal(index){
       if (index == 1) {
         this.visibile = !this.visibile
+        this.sexVisibile = false
+        this.moneyVisibile = false
       } else if (index == 2) {
         this.sexVisibile = !this.sexVisibile 
+        this.visibile = false
+        this.moneyVisibile = false
       } else {
         this.moneyVisibile = !this.moneyVisibile
+        this.visibile = false
+        this.sexVisibile = false
       }
+      this.$apply()
     },
     select(item, index,  key) {
       if (key == 'required_number') {
