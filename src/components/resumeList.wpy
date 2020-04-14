@@ -14,21 +14,19 @@
                 </button>
               </view>
               <view class="page_card_receipt_status {{'page_card_receipt_status'+ item.auditStatus}}" wx:if="{{item.push_status&&!item.interviewStatus}}">{{item.auditStatus==0?'待审核':item.auditStatus==1?'审核通过':'审核未通过'}}</view>
-              <view class="page_card_receipt_status {{'page_card_receipt_status'+ item.interviewStatus}}" wx:if="{{item.push_status&&!item.interviewStatus&&item.status==1&&item.interviewStatus}}">{{item.interviewStatus==1?'面试通过':item.interviewStatus==2?'面试未通过':'面试未参加'}}</view>
+              <view class="page_card_receipt_status {{'page_card_receipt_status'+ (item.interviewStatus + 1)}}" wx:if="{{item.push_status&&item.status==1&&item.interviewStatus&&!item.entryStatus}}">{{item.interviewStatus==1?'面试通过':item.interviewStatus==2?'面试未通过':'面试未参加'}}</view>
               <view class="page_card_receipt_status {{'page_card_receipt_status'+ item.entryStatus}}" wx:if="{{item.push_status&&item.interviewStatus==1&&item.entryStatus}}">{{item.entryStatus==1?'入职通过':item.entryStatus==2?'入职未通过':'入职未参加'}}</view>
             </view>
             <view class="weui-flex between">
               <view class="text-line weui-flex start">
                 <view>谁送给我：</view>
                 <view class="page_card_col1">{{item.from_user?item.from_user : '-'}}</view>
-                <!-- <view class="page_card_col1" wx:else>{{item?item.com_name : '-'}}</view> -->
               </view>
             </view>
             <view class="weui-flex between">
               <view class="weui-flex start weui-flex__item">
                 <view>我送给谁：</view>
                 <view class="page_card_col1 text-line">{{item.to_user ? item.to_user : '-'}}</view>
-                <!-- <view class="page_card_col1 text-line" wx:else>{{item?item.job_name:'-'}}</view> -->
               </view>
               <view class="page_card_time" wx:if="{{!item.type}}">{{wxs.dateFormat(item.addtime,'yyyy-MM-dd')}}</view>
               <view class="page_card_time" wx:else>{{wxs.dateFormat(item.recommendTime,'yyyy-MM-dd')}}</view>

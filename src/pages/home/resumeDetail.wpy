@@ -122,18 +122,22 @@
     <view class="weui-cell_btn weui-flex center view-footer" wx:else>
       <button class="weui-btn_cell weui-btn_primary_plain" @tap="handleResume(0)" wx:if="{{form.status==0&&!form.interview_status}}">放弃报名</button>
       <button class="weui-btn_cell weui-btn_primary_plain" @tap="handleResume(1)" wx:if="{{form.status==1&&!form.interview_status}}">放弃面试</button>
-      <button class="weui-btn_cell weui-btn_primary_plain" @tap="handleResume(2)" wx:if="{{form.interview_status==2&&!form.entry_status}}">放弃入职</button>
+      <button class="weui-btn_cell weui-btn_primary_plain" @tap="handleResume(2)" wx:if="{{form.interview_status==1&&!form.entry_status}}">放弃入职</button>
+      <button @tap="routerResume()" class="weui-btn_cell weui-btn_primary" wx:if="{{form.status==2||form.interview_status>=3||form.entry_status>=2}}" type="text" size="small">推荐岗位</button>
     </view>
+    <selectModalWay :isScaleModal.sync="isSelectModal" :menus.sync="menus" @handleClose="handleClose" @selectOk="selectOk" :title.sync="modalTitle"></selectModalWay>
   </view>
 </template>
 <script>
 import wepy from 'wepy'
 import districtSelet from '@/components/districtSelet'
+import selectModal from '@/components/selectModal'
 import { $http } from '@/http.js'
-import { wxShowModal, wxToast, wxRedirectTo } from '@/util.js'
+import { wxShowModal, wxToast, wxRedirectTo, wxNavigateTo } from '@/util.js'
 export default class resumeDetail extends wepy.page {
   components = {
-    districtSelet: districtSelet
+    districtSelet: districtSelet,
+    selectModalWay: selectModal
   }
   data = {
     array: ['男', '女', '男女不限'],
@@ -148,7 +152,19 @@ export default class resumeDetail extends wepy.page {
     address: [],
     status: 0,
     id: '',
-    recommendId: ''
+    recommendId: '',
+    isSelectModal: true,
+    modalTitle: '请选择岗位性质',
+    menus: [
+      {
+        icon: 'https://a.rsd123.com/image/images/modal/icon3.png',
+        title: '内部发单',
+      },
+      {
+        icon: 'https://a.rsd123.com/image/images/modal/icon4.png',
+        title: '团队接单'
+      }
+    ],
   }
   config = {
     navigationBarTitleText: '简历信息'
@@ -216,7 +232,20 @@ export default class resumeDetail extends wepy.page {
     selectCity: data => {
       this.form.provinceid = data[0] ? data[0] : 0
       this.form.cityid = data[1] ? data[1] : 0
-    }
+    },
+    selectOk: val => {
+      if (this.modalTitle == '请选择简历方式') {
+        if (val === 0) {
+          wx.navigateTo({
+            url: '/pages/home/addInfo' // 页面 A
+          })
+        } else {
+          this.createQrcode()
+        }
+      } else {
+        wxNavigateTo(`/pages/teamView/internalInvoice/list?query=${val}&resumeId=${this.query.resume_id}&recommendId=${this.id}`)
+      }
+    },
   }
   //事件处理函数(集中保存在methods对象中)
   methods = {
@@ -245,6 +274,10 @@ export default class resumeDetail extends wepy.page {
       }).catch(() => {
         console.log('取消')
       })
+    },
+    routerResume(){
+      this.isSelectModal = !this.isSelectModal
+      this.$apply()
     },
     save () {
       if (this.form.age && Number(this.form.age) < 16) {

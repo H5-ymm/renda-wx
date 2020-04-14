@@ -86,7 +86,7 @@ export default class Index extends wepy.page {
 				badgeNum: 0
 			}
 		],
-		usertype: '1',
+		usertype: 1,
 		tabBarIndex: 0
 	}
 	config = {
@@ -106,7 +106,7 @@ export default class Index extends wepy.page {
 	saveUser(uid) {
     let userinfo = wx.getStorageSync('wxInfo')
     let params = {
-      uid: wx.getStorageSync('rendaUid') || this.$parent.globalData.uid,
+      uid,
       head_img: userinfo.head_img
     }
     $http('/userinfo/editUserInfo', params).then(res => {

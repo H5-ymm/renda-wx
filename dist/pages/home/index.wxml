@@ -36,21 +36,19 @@
                 </button>
               </view>
               <view class="page_card_receipt_status {{'page_card_receipt_status'+ $resumeList$item.auditStatus}}" wx:if="{{$resumeList$item.push_status&&!$resumeList$item.interviewStatus}}">{{$resumeList$item.auditStatus==0?'待审核':$resumeList$item.auditStatus==1?'审核通过':'审核未通过'}}</view>
-              <view class="page_card_receipt_status {{'page_card_receipt_status'+ $resumeList$item.interviewStatus}}" wx:if="{{$resumeList$item.push_status&&!$resumeList$item.interviewStatus&&$resumeList$item.status==1&&$resumeList$item.interviewStatus}}">{{$resumeList$item.interviewStatus==1?'面试通过':$resumeList$item.interviewStatus==2?'面试未通过':'面试未参加'}}</view>
+              <view class="page_card_receipt_status {{'page_card_receipt_status'+ ($resumeList$item.interviewStatus + 1)}}" wx:if="{{$resumeList$item.push_status&&$resumeList$item.status==1&&$resumeList$item.interviewStatus&&!$resumeList$item.entryStatus}}">{{$resumeList$item.interviewStatus==1?'面试通过':$resumeList$item.interviewStatus==2?'面试未通过':'面试未参加'}}</view>
               <view class="page_card_receipt_status {{'page_card_receipt_status'+ $resumeList$item.entryStatus}}" wx:if="{{$resumeList$item.push_status&&$resumeList$item.interviewStatus==1&&$resumeList$item.entryStatus}}">{{$resumeList$item.entryStatus==1?'入职通过':$resumeList$item.entryStatus==2?'入职未通过':'入职未参加'}}</view>
             </view>
             <view class="weui-flex between">
               <view class="text-line weui-flex start">
                 <view>谁送给我：</view>
                 <view class="page_card_col1">{{$resumeList$item.from_user?$resumeList$item.from_user : '-'}}</view>
-                <!-- <view class="page_card_col1" wx:else>{{item?item.com_name : '-'}}</view> -->
               </view>
             </view>
             <view class="weui-flex between">
               <view class="weui-flex start weui-flex__item">
                 <view>我送给谁：</view>
                 <view class="page_card_col1 text-line">{{$resumeList$item.to_user ? $resumeList$item.to_user : '-'}}</view>
-                <!-- <view class="page_card_col1 text-line" wx:else>{{item?item.job_name:'-'}}</view> -->
               </view>
               <view class="page_card_time" wx:if="{{!$resumeList$item.type}}">{{wxs.dateFormat($resumeList$item.addtime,'yyyy-MM-dd')}}</view>
               <view class="page_card_time" wx:else>{{wxs.dateFormat($resumeList$item.recommendTime,'yyyy-MM-dd')}}</view>

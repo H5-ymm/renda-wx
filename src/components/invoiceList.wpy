@@ -43,7 +43,7 @@
 								<view class="text-line weui-flex__item">
 									{{recommendType==1?item.com_name:item.company_name}}</view>
 								<view class="text-line weui-flex__item">
-									需求人数:{{recommendType==1?item.required_number:item.number}}人
+									需求人数 : {{recommendType==1?item.required_number:item.number}}人
 								</view>
 							</view>
 							<view class="weui-flex end wrap page_card_end">
@@ -52,7 +52,7 @@
 										推荐岗位
 									</button>
 								</view>
-								<view class="page_card_time">已推荐: 23</view>
+								<view class="page_card_time">已推荐 : {{item.put_num}}</view>
 							</view>
 						</view>
 					</view>
@@ -78,7 +78,6 @@ export default class invoiceList extends wepy.component {
 	}
 	methods = {
 		handleJob (item, status) {
-			console.log(item)
 			let query = {
 				uid: wx.getStorageSync('rendaUid'),
 				id: item.id

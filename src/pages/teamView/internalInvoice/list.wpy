@@ -13,8 +13,7 @@
 				</view>
 			</scroll-view>
 		</view>
-	</view>
-	<viewNoticeModal :isScaleModal.sync="isModal" :height.sync="modalHeight" :timeInfo.sync="timeInfo" :title.sync="title"></viewNoticeModal>
+  	<viewNoticeModal :isScaleModal.sync="isModal" :height.sync="modalHeight" :timeInfo.sync="timeInfo" :title.sync="title"></viewNoticeModal>
 	</view>
 </template>
 <script>
@@ -113,14 +112,14 @@ export default class checkResumeList extends wepy.page {
 				url = 'teamJobDetail'		
 			}
 			wx.redirectTo({
-					url: `/pages/teamView/internalInvoice/${url}?query=${val.id}&resume_id=${this.id}`
-				})
+				url: `/pages/teamView/internalInvoice/${url}?query=${val.id}&resume_id=${this.id}`
+			})
 		}
 	}
 	recommend(params) {
     $http(this.urlApi, params).then(res => {
       if (res.data) {
-				wxToast('推荐成功')
+				wxToast(res.data || '推荐成功')
 				wxNavigateTo('/pages/home/index')
 			} else {
 				wxToast('推荐失败')

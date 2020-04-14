@@ -22,7 +22,7 @@
 								<view class="text-line weui-flex__item">
 									{{$invoiceList$recommendType==1?item.com_name:item.company_name}}</view>
 								<view class="text-line weui-flex__item">
-									需求人数:{{$invoiceList$recommendType==1?item.required_number:item.number}}人
+									需求人数 : {{$invoiceList$recommendType==1?item.required_number:item.number}}人
 								</view>
 							</view>
 							<view class="weui-flex end wrap page_card_end">
@@ -31,7 +31,7 @@
 										推荐岗位
 									</button>
 								</view>
-								<view class="page_card_time">已推荐: 23</view>
+								<view class="page_card_time">已推荐 : {{item.put_num}}</view>
 							</view>
 						</view>
 					</view>
@@ -48,8 +48,7 @@
 				</view>
 			</scroll-view>
 		</view>
-	</view>
-	
+  	
 	<view hidden="{{$viewNoticeModal$isScaleModal}}">
 		<view bindtap="$viewNoticeModal$ handleClose"  wx:if="{{$viewNoticeModal$isShow}}" class="modal_mask"/>
 		<view class="modal_box modal-notice_box modal-viewNotice_box transition3s {{ $viewNoticeModal$isShow ? 'g_scale1': ''}}" style="height:{{$viewNoticeModal$height}}rpx">
@@ -82,3 +81,5 @@
 		</view>
 	</view>
 
+
+	</view>

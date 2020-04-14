@@ -130,6 +130,37 @@
     <view class="weui-cell_btn weui-flex center view-footer" wx:else>
       <button class="weui-btn_cell weui-btn_primary_plain" bindtap="handleResume" wx:if="{{form.status==0&&!form.interview_status}}" data-wpyhandleresume-a="0">放弃报名</button>
       <button class="weui-btn_cell weui-btn_primary_plain" bindtap="handleResume" wx:if="{{form.status==1&&!form.interview_status}}" data-wpyhandleresume-a="1">放弃面试</button>
-      <button class="weui-btn_cell weui-btn_primary_plain" bindtap="handleResume" wx:if="{{form.interview_status==2&&!form.entry_status}}" data-wpyhandleresume-a="2">放弃入职</button>
+      <button class="weui-btn_cell weui-btn_primary_plain" bindtap="handleResume" wx:if="{{form.interview_status==1&&!form.entry_status}}" data-wpyhandleresume-a="2">放弃入职</button>
+      <button bindtap="routerResume" class="weui-btn_cell weui-btn_primary" wx:if="{{form.status==2||form.interview_status>=3||form.entry_status>=2}}" type="text" size="small" data-wpyrouterresume-a="">推荐岗位</button>
     </view>
+    
+	<view hidden="{{$selectModalWay$isScaleModal}}">
+		<view bindtap="$selectModalWay$ handleClose"  wx:if="{{$selectModalWay$isShow}}" class="modal_mask"/>
+		<view class="modal_box transition3s {{ $selectModalWay$isShow ? 'g_scale1': ''}}" id="modal-box" style="height:{{$selectModalWay$height}}rpx">
+			<view class="modal-content">
+				<view class="home-view-box weui-flex between wrap">
+					<view class="modal-title ">{{$selectModalWay$title}} </view>
+					<block  wx:for="{{$selectModalWay$menus}}" wx:key="index">
+						<view class="card-item weui-flex between wrap" bindtap="$selectModalWay$selectType" data-wpyselecttype-a="{{index}}">
+							<image src="{{item.icon}}" alt="" mode="aspectFill" class="menu-icon"/>
+							<view class="card-item-title">{{item.title}}</view>
+							<image src="https://a.rsd123.com/image/images/user/radio2.png" alt="" mode="aspectFill" wx:if="{{index==$selectModalWay$activeIndex}}" class="radio-icon"/>
+							<image src="https://a.rsd123.com/image/images/user/radio1.png" wx:else alt="" mode="aspectFill" class="radio-icon"/>
+						</view>
+					</block>
+				</view>
+				<view class="weui-cell_btn weui-flex center footer-btn">
+					<button class="weui-btn_cell weui-btn_cell-gradient" bindtap="$selectModalWay$handleOk">确定</button>
+				</view>
+				<view>
+				<view class="weui-flex center notice-tip" wx:if="{{$selectModalWay$menus[0].title=='正常面试'}}">
+					<image src="https://a.rsd123.com/image/images/orderTaking/warn.png" class="tipIcon"/>
+					<text class="tip">通过简历根据已选择面试类型分类</text>
+				</view>
+				</view>
+			</view>
+			<image src="https://a.rsd123.com/image/images/close.png" bindtap="$selectModalWay$handleClose" class="close-icon"/>
+		</view>
+	</view>
+
   </view>

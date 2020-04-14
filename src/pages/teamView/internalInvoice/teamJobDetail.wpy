@@ -88,7 +88,7 @@ export default class teamJobDetail extends wepy.page {
 	recommendResume(params) {
 		$http('/apply/add_put', params).then(res => {
 			if (res.data) {
-				wxToast('推荐成功')
+				wxToast(res.data || '推荐成功')
 				wxNavigateTo('/pages/home/index')
 			} else {
 				wxToast('推荐失败')
