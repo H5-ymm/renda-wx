@@ -90,7 +90,7 @@
 						<view class="my-text weui-flex__item">部门</view>
 						<picker @change="pickerChange" value="{{depIndex}}" wx:if="{{uid!=userUid&&userTeamType==1&&form.grade_num!=2}}" range-key="depart_name" data-name="depId" range="{{depList}}">
 							<view class="my-text-right weui-flex between">
-								<view class="{{depId?'':'placeholder'}}"> {{depId?depList[depIndex].depart_name:'请选择职位'}}</view>
+								<view class="{{depId?'':'placeholder'}}"> {{depId?depList[depIndex].depart_name:'请选择部门'}}</view>
 								<image mode="scaleToFill" src="https://a.rsd123.com/image/images/down.png" class="page_down_icon" />
 							</view>
 						</picker>
@@ -102,7 +102,7 @@
 						<view class="my-text weui-flex__item">当前职位</view>
 						<picker @change="pickerChange" value="{{jobIndex}}" range-key="grade_name" wx:if="{{uid!=userUid&&userTeamType==1&&form.grade_num!=2}}" data-name="grade_id" range="{{jobList}}">
 							<view class="my-text-right weui-flex between">
-								<view class="{{form.grade_id?'':'placeholder'}}"> {{form.grade_id?jobList[jobIndex].grade_name:'请选择部门'}}</view>
+								<view class="{{form.grade_id?'':'placeholder'}}"> {{form.grade_id?jobList[jobIndex].grade_name:'请选择职位'}}</view>
 								<image mode="scaleToFill" src="https://a.rsd123.com/image/images/down.png" class="page_down_icon" />
 							</view>
 						</picker>
@@ -227,6 +227,7 @@ export default class userInTeam extends wepy.page {
 			this.invite_uid = ''
 			this.userTeamType = wx.getStorageSync('rendaUserTeamType')
 			this.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
+			this.getDepartmenList()
 			if (options.query) {
 				this.id = options.query
 				this.userUid = options.uid
@@ -236,7 +237,6 @@ export default class userInTeam extends wepy.page {
 				this.id = ''
 				this.userUid = ''
 			}
-			this.getDepartmenList()
 		}
 		this.$apply()
 	}
@@ -303,24 +303,39 @@ export default class userInTeam extends wepy.page {
 			this.userUid = res.data.data.uid
 			if (this.form.grade_num == 1 && !this.form.user_name) {
 				this.form.user_name = JSON.parse(wx.getStorageSync('wxInfo')).user_name
-			} 
+			}
+			if (this.form.depart_id) {
+				this.depId = this.form.depart_id
+				this.depList.forEach((item, index) => {
+					if (this.form.depart_id == item.id) {
+						this.depIndex = index
+						this.jobList = item.child
+						item.child.forEach((val, ind) => {
+							if (this.form.grade_id == val.id) {
+								this.jobIndex = ind
+							}
+						})
+					}
+				})
+			} else {
+				this.depId = ''
+				this.depIndex = 0
+				this.jobIndex = 0
+				if (this.jobList.length) {
+					this.form.grade_id = this.jobList[1].id
+				}
+			}
 			if (this.form.provinceid && this.form.provinceName) {
 				this.address = [Number(this.form.provinceid), Number(this.form.cityid), Number(this.form.three_cityid)]
 			} else {
 				this.address = []
 			}
 			this.form.education = res.data.data.education ? res.data.data.education : 0
-			if (this.form.grade_id) {
-				if (this.form.grade_num == 2) {
-					this.jobIndex = 0
-				} else {
-					this.jobIndex = 1
-				}
-			} else {
-				if (this.jobList.length) {
-					this.form.grade_id = this.jobList[1].id
-				}
-			}
+			// if (!this.form.grade_id) {
+			//   if (this.jobList.length) {
+			// 		this.form.grade_id = this.jobList[1].id
+			// 	}
+			// }
 			this.$apply()
 		})
 	}

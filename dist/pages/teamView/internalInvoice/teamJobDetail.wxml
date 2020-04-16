@@ -27,8 +27,8 @@
 				<view class="weui-flex between">
 					<view class="my-text weui-flex__item">所在地区</view>
 					<view class="my-text-right">
-						{{$jobTemplateTeam$form.provinceName}}{{$jobTemplateTeam$form.cityName}}
-						{{$jobTemplateTeam$form.aresName}}{{$jobTemplateTeam$form.address||''}}
+						{{$jobTemplateTeam$form.provinceName || $jobTemplateTeam$form.province}}{{$jobTemplateTeam$form.cityName || $jobTemplateTeam$form.city}}
+						{{$jobTemplateTeam$form.aresName || $jobTemplateTeam$form.area}}{{$jobTemplateTeam$form.address ||''}}
 					</view>
 				</view>
 			</view>
@@ -49,7 +49,7 @@
 			<view class="page_card_row">
 				<view class="weui-flex between">
 					<view class="my-text weui-flex__item">学历</view>
-					<view class="my-text-right">{{$jobTemplateTeam$form.educationName}}</view>
+					<view class="my-text-right">{{$jobTemplateTeam$form.educationName || $jobTemplateTeam$form.education}}</view>
 				</view>
 			</view>
 		</view>

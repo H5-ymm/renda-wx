@@ -23,8 +23,8 @@
 				<view class="weui-flex between">
 					<view class="my-text weui-flex__item">所在地区</view>
 					<view class="my-text-right">
-						{{form.provinceName}}{{form.cityName}}
-						{{form.aresName}}{{form.address||''}}
+						{{form.provinceName || form.province}}{{form.cityName || form.city}}
+						{{form.aresName || form.area}}{{form.address ||''}}
 					</view>
 				</view>
 			</view>
@@ -45,7 +45,7 @@
 			<view class="page_card_row">
 				<view class="weui-flex between">
 					<view class="my-text weui-flex__item">学历</view>
-					<view class="my-text-right">{{form.educationName}}</view>
+					<view class="my-text-right">{{form.educationName || form.education}}</view>
 				</view>
 			</view>
 		</view>
