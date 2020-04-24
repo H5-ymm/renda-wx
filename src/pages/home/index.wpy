@@ -228,7 +228,7 @@ export default class home extends wepy.page {
   }
   createQrcode () {
     let params = {
-      scene: this.params.uid&addResume,
+      scene: this.params.uid&'addResume',
       page: 'pages/home/qrCodeResume',
       width: 300
     }

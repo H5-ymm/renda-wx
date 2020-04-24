@@ -6,7 +6,7 @@
 }
 </style>
 <template>
-  <view class="home-view register-view page_margin">
+  <view class="home-view register-view page_margin form_view">
     <view class="home-view-box">
       <view class="page_card">
         <view class="page_card_row">

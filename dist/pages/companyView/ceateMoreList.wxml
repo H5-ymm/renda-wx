@@ -50,9 +50,11 @@
 				<view class="page_card_row">
           <view class="weui-flex between">
             <view class="my-text weui-flex__item my-text-require">返利金额：</view>
-						 <input class="weui-input" data-name="reward_money" placeholder-class="placeholder" placeholder="请输入返利金额" value="{{$createForm$form.reward_money}}" bindinput="$createForm$changeInput"/>
-						<view class="input-text-end"  wx:if="{{$createForm$form.reward_type!=''}}">
-							{{wxs.rewardTypeText($createForm$form.reward_type)}}
+				    <view class="weui-flex between">
+							<input class="weui-input reward_money_input" data-name="reward_money" placeholder-class="placeholder" placeholder="请输入返利金额" value="{{$createForm$form.reward_money}}" bindinput="$createForm$changeInput"/>
+							<view class="input-text-end"  wx:if="{{$createForm$form.reward_type!=''}}">
+								{{wxs.rewardTypeText($createForm$form.reward_type)}}
+							</view>
 						</view>
           </view>
         </view>
@@ -106,10 +108,10 @@
 			 <view class="page_card_row" wx:if="{{$createForm$form.reward_type>1}}">
           <view class="weui-flex between">
             <view class="my-text weui-flex__item">需入职：</view>
-						<view class="weui-flex end">
+						<view class="weui-flex end weui-flex__item">
 							 <input class="weui-input" placeholder-class="placeholder" placeholder="请输入可返利的入职周期" value="{{$createForm$form.reward_needtime}}" bindinput="$createForm$changeInput" data-name="reward_needtime"/>
-							  <view class="input-text-end" wx:if="{{$createForm$form.reward_money_type<4}}">
-							   {{	wxs.rewardTimeText($createForm$form.reward_money_type)}}
+							  <view class="input-text-end" wx:if="{{$createForm$form.reward_type<4}}">
+							   {{wxs.rewardTimeText($createForm$form.reward_money_type)}}
 								</view>
 								<view class="input-text-end" wx:else>天	</view>
 							  <image mode="scaleToFill" bindtap="$createForm$viewTip" src="https://a.rsd123.com/image/images/tip.png" class="page_down_icon" data-wpyviewtip-a="2"/>

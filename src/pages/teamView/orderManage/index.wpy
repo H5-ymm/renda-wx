@@ -91,7 +91,7 @@ export default class teamView extends wepy.page {
 				badgeNum: 0
 			}]
 		} else
-			if (userTeamType == 1) {
+			if (userTeamType == 2) {
 				arr = [{
 					title: '接单分配',
 					subTitle: '已确定合作企业接单',

@@ -59,7 +59,7 @@
 				<view class="page_card_row">
 					<view class="weui-flex between">
 						<view class="my-text weui-flex__item">手机号</view>
-						<input class="weui-input" placeholder-class="placeholder" data-name="mobile" value="{{form.mobile}}" disabled="{{id!=''||teamId!=''}}" @input="changeInput" placeholder="请输入手机号" />
+						<input class="weui-input" placeholder-class="placeholder" data-name="mobile" value="{{form.mobile}}" disabled="{{id!=''}}" @input="changeInput" placeholder="请输入手机号" />
 					</view>
 				</view>
 			</view>
@@ -84,7 +84,7 @@
 					</view>
 				</view>
 			</view>
-			<view class="page_card" wx:if="{{!invite_uid}}">
+			<view class="page_card">
 				<view class="page_card_row">
 					<view class="weui-flex between">
 						<view class="my-text weui-flex__item">部门</view>
@@ -97,7 +97,7 @@
 						<view class="my-text-right" wx:else>{{form.depart_name?form.depart_name:'-'}}</view>
 					</view>
 				</view>
-				<view class="page_card_row" wx:if="{{!invite_uid}}">
+				<view class="page_card_row">
 					<view class="weui-flex between">
 						<view class="my-text weui-flex__item">当前职位</view>
 						<picker @change="pickerChange" value="{{jobIndex}}" range-key="grade_name" wx:if="{{uid!=userUid&&userTeamType==1&&form.grade_num!=2}}" data-name="grade_id" range="{{jobList}}">
@@ -146,7 +146,7 @@
 				</view>
 	  	</view>
 		<view class="weui-cell_btn weui-flex between register-btn"
-		wx:if="{{uid!=userUid||invite_uid!=''}}">
+		wx:if="{{uid!=userUid}}">
 			<button class="weui-btn_cell weui-flex__item  weui-btn_primary" @tap="save">
 				{{id?'修改':'保存'}}
 			</button>
@@ -189,9 +189,6 @@ export default class userInTeam extends wepy.page {
 		jobIndex: 1,
 		jobList: [],
 		userTeamType: '',
-		rendaUidQrcode: '',
-		teamId: '',
-		invite_uid: '',
 		address: []
 	}
 	config = {
@@ -214,43 +211,15 @@ export default class userInTeam extends wepy.page {
 		}
 	}
 	onLoad (options) {
-		if (options.query && wx.getStorageSync('rendaUidQrcode')) {
-			let query = JSON.parse(options.query)
-			this.teamId = query.teamId
-			this.id = ''
-			this.form.mobile = query.tel
-			this.uid = query.uid
-			this.invite_uid = query.invite_uid || wx.getStorageSync('rendaUidQrcode')
-		} else {
-			this.teamId = ''
-			this.form.mobile = ''
-			this.invite_uid = ''
-			this.userTeamType = wx.getStorageSync('rendaUserTeamType')
-			this.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
-			this.getDepartmenList()
-			if (options.query) {
-				this.id = options.query
-				this.userUid = options.uid
-				this.getMembeDetail()
-			}
-			else {
-				this.id = ''
-				this.userUid = ''
-			}
+		this.userTeamType = wx.getStorageSync('rendaUserTeamType')
+		this.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
+		this.getDepartmenList()
+		if (options.query) {
+			this.id = options.query
+			this.userUid = options.uid
+			this.getMembeDetail()
 		}
 		this.$apply()
-	}
-	bindMember (params) {
-		let query = Object.assign(params, { uid: this.uid, invite_uid: this.invite_uid })
-		$http('/userinfo/bindMember', query).then(res => {
-			if (res.data) {
-				wx.removeStorageSync('rendaUidQrcode');
-				wx.removeStorageSync('rendaUserTeamId');
-				wxRedirectTo('/pages/teamView/index')
-			} else {
-				wxToast('添加失败')
-			}
-		})
 	}
 	getDepartmenList () {
 		$http('/team/departmentRoleList', { uid: this.uid }).then(res => {
@@ -331,11 +300,6 @@ export default class userInTeam extends wepy.page {
 				this.address = []
 			}
 			this.form.education = res.data.data.education ? res.data.data.education : 0
-			// if (!this.form.grade_id) {
-			//   if (this.jobList.length) {
-			// 		this.form.grade_id = this.jobList[1].id
-			// 	}
-			// }
 			this.$apply()
 		})
 	}
@@ -348,7 +312,7 @@ export default class userInTeam extends wepy.page {
 			}
 		})
 	}
-	deleteUser (params) {
+	delUser (params) {
 		$http('/userinfo/deleteTeamUser', params).then(res => {
 			if (res.data) {
 				wxRedirectTo('/pages/teamView/userList')
@@ -391,11 +355,7 @@ export default class userInTeam extends wepy.page {
 			}
 			this.updateTeamUser(params)
 		} else {
-			if (this.invite_uid && this.teamId) {
-				this.bindMember(this.form)
-			} else {
-				this.saveUser(this.form)
-			}
+	  	this.saveUser(this.form)
 		}
 	}
 	methods = {
@@ -450,7 +410,7 @@ export default class userInTeam extends wepy.page {
 				userid: this.userUid
 			}
 			wxShowModal('', '确定删除该成员', '确定').then(res => {
-				this.deleteUser(params)
+				this.delUser(params)
 			}).catch(() => {
 				console.log('取消')
 			})

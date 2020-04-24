@@ -75,6 +75,8 @@ export default class Welcome extends wepy.page {
   onLoad (options) {
     this.rendaUidQrcode = wx.getStorageSync('rendaUidQrcode') || this.$parent.globalData.rendaUidQrcode
     this.teamId = wx.getStorageSync('rendaUserTeamId') || this.$parent.globalData.teamId
+    console.log(this.rendaUidQrcode)
+    console.log(this.teamId + '获取团队id')
     if (this.rendaUidQrcode && this.teamId) {
       this.isLoginOut = false
       this.isInviteUser = true
@@ -261,7 +263,7 @@ export default class Welcome extends wepy.page {
           tel: phoneNumber,
           uid: res.data.uid
         }
-        wxNavigateTo('/pages/teamView/userInfo?query=' + JSON.stringify(query))
+        wxNavigateTo('/pages/teamView/qrCodeUser?query=' + JSON.stringify(query))
       } else {
         this.checkRouterView(res.data)
       }

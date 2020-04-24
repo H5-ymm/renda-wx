@@ -65,6 +65,7 @@ export default class ceateList extends wepy.page {
 		},
 		submit: data => {
 			let params = Object.assign(JSON.parse(this.preForm), data, this.form)
+			params.uid = wx.getStorageSync('rendaUid')
 			if (!lock) {
 				this.createOrderApi(params)
 			}
@@ -80,12 +81,18 @@ export default class ceateList extends wepy.page {
 	createOrderApi (params) {
 		lock = true
 		$http('/enterpriseinvoice/createInvoice', params).then(res => {
+			lock = false
 			if (res.data) {
+				wx.removeStorageSync('preForm')
 				this.isModal = false
 				this.$apply()
 			} else {
 				wxToast('发单失败')
 			}
+		}).catch(error => {
+			lock = false
+			wxToast(error.status.remind || '发单失败')
+			this.$apply()
 		})
 	}
 }

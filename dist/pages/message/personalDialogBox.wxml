@@ -17,18 +17,18 @@
 							<button class="weui-btn_cell weui-btn_default" bindtap="videoView">进入面试</button>
 						</view>
 					</view>
-					<view wx:if="{{isView || messageDetail.status}}">
+					<view wx:if="{{isView}}">
 						<view class="weui-flex start dialogBox-col weui-flex__item">
 							<image mode="scaleToFill" src="{{messageDetail.header_img}}" class="dialogBox-col-header" wx:if="{{messageDetail.header_img}}"/>
 							<image mode="scaleToFill" src="https://a.rsd123.com/image/images/default1.png" class="dialogBox-col-header" wx:else/>
 							<view class="dialogBox-content dialogBox-content-left">您已退出面试</view>
 						</view>
-						<view class="dialogBox-btn weui-flex between" wx:if="{{isView || messageDetail.status}}">
+						<view class="dialogBox-btn weui-flex between" wx:if="{{isView}}">
 							<button class="weui-btn_cell weui-btn_primary" bindtap="videoView">重新进入</button>
-							<button class="weui-btn_cell weui-btn_primary_plain">已完成面试</button>
+							<!-- <button class="weui-btn_cell weui-btn_primary_plain">已完成面试</button> -->
 						</view>
 					</view>
-					<view class="weui-flex end wrap dialogBox-col weui-flex__item" wx:if="{{isView}}">
+					<view class="weui-flex end wrap dialogBox-col weui-flex__item" wx:if="{{messageDetail.status}}">
 						<view class="dialogBox-content dialogBox-content-right">已完成面试</view>
 						<image mode="scaleToFill" src="{{messageDetail.logo_url}}" class="dialogBox-col-header" wx:if="{{messageDetail.logo_url}}"/>
 						<image mode="scaleToFill" src="https://a.rsd123.com/image/images/default1.png" class="dialogBox-col-header" wx:else/>
@@ -36,7 +36,7 @@
 				</view>
 			</scroll-view>
 		</view>
-		<view class="weui-cell_btn weui-flex between register-btn" wx:if="{{!isView || messageDetail.status}}">
+		<view class="weui-cell_btn weui-flex between register-btn" wx:if="{{!messageDetail.status}}">
 			<button class="weui-btn_cell weui-flex__item weui-btn_primary" bindtap="videoView">视频面试</button>
 		</view>
 	</view>

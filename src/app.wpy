@@ -24,6 +24,7 @@ export default class extends wepy.app {
       'pages/teamView/orderManage/index',
       'pages/teamView/userList',
       'pages/teamView/userInfo',
+      'pages/teamView/qrCodeUser',
       'pages/home/list',
       'pages/message/dialogBox',
       'pages/message/personalDialogBox',
@@ -88,8 +89,9 @@ export default class extends wepy.app {
   }
   removeData () {
     wx.removeStorageSync('preForm')
-    wx.removeStorageSync('resumeType');
-    wx.removeStorageSync('sendAuthCode');;
+    wx.removeStorageSync('resumeType')
+    wx.removeStorageSync('sendAuthCode')
+    wx.removeStorageSync('preForm')
     // wx.removeStorageSync('rendaUidQrcode');
     // wx.removeStorageSync('rendaUidQrcodeTeamId');
   }
@@ -99,6 +101,8 @@ export default class extends wepy.app {
     let uid = ''
     let teamId = ''
     let scene = decodeURIComponent(options.scene);
+    console.log(options.scene)
+    console.log(scene + '场景值')
     //&是我们定义的参数链接方式
     uid = scene.split("&")[0];
     teamId = scene.split('&')[1];
@@ -112,8 +116,7 @@ export default class extends wepy.app {
     } else {
       wx.setStorageSync('rendaUidQrcode', '')
       wx.setStorageSync('rendaUserTeamId', '')
-    }
-    
+    }                                                                                                                                                                                                                                          
     if (options.query && options.query.uid) {
       wx.setStorageSync('rendaUidQrcode', options.query.uid)
       this.globalData.rendaUidQrcode = options.query.uid

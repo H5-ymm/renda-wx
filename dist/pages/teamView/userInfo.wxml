@@ -17,7 +17,7 @@
 				<view class="page_card_row">
 					<view class="weui-flex between">
 						<view class="my-text weui-flex__item">手机号</view>
-						<input class="weui-input" placeholder-class="placeholder" data-name="mobile" value="{{form.mobile}}" disabled="{{id!=''||teamId!=''}}" bindinput="changeInput" placeholder="请输入手机号"/>
+						<input class="weui-input" placeholder-class="placeholder" data-name="mobile" value="{{form.mobile}}" disabled="{{id!=''}}" bindinput="changeInput" placeholder="请输入手机号"/>
 					</view>
 				</view>
 			</view>
@@ -54,7 +54,7 @@
 					</view>
 				</view>
 			</view>
-			<view class="page_card" wx:if="{{!invite_uid}}">
+			<view class="page_card">
 				<view class="page_card_row">
 					<view class="weui-flex between">
 						<view class="my-text weui-flex__item">部门</view>
@@ -67,7 +67,7 @@
 						<view class="my-text-right" wx:else>{{form.depart_name?form.depart_name:'-'}}</view>
 					</view>
 				</view>
-				<view class="page_card_row" wx:if="{{!invite_uid}}">
+				<view class="page_card_row">
 					<view class="weui-flex between">
 						<view class="my-text weui-flex__item">当前职位</view>
 						<picker bindchange="pickerChange" value="{{jobIndex}}" range-key="grade_name" wx:if="{{uid!=userUid&&userTeamType==1&&form.grade_num!=2}}" data-name="grade_id" range="{{jobList}}">
@@ -115,7 +115,7 @@
 					<text class="tip">部门可在添加成员成功之后新增</text>
 				</view>
 	  	</view>
-		<view class="weui-cell_btn weui-flex between register-btn" wx:if="{{uid!=userUid||invite_uid!=''}}">
+		<view class="weui-cell_btn weui-flex between register-btn" wx:if="{{uid!=userUid}}">
 			<button class="weui-btn_cell weui-flex__item  weui-btn_primary" bindtap="save">
 				{{id?'修改':'保存'}}
 			</button>
