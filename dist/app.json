@@ -47,8 +47,8 @@
     "pages/register/companyTeam",
     "pages/register/companyForm",
     "pages/register/team",
-    "pages/login/login",
-    "pages/login/rule"
+    "pages/login/rule",
+    "pages/login/login"
   ],
   "window": {
     "navigationBarTextStyle": "white",
@@ -62,5 +62,5 @@
     "uploadFile": 10000,
     "downloadFile": 10000
   },
-  "sitemapLocation": "sitemap52.json"
+  "sitemapLocation": "sitemap27.json"
 }

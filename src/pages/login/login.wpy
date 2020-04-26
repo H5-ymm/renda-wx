@@ -1,5 +1,5 @@
 <style lang="less">
-@import '../../style/login.less';
+@import "../../style/login.less";
 </style>
 <template>
   <view class="login_page page_bottom">
@@ -65,17 +65,17 @@ export default class Login extends wepy.page {
     openid: ''
   }
   computed = {
-    checked () {
+    checked() {
       return this.form.tel && this.form.code
     }
   }
-  getCodeApi () {
+  getCodeApi() {
     $http('/Login/sendVerification', { mobile: this.form.tel })
       .then(res => {
         this.form.token = res.data.token || ''
       })
   }
-  checkRouterView (res) {
+  checkRouterView(res) {
     if (res && res.uid) {
       this.$parent.globalData.uid = res.uid
       // userType 1 企业 2 团队
@@ -102,10 +102,11 @@ export default class Login extends wepy.page {
       store.dispatch(getAllContant())
     }
   }
-  login () {
+  login() {
     wx.removeStorageSync('auth_time')
     wx.removeStorageSync('sendAuthCode')
-    let params = Object.assign(this.form, { openid: this.openid })
+    let params = Object.assign(this.form,
+      { openid: wx.getStorageSync('rendaOpenId') })
     $http('/login/is_register_manu', params).then(res => {
       this.checkRouterView(res.data)
     }).catch(error => {
@@ -123,25 +124,13 @@ export default class Login extends wepy.page {
       }
     })
   }
-  onLoad (options) {
+  onShow() {
     if (wx.getStorageSync('sendAuthCode')) {
       this.auth_time = wx.getStorageSync('auth_time') - 3
       clearInterval(this.auth_timetimer)
       this.getTime()
     }
-    this.openid = this.$parent.getOpenId()
     this.$apply()
-  }
-  onShow () {
-    if (!this.isRead) {
-      this.checked = false
-      if (wx.getStorageSync('sendAuthCode')) {
-        this.auth_time = wx.getStorageSync('auth_time') - 3
-        clearInterval(this.auth_timetimer)
-        this.getTime()
-      }
-      this.$apply()
-    }
   }
   events = {
     handleOk: () => {
@@ -149,13 +138,12 @@ export default class Login extends wepy.page {
       this.$apply()
     }
   }
-  getTime () {
+  getTime() {
     if (!this.sendAuthCode) return
     this.sendAuthCode = false
     this.auth_timetimer = setInterval(() => {
       this.auth_time--
       this.$apply()
-      wx.setStorageSync('auth_time', this.auth_time)
       wx.setStorageSync('sendAuthCode', true)
       if (this.auth_time <= 0) {
         this.sendAuthCode = true
@@ -165,18 +153,20 @@ export default class Login extends wepy.page {
     }, 1000)
     this.$apply()
   }
-  onHide () {
+  onHide() {
+    wx.setStorageSync('auth_time', this.auth_time)
     clearInterval(this.auth_timetimer)
   }
-  onUnload () {
+  onUnload() {
+    wx.setStorageSync('auth_time', this.auth_time)
     clearInterval(this.auth_timetimer)
   }
   methods = {
-    changeInput (e) {
+    changeInput(e) {
       let key = e.target.dataset.name
       this.form[key] = e.detail.value
     },
-    getCode () {
+    getCode() {
       if (!this.form.tel) {
         wxToast('请输入手机号码')
       } else if (!checkMobile(this.form.tel)) {
@@ -186,7 +176,7 @@ export default class Login extends wepy.page {
         this.getTime()
       }
     },
-    getUserInfo () {
+    getUserInfo() {
       if (!this.form.tel) {
         wxToast('请输入手机号码')
       } else if (!checkMobile(this.form.tel)) {

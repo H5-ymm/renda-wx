@@ -1,5 +1,5 @@
 <style lang="less">
-@import '../../style/login.less';
+@import "../../style/login.less";
 </style>
 <template>
   <view class="login_page welcome-page page_bottom">
@@ -72,7 +72,7 @@ export default class Welcome extends wepy.page {
   config = {
     enablePullDownRefresh: true
   }
-  onLoad (options) {
+  onLoad(options) {
     this.rendaUidQrcode = wx.getStorageSync('rendaUidQrcode') || this.$parent.globalData.rendaUidQrcode
     this.teamId = wx.getStorageSync('rendaUserTeamId') || this.$parent.globalData.teamId
     console.log(this.rendaUidQrcode)
@@ -94,7 +94,8 @@ export default class Welcome extends wepy.page {
       this.isRead = false
       this.isLoginOut = false
     }
-    this.openid = wx.getStorageSync('rendaOpenId') || this.$parent.globalData.openid
+    this.openid = wx.getStorageSync('rendaOpenId') ||
+      this.$parent.globalData.openid
     this.$apply()
     wx.getSetting({
       success: res => {
@@ -115,18 +116,18 @@ export default class Welcome extends wepy.page {
       }
     })
   }
-  onShow () {
+  onShow() {
     if (!this.isRead) {
       this.checked = false
       this.$apply()
     }
   }
-  onPullDownRefresh () {
+  onPullDownRefresh() {
     if (this.openid) {
       this.checkUserLogin(this.openid)
     }
   }
-  checkQrcode (item) {
+  checkQrcode(item) {
     let params = {
       uid: item.uid,
       team_id: this.rendaUidQrcode,
@@ -146,7 +147,7 @@ export default class Welcome extends wepy.page {
       }
     })
   }
-  checkUserLogin (openid) {
+  checkUserLogin(openid) {
     let params = {}
     if (this.isInviteUser) {
       params = {
@@ -176,7 +177,7 @@ export default class Welcome extends wepy.page {
       }
     })
   }
-  checkRouterView (res) {
+  checkRouterView(res) {
     if (res && res.uid) {
       this.$parent.globalData.uid = res.uid
       this.uid = res.uid
@@ -195,7 +196,7 @@ export default class Welcome extends wepy.page {
       store.dispatch(getAllContant())
     }
   }
-  viewRouter (res) {
+  viewRouter(res) {
     if (!res.usertype) {
       wxReLaunch('/pages/register/selectUser')
     } else if (Number(res.usertype) === 2) {
@@ -214,7 +215,7 @@ export default class Welcome extends wepy.page {
       wxReLaunch('/pages/message/index')
     }
   }
-  showErrorTip (code) {
+  showErrorTip(code) {
     if (code === 6100) {
       this.isLoginModal = false
       this.$apply()
@@ -232,7 +233,7 @@ export default class Welcome extends wepy.page {
     this.isView = false
     this.$apply()
   }
-  getWxPhone (params) {
+  getWxPhone(params) {
     $http('/login/decryptData', params).then(res => {
       if (res && res.data) {
         wx.setStorageSync('wxphoneNumber', res.data.phoneNumber)
@@ -240,7 +241,7 @@ export default class Welcome extends wepy.page {
       }
     })
   }
-  getWxPhoneLogin (phoneNumber) {
+  getWxPhoneLogin(phoneNumber) {
     if (!this.openid) {
       this.openid = this.$parent.getOpenId()
     }
@@ -307,7 +308,7 @@ export default class Welcome extends wepy.page {
     }
   }
   methods = {
-    checkedRule (checked) {
+    checkedRule(checked) {
       this.checked = !this.checked
       if (this.checked) {
         wxReLaunch('/pages/login/rule')
@@ -316,7 +317,7 @@ export default class Welcome extends wepy.page {
       }
       this.$apply()
     },
-    getUserInfo (e) {
+    getUserInfo(e) {
       // 没有阅读协议
       if (!this.isRead) return
       if (this.code === 6100 && this.teamId != '') {

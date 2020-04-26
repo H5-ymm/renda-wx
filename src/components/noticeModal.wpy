@@ -112,7 +112,7 @@ export default class noticeModal extends wepy.component {
 	props = {
 		isScaleModal: Boolean,
 		height: Number,
-		title: String,
+		title: Number,
 		type: String,
 		timeInfo: Object
 	}
