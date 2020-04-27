@@ -189,7 +189,6 @@ export default class companyResumeList extends wepy.component {
 			let arr = []
 			let arr1 = []
 			this.resumeList[index].disabled = !item.disabled
-			console.log(item.disabled)
 			this.$apply()
 			if (arr.indexOf(item.id) === -1) {
 				arr.push(item.id)

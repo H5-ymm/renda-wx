@@ -113,7 +113,7 @@ export default class noticeModal extends wepy.component {
 		isScaleModal: Boolean,
 		height: Number,
 		title: String,
-		type: String,
+		type: Number,
 		timeInfo: Object
 	}
 	components = {
@@ -144,10 +144,6 @@ export default class noticeModal extends wepy.component {
 			this.addressList = data
 		}
 	}
-	// onLoad() {
-	// 	this.statusObj = JSON.parse(wx.getStorageSync('statusObj'))
-	// 	this.$apply()
-	// }
 	methods = {
 		changeInput (e) {
 			let key = e.currentTarget.dataset.name
