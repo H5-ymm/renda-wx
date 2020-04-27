@@ -112,8 +112,8 @@ export default class noticeModal extends wepy.component {
 	props = {
 		isScaleModal: Boolean,
 		height: Number,
-		title: String,
-		type: Number,
+		title: Number,
+		type: String,
 		timeInfo: Object
 	}
 	components = {
