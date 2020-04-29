@@ -12,7 +12,7 @@
 				</view>
 			</scroll-view>
 		</view>
-		<noticeModal :isScaleModal.sync="isModal" :height.sync="modalHeight" :title.sync="title" :type.sync="viewType"></noticeModal>
+		<noticeModal :isScaleModal.sync="isModal" :height.sync="modalHeight" @handleClose="handleClose" :title.sync="title" :type.sync="viewType"></noticeModal>
 		<selectModal :isScaleModal.sync="isSelectModal" :menus.sync="menus" @selectOk="selectOk" :title.sync="modalTitle"></selectModal>
 	</view>
 </template>
@@ -127,7 +127,7 @@ export default class resumeSiftings extends wepy.page {
 			this.$apply()
 		},
 		handleClose: () => {
-			this.isModal = true
+			this.isModal = !this.isModal
 			this.$apply()
 		},
 		setAllTime: data => {

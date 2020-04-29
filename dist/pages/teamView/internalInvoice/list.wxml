@@ -2,7 +2,7 @@
 	<view class="home-view">
 		<view class="home-view-header"/>
 		<view class="page_margin page">
-			<scroll-view scroll-y="true" style="height:100%">
+			<scroll-view scroll-y="true" style="height:100%" bindscrolltolower="searchScrollLower">
 				<view class="home-view-box">
 					
   <view class="weui-cell weui-flex start weui-cell weui-flex start page_card">

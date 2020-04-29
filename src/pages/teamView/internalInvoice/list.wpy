@@ -5,7 +5,7 @@
 	<view class="home-view">
 		<view class="home-view-header"></view>
 		<view class="page_margin page">
-			<scroll-view scroll-y="true" style="height:100%">
+			<scroll-view scroll-y="true" style="height:100%" @scrolltolower="searchScrollLower">
 				<view class="home-view-box">
 					<search @searchValue="searchValue" class="weui-cell weui-flex start page_card"></search>
 					<invoiceList :list.sync="newList" :recommendType.sync="recommendType" @handleJob="handleJob" @selectJob="selectJob">
@@ -59,7 +59,6 @@ export default class checkResumeList extends wepy.page {
 		navigationBarTitleText: '内部发单'
 	}
 	onLoad(options) {
-		console.log(options)
 		this.params.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
 		this.recommendType = Number(options.query)
 		this.recommendId = options.recommendId
@@ -151,7 +150,12 @@ export default class checkResumeList extends wepy.page {
 		return val == 1 ? '团队接单' : '内部发单'
 	}
 	methods = {
-	
+	 searchScrollLower () {
+			if (this.count > this.list.length && this.count > this.params.limit) {
+				this.params.limit = this.params.limit + 10
+				this.getList()
+			}
+    }
 	}
 }
 </script>

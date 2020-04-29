@@ -59,11 +59,9 @@ export default class orderList extends wepy.page {
 		return text
 	}
 	getJobList() {
-		this.list = []
 		$http(this.urlApi, this.params).then(res => {
 			this.list = res.data.data || []
 			this.count = res.data.count
-			console.log(this.count)
 			this.$apply()
 		})
 	}

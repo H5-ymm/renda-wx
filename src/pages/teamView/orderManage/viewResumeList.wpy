@@ -43,9 +43,9 @@
 				</teamResumeList>
 			</scroll-view>
 		</view>
-		<view class="only-btn" wx:if="{{list.length}}">
+		<view class="only-btn">
 			<view class="weui-flex center">
-				<button class="weui-btn_cell only-btn-item {{!receiptTime?'weui-btn_cell-disabled':'weui-btn_primary'}}" disabled="{{!receiptTime}}" @tap="viewNotice">
+				<button class="weui-btn_cell only-btn-item {{!receiptTime?'weui-btn_cell-disabled':'weui-btn_primary'}}" disabled="{{!receiptTime}}" wx:if="{{list.length}}" @tap="viewNotice">
 					{{receiptType==2?'查看面试通知':'查看入职通知'}}
 				</button>
 				<button class="weui-btn_cell only-btn-item weui-btn_primary_plain" @tap="recommendResume">

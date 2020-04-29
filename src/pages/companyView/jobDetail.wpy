@@ -158,7 +158,7 @@ import wepy from 'wepy'
 import districtSelet from '@/components/districtSelet'
 import createForm from '@/components/createForm'
 import { $http } from '@/http.js'
-import { wxToast, wxReLaunch, wxNavigateTo, ageList } from '@/util.js'
+import { wxToast, wxReLaunch, wxNavigateTo, ageList, wxShowModal } from '@/util.js'
 import { moneyTypeList } from '@/base/base.js'
 import { connect, getStore } from 'wepy-redux'
 const store = getStore()

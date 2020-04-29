@@ -101,7 +101,6 @@ export default class extends wepy.app {
     let uid = ''
     let teamId = ''
     let scene = decodeURIComponent(options.scene);
-    console.log(options.scene)
     console.log(scene + '场景值')
     //&是我们定义的参数链接方式
     uid = scene.split("&")[0];
@@ -118,6 +117,8 @@ export default class extends wepy.app {
       wx.setStorageSync('rendaUserTeamId', '')
     }
     if (options.query && options.query.uid) {
+      console.log(options.query.uid + '获取uid')
+      console.log(options.query.teamId + '获取teamId')
       wx.setStorageSync('rendaUidQrcode', options.query.uid)
       this.globalData.rendaUidQrcode = options.query.uid
       if (options.query.teamId) {

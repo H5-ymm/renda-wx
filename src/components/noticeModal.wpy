@@ -112,8 +112,8 @@ export default class noticeModal extends wepy.component {
 	props = {
 		isScaleModal: Boolean,
 		height: Number,
-		title: Number,
-		type: String,
+		title: String,
+		type: Number,
 		timeInfo: Object
 	}
 	components = {
@@ -158,8 +158,6 @@ export default class noticeModal extends wepy.component {
 			this.isShow = false
 			this.$apply()
 			let params = {}
-			console.log(this.type)
-			console.log(this.form.time)
 			if (this.type == 1) {
 				let time = ''
 				if (this.form.time.toString().indexOf('-') == -1) {

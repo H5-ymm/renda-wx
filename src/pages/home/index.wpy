@@ -58,7 +58,7 @@ import tabBar from '@/components/tabBar'
 import modal from '@/components/modal'
 import search from '@/components/search'
 import selectModal from '@/components/selectModal'
-import { getImgUrl, wxNavigateTo } from '@/util.js'
+import { getImgUrl, wxNavigateTo, wxRedirectTo } from '@/util.js'
 export default class home extends wepy.page {
   components = {
     tabBar: tabBar,
@@ -131,6 +131,10 @@ export default class home extends wepy.page {
     isScoll: false,
     resumeInfo: {}
   }
+  // onUnload() {
+  //   console.log(1)
+  //   wxNavigateTo('/pages/teamView/index')
+  // }
   events = {
     searchValue: val => {
       this.params = Object.assign(this.params, { username: val })
@@ -176,9 +180,7 @@ export default class home extends wepy.page {
     selectOk: val => {
       if (this.modalTitle == '请选择简历方式') {
         if (val === 0) {
-          wx.navigateTo({
-            url: '/pages/home/addInfo' // 页面 A
-          })
+          wxRedirectTo('/pages/home/addInfo')
         } else {
           this.createQrcode()
         }
