@@ -53,7 +53,7 @@
 		text-align: left;
 		&.weui-textarea {
 			height: 100rpx;
-			line-height: 100rpx;
+			line-height:auto;
 			margin: 10rpx 0;
 			text-align: left;
 		}
@@ -202,7 +202,7 @@ export default class noticeModal extends wepy.component {
 				this.form.content = arr[1]
 				let address = arr[0].split('/')
 				this.address = address[0] + '/' + address[1] + '/' + address[2]
-				this.form.detailAddress = address[3]
+				this.form.address = address[3]
 				this.$apply()
 			}
     },

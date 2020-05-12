@@ -117,8 +117,14 @@ export default class resumeSiftings extends wepy.page {
 		setTime: data => {
 			this.job_id = data
 			if (this.receiptType == 1) {
-				this.title = '面试'
-				this.isSelectModal = !this.isSelectModal
+				if (wx.getStorageSync('rendaViewType')) {
+					wx.navigateTo({
+						url: '/pages/companyView/checkResumeList?query=' + this.receiptType + '&job_id=' + this.job_id + '&setTime=' + wx.getStorageSync('rendaViewType')
+					})
+				} else {
+					this.title = '面试'
+				  this.isSelectModal = !this.isSelectModal
+				}
 			} else {
 				this.title = '入职'
 				this.isModal = !this.isModal

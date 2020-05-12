@@ -108,13 +108,13 @@ export default class message extends wepy.page {
 	}
 	onLoad () {
 		this.usertype = wx.getStorageSync('rendaUserType')
-		// this.usertype = 3
-		if (this.usertype == 1) {
-			this.tabBarIndex = 2
-		}
+		this.usertype = 3
+		// if (this.usertype == 1) {
+		// 	this.tabBarIndex = 2
+		// }
 		this.$apply()
-		this.params.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
-		// this.params.uid = 4
+		// this.params.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
+		this.params.uid = 128
 	}
 	onShow () {
 		this.getMsglist()

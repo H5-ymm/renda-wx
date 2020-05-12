@@ -105,7 +105,7 @@
 				</view>
 				<view class="page_card_row" wx:if="{{form.status==2}}">
 					<view class="weui-flex between">
-						<view class="my-text weui-flex__item my-text-require">锁定原因：</view>
+						<view class="my-text weui-flex__item my-text-require">锁定原因</view>
 					</view>
 					<textarea data-name="remark" placeholder-class="placeholder" disable-default-padding="true" class="weui-input weui-textarea" value="{{form.remark}}" bindinput="changeInput" placeholder="请输入锁定原因" maxlength="-1"/>
 					</view>

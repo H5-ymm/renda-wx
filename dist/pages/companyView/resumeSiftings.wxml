@@ -46,7 +46,7 @@
 					<view wx:if="{{$receiptAllList$receiptItem$receiptType==1}}" class="page_card_receipt_status {{'page_card_receipt_status'+ (!$receiptAllList$rItem.invoice_status?0:$receiptAllList$rItem.invoice_status==1?1:2)}}">
 						{{!$receiptAllList$rItem.invoice_status?'收集中':$receiptAllList$rItem.invoice_status==1?'审核中':'审核结束'}}
 					</view>
-					<view wx:if="{{$receiptAllList$receiptItem$receiptType==2}}" class="page_card_receipt_status {{'page_card_receipt_status'+(!$receiptAllList$rItem.interview_status?0:$receiptAllList$rItem.interview_status==1?1:2)}}">
+					<view wx:if="{{$receiptAllList$receiptItem$receiptType==2}}" class="page_card_receipt_status {{'page_card_receipt_status'+($receiptAllList$rItem.interview_status==4?1:2)}}">
 						{{$receiptAllList$rItem.interview_status==4?'面试结束':'面试开始'}}
 					</view>
 					<view wx:if="{{$receiptAllList$receiptItem$receiptType==3}}" class="page_card_receipt_status {{'page_card_receipt_status'+($receiptAllList$rItem.entry_status==4?2:1)}}">

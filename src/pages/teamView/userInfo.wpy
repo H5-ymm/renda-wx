@@ -135,7 +135,7 @@
 				</view>
 				<view class="page_card_row" wx:if="{{form.status==2}}">
 					<view class="weui-flex between">
-						<view class="my-text weui-flex__item my-text-require">锁定原因：</view>
+						<view class="my-text weui-flex__item my-text-require">锁定原因</view>
 					</view>
 					<textarea data-name="remark" placeholder-class="placeholder" disable-default-padding="true" class="weui-input weui-textarea" value="{{form.remark}}" @input="changeInput" placeholder="请输入锁定原因" maxlength="-1" />
 					</view>
@@ -325,7 +325,7 @@ export default class userInTeam extends wepy.page {
 		params.uid = this.uid
 		$http('/userinfo/addTeamUser', params).then(res => {
 			if (res.data) {
-				if (!this.form.grade_id) {
+				if (!this.form.grade_id&&this.userTeamType==1) {
 					wxShowModal('', '当前成员无部门，是否现在去添加部门', '确定').then(res => {
 						wxRedirectTo('/pages/teamView/department/index')
 					}).catch(() => {

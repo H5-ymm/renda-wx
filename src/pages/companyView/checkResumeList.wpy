@@ -149,7 +149,7 @@ export default class checkResumeList extends wepy.page {
 		timeInfo: {},
 		id: '',
 		check: false,
-		viewType: '1',
+		viewType: '',
 		isNoticeModal: true,
 		userSig: '',
 		checkObj: {},
@@ -184,10 +184,9 @@ export default class checkResumeList extends wepy.page {
 		}
 	}
 	onLoad (options) {
-		console.log(options)
 		this.receiptType = Number(options.query) || Number(wx.getStorageSync('receiptType'))
 		this.viewType = options.setTime || '1'
-		console.log(this.viewType + '面试类型')
+  	console.log(this.viewType + '面试类型')
 		this.job_id = options.job_id
 		if (this.receiptType === 1) {
 			this.title = '面试'
@@ -230,7 +229,6 @@ export default class checkResumeList extends wepy.page {
 		},
 		handleResume: data => {
 			data.type = this.viewType
-			console.log(data.status == 1 && this.viewType == 2 +'判断')
 			if (data.status == 1 && this.viewType == 2) {
 				this.modalHeight = 750
 				this.checkObj = {
@@ -245,6 +243,7 @@ export default class checkResumeList extends wepy.page {
 				this.$apply()
 			} else {
 				if (!this.statusObj.view_time&&this.receiptType!=3) {
+					this.modalHeight = 930
 					this.isNoticeModal = !this.isNoticeModal
 					this.$apply()
 					return
@@ -410,6 +409,7 @@ export default class checkResumeList extends wepy.page {
 			this.getTotal(this.tabBarList)
 		},
 		batchHandle () {
+			console.log(this.receiptType)
 			if (this.receiptType != 2) {
 				if (this.viewType==1&&!this.statusObj.view_time&&this.receiptType!=3) {
 					this.isNoticeModal = !this.isNoticeModal
@@ -419,7 +419,13 @@ export default class checkResumeList extends wepy.page {
 				this.list = this.checkAll(this.list, false)
 				this.$apply()
 			} else {
-				wxNavigateTo('/pages/companyView/noticeRecord?jobId=' + this.job_id)
+				if (this.viewType==1) {
+					this.isBatch = true
+					this.list = this.checkAll(this.list, false)
+					this.$apply()
+				} else {
+					wxNavigateTo('/pages/companyView/noticeRecord?jobId=' + this.job_id)
+				}
 			}
     },
 		viewNotice () {
@@ -543,7 +549,6 @@ export default class checkResumeList extends wepy.page {
 	viewTimeInfo () {
 		$http('/company/selectInterviewEntryInfo', { id: this.job_id }).then(res => {
 			let query = {}
-			this.viewType = '1'
 			if (this.receiptType === 1) {
 				query = {
 					time: res.data.view_time,
