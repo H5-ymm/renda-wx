@@ -111,7 +111,7 @@ export default class qrCodeResume extends wepy.page {
       .catch(error => {
         lock = false
         wxToast(error.status.remind)
-      })
+    })
     this.$apply()
   }
   updateResume() {
@@ -132,6 +132,7 @@ export default class qrCodeResume extends wepy.page {
   // 页面的生命周期函数
   onShow(options) {
     this.stepActive = 2
+    console.log(wx.getStorageSync('rendaUidQrcode'))
     this.uid = wx.getStorageSync('rendaUidQrcode') || this.$parent.globalData.rendaUidQrcode
     this.$apply()
   }
