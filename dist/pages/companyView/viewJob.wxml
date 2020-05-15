@@ -123,7 +123,7 @@
 					</view>
 				</view>
 			</view>
-			<view class="page_card_row" wx:if="{{$jobTemplate$form.reward_type}}">
+			<view class="page_card_row" wx:if="{{$jobTemplate$form.reward_type&&$jobTemplate$form.reward_type!=4}}">
 				<view class="weui-flex between">
 					<view class="my-text weui-flex__item">结算方式</view>
 					<view class="my-text-right" wx:if="{{$jobTemplate$form.reward_type==1}}">{{$jobTemplate$form.reward_money_type==1?'长期返利':'持续返利'}}</view>
@@ -149,7 +149,7 @@
 					<view class="my-text weui-flex__item">需入职</view>
 					<view class="my-text-right" wx:if="{{$jobTemplate$form.reward_needtime}}">
 						{{$jobTemplate$form.reward_needtime}}
-						<text wx:if="{{$jobTemplate$form.reward_money_type<4}}">{{wxs.rewardTimeText($jobTemplate$form.reward_money_type)}}</text>
+						<text wx:if="{{$jobTemplate$form.reward_type<4}}">{{wxs.rewardTimeText($jobTemplate$form.reward_money_type)}}</text>
 						<text wx:else>天</text>
 					</view>
 					<view class="my-text-right" wx:else>1天</view>
@@ -184,7 +184,7 @@
 		<view class="weui-cell_btn weui-flex between register-btn"  wx:if="{{form.status}}">
 			<button class="weui-btn_cell weui-btn_primary {{form.job_status==1?'weui-btn_primary_plain':''}}" wx:if="{{form.status==2&&!room_num&&!apply}}" bindtap="handleShelf">{{form.job_status==1?'下架':'上架'}}</button>
 			<button class="weui-btn_cell weui-btn_primary" wx:if="{{room_num}}" bindtap="entryVideo">进入面试</button>
-			<button class="weui-btn_cell weui-btn_primary" wx:if="{{apply}}" bindtap="handleApply">申请接单</button>
+			<button class="weui-btn_cell weui-btn_primary" wx:if="{{apply&&rendaUserTeamType==1}}" bindtap="handleApply">申请接单</button>
 			<button class="weui-btn_cell weui-btn_primary_plain" wx:if="{{form.status!=2||form.job_status==2}}" bindtap="handleDelete">删除</button>
 			<!-- <button
 				class="weui-btn_cell weui-btn_primary"

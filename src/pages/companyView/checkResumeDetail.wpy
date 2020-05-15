@@ -33,19 +33,19 @@
         <view class="page_card_row">
           <view class="weui-flex between">
             <view class="my-text weui-flex__item">学历</view>
-            <view class="my-text-right"> {{form.eduName}}</view>
+            <view class="my-text-right"> {{form.eduName||'-'}}</view>
           </view>
         </view>
         <view class="page_card_row">
           <view class="weui-flex between">
             <view class="my-text  weui-flex__item">年龄</view>
-            <view class="my-text-right"> {{form.age}}</view>
+            <view class="my-text-right"> {{form.age||'-'}}</view>
           </view>
         </view>
         <view class="page_card_row">
           <view class="weui-flex between ">
             <view class="my-text weui-flex__item">户籍地址</view>
-            <view class="my-text-right"> {{form.address}}</view>
+            <view class="my-text-right"> {{form.address||'-'}}</view>
           </view>
         </view>
         <view class="page_card_row">

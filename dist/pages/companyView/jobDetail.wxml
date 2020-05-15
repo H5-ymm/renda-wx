@@ -143,8 +143,8 @@
             <view class="my-text  weui-flex__item my-text-require">缴纳五金：</view>
             <picker bindchange="$updateForm$bindPickerChange" data-name="is_five_risks" value="{{$updateForm$index}}" range="{{$updateForm$welfareList}}" range-key="label">
 							<view class="my-text-right weui-flex between">
-								<view class="{{$updateForm$welfareList[$updateForm$index]?'':'placeholder'}}">
-									{{$updateForm$welfareList[$updateForm$index]?$updateForm$welfareList[$updateForm$index].label:'请选择'}}
+								<view class="{{$updateForm$form.is_five_risks!=''?'':'placeholder'}}">
+									{{$updateForm$form.is_five_risks!=''?$updateForm$welfareList[$updateForm$index].label:'请选择'}}
 								</view>
 								<image mode="scaleToFill" src="https://a.rsd123.com/image/images/down.png" class="page_down_icon"/>
 							</view>
@@ -153,12 +153,13 @@
         </view>
 				 <view class="page_card_row">
           <view class="weui-flex between">
-            <view class="my-text  weui-flex__item my-text-require">缴纳公积金：
+            <view class="my-text  weui-flex__item my-text-require">
+							缴纳公积金：
 						</view>
 						<picker bindchange="$updateForm$bindPickerChange" data-name="is_fund" value="{{$updateForm$fundIndex}}" range="{{$updateForm$welfareList}}" range-key="label">
 							<view class="my-text-right weui-flex between">
-								<view class="{{$updateForm$welfareList[$updateForm$fundIndex]?'':'placeholder'}}">
-									{{$updateForm$welfareList[$updateForm$fundIndex]?$updateForm$welfareList[$updateForm$fundIndex].label:'请选择'}}
+								<view class="{{$updateForm$form.is_fund!=''?'':'placeholder'}}">
+									{{$updateForm$form.is_fund!=''?$updateForm$welfareList[$updateForm$fundIndex].label:'请选择'}}
 								</view>
 								<image mode="scaleToFill" src="https://a.rsd123.com/image/images/down.png" class="page_down_icon"/>
 							</view>
@@ -229,7 +230,7 @@
           <view class="weui-flex between">
             <view class="my-text weui-flex__item">持续时长：</view>
 						<view class="weui-flex end">
-							 <input class="weui-input" placeholder-class="placeholder" placeholder="请输入持续时长" value="{{$updateForm$form.duration_time}}" bindinput="$updateForm$changeInput" data-name="duration_time"/>
+							 <input class="weui-input" placeholder-class="placeholder" placeholder="请输入持续时长" value="{{$updateForm$form.duration_time||1}}" bindinput="$updateForm$changeInput" data-name="duration_time"/>
 							  <view class="input-text-end" wx:if="{{$updateForm$form.reward_money_type<4}}">
 							   {{	wxs.rewardTimeText($updateForm$form.reward_money_type)}}
 								</view>
@@ -242,12 +243,12 @@
           <view class="weui-flex between">
             <view class="my-text weui-flex__item">需入职：</view>
 						<view class="weui-flex end weui-flex__item">
-							 <input class="weui-input" placeholder-class="placeholder" placeholder="请输入可返利的入职周期" value="{{$updateForm$form.reward_needtime}}" bindinput="$updateForm$changeInput" data-name="reward_needtime"/>
+							 <input class="weui-input" placeholder-class="placeholder" placeholder="请输入可返利的入职周期" value="{{$updateForm$form.reward_needtime || 1}}" bindinput="$updateForm$changeInput" data-name="reward_needtime"/>
 							  <view class="input-text-end" wx:if="{{$updateForm$form.reward_type<4}}">
 							   {{wxs.rewardTimeText($updateForm$form.reward_money_type)}}
 								</view>
 								<view class="input-text-end" wx:else>天	</view>
-							  <image mode="scaleToFill" bindtap="$updateForm$viewTip" src="https://a.rsd123.com/image/images/tip.png" class="page_down_icon" data-wpyviewtip-a="2"/>
+							  <image mode="scaleToFill" bindtap="$updateForm$viewTip" src="https://a.rsd123.com/image/images/tip.png" class="page_down_icon weui-flex__item" data-wpyviewtip-a="2"/>
 				  	</view>    
           </view>
         </view>

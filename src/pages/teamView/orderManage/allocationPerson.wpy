@@ -94,7 +94,6 @@ export default class allocationPerson extends wepy.page {
 		this.applyId = options.id
 		this.job_id = options.job_id
 		this.distributionnum = Number(options.distributionnum)
-		console.log(this.distributionnum)
 		this.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
 		this.$apply()
 	}
@@ -174,7 +173,6 @@ export default class allocationPerson extends wepy.page {
 			}
 		},
 		switchTab: val => {
-			// this.list = []
 			this.activeIndex = val
 			this.$apply()
 		}
@@ -184,7 +182,7 @@ export default class allocationPerson extends wepy.page {
 			if (!this.uids) {
 				return wxToast('请选择取消分配人员')
 			}
-			wxShowModal('', '确定分配', '确定').then(res => {
+			wxShowModal('', '确定取消分配', '确定').then(res => {
 				this.cancelrecv()
 			}).catch(() => {
 				console.log('取消')
@@ -194,7 +192,7 @@ export default class allocationPerson extends wepy.page {
 			if (!this.uids) {
 				return wxToast('请选择分配人员')
 			}
-			wxShowModal('', '确定取消分配', '确定').then(res => {
+			wxShowModal('', '确定分配', '确定').then(res => {
 				this.allocationReceipt()
 			}).catch(() => {
 				console.log('取消')

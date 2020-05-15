@@ -131,7 +131,6 @@ export default class cityView extends wepy.page {
         name : item.name || item.province,
         value : item.code || item.provinceid
       }
-      console.log(obj)
       return obj
     })
   }

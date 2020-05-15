@@ -66,7 +66,7 @@
       <view class="page_card">
         <view class="page_card_row">
           <view class="weui-flex between">
-            <view class="my-text  weui-flex__item my-text-require"> 姓名：</view>
+            <view class="my-text  weui-flex__item my-text-require">姓名：</view>
             <input class="weui-input" placeholder-class="placeholder" data-name="name" value="{{$addResume$form.name}}" bindinput="$addResume$changeInput" placeholder="请输入姓名"/>
           </view>
         </view>
@@ -78,7 +78,7 @@
         </view>
         <view class="page_card_row">
           <view class="weui-flex between ">
-            <view class="my-text weui-flex__item my-text-require"> 手机号码：</view>
+            <view class="my-text weui-flex__item my-text-require">手机号码：</view>
             <input class="weui-input" data-name="mobile" placeholder-class="placeholder" value="{{$addResume$form.mobile}}" bindinput="$addResume$changeInput" placeholder="请输入手机号码"/>
           </view>
         </view>
@@ -150,9 +150,7 @@
       </view>
     </view>
     <view class="weui-cell_btn weui-flex center">
-
       <button class="weui-btn_cell .weui-btn_primary" bindtap="$addResume$save">{{$addResume$step==1?'下一步':'保存'}}</button>
-
     </view>
   </view>
 
@@ -178,7 +176,7 @@
       <view class="page_card">
         <view class="page_card_row">
           <view class="weui-flex between">
-            <view class="my-text  weui-flex__item my-text-require"> 姓名：</view>
+            <view class="my-text  weui-flex__item my-text-require">姓名：</view>
             <input class="weui-input" placeholder-class="placeholder" data-name="name" value="{{$addResume$form.name}}" bindinput="$addResume$changeInput" placeholder="请输入姓名"/>
           </view>
         </view>
@@ -190,7 +188,7 @@
         </view>
         <view class="page_card_row">
           <view class="weui-flex between ">
-            <view class="my-text weui-flex__item my-text-require"> 手机号码：</view>
+            <view class="my-text weui-flex__item my-text-require">手机号码：</view>
             <input class="weui-input" data-name="mobile" placeholder-class="placeholder" value="{{$addResume$form.mobile}}" bindinput="$addResume$changeInput" placeholder="请输入手机号码"/>
           </view>
         </view>
@@ -262,9 +260,7 @@
       </view>
     </view>
     <view class="weui-cell_btn weui-flex center">
-
       <button class="weui-btn_cell .weui-btn_primary" bindtap="$addResume$save">{{$addResume$step==1?'下一步':'保存'}}</button>
-
     </view>
   </view>
 
@@ -315,7 +311,7 @@
         </view>
       </view>
       <view wx:else class="modal-content modal-content-qrcode">
-        <image src="{{$modal$imgUrl}}" bindlongpress="$modal$saveImg" class="qrcode-img"/>
+        <image src="{{$modal$imgUrl}}" bindlongpress="$modal$saveImg" mode="aspectFit" class="qrcode-img"/>
         <view class="weui-cell_btn weui-flex center user-btn">
           <button open-type="share" class="weui-btn_cell weui-btn_cell-gradient" bindtap="$modal$handleOk">长按图片保存二维码并分享</button>
         </view>

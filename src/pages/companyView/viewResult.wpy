@@ -59,7 +59,7 @@ export default class viewResult extends wepy.page {
 		$http('/videointerview/videoInterviewEditStatus', params).then(res => {
 			if(res.data) {
 				this.getCheckList()
-		    } else {
+		  } else {
 				wxToast('操作失败')
 			}
 		})

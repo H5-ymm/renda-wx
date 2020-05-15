@@ -45,64 +45,9 @@
         bindnetstatus="_pusherNetStatusHandler" binderror="_pusherErrorHandler" bindbgmstart="_pusherBGMStartHandler"
         bindbgmprogress="_pusherBGMProgressHandler" bindbgmcomplete="_pusherBGMCompleteHandler" />
       <view class="operation-bar">
-        <view class="btn-normal" bindtap="_switchMemberListPanel">
-          <image class="btn-image" src="./static/list.png"></image>
-        </view>
-        <view class="btn-normal" bindtap="_switchSettingPanel">
-          <image class="btn-image" src="./static/setting.png"></image>
-        </view>
         <view class="btn-normal btn-hangup" bindtap="_hangUp">
           <image class="btn-image" src="./static/hangup.png"></image>
         </view>
-      </view>
-    </view>
-    <view class="panel setting-panel {{panelName === 'setting-panel' ? '' : 'none'}}">
-      <view bindtap="_handleMaskerClick" class='close-btn'>X</view>
-      <view class="panel-header">推流设置</view>
-      <view class="panel-body">
-        <scroll-view class="scroll-container" scroll-y="true">
-          <view class="setting-option">
-            <view class="label">启用摄像头</view>
-            <view class="btn-normal" bindtap="_toggleVideo">
-              <image class="btn-image"
-                src="{{pusher.enableCamera? './static/camera-true.png': './static/camera-false.png'}}"></image>
-            </view>
-          </view>
-          <view class="setting-option">
-            <view class="label">启用麦克风</view>
-            <view class="btn-normal" bindtap="_toggleAudio">
-              <image class="btn-image"
-                src="{{pusher.enableMic? './static/audio-true.png': './static/audio-false.png'}}"></image>
-            </view>
-          </view>
-          <view class="setting-option">
-            <view class="label">切换摄像头</view>
-            <view class="btn-normal" bindtap="switchCamera">
-              <image class="btn-image" src="./static/switch.png"></image>
-            </view>
-          </view>
-          <view class='setting-option'>
-            <view class="label">开启美颜</view>
-            <switch class="setting-switch" color="#006eff" checked="{{pusher.beautyLevel == 9 ? true: false}}"
-              data-key="beautyLevel" data-value="9|0" data-value-type="number" bindchange="_setPuserProperty" />
-          </view>
-          <!-- <view class='setting-option'>
-            <view class="label">开启AGC</view>
-            <switch class="setting-switch" color="#006eff" checked="{{pusher.enableAgc}}" data-key="enableAgc"
-              data-value="true" data-value-type="boolean" bindchange="_setPuserProperty" />
-          </view>
-          <view class='setting-option'>
-            <view class="label">开启ANS</view>
-            <switch class="setting-switch" color="#006eff" checked="{{pusher.enableAns}}" data-key="enableAns"
-              data-value="true" data-value-type="boolean" bindchange="_setPuserProperty" />
-          </view>
-          <view class='setting-option'>
-            <view class="label">开启横屏推流</view>
-            <switch class="setting-switch" color="#006eff"
-              checked="{{pusher.videoOrientation === 'vertical' ? false: true}}" data-key="videoOrientation"
-              data-value="horizontal|vertical" data-value-type="string" bindchange="_setPuserProperty" />
-          </view> -->
-        </scroll-view>
       </view>
     </view>
     <view class="masker {{panelName =='' ? 'none' : ''}}" bindtap="_handleMaskerClick"></view>

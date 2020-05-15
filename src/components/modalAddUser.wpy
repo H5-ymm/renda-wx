@@ -7,9 +7,9 @@
   text-align: center;
 }
 .qrcode-img {
-  width: 300rpx;
-  height: 300rpx;
-  margin: 30rpx auto;
+  width: 340rpx;
+  height: 340rpx;
+  margin: 30rpx auto 20rpx;
 }
 </style>
 <template>
@@ -33,7 +33,7 @@
         </view>
       </view>
       <view wx:else class="modal-content modal-content-qrcode">
-        <image src="{{imgUrl}}" @longpress="saveImg" class="qrcode-img" />
+        <image src="{{imgUrl}}" @longpress="saveImg" mode="aspectFit" class="qrcode-img" />
         <view class="weui-cell_btn weui-flex center user-btn">
           <button open-type="share" class="weui-btn_cell weui-btn_cell-gradient" @tap="handleOk">长按保存二维码并分享</button>
         </view>

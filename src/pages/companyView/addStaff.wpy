@@ -68,7 +68,7 @@
           <view class="weui-flex between">
             <view class="my-text  weui-flex__item">工作地址</view>
             <view class="my-text-right weui-flex__item" wx:if="{{form.entry_status!=1&&id}}">{{form.provinceName?form.provinceName:'-'}}{{form.cityName?form.cityName:''}}</view>
-            <districtSelet @selectCity="selectCity" :address.sync="[]" wx:else></districtSelet>
+            <districtSelet @selectCity="selectCity" :address.sync="address" wx:else></districtSelet>
           </view>
         </view>
         <view class="page_card_row">
@@ -185,7 +185,6 @@ export default class addStaff extends wepy.page {
     } else {
       this.entry_time = $moment().format('YYYY-MM-DD')
     }
-    console.log(this.id)
     this.$apply()
   }
   // 添加简历接口
@@ -252,7 +251,11 @@ export default class addStaff extends wepy.page {
       .then(res => {
         this.form = res.data
         this.form.address = this.form.address ? this.form.address : '-'
+        this.form.post = this.form.post ? this.form.post : this.form.jobName
         this.entry_time = this.form.entry_time ? $moment.unix(this.form.entry_time).format('YYYY-MM-DD') : ''
+        if (res.data.provinceid) {
+          this.address = [res.data.provinceid, res.data.cityid]
+        }
         this.$apply()
       })
   }

@@ -124,7 +124,6 @@ export default class districtSelet extends wepy.component {
         if (this.multiArray[2]) {
           let addressValue = this.multiArray[0][this.multiIndex[0]] + '/' + this.multiArray[1][this.multiIndex[1]] + '/'
           + this.multiArray[2][this.multiIndex[2]]
-          console.log(addressValue)
           this.$emit('selectCityText', addressValue)
         }
       }

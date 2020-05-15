@@ -199,7 +199,6 @@ export default class teamDetail extends wepy.page {
 	onLoad (options) {
 		this.teamId = JSON.parse(options.query).team_id
 		this.formJob = JSON.parse(options.query)
-		console.log(this.formJob)
 		this.getTeamInfo(this.teamId)
 	}
 	auditInvoiceInfo (params) {
@@ -220,7 +219,6 @@ export default class teamDetail extends wepy.page {
 		$http('/company/seeTeamInfo', params).then(res => {
 			this.form = res.data
 			this.form.addtime = $moment.unix(this.form.addtime).format('YYYY-MM-DD HH:mm')
-			console.log(this.form)
 			this.$apply()
 		})
 	}

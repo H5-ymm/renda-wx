@@ -102,9 +102,7 @@ export default class userList extends wepy.page {
 	}
 	createQrcode () {
 		let params = {
-			scene: `${this.params.uid}&${this.teamId}`,
-			page: `pages/login/welcome`,
-			width: 300
+			page: `pages/login/welcome?uid=${this.params.uid}&teamId=${this.teamId}`
 		}
 		this.isModal = false
 		$http('/login/get_qrcode', params).then(res => {
@@ -133,6 +131,7 @@ export default class userList extends wepy.page {
 		},
 		handleClose: ()=>{
 			this.isModal = !this.isModal
+			this.$apply()
 		}
 	}
 	onShareAppMessage (res) {

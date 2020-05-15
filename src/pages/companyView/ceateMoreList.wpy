@@ -61,7 +61,7 @@ export default class ceateList extends wepy.page {
 			this.isModal = true
 			this.$apply()
 			wx.setStorageSync('receiptType', 0)
-			wxNavigateTo('/pages/companyView/checkReceipt')
+			wxReLaunch('/pages/companyView/checkReceipt')
 		},
 		submit: data => {
 			let params = Object.assign(JSON.parse(this.preForm), data, this.form)

@@ -19,7 +19,7 @@
   <view>
     <block  wx:for="{{$selectPerson$personList}}" wx:key="index">
       <view class="page_card" wx:if="{{$selectPerson$personList.length}}">
-        <view class="page_card_row weui-flex between">
+        <view class="page_card_row weui-flex between" bindtap="$selectPerson$selectUser" data-wpyselectuser-a="{{item}}" data-wpyselectuser-b="{{index}}">
           <view class="weui-flex__item">
             <view class="page_card_name">{{item.user_name || '-'}}</view>
             <view class="text-line">
@@ -27,8 +27,8 @@
             </view>
             <view class="page_card_time">{{item.addtime}}</view>
           </view>
-          <image src="https://a.rsd123.com/image/images/user/radio2.png" alt="" mode="aspectFill" class="radio-icon" bindtap="$selectPerson$selectUser" wx:if="{{item.disabled}}" data-wpyselectuser-a="{{item}}" data-wpyselectuser-b="{{index}}"/>
-          <image src="https://a.rsd123.com/image/images/user/radio1.png" wx:else bindtap="$selectPerson$selectUser" mode="aspectFill" class="radio-icon" data-wpyselectuser-a="{{item}}" data-wpyselectuser-b="{{index}}"/>
+          <image src="https://a.rsd123.com/image/images/user/radio2.png" alt="" mode="aspectFill" class="radio-icon" wx:if="{{item.disabled}}"/>
+          <image src="https://a.rsd123.com/image/images/user/radio1.png" wx:else mode="aspectFill" class="radio-icon"/>
         </view>
       </view>
     </block>

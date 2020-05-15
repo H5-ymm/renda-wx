@@ -28,7 +28,7 @@
 </template>
 <script>
 import wepy from 'wepy'
-import { wxToast, wxReLaunch, wxNavigateTo, wxRedirectTo } from '@/util.js'
+import { wxNavigateTo } from '@/util.js'
 export default class teamUser extends wepy.component {
 	props = {
 		list: Array
@@ -44,7 +44,7 @@ export default class teamUser extends wepy.component {
 	}
 	methods = {
 		viewDetail (item) {
-			wxRedirectTo('/pages/teamView/userInfo?query=' + item.id + '&uid=' + item.uid)
+			wxNavigateTo('/pages/teamView/userInfo?query=' + item.id + '&uid=' + item.uid)
 		}
 	}
 }

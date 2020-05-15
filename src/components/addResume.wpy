@@ -19,7 +19,7 @@
       <view class="page_card">
         <view class="page_card_row">
           <view class="weui-flex between">
-            <view class="my-text  weui-flex__item my-text-require"> 姓名：</view>
+            <view class="my-text  weui-flex__item my-text-require">姓名：</view>
             <input class="weui-input" placeholder-class="placeholder" data-name="name" value="{{form.name}}" @input="changeInput" placeholder="请输入姓名" />
           </view>
         </view>
@@ -31,7 +31,7 @@
         </view>
         <view class="page_card_row">
           <view class="weui-flex between ">
-            <view class="my-text weui-flex__item my-text-require"> 手机号码：</view>
+            <view class="my-text weui-flex__item my-text-require">手机号码：</view>
             <input class="weui-input" data-name="mobile" placeholder-class="placeholder" value="{{form.mobile}}" @input="changeInput" placeholder="请输入手机号码" />
           </view>
         </view>
@@ -91,9 +91,7 @@
       </view>
     </view>
     <view class="weui-cell_btn weui-flex center">
-
       <button class="weui-btn_cell .weui-btn_primary" @tap="save">{{step==1?'下一步':'保存'}}</button>
-
     </view>
   </view>
 </template>
@@ -115,7 +113,7 @@ export default class addResume extends wepy.component {
   }
   data = {
     array: ['男', '女'],
-    eduList: ['高中以下', '高中', '专科', '本科', '硕士'],
+    eduList: ['高中以下', '高中', '中专', '大专', '本科', '硕士'],
     index: 0,
     eduIndex: 0,
     addressIndex: -1,

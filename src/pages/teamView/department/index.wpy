@@ -115,7 +115,7 @@ export default class department extends wepy.page {
 
 	events = {
 		searchValue: val => {
-			this.params = Object.assign(this.params, { keyword: val })
+			this.params = Object.assign(this.params, { where: val })
 			this.getUserList()
 		},
 		handleOk: data => {
@@ -129,7 +129,6 @@ export default class department extends wepy.page {
 			}
 		},
 		delDepart: val => {
-			console.log(val)
 			wxShowModal('', '确定删除该部门吗？', '确定').then(res => {
 				this.delDepartment(val)
 			}).catch(() => {

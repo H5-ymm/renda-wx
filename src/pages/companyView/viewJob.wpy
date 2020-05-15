@@ -34,7 +34,7 @@
 				@tap="handleShelf"
 			>{{form.job_status==1?'下架':'上架'}}</button>
 			<button class="weui-btn_cell weui-btn_primary" wx:if="{{room_num}}" @tap="entryVideo">进入面试</button>
-			<button class="weui-btn_cell weui-btn_primary" wx:if="{{apply}}" @tap="handleApply">申请接单</button>
+			<button class="weui-btn_cell weui-btn_primary" wx:if="{{apply&&rendaUserTeamType==1}}" @tap="handleApply">申请接单</button>
 			<button
 				class="weui-btn_cell weui-btn_primary_plain"
 				wx:if="{{form.status!=2||form.job_status==2}}"
@@ -61,7 +61,8 @@ export default class viewJob extends wepy.page {
 		form: {},
 		id: '',
 		room_num: '',
-		apply: ''
+		apply: '',
+		rendaUserTeamType: 1
 	}
 	config = {
 		navigationBarTitleText: '发单详情'
@@ -74,6 +75,7 @@ export default class viewJob extends wepy.page {
 		if (options.apply) {
 			this.apply = options.apply
 		}
+		this.rendaUserTeamType = wx.getStorageSync('rendaUserTeamType')
 		this.$apply()
 		this.getInvoiceDetail()
 	}
@@ -105,7 +107,6 @@ export default class viewJob extends wepy.page {
 		})
 	}
 	routerView(params) {
-		console.log(params)
 		const url = `/pages/room/room?roomID=${params.room_num}` +
 			`&userSig=${params.userSig}` +
 			`&template=grid&debugMode=false&cloudenv=PRO` +
@@ -123,9 +124,7 @@ export default class viewJob extends wepy.page {
 			`&scene=rtc` +
 			`&userID=${params.room_name}` +
 			`&minBitrate=600&maxBitrate=900`
-		wx.navigateTo({
-			url: url
-		})
+			wxNavigateTo(url)
 	}
 	setReceipt(params) {
 		$http('/apply/add_apply', params).then(res => {

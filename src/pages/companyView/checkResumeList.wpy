@@ -348,13 +348,12 @@ export default class checkResumeList extends wepy.page {
 	}
 	auditResumeRecommend (params, obj) {
 		params.type = this.viewType
-		console.log(params)
 		$http(this.checkUrlAPI, params).then(res => {
 			if (res.data) {
-				if (obj) {
-					this.getuserSig(obj)
-					return
-				}
+				// if (obj) {
+				// 	this.getuserSig(obj)
+				// 	return
+				// }
 				if (this.isCheck || this.check) {
 					if (this.receiptType === 1) {
 						this.statusObj.invoice_status = 4

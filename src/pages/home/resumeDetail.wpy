@@ -9,13 +9,13 @@
         <view class="page_card_row">
           <view class="weui-flex between">
             <view class="my-text weui-flex__item">简历录入位置</view>
-            <view class="my-text-right"> {{!type?'简历管理':type==1?'团队接单':'内部发单'}} </view>
+            <view class="my-text-right">{{!type?'简历管理':type==1?'团队接单':'内部发单'}} </view>
           </view>
         </view>
         <view class="page_card_row" wx:if="{{type&&form.job_id}}">
           <view class="weui-flex between">
-            <view class="my-text weui-flex__item"> 职位名称</view>
-            <view class="my-text-right"> {{form.job_name}}</view>
+            <view class="my-text weui-flex__item">职位名称</view>
+            <view class="my-text-right">{{form.job_name}}</view>
           </view>
         </view>
         <view class="page_card_row">
@@ -38,7 +38,7 @@
         <view class="page_card_row">
           <view class="weui-flex between ">
             <view class="my-text weui-flex__item">姓名</view>
-            <view class="my-text-right"> {{form.name}}</view>
+            <input class="weui-input" placeholder-class="placeholder" data-name="name" value="{{form.name}}" @input="changeInput" placeholder="请输入姓名" />
           </view>
         </view>
         <view class="page_card_row">
@@ -141,7 +141,7 @@ export default class resumeDetail extends wepy.page {
   }
   data = {
     array: ['男', '女', '男女不限'],
-    eduList: ['高中以下', '高中', '专科', '本科', '硕士'],
+    eduList:  ['高中以下', '高中', '中专', '大专', '本科', '硕士'],
     index: 0,
     eduIndex: 0,
     form: {},

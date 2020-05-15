@@ -230,9 +230,7 @@ export default class home extends wepy.page {
   }
   createQrcode () {
     let params = {
-      scene: this.params.uid&'addResume',
-      page: 'pages/home/qrCodeResume',
-      width: 300
+      page: 'pages/home/qrCodeResume?uid=' + this.params.uid
     }
     $http('/login/get_qrcode', params).then(res => {
       if (res.data) {

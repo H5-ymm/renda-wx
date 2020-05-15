@@ -53,10 +53,10 @@ export default class checkResumeList extends wepy.page {
 		},
 		urlApi() {
 			return this.recommendType ? '/apply/add_put' :'/teamjob/add_put'
+		},
+		listUrlApi() {
+			return this.recommendType==1 ? '/Wxresume/reportOrderList' :'/Wxresume/internalInvoiceList'
 		}
-	}
-	config = {
-		navigationBarTitleText: '内部发单'
 	}
 	onLoad(options) {
 		this.params.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
@@ -70,7 +70,6 @@ export default class checkResumeList extends wepy.page {
 	}
 	onShow() {
 		this.getList()
-		this.$apply()
 	}
 	events = {
 		searchValue: val => {
@@ -110,9 +109,7 @@ export default class checkResumeList extends wepy.page {
 				wx.setStorageSync('receiptType',-1)
 				url = 'teamJobDetail'		
 			}
-			wx.redirectTo({
-				url: `/pages/teamView/internalInvoice/${url}?query=${val.id}&resume_id=${this.id}`
-			})
+			wxRedirectTo(`/pages/teamView/internalInvoice/${url}?query=${val.id}&resume_id=${this.id}`)
 		}
 	}
 	recommend(params) {
@@ -125,26 +122,12 @@ export default class checkResumeList extends wepy.page {
 			}
     })
   }
-	getGeportOrderList() {
-		$http('/Wxresume/reportOrderList', this.params).then(res => {
-			this.list = res.data.data || []
-			this.count = res.data.count
-			this.$apply()
-		})
-	}
-	getInternalInvoiceList() {
-		$http('/Wxresume/internalInvoiceList', this.params).then(res => {
-			this.list = res.data.data || []
-			this.count = res.data.count
-			this.$apply()
-		})
-	}
 	getList() {
-		if (this.recommendType == 1) {
-			this.getGeportOrderList()
-		} else {
-			this.getInternalInvoiceList()
-		}
+		$http(this.listUrlApi, this.params).then(res => {
+			this.list = res.data.data || []
+			this.count = res.data.count
+			this.$apply()
+		})
 	}
 	getTitle(val) {
 		return val == 1 ? '团队接单' : '内部发单'

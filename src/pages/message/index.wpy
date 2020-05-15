@@ -2,7 +2,10 @@
 @import '../../style/resume.less';
 .detail-view {
   &.message-view {
-    background: #fff;
+		background: #fff;
+		.view-content {
+			height: calc(100% - 70px);
+		}
   }
   .message-row {
     font-size: 32rpx;
@@ -51,7 +54,7 @@
 				<repeat wx:for="{{list}}" wx:key="index">
 					<view class="weui-flex start message-row" @tap="viewMessage({{item}})">
 						<view class="message-col-1">
-							<image mode="scaleToFill" src="../../images/header.png" class="message-col-header" wx-if="{{!item.header_img&&usertype==1}}" />
+							<image mode="scaleToFill" src="https://a.rsd123.com/image/images/user.png" class="message-col-header" wx-if="{{!item.header_img&&usertype==1}}" />
 							<image mode="scaleToFill" src="{{item.header_img}}" class="message-col-header" wx-if="{{item.header_img}}" />
 							<image mode="scaleToFill" src="{{item.logo_url}}" class="message-col-header" wx:if="{{item.logo_url}}" />
 							<image mode="scaleToFill" src="https://a.rsd123.com/image/images/default1.png" class="message-col-header" wx:if="{{!item.logo_url&&usertype!=1}}"/>
@@ -90,7 +93,9 @@ export default class message extends wepy.page {
 		tabBarIndex: 2,
 		rendaUserTeamType: 0,
 		params: {
-			uid: ''
+			uid: '',
+			limit: 10,
+			page: 0
 		},
 		list: [],
 		count: 0
@@ -108,13 +113,11 @@ export default class message extends wepy.page {
 	}
 	onLoad () {
 		this.usertype = wx.getStorageSync('rendaUserType')
-		this.usertype = 3
-		// if (this.usertype == 1) {
-		// 	this.tabBarIndex = 2
-		// }
+		if (this.usertype == 1) {
+			this.tabBarIndex = 2
+		}	
+		this.params.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
 		this.$apply()
-		// this.params.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
-		this.params.uid = 128
 	}
 	onShow () {
 		this.getMsglist()
@@ -124,7 +127,11 @@ export default class message extends wepy.page {
 			this.list = res.data.data || []
 			this.list.forEach(item => {
 				if (item.logo_url) {
-					item.logo_url = getImgUrl(item.logo_url)
+					if (item.logo_url.indexOf('http') == -1) {
+						item.logo_url = getImgUrl(item.logo_url)
+					} else {
+						item.logo_url = item.logo_url
+					}
 				}
 			})
 			this.count = res.data.count

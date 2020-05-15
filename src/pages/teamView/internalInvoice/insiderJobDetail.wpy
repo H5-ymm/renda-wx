@@ -49,7 +49,6 @@ export default class insiderJobDetail extends wepy.page {
   onLoad(options) {
     this.id = options.query
     this.resumeId = options.resume_id
-    console.log(options)
     this.receiptType = wx.getStorageSync('receiptType')
     this.getInvoiceDetail()
   }

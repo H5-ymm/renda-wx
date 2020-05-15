@@ -187,3 +187,98 @@ export const moneyTypeList1 = [
     }
   ]
   
+  export const teamMenus = [
+    {
+      child: [
+        {
+          title: '账户信息',
+          icon: 'https://a.rsd123.com/image/images/icon1.png',
+          url: '/pages/my/userInfo'
+        },
+        {
+          title: '账户绑定',
+          icon: 'https://a.rsd123.com/image/images/icon2.png',
+          url: '/pages/my/userBind'
+        }
+      ]
+    },
+    {
+      child: [{
+        title: '团队信息',
+        icon: 'https://a.rsd123.com/image/images/icon3.png',
+        url: '/pages/my/teamInfo'
+      }]
+    },
+    {
+      child: [{
+        title: '切换账号',
+        icon: 'https://a.rsd123.com/image/images/icon6.png',
+        url: '/pages/my/userBind'
+      }, {
+        title: '我的消息',
+        icon: '../../images/icon7.png',
+        url: '/pages/message/index'
+      }]
+    }
+  ]
+  export const companyMenus = [
+    {
+      child: [
+        {
+          title: '账户信息',
+          icon: 'https://a.rsd123.com/image/images/icon1.png',
+          url: '/pages/my/companyInfo'
+        },
+        {
+          title: '账户绑定',
+          icon: 'https://a.rsd123.com/image/images/icon2.png',
+          url: '/pages/my/userBind'
+        }
+      ]
+    },
+    {
+      child: [{
+        title: '切换账号',
+        icon: 'https://a.rsd123.com/image/images/icon6.png',
+        url: '/pages/my/userBind'
+      }]
+    }
+  ]
+
+  export const menus =  [
+    {
+      title: '审核发单',
+      subTitle: '已发布职位的审核情况',
+      icon: 'https://a.rsd123.com/image/images/orderTaking/icon1.png',
+      url: '/pages/companyView/checkReceipt',
+      badgeNum: 0
+    },
+    {
+      title: '审核团队',
+      subTitle: '选择确定合作团队',
+      icon: 'https://a.rsd123.com/image/images/orderTaking/icon2.png',
+      url: '/pages/companyView/checkTeam',
+      badgeNum: 0
+    },
+    {
+      title: '简历初筛',
+      subTitle: '团队推荐简历等待筛选，确认面试信息',
+      icon: 'https://a.rsd123.com/image/images/orderTaking/icon3.png',
+      url: '/pages/companyView/resumeSiftings?query=1',
+      badgeNum: 0
+    },
+    {
+      title: '面试结果',
+      subTitle: '已完成面试，确认入职名单、时间及入职信息',
+      icon: 'https://a.rsd123.com/image/images/orderTaking/icon4.png',
+      url: '/pages/companyView/resumeSiftings?query=2',
+      badgeNum: 0
+    },
+    {
+      title: '入职名单',
+      subTitle: '已完成入职，确认入职名单',
+      icon: 'https://a.rsd123.com/image/images/orderTaking/icon5.png',
+      url: '/pages/companyView/resumeSiftings?query=3',
+      badgeNum: 0
+    }
+  ]

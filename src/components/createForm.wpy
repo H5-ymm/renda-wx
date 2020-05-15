@@ -18,8 +18,8 @@
             <picker @change="bindPickerChange" data-name="is_five_risks" value="{{index}}" 
 							range="{{welfareList}}" range-key="label">
 							<view class="my-text-right weui-flex between">
-								<view class="{{welfareList[index]?'':'placeholder'}}">
-									{{welfareList[index]?welfareList[index].label:'请选择'}}
+								<view class="{{form.is_five_risks!=''?'':'placeholder'}}">
+									{{form.is_five_risks!=''?welfareList[index].label:'请选择'}}
 								</view>
 								<image mode="scaleToFill" src="https://a.rsd123.com/image/images/down.png" class="page_down_icon" />
 							</view>
@@ -28,14 +28,15 @@
         </view>
 				 <view class="page_card_row">
           <view class="weui-flex between">
-            <view class="my-text  weui-flex__item my-text-require">缴纳公积金：
+            <view class="my-text  weui-flex__item my-text-require">
+							缴纳公积金：
 						</view>
 						<picker @change="bindPickerChange" 
 						  data-name="is_fund" value="{{fundIndex}}" 
 							range="{{welfareList}}" range-key="label">
 							<view class="my-text-right weui-flex between">
-								<view class="{{welfareList[fundIndex]?'':'placeholder'}}">
-									{{welfareList[fundIndex]?welfareList[fundIndex].label:'请选择'}}
+								<view class="{{form.is_fund!=''?'':'placeholder'}}">
+									{{form.is_fund!=''?welfareList[fundIndex].label:'请选择'}}
 								</view>
 								<image mode="scaleToFill" src="https://a.rsd123.com/image/images/down.png" class="page_down_icon" />
 							</view>
@@ -115,7 +116,7 @@
 						<view class="weui-flex end">
 							 <input class="weui-input" 
 							 placeholder-class="placeholder" placeholder="请输入持续时长"
-						   value="{{form.duration_time}}" @input="changeInput"
+						   value="{{form.duration_time||1}}" @input="changeInput"
 							  data-name="duration_time"/>
 							  <view class="input-text-end" wx:if="{{form.reward_money_type<4}}">
 							   {{	wxs.rewardTimeText(form.reward_money_type)}}
@@ -131,12 +132,12 @@
 						<view class="weui-flex end weui-flex__item">
 							 <input class="weui-input" 
 							 placeholder-class="placeholder" placeholder="请输入可返利的入职周期"
-						   value="{{form.reward_needtime}}" @input="changeInput" data-name="reward_needtime" />
+						   value="{{form.reward_needtime || 1}}" @input="changeInput" data-name="reward_needtime" />
 							  <view class="input-text-end" wx:if="{{form.reward_type<4}}">
 							   {{wxs.rewardTimeText(form.reward_money_type)}}
 								</view>
 								<view class="input-text-end" wx:else>天	</view>
-							  <image mode="scaleToFill" @tap="viewTip(2)" src="https://a.rsd123.com/image/images/tip.png" class="page_down_icon" />
+							  <image mode="scaleToFill" @tap="viewTip(2)" src="https://a.rsd123.com/image/images/tip.png" class="page_down_icon weui-flex__item" />
 				  	</view>    
           </view>
         </view>
@@ -195,8 +196,8 @@ export default class createForm extends wepy.component {
 	wxs = { wxs }
 	data = {
 		form: {
-			is_five_risks: 1,
-			is_fund: 1,
+			is_five_risks: '',
+			is_fund: '',
 			reward_type: '', // 返利类型(1月返 2日返 3时返 4一次性返)
 			reward_money: '', // 返利金额(根据类型修改单位)
 			reward_money_type: '', // 1日2周3月(针对日返和时返) 1长期2持续（针对月返）结算类型 
@@ -291,7 +292,7 @@ export default class createForm extends wepy.component {
 			if (index === 1) {
 				wxToast(`持续天数为空时，默认为1${this.rewardType}`)
 			} else {
-				wxToast(`入职时间为空时，默认工作1${this.rewardType}返利1${this.rewardType}`)
+				wxToast(`入职时间为空时，默认工作1天返利1天`)
 			}
 		},
 		bindPickerChange(e) {

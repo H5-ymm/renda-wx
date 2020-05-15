@@ -16,7 +16,7 @@
   <view>
     <repeat wx:for="{{personList}}" wx:key="index">
       <view class="page_card" wx:if="{{personList.length}}">
-        <view class="page_card_row weui-flex between">
+        <view class="page_card_row weui-flex between" @tap="selectUser({{item}},{{index}})">
           <view class="weui-flex__item">
             <view class="page_card_name">{{item.user_name || '-'}}</view>
             <view class="text-line">
@@ -24,8 +24,8 @@
             </view>
             <view class="page_card_time">{{item.addtime}}</view>
           </view>
-          <image src="https://a.rsd123.com/image/images/user/radio2.png" alt="" mode="aspectFill" class="radio-icon" @tap="selectUser({{item}},{{index}})" wx:if="{{item.disabled}}" />
-          <image src="https://a.rsd123.com/image/images/user/radio1.png" wx:else @tap="selectUser({{item}},{{index}})" mode="aspectFill" class="radio-icon" />
+          <image src="https://a.rsd123.com/image/images/user/radio2.png" alt="" mode="aspectFill" class="radio-icon"  wx:if="{{item.disabled}}" />
+          <image src="https://a.rsd123.com/image/images/user/radio1.png" wx:else mode="aspectFill" class="radio-icon" />
         </view>
       </view>
     </repeat>
@@ -52,14 +52,12 @@ export default class selectPerson extends wepy.component {
     list (val) {
       if (val) {
         this.personList = val
-        console.log( this.personList)
         this.$apply()
       }
     }
   }
   onLoad () {
     this.personList = this.list
-    console.log( this.personList)
     this.$apply()
   }
   methods = {
@@ -87,7 +85,6 @@ export default class selectPerson extends wepy.component {
           this.idList.splice(ret, 1)
         }
       }
-      console.log(this.idList)
       this.$emit('selectUser', Array.from(new Set(this.idList)))
     }
   }

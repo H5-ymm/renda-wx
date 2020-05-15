@@ -158,7 +158,7 @@
         </view>
       </view>
       <view wx:else class="modal-content modal-content-qrcode">
-        <image src="{{$companyModal$imgUrl}}" bindlongpress="$companyModal$saveImg" class="qrcode-img"/>
+        <image src="{{$companyModal$imgUrl}}" bindlongpress="$companyModal$saveImg" mode="aspectFit" class="qrcode-img"/>
         <view class="weui-cell_btn weui-flex center user-btn">
           <button open-type="share" class="weui-btn_cell weui-btn_cell-gradient" bindtap="$companyModal$handleOk">长按图片保存二维码并分享</button>
         </view>

@@ -44,7 +44,6 @@ export default class extends wepy.app {
       'pages/teamView/internalInvoice/insiderJobDetail',
       'pages/teamView/orderManage/allocationPerson',
       'pages/teamView/department/userSetting',
-      'pages/register/selectUser',
       'pages/companyView/staffManage',
       'pages/companyView/checkReceipt',
       'pages/companyView/checkTeam',
@@ -58,6 +57,7 @@ export default class extends wepy.app {
       'pages/companyView/viewJob',
       'pages/companyView/ceateList',
       'pages/companyView/ceateMoreList',
+      'pages/register/selectUser',
       'pages/register/companyTeam',
       'pages/register/companyForm',
       'pages/register/team',
@@ -92,30 +92,12 @@ export default class extends wepy.app {
     wx.removeStorageSync('resumeType')
     wx.removeStorageSync('sendAuthCode')
     wx.removeStorageSync('preForm')
-    // wx.removeStorageSync('rendaUidQrcode');
-    // wx.removeStorageSync('rendaUidQrcodeTeamId');
   }
   onShow(options) {
     wx.removeStorageSync('rendaUidQrcode');
     wx.removeStorageSync('rendaUserTeamId');
     let uid = ''
     let teamId = ''
-    let scene = decodeURIComponent(options.scene);
-    console.log(scene + '场景值')
-    //&是我们定义的参数链接方式
-    uid = scene.split("&")[0];
-    teamId = scene.split('&')[1];
-    if (teamId) {
-      this.globalData.rendaUidQrcode = uid
-      wx.setStorageSync('rendaUidQrcode', uid)
-      if (teamId != 'addResume') {
-        this.globalData.teamId = teamId
-        wx.setStorageSync('rendaUserTeamId', teamId)
-      }
-    } else {
-      wx.setStorageSync('rendaUidQrcode', '')
-      wx.setStorageSync('rendaUserTeamId', '')
-    }
     if (options.query && options.query.uid) {
       console.log(options.query.uid + '获取uid')
       console.log(options.query.teamId + '获取teamId')
@@ -279,12 +261,10 @@ export default class extends wepy.app {
             console.log(error)
           })
         } else {
-          console.log(1)
           console.log('获取失败！' + res.errMsg)
         }
       }
     })
-    console.log(openid)
     return openid
   }
 }

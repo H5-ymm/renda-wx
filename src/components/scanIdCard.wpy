@@ -66,9 +66,9 @@ export default class scanIdCard extends wepy.component {
     }
     $http('/wxresume/identificationOfIdcard', params).then(res => {
       let data = JSON.parse(res.data)
-      console.log(res.data)
+      console.log(data)
       if (res.status.code == 200) {
-        if (!data || (data.data && !data.name && !data.addr)) {
+        if (data.errcode!= 0 || (data.data && !data.name && !data.addr)) {
           wx.showToast({
             icon: 'none',
             title: '获取信息失败,请重新上传身份证正面',
@@ -81,8 +81,7 @@ export default class scanIdCard extends wepy.component {
         this.form.id_card = data.id
         let myDate = new Date()
         let tYear = myDate.getFullYear()
-        let year = data.id.substring(6, 10)
-        console.log(year)
+        let year = data.id ? data.id.substring(6, 10): ''
         if (year) {
           this.form.age = tYear - year
         }

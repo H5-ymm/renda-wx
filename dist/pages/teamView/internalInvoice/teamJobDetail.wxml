@@ -123,7 +123,7 @@
 					</view>
 				</view>
 			</view>
-			<view class="page_card_row" wx:if="{{$jobTemplateTeam$form.reward_type}}">
+			<view class="page_card_row" wx:if="{{$jobTemplateTeam$form.reward_type&&$jobTemplateTeam$form.reward_type!=4}}">
 				<view class="weui-flex between">
 					<view class="my-text weui-flex__item">结算方式</view>
 					<view class="my-text-right" wx:if="{{$jobTemplateTeam$form.reward_type==1}}">{{$jobTemplateTeam$form.reward_money_type==1?'长期返利':'持续返利'}}</view>
@@ -149,7 +149,7 @@
 					<view class="my-text weui-flex__item">需入职</view>
 					<view class="my-text-right" wx:if="{{$jobTemplateTeam$form.reward_needtime}}">
 						{{$jobTemplateTeam$form.reward_needtime}}
-						<text wx:if="{{$jobTemplateTeam$form.reward_money_type<4}}">{{wxs.rewardTimeText($jobTemplateTeam$form.reward_money_type)}}</text>
+						<text wx:if="{{$jobTemplateTeam$form.reward_type<4}}">{{wxs.rewardTimeText($jobTemplateTeam$form.reward_money_type)}}</text>
 						<text wx:else>天</text>
 					</view>
 					<view class="my-text-right" wx:else>1天</view>

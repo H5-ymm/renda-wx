@@ -252,7 +252,7 @@ export default class jobDetail extends wepy.page {
 		$http('/enterpriseinvoice/selectInvoiceInfo', { id: this.id }).then(res => {
 			this.form = res.data
 			this.$broadcast('getInvoiceDetail', this.form)
-			this.form.job_content = this.form.job_content.replace('/<br>/g', '')
+			this.form.job_content = res.data.job_content.replace('/<br>/g', '')
 			this.jobIndex = this.form.job_type - 1
 			let arr = ageList()
 			arr.forEach((item, i) => {

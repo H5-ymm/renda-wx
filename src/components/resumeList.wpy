@@ -1,5 +1,13 @@
 
 
+<style lang="less">
+.text {
+  width: 77%;
+  .text-line {
+    width: 65%
+  }
+}
+</style>
 <template>
   <view>
     <repeat for="{{list}}" key="index">
@@ -19,12 +27,12 @@
             </view>
             <view class="weui-flex between">
               <view class="text-line weui-flex start">
-                <view>谁送给我：</view>
+                <view class="text">谁送给我：</view>
                 <view class="page_card_col1">{{item.from_user?item.from_user : '-'}}</view>
               </view>
             </view>
             <view class="weui-flex between">
-              <view class="weui-flex start weui-flex__item">
+              <view class="weui-flex start text">
                 <view>我送给谁：</view>
                 <view class="page_card_col1 text-line">{{item.to_user ? item.to_user : '-'}}</view>
               </view>

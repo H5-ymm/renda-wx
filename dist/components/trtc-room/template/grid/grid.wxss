@@ -98,8 +98,8 @@
 }
 
 .template-grid .btn-normal {
-  width: 64rpx;
-  height: 64rpx;
+  width: 120rpx;
+  height: 120rpx;
   margin: 0 6rpx;
   box-sizing: border-box;
   display: flex;
@@ -125,8 +125,8 @@
   color: #f75c45;
 }
 .template-grid .btn-normal .btn-image{
-  width: 36rpx;
-  height: 36rpx;
+  width: 60rpx;
+  height: 60rpx;
 }
 
 .template-grid .btn-hangup {

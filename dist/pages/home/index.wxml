@@ -41,12 +41,12 @@
             </view>
             <view class="weui-flex between">
               <view class="text-line weui-flex start">
-                <view>谁送给我：</view>
+                <view class="text">谁送给我：</view>
                 <view class="page_card_col1">{{$resumeList$item.from_user?$resumeList$item.from_user : '-'}}</view>
               </view>
             </view>
             <view class="weui-flex between">
-              <view class="weui-flex start weui-flex__item">
+              <view class="weui-flex start text">
                 <view>我送给谁：</view>
                 <view class="page_card_col1 text-line">{{$resumeList$item.to_user ? $resumeList$item.to_user : '-'}}</view>
               </view>
@@ -97,7 +97,7 @@
         </view>
       </view>
       <view wx:else class="modal-content modal-content-qrcode">
-        <image src="{{$homeModal$imgUrl}}" bindlongpress="$homeModal$saveImg" class="qrcode-img"/>
+        <image src="{{$homeModal$imgUrl}}" bindlongpress="$homeModal$saveImg" mode="aspectFit" class="qrcode-img"/>
         <view class="weui-cell_btn weui-flex center user-btn">
           <button open-type="share" class="weui-btn_cell weui-btn_cell-gradient" bindtap="$homeModal$handleOk">长按图片保存二维码并分享</button>
         </view>

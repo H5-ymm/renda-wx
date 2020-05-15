@@ -39,7 +39,7 @@
 						<view>
 							<view class="page_card_name">{{item.name}}</view>
 							<view class="text-line weui-flex__item">
-								{{item.age}}岁 {{item.sex==1?'男':'女'}} {{item.education}}</view>
+								{{item.age||'-'}}岁 {{item.sex==1?'男':'女'}} {{item.education||'-'}}</view>
 							<view class="text-line weui-flex__item">
 								{{item.citys||'-'}}
 							</view>

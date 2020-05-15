@@ -53,9 +53,9 @@
 </style>
 <template>
 	<view class="home-view register-view page_margin">
-		<view class="home-view-box weui-flex between">
+		<view class="home-view-box weui-flex {{teamType==1?'center':'between'}}">
 			<repeat wx:for="{{menus}}" wx:key="index">
-				<view class="card-item weui-flex between wrap {{activeIndex==index?'card-item-active':''}}" @tap="selectType({{index}})">
+				<view class="card-item weui-flex between wrap {{activeIndex==index?'card-item-active':''}}" wx:if="{{teamType==(index+1)}}" @tap="selectType({{index}})">
 					<image src="{{item.icon}}" alt="" mode="aspectFill" class="menu-icon" />
 					<view class="card-item-title">{{item.title}}</view>
 					<view class="card-item-content">
@@ -119,9 +119,11 @@ export default class selectUser extends wepy.page {
 	onLoad (options) {
 		if (options.query) {
 			this.teamType = options.query
-			this.isModal = false
-			this.$apply()
+			this.isModal = !this.isModal	
+		} else {
+			this.teamType = 0
 		}
+		this.$apply()
 	}
 	methods = {
 		selectType (index) {
@@ -131,7 +133,7 @@ export default class selectUser extends wepy.page {
 		},
 		next () {
 			if (this.activeIndex === 0) {
-				this.isModal = false
+				this.isModal = !this.isModal
 				this.$apply()
 				wx.setStorageSync('rendaUserType', 2)
 			} else {
