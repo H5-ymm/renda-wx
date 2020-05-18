@@ -73,6 +73,7 @@ export default class Welcome extends wepy.page {
     enablePullDownRefresh: true
   }
   onLoad(options) {
+    console.log(options)
     this.rendaUidQrcode = wx.getStorageSync('rendaUidQrcode') || this.$parent.globalData.rendaUidQrcode
     this.teamId = wx.getStorageSync('rendaUserTeamId') || this.$parent.globalData.teamId
     console.log(this.rendaUidQrcode)

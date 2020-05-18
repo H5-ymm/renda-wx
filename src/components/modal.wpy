@@ -118,6 +118,7 @@
 </template>
 <script>
 import wepy from 'wepy'
+import { wxToast } from '@/util.js'
 export default class actionSheet extends wepy.component {
   props = {
     isScaleModal: Boolean,

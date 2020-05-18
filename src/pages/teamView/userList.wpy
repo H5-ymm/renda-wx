@@ -87,6 +87,8 @@ export default class userList extends wepy.page {
 		this.params.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
 		this.rendaUserTeamType = Number(wx.getStorageSync('rendaUserTeamType'))
 		this.teamId = wx.getStorageSync('rendaUserTeamId')
+		console.log(this.teamId)
+		console.log('获取')
 		this.$apply()
 	}
 	getUserList () {

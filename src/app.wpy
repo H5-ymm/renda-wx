@@ -78,6 +78,7 @@ export default class extends wepy.app {
     }
   };
   onLaunch(options) {
+    console.log(options)
     this.removeData()
     this.autoUpdate()
     this.isCheckSession()
@@ -98,6 +99,7 @@ export default class extends wepy.app {
     wx.removeStorageSync('rendaUserTeamId');
     let uid = ''
     let teamId = ''
+    console.log(options)
     if (options.query && options.query.uid) {
       console.log(options.query.uid + '获取uid')
       console.log(options.query.teamId + '获取teamId')

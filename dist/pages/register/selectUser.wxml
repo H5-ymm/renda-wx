@@ -2,7 +2,7 @@
 	<view class="home-view register-view page_margin">
 		<view class="home-view-box weui-flex {{teamType==1?'center':'between'}}">
 			<block  wx:for="{{menus}}" wx:key="index">
-				<view class="card-item weui-flex between wrap {{activeIndex==index?'card-item-active':''}}" wx:if="{{teamType==(index+1)}}" bindtap="selectType" data-wpyselecttype-a="{{index}}">
+				<view class="card-item weui-flex between wrap {{activeIndex==index?'card-item-active':''}}" wx:if="{{teamType==(index+1) || teamType == 0}}" bindtap="selectType" data-wpyselecttype-a="{{index}}">
 					<image src="{{item.icon}}" alt="" mode="aspectFill" class="menu-icon"/>
 					<view class="card-item-title">{{item.title}}</view>
 					<view class="card-item-content">
