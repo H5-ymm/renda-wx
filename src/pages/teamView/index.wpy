@@ -442,6 +442,7 @@ export default class teamView extends wepy.page {
       this.rendaUserTeamType = res.data.grade_num
       console.log(res.data.team_id + '团队idid')
       wx.setStorageSync('rendaUserTeamId', res.data.team_id)
+      this.$parent.globalData.teamId = res.data.team_id
       wx.setStorageSync('rendaUserTeamType', res.data.grade_num)
       wx.setStorageSync('rendaDradeId', res.data.grade_id)
       this.$apply()
