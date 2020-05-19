@@ -96,7 +96,10 @@ export default class viewJob extends wepy.page {
 	deleteReceiptShelf(params) {
 		$http('/company/delReceiptShelf', params).then(res => {
 			wxToast('删除成功')
-			wxReLaunch('/pages/companyView/checkReceipt')
+			wx.navigateBack({
+				delta: 1 
+			})
+			// wxReLaunch('/pages/companyView/checkReceipt')
 		})
 	}
 	getuserSig(params) {

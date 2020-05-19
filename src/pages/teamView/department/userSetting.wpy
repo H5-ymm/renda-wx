@@ -158,8 +158,6 @@ export default class department extends wepy.page {
 			this.isPicker = true
 			this.depId = val.depart_id
 			this.userId = val.uid
-			// this.gradeId = val.grade_id
-			// console.log(this.gradeId)
 			this.$apply()
 			this.getDepartmenList()
 		}

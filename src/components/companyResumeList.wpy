@@ -174,8 +174,7 @@ export default class companyResumeList extends wepy.component {
 				resume_id: item.resume_id,
 				status
 			}
-			console.log(item.is_time + '设置成功了吗')
-			if (item.view_type == 1 || (!item.is_time&&this.receiptType === 1)) {
+			if (item.view_type == 1 || (!item.is_time&&this.receiptType === 1) || this.receiptType === 3) {
         this.$emit('handleResume', query)
 			} else {
 				query.room_num = item.room_num

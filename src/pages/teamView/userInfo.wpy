@@ -306,7 +306,10 @@ export default class userInTeam extends wepy.page {
 	updateTeamUser (params) {
 		$http('/userinfo/updateTeamUser', params).then(res => {
 			if (res.data) {
-				wxRedirectTo('/pages/teamView/userList')
+        wx.navigateBack({
+					delta: 1 
+				})
+				// wxRedirectTo('/pages/teamView/userList')
 			} else {
 				wxToast('修改失败')
 			}
@@ -315,7 +318,10 @@ export default class userInTeam extends wepy.page {
 	delUser (params) {
 		$http('/userinfo/deleteTeamUser', params).then(res => {
 			if (res.data) {
-				wxRedirectTo('/pages/teamView/userList')
+				wx.navigateBack({
+					delta: 1 
+				})
+				// wxRedirectTo('/pages/teamView/userList')
 			} else {
 				wxToast('修改失败')
 			}

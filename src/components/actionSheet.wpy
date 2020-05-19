@@ -39,8 +39,7 @@
     <view
       class="modal_transform g_transition3s {{ isShow ? 'g_scale1': ''}}"
       id="modal-box"
-      style="height:{{height}}rpx"
-    >
+      style="height:{{height}}rpx">
       <slot></slot>
     </view>
   </view>

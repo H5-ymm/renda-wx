@@ -449,9 +449,9 @@ export default class teamView extends wepy.page {
     })
   }
   saveUser(uid) {
-    let userinfo = wx.getStorageSync('wxInfo')
+    let userinfo = wx.getStorageSync('wxInfo') ? JSON.parse(wx.getStorageSync('wxInfo')) : {}
     let params = {
-      uid,
+      uid: uid || this.params.uid,
       head_img: userinfo.head_img
     }
     $http('/userinfo/editUserInfo', params).then(res => {
@@ -474,7 +474,7 @@ export default class teamView extends wepy.page {
     this.getReceiptList()
     let userInfo = wx.getStorageSync('userInfo') || ''
 		if (!userInfo || (userInfo && !JSON.parse(userInfo).head_img)) {
-      this.saveUser()
+      this.saveUser(this.params.uid)
     }
   }
 }

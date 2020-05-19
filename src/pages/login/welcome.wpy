@@ -21,7 +21,7 @@
       </view>
     </view>
     <modal :isScaleModal.sync="isModal" :height.sync="modalHeight" :modalObj.sync="modalObj"></modal>
-    <modalogin :isScaleModal.sync="isLoginModal" :type.sync="type" @handleClose="handleClose" @handleOkLogin="handleOkLogin" :height.sync="modalLoginHeight"></modalogin>
+    <modalogin :isScaleModal.sync="isLoginModal" :type.sync="type" :sessionKey.sync="sessionKey" @handleClose="handleClose" @handleOkLogin="handleOkLogin" :height.sync="modalLoginHeight"></modalogin>
   </view>
 </template>
 <script>
@@ -95,25 +95,52 @@ export default class Welcome extends wepy.page {
       this.isRead = false
       this.isLoginOut = false
     }
-    this.openid = wx.getStorageSync('rendaOpenId') ||
-      this.$parent.globalData.openid
+    if (wx.getStorageSync('rendaOpenId')) {
+      this.openid = wx.getStorageSync('rendaOpenId')
+    } else {
+      this.getOpenId()
+    }
     this.$apply()
     wx.getSetting({
       success: res => {
         // 没有授权
         if (!res.authSetting['scope.userInfo']) {
           this.authorize = false
-          if (!this.openid) {
-            this.openid = this.$parent.getOpenId()
-          }
+          // if (!this.openid) {
+          //   this.openid = this.$parent.getOpenId()
+          // }
         } else {
           this.authorize = true
-          if (!this.openid) {
-            this.openid = this.$parent.getOpenId()
+          // if (!this.openid) {
+          //   this.openid = this.$parent.getOpenId()
+          // }
+          if (!this.isLoginOut) {
+            this.checkUserLogin(this.openid)
           }
-          this.checkUserLogin(this.openid)
         }
         this.$apply()
+      }
+    })
+  }
+  getOpenId() {
+    wx.login({
+      success: res => {
+        if (res.code) {
+          $http('/Login/getopenid', { code: res.code }).then(res => {
+            let data = JSON.parse(res.data)
+            this.$parent.globalData.openid = data.openid
+            this.openid = data.openid
+            // this.checkUserLogin(this.openid)
+            this.sessionKey = data.session_key
+            this.$parent.globalData.sessionKey = data.session_key
+            wx.setStorageSync('session_key', data.session_key)
+            wx.setStorageSync('rendaOpenId', data.openid)
+          }).catch(error => {
+            console.log(error)
+          })
+        } else {
+          console.log('获取失败！' + res.errMsg)
+        }
       }
     })
   }
@@ -243,9 +270,9 @@ export default class Welcome extends wepy.page {
     })
   }
   getWxPhoneLogin(phoneNumber) {
-    if (!this.openid) {
-      this.openid = this.$parent.getOpenId()
-    }
+    // if (!this.openid) {
+    //   this.openid = this.$parent.getOpenId()
+    // }
     let params = {
       tel: phoneNumber,
       openid: this.openid
@@ -345,9 +372,9 @@ export default class Welcome extends wepy.page {
         wx.setStorageSync('wxInfo', JSON.stringify(params))
         this.authorize = true
         this.$apply()
-        if (!this.openid) {
-          this.openid = this.$parent.getOpenId()
-        }
+        // if (!this.openid) {
+        //   this.openid = this.$parent.getOpenId()
+        // }
         this.checkUserLogin(this.openid)
       } else {
         wx.showModal({

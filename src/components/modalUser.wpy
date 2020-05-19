@@ -64,7 +64,8 @@ export default class modalUser extends wepy.component {
     isScaleModal: Boolean,
     height: Number,
     modalObj: Object,
-    type: Number
+    type: Number,
+    sessionKey: String
   }
   data = {
     isShow: false,
@@ -86,8 +87,6 @@ export default class modalUser extends wepy.component {
     isInviteUser: false
   }
   onLoad () {
-    console.log(wx.getStorageSync('rendaUidQrcode') != '')
-    console.log(wx.getStorageSync('rendaUserTeamId') != '')
     if (wx.getStorageSync('rendaUidQrcode') != '' && wx.getStorageSync('rendaUserTeamId') != '') {
       this.isInviteUser = true
     } else {
@@ -95,26 +94,43 @@ export default class modalUser extends wepy.component {
     }
   }
   getSessionKey (detail) {
-    wx.login({
-      success: res => {
-        if (res.code) {
-          $http('/Login/getopenid', { code: res.code }).
-            then(res => {
-              let data = JSON.parse(res.data)
-              let params = {
-                encryptedData: detail.encryptedData,
-                iv: detail.iv,
-                sessionKey: data.session_key
-              }
-              this.$emit('handleOkLogin', params)
-            }).catch(error => {
-              console.log(error)
-            })
-        } else {
-          console.log('获取失败！' + res.errMsg)
-        }
-      }
-    })
+    let params = {
+      encryptedData: detail.encryptedData,
+      iv: detail.iv,
+      sessionKey: this.sessionKey || wx.getStorageSync('session_key')
+    }
+    this.$emit('handleOkLogin', params)
+    console.log(wx.getStorageSync('session_key'))
+    console.log('获取手机号')
+    // if(wx.getStorageSync('session_key')) {
+    //    params = {
+    //     encryptedData: detail.encryptedData,
+    //     iv: detail.iv,
+    //     sessionKey: this.sessionKey || wx.getStorageSync('session_key')
+    //   }
+    //   this.$emit('handleOkLogin', params)
+    // } else {
+    //   wx.login({
+    //     success: res => {
+    //       if (res.code) {
+    //         $http('/Login/getopenid', { code: res.code }).
+    //           then(res => {
+    //             let data = JSON.parse(res.data)
+    //             params = {
+    //               encryptedData: detail.encryptedData,
+    //               iv: detail.iv,
+    //               sessionKey: data.session_key
+    //             }
+    //             this.$emit('handleOkLogin', params)
+    //           }).catch(error => {
+    //             console.log(error)
+    //           })
+    //       } else {
+    //         console.log('获取失败！' + res.errMsg)
+    //       }
+    //     }
+    //   })
+    // }
   }
   methods = {
     bindgetphonenumber (e) {

@@ -105,7 +105,7 @@
 		</view>
 	 <!-- </view> -->
 		<noticeModal :isScaleModal.sync="isNoticeModal" :height.sync="modalHeight" @setAllTime="setAllTime" :timeInfo.sync="timeInfo" :title.sync="title" :type.sync="viewType"></noticeModal>
-		<viewNoticeModal :isScaleModal.sync="isModal" :height.sync="modalHeight" :timeInfo.sync="timeInfo" :title.sync="title"></viewNoticeModal>
+		<!-- <viewNoticeModal :isScaleModal.sync="isModal" :height.sync="modalHeight" :timeInfo.sync="timeInfo" :title.sync="title"></viewNoticeModal> -->
 	</view>
 </template>
 <script>
@@ -115,7 +115,7 @@ import noticeModal from '@/components/noticeModal'
 import tabBar from '@/components/tabBar'
 import search from '@/components/search'
 import companyResumeList from '@/components/companyResumeList'
-import viewNoticeModal from '@/components/viewNoticeModal'
+// import viewNoticeModal from '@/components/viewNoticeModal'
 import { getList, wxNavigateTo, wxShowModal, wxToast, wxReLaunch } from '@/util'
 export default class checkResumeList extends wepy.page {
 	components = {
@@ -123,7 +123,7 @@ export default class checkResumeList extends wepy.page {
 		noticeModal: noticeModal,
 		search: search,
 		companyResumeList: companyResumeList,
-		viewNoticeModal: viewNoticeModal
+		// viewNoticeModal: viewNoticeModal
 	}
 	data = {
 		tabBarList: [],
@@ -186,6 +186,7 @@ export default class checkResumeList extends wepy.page {
 	onLoad (options) {
 		this.receiptType = Number(options.query) || Number(wx.getStorageSync('receiptType'))
 		this.viewType = options.setTime || '1'
+		// this.isNoticeModal = false
   	console.log(this.viewType + '面试类型')
 		this.job_id = options.job_id
 		if (this.receiptType === 1) {
@@ -303,6 +304,7 @@ export default class checkResumeList extends wepy.page {
 		$http(this.timeUrlApi, params).then(res => {
 			if (res.data) {
 				this.isNoticeModal = true
+				this.statusObj.view_time = params.time
 				this.$apply()
 			} else {
 				wxToast('设置时间失败')
@@ -366,6 +368,9 @@ export default class checkResumeList extends wepy.page {
 					}
 					if (this.receiptType === 2) {
 						this.statusObj.interview_status = 4
+					}
+						if (this.receiptType === 3) {
+						this.statusObj.entry_status = 4
 					}
 					this.isBatch = false
 					this.$apply()

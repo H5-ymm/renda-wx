@@ -50,7 +50,7 @@
     }
 	}
 	.weui-input {
-		text-align: left;
+		text-align: left!important;
 		&.weui-textarea {
 			height: 100rpx;
 			line-height:auto;
@@ -125,7 +125,10 @@ export default class noticeModal extends wepy.component {
 		form: {
 			content: '',
 			address: '',
-			time: ''
+			time: '',
+			provindeid: '',
+			cityid: '',
+			threecity: ''
 		},
 		address: '',
 		disabled: true,
@@ -163,7 +166,7 @@ export default class noticeModal extends wepy.component {
 				if (this.form.time.toString().indexOf('-') == -1) {
 					time = this.form.time
 				} else {
-					time = $moment(this.form.time).valueOf() + ''
+					time = $moment(this.form.time || '').valueOf() + ''
 					time = time.substr(0, 10)
 				}
 				params = {
@@ -195,7 +198,10 @@ export default class noticeModal extends wepy.component {
 			  	this.form.time = val.time
 				}
 				if (val.provinceid) {
-          this.addressList = [val.provinceid, val.cityid, val.three_cityid]
+					this.addressList = [val.provinceid, val.cityid, val.three_cityid]
+					console.log(this.addressList)
+				} else {
+					this.addressList = []
 				}
 				this.time = this.form.time 
 				let arr = val.content.split('&')

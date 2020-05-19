@@ -47,7 +47,7 @@ const http = (url, params, method) => {
         reject(error);
       }
     }).onHeadersReceived(function (res) {
-      console.log(res)
+     
     })
   })
 };

@@ -91,6 +91,8 @@ export default class resumeSiftings extends wepy.page {
 			this.params.jobId = options.jobId
 		}
 		this.receiptType = Number(options.query)
+		console.log(this.receiptType)
+		console.log(this.receiptType + 'dddd')
 		wx.setNavigationBarTitle({
 			title: this.getTitle(this.receiptType)
 		})
@@ -128,7 +130,7 @@ export default class resumeSiftings extends wepy.page {
 			} else {
 				this.title = '入职'
 				this.isModal = !this.isModal
-				wx.setStorageSync('rendaViewType',1)
+				wx.setStorageSync('rendaViewType', 1)
 			}
 			this.$apply()
 		},

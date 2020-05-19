@@ -15,7 +15,7 @@
         <view class="page_card_row">
           <view class="weui-flex between ">
             <view class="my-text weui-flex__item">身份证号码</view>
-            <view class="my-text-right"> {{form.id_card}}</view>
+            <view> {{form.id_card}}</view>
           </view>
         </view>
         <view class="page_card_row">
@@ -44,7 +44,7 @@
         </view>
         <view class="page_card_row">
           <view class="weui-flex between ">
-            <view class="my-text weui-flex__item">户籍地址</view>
+            <view class="my-text">户籍地址</view>
             <view class="my-text-right"> {{form.address||'-'}}</view>
           </view>
         </view>
@@ -56,13 +56,13 @@
         </view>
         <view class="page_card_row">
           <view class="weui-flex between">
-            <view class="my-text  weui-flex__item">现住地址</view>
+            <view class="my-text">现住地址</view>
             <view class="my-text-right">{{citysName?citysName:'-'}}</view>
           </view>
         </view>
         <view class="page_card_row">
           <view class="weui-flex between">
-            <view class="my-text  weui-flex__item"></view>
+            <view class="my-text"></view>
             <view class="my-text-right"> {{form.household_address?form.household_address:'-'}}</view>
           </view>
         </view>

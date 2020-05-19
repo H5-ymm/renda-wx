@@ -29,7 +29,7 @@ export default class districtSelet extends wepy.component {
   }
   getCode(list) {
     return list.map(item => {
-      return item.code || item.provinceid
+      return Number(item.code) || Number(item.provinceid)
     })
   }
   getList(list) {
@@ -42,6 +42,7 @@ export default class districtSelet extends wepy.component {
       .then(res => {
         let arr = this.getList(res.data)
         this.codeList[0] = this.getCode(res.data)
+        console.log(this.codeList)
         this.multiArray[0] = arr
         this.getCityList(value)
       })
@@ -72,6 +73,7 @@ export default class districtSelet extends wepy.component {
           return flag === -1 ? 0 : val.indexOf(this.address[ind])
         })
       }
+      console.log(this.multiIndex)
       this.$apply()
     })
   }
@@ -92,6 +94,7 @@ export default class districtSelet extends wepy.component {
           let flag = val.indexOf(this.address[ind])
           return flag === -1 ? 0 : val.indexOf(this.address[ind])
         })
+        console.log(this.multiIndex)
       }
       this.$apply()
     })

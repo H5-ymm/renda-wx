@@ -10,19 +10,19 @@
         </view>
         <view class="page_card_row"  wx:if="{{type&&form.job_id}}">
           <view class="weui-flex between">
-            <view class="my-text weui-flex__item">职位名称</view>
+            <view class="my-text">职位名称</view>
             <view class="my-text-right">{{form.job_name}}</view>
           </view>
         </view>
         <view class="page_card_row">
           <view class="weui-flex between">
-            <view class="my-text  weui-flex__item">谁送给我</view>
+            <view class="my-text">谁送给我</view>
             <input class="weui-input" placeholder-class="placeholder" data-name="from_user" value="{{form.from_user}}" bindinput="changeInput" placeholder="请输入送给人"/>
           </view>
         </view>
         <view class="page_card_row"  wx:if="{{type&&form.job_id}}">
           <view class="weui-flex between">
-            <view class="my-text  weui-flex__item">简历状态</view>
+            <view class="my-text">简历状态</view>
             <view class="page_card_status {{'page_card_status'+ form.status}}" wx:if="{{!form.interview_status&&!form.entry_status}}">
               {{form.status==0?'待审核':form.status==1?'审核通过':'审核未通过'}}</view>
             <view class="page_card_status {{'page_card_status'+ form.interview_status}}" wx:if="{{!form.entry_status&&form.status==1&&form.interview_status}}">
@@ -33,8 +33,8 @@
         </view>
         <view class="page_card_row">
           <view class="weui-flex between ">
-            <view class="my-text weui-flex__item">姓名</view>
-            <input class="weui-input" placeholder-class="placeholder" data-name="name" value="{{form.name}}" bindinput="changeInput" placeholder="请输入姓名"/>
+            <view class="my-text">姓名</view>
+            <input class="weui-input my-text-right" placeholder-class="placeholder" data-name="name" value="{{form.name}}" bindinput="changeInput" placeholder="请输入姓名"/>
           </view>
         </view>
         <view class="page_card_row">
@@ -45,13 +45,13 @@
         </view>
         <view class="page_card_row">
           <view class="weui-flex between ">
-            <view class="my-text weui-flex__item">手机号</view>
-            <input class="weui-input" placeholder-class="placeholder" data-name="mobile" value="{{form.mobile}}" bindinput="changeInput" placeholder="请输入手机号"/>
+            <view class="my-text">手机号</view>
+            <input class="weui-input my-text-right" placeholder-class="placeholder" data-name="mobile" value="{{form.mobile}}" bindinput="changeInput" placeholder="请输入手机号"/>
           </view>
         </view>
         <view class="page_card_row">
           <view class="weui-flex between" wx:if="{{!type}}">
-            <view class="my-text weui-flex__item">性别</view>
+            <view class="my-text">性别</view>
             <picker bindchange="bindPickerChange" value="{{index}}" range="{{array}}">
               <view class="my-text-right weui-flex between">
                 {{array[index]?array[index]:'请选择'}}
@@ -60,13 +60,13 @@
             </picker>
           </view>
           <view class="weui-flex between" wx:else>
-            <view class="my-text weui-flex__item">性别</view>
+            <view class="my-text">性别</view>
             <view class="my-text-right"> {{array[index]}}</view>
           </view>
         </view>
         <view class="page_card_row">
           <view class="weui-flex between" wx:if="{{!type}}">
-            <view class="my-text weui-flex__item">学历</view>
+            <view class="my-text">学历</view>
             <picker bindchange="eduPickerChange" value="{{eduIndex}}" range="{{eduList}}">
               <view class="my-text-right weui-flex between">
                 {{eduList[eduIndex]?eduList[eduIndex]:'请选择'}}
@@ -75,31 +75,31 @@
             </picker>
           </view>
           <view class="weui-flex between" wx:else>
-            <view class="my-text weui-flex__item">学历</view>
+            <view class="my-text">学历</view>
             <view class="my-text-right"> {{eduList[eduIndex]}}</view>
           </view>
         </view>
         <view class="page_card_row">
           <view class="weui-flex between">
-            <view class="my-text  weui-flex__item">年龄</view>
-            <input class="weui-input" placeholder-class="placeholder" disabled="{{type!=''}}" data-name="age" value="{{form.age?form.age:'-'}}" bindinput="changeInput" placeholder="请输入年龄"/>
+            <view class="my-text">年龄</view>
+            <input class="weui-input my-text-right" placeholder-class="placeholder" disabled="{{type!=''}}" data-name="age" value="{{form.age?form.age:'-'}}" bindinput="changeInput" placeholder="请输入年龄"/>
           </view>
         </view>
         <view class="page_card_row">
           <view class="weui-flex between ">
-            <view class="my-text weui-flex__item">户籍地址</view>
-            <input class="weui-input" placeholder-class="placeholder" data-name="address" disabled="{{type!=''}}" value="{{form.address?form.address:'-'}}" bindinput="changeInput" placeholder="请输入住址"/>
+            <view class="my-text">户籍地址</view>
+            <input class="weui-input my-text-right" placeholder-class="placeholder" data-name="address" disabled="{{type!=''}}" value="{{form.address?form.address:'-'}}" bindinput="changeInput" placeholder="请输入住址"/>
           </view>
         </view>
         <view class="page_card_row">
           <view class="weui-flex between">
-            <view class="my-text  weui-flex__item">期望岗位</view>
-            <input class="weui-input" placeholder-class="placeholder" data-name="desired_position" disabled="{{type!=''}}" value="{{form.desired_position?form.desired_position:'-'}}" bindinput="changeInput" placeholder="请输入期望岗位"/>
+            <view class="my-text">期望岗位</view>
+            <input class="weui-input my-text-right" placeholder-class="placeholder" data-name="desired_position" disabled="{{type!=''}}" value="{{form.desired_position?form.desired_position:'-'}}" bindinput="changeInput" placeholder="请输入期望岗位"/>
           </view>
         </view>
         <view class="page_card_row">
           <view class="weui-flex between">
-            <view class="my-text  weui-flex__item">现住地址</view>
+            <view class="my-text">现住地址</view>
             
   <picker mode="multiSelector" bindcancel="$districtSelet$cancelPickerChange" bindchange="$districtSelet$bindMultiPickerChange" bindcolumnchange="$districtSelet$bindMultiPickerColumnChange" value="{{$districtSelet$multiIndex}}" range="{{$districtSelet$multiArray}}" wx:if="{{!type}}">
     <view class="my-text-right weui-flex between">
@@ -118,8 +118,8 @@
         </view>
         <view class="page_card_row">
           <view class="weui-flex between">
-            <view class="my-text  weui-flex__item"/>
-            <input class="weui-input" placeholder-class="placeholder" data-name="household_address" disabled="{{type!=''}}" value="{{form.household_address?form.household_address:'无'}}" bindinput="changeInput" placeholder="请输入详细住址"/>
+            <view class="my-text"/>
+            <input class="weui-input my-text-right" placeholder-class="placeholder" data-name="household_address" disabled="{{type!=''}}" value="{{form.household_address?form.household_address:'无'}}" bindinput="changeInput" placeholder="请输入详细住址"/>
           </view>
         </view>
       </view>

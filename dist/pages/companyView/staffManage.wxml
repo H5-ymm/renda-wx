@@ -33,7 +33,7 @@
               <view class="page_card_receipt_status {{$staffList$item.entry_status==1?'page_card_receipt_status1':'page_card_receipt_status3'}}">{{$staffList$item.entry_status==1?'在职':'离职'}}</view>
             </view>
             <view class="weui-flex between">
-              <view class="page_card_col1 text-line">{{$staffList$item.post?$staffList$item.post:'-'}}</view>
+              <view class="page_card_col1 text-line">{{$staffList$item.post?$staffList$item.post:$staffList$item.jobName}}</view>
               <view class="page_card_time">{{wxs.dateFormat($staffList$item.addtime,'yyyy-MM-dd')}}</view>
             </view>
           </view>

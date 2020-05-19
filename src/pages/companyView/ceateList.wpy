@@ -61,7 +61,7 @@
 							<view class="my-text-right weui-flex between">
 								<view wx:if="{{form.min_age!=''}}">
 									{{ageArray[0][ageIndex[0]]}}岁 -
-									{{ageArray[1][ageIndex[49]]}}岁
+									{{ageArray[1][ageIndex[1]]}}岁
 								</view>
 								<view class="placeholder" wx:else>请选择</view>
 								<image mode="scaleToFill" src="https://a.rsd123.com/image/images/down.png" class="page_down_icon" />
@@ -169,7 +169,7 @@ export default class ceateList extends wepy.page {
 	}
 	data = {
 		array: ['男', '女', '男女不限'],
-		ageArray: [],
+		ageArray: [0, 49],
 		moneyTypeList,
 		index: 2,
 		eduIndex: 0,

@@ -145,7 +145,10 @@ export default class allocationPerson extends wepy.page {
 		$http('/apply/setjobtouser', params).then(res => {
 			if (res.data) {
 				wxToast('分配成功')
-				wxNavigateTo('/pages/teamView/orderManage/list?query=1')
+				wx.navigateBack({
+					delta: 1 
+				})
+				// wxNavigateTo('/pages/teamView/orderManage/list?query=1')
 			} else {
 				wxToast('分配失败')
 			}
@@ -160,7 +163,10 @@ export default class allocationPerson extends wepy.page {
 		$http('/apply/cancelrecv', params).then(res => {
 			if (res.data) {
 				wxToast('取消成功')
-				wxNavigateTo('/pages/teamView/orderManage/list?query=1')
+				wx.navigateBack({
+					delta: 1 
+				})
+				// wxNavigateTo('/pages/teamView/orderManage/list?query=1')
 			} else {
 				wxToast('取消失败')
 			}

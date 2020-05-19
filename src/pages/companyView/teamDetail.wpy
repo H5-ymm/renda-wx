@@ -203,12 +203,18 @@ export default class teamDetail extends wepy.page {
 	}
 	auditInvoiceInfo (params) {
 		$http('/company/auditInvoiceInfo', params).then(res => {
-			wxNavigateTo('/pages/companyView/checkTeam')
+			// wxNavigateTo('/pages/companyView/checkTeam')
+			wx.navigateBack({
+				delta: 1 
+			})
 		})
 	}
 	delCompanyTeamApply (params) {
 		$http('/company/delCompanyTeamApply', params).then(res => {
-			wxNavigateTo('/pages/companyView/checkTeam')
+			// wxNavigateTo('/pages/companyView/checkTeam')
+			wx.navigateBack({
+				delta: 1 
+			})
 		})
 	}
 	getTeamInfo (teamId) {

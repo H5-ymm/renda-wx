@@ -49,10 +49,10 @@
 			</view>
 			<view class="weui-flex between">
 				<view class="weui-flex start weui-flex__item">
-					{{itemValue.com_name}}
+					{{itemValue.com_name || '-'}}
 				</view>
 				<view class="page_card_time" wx:if="{{receiptType<2}}">{{itemValue.addtime||itemValue.ctime}}</view>
-				<view class="page_card_receipt_status page_card_receipt_status3" wx:if="{{receiptType==2&&!itemValue.view_time}}">
+				<view class="page_card_receipt_status page_card_receipt_status3" wx:if="{{receiptType==2&&!itemValue.pass_num}}">
 					未筛选简历
 				</view>
 				<view class="page_card_receipt_status page_card_receipt_status3" wx:elif="{{receiptType==3&&itemValue.interview_status<=1&&!itemValue.entry_time}}">

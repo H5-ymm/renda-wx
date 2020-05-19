@@ -88,7 +88,6 @@ export default class formModal extends wepy.component {
 	getUserList() {
 		let uid = wx.getStorageSync('rendaUid')
 		$http('/team/teamListUser', { uid }).then(res => {
-			console.log(res.data)
 			this.userList = res.data || []
 			this.$apply()
 		})
@@ -123,6 +122,11 @@ export default class formModal extends wepy.component {
 			} else {
 				this.isShow = false
 			}
+			this.form =  {
+				user_id: '',
+				depart_name: ''
+			}
+			this.getUserList()
 			this.$apply()
 		}
 	}

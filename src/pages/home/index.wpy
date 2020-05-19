@@ -243,6 +243,7 @@ export default class home extends wepy.page {
   }
 
   onShareAppMessage (res) {
+    console.log(res)
     return {
       title: '转发',
       imageUrl: this.qrCode,

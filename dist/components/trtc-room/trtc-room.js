@@ -1697,7 +1697,7 @@ Component({
     _debugGoBack () {
       console.log(wx.getStorageSync('viewList')+'是有数据的')
       if (wx.getStorageSync('viewList')) {
-        wx.navigateTo({
+        wx.redirectTo({
           url: '/pages/companyView/viewResult'
         })
       } else {
@@ -1796,7 +1796,7 @@ Component({
       //   delta: 1,
       // })
       if (wx.getStorageSync('viewList')) {
-        wx.navigateTo({
+        wx.redirectTo({
           url: '/pages/companyView/viewResult'
         })
       } else {

@@ -148,7 +148,6 @@ export default class Company extends wepy.component {
       this[key] = allData[key]
     }
     this.registerType = wx.getStorageSync('rendaUserType')
-    console.log(this.registerType + 'ddd')
     this.$apply()
   }
   events = {
@@ -162,7 +161,7 @@ export default class Company extends wepy.component {
     uploadFile(tempFilePaths).then(res => {
       if (res.data && res.data.url) {
         this.infoImg = getImgUrl(res.data.url)
-        this.form.logo = res.data.url
+        this.form.logo = this.infoImg
         this.$apply()
       } else {
         wxToast('图片获取失败')

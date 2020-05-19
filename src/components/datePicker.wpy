@@ -48,18 +48,20 @@ export default class datePicker extends wepy.component {
 				let newDate = val.date + ' ' + val.time
 				newDate = newDate + ''
 				let date = $moment(newDate).valueOf() + ''
-				console.log(date + 'kkkkk')
-				if (this.viewType == 2 && date - new Date().getTime() < 0) {
+				if (date - new Date().getTime() < 0) {
+					this.timeValue = $moment(new Date()).format('HH:ss')
+					console.log(this.timeValue)
+					this.$apply()
 					return wxToast('不能选择小于当前的时间')
+				} else {	
+					date = date.substr(0, 10)
+					this.$emit('setDate', date)		
 				}
-				date = date.substr(0, 10)
-				this.$emit('setDate', date)
-				this.viewType = 1
-				this.$apply()
 			} 
 		},
 		date(val) {
 			if(val) {
+				console.log(val)
 				this.dateValue = $moment(val).format('YYYY-MM-DD')
 				this.timeValue = $moment(val).format('HH:ss')
 				this.$apply()
@@ -68,11 +70,13 @@ export default class datePicker extends wepy.component {
 	}
 	onLoad () {
 		this.viewType = wx.getStorageSync('rendaViewType')
-		if (this.viewType == 1) {
-			this.dateValue = $moment().add(1, 'days').format('YYYY-MM-DD')
-		} else {
-			this.dateValue = $moment().format('YYYY-MM-DD')
-		}
+		// if (this.viewType == 1) {
+		// 	this.dateValue = $moment().add(1, 'days').format('YYYY-MM-DD')
+		// } else {
+		// 	this.dateValue = $moment().format('YYYY-MM-DD')
+		// }
+		this.dateValue = $moment().format('YYYY-MM-DD')
+		this.timeValue = $moment().format('HH:ss')
 		this.params.date = this.dateValue
 		this.startValue = this.dateValue
 		this.$apply()
@@ -80,18 +84,29 @@ export default class datePicker extends wepy.component {
 	methods = {
 		bindDateChange (e) {
 			let date = e.detail.value
-			if (this.viewType == 1 && $moment(date).valueOf() - $moment(this.startValue).valueOf() <= 0) {
-				this.dateValue = this.startValue
-				this.params.date = this.startValue
-				return wxToast('请选择大于当天的时间')
-			}
-			if (this.viewType == 2 && $moment(date).valueOf() - $moment(this.startValue).valueOf() < 0) {
+			// if (this.viewType == 1 && $moment(date).valueOf() - $moment(this.startValue).valueOf() <= 0) {
+			// 	this.dateValue = this.startValue
+			// 	this.params.date = this.startValue
+			// 	return wxToast('请选择大于当天的时间')
+			// }
+			// if (this.viewType == 2 && $moment(date).valueOf() - $moment(this.startValue).valueOf() < 0) {
+			// 	this.dateValue = this.startValue
+			// 	this.params.date = this.startValue
+			// 	return wxToast('不能选择小于当天的时间')
+			// }
+			console.log($moment(date).valueOf())
+			console.log($moment(this.startValue).valueOf())
+			console.log($moment(date).valueOf() - $moment(this.startValue).valueOf() < 0)
+			console.log($moment(date).valueOf() - $moment(this.startValue).valueOf() < 0)
+			console.log('ccccc')
+			if ($moment(date).valueOf() - $moment(this.startValue).valueOf() < 0) {
 				this.dateValue = this.startValue
 				this.params.date = this.startValue
 				return wxToast('不能选择小于当天的时间')
+			} else {
+				this.dateValue = date
+				this.params.date = date
 			}
-			this.dateValue = date
-			this.params.date = date
 			this.$apply()
 		},
 		timeChange (e) {
