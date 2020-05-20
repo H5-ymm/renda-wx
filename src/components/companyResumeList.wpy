@@ -39,7 +39,11 @@
   }
   .page_card_status-text {
     height: 80rpx;
-  }
+	}
+	.radio-icon {
+		width: 50rpx;
+		height: 50rpx;
+	}
 }
 </style>
 <template>
@@ -114,7 +118,9 @@ export default class companyResumeList extends wepy.component {
 		isShowBtn: true,
 		resumeList: [],
     type: '1',
-    statusObj: {}
+		statusObj: {},
+		arr1: [],
+		arr2: []
 	}
 	onLoad () {
 		this.getText(this.receiptType)
@@ -189,27 +195,28 @@ export default class companyResumeList extends wepy.component {
 			let arr1 = []
 			this.resumeList[index].disabled = !item.disabled
 			this.$apply()
-			if (arr.indexOf(item.id) === -1) {
-				arr.push(item.id)
+			if (this.arr1.indexOf(item.id) === -1) {
+				this.arr1.push(item.id)
 			} else {
 				let ret = arr.findIndex(v => {
 					return v === item.id
 				})
-				arr.splice(ret, 1)
+				this.arr1.splice(ret, 1)
 			}
-			if (arr1.indexOf(item.resume_id) === -1) {
-				arr1.push(item.resume_id)
+			if (this.arr2.indexOf(item.resume_id) === -1) {
+				this.arr2.push(item.resume_id)
 			} else {
-				let ret = arr1.findIndex(v => {
+				let ret = this.arr2.findIndex(v => {
 					return v === item.resume_id
 				})
-				arr1.splice(ret, 1)
+				this.arr2.splice(ret, 1)
 			}
-			arr = Array.from(new Set(arr))
-			arr1 = Array.from(new Set(arr1))
+			this.arr1 = Array.from(new Set(this.arr1))
+			this.arr2 = Array.from(new Set(this.arr2))
+			console.log(arr)
 			let params = {
-				id: arr,
-				resume_id: arr1
+				id: this.arr1,
+				resume_id: this.arr2
 			}
 			this.$emit('selectResume', params)
 		}

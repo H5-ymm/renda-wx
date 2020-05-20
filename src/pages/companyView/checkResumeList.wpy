@@ -75,12 +75,12 @@
 					</view>
 				</view>
 				<view class="weui-flex between footer-box-item" wx:if="{{isBatch}}">
-					<view class="item-col">
-						<image src="https://a.rsd123.com/image/images/user/radio2.png" wx:if="{{isCheck}}" @tap="selectResumeAll({{isCheck}})" alt="" mode="aspectFill" class="radio-icon" />
-						<image src="https://a.rsd123.com/image/images/user/radio1.png" wx:else @tap="selectResumeAll({{isCheck}})" mode="aspectFill" class="radio-icon" />
+					<view class="item-col" @tap="selectResumeAll({{isCheck}})">
+						<image src="https://a.rsd123.com/image/images/user/radio2.png" wx:if="{{isCheck}}"  alt="" mode="aspectFill" class="radio-icon" />
+						<image src="https://a.rsd123.com/image/images/user/radio1.png" wx:else  mode="aspectFill" class="radio-icon" />
 						全选
 					</view>
-					<view class="page_card_status-resume weui-flex center item-col" wx:if="{{!statusObj.invoice_status||viewType==1}}">
+					<view class="page_card_status-resume weui-flex center item-col">
 						<button class="weui-btn_cell  weui-flex__item weui-btn_primary" @tap="setResumeStatus(1)">
 							通过
 						</button>
@@ -88,11 +88,11 @@
 							拒绝
 						</button>
 					</view>
-					<view class="page_card_status-resume weui-flex center item-col" wx:else>
+					<!-- <view class="page_card_status-resume weui-flex center item-col" wx:else>
 						<button class="weui-btn_cell  weui-flex__item weui-btn_primary" @tap="setNotice">
 							设置视频面试通知
 						</button>
-					</view>
+					</view> -->
 				</view>
 			</view>
 			<view wx:if="{{!isCheckBtn&&check}}" class="weui-flex between only-btn">
@@ -196,6 +196,7 @@ export default class checkResumeList extends wepy.page {
 			this.title = '入职'
 			this.params.jobId = options.job_id
 		}
+		
 		this.$apply()
 		wx.setNavigationBarTitle({
 			title: this.getTitle(this.receiptType)
@@ -206,8 +207,9 @@ export default class checkResumeList extends wepy.page {
 		this.params.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
 		this.statusObj = JSON.parse(wx.getStorageSync('statusObj'))
 		this.tabBarList = this.getTabBarList(this.receiptType)
-		this.getCheckList()
+		this.isBatch = false
 		this.$apply()
+		this.getCheckList()
 	}
 	events = {
 		searchValue: val => {
@@ -284,14 +286,19 @@ export default class checkResumeList extends wepy.page {
 			if (this.viewType == 2 && data.id.length > 8) {
 				return wxToast('视频面试最多选择8个简历')
 			}
+			console.log(data.id.length == this.newList.length)
+			console.log(data.id.length)
+			console.log(this.newList.length)
 			if (data.id.length == this.newList.length) {
 				this.isCheck = true
-				this.$apply()
+			} else {
+				this.isCheck = false
 			}
 			if (data && data.id.length) {
 				this.id = data.id.join(',')
 				this.resume_id = data.resume_id.join(',')
 			}
+			this.$apply()
 		},
 		viewDetail: data => {
 			let query = `?resume_id=${data}`
@@ -372,9 +379,9 @@ export default class checkResumeList extends wepy.page {
 						if (this.receiptType === 3) {
 						this.statusObj.entry_status = 4
 					}
-					this.isBatch = false
-					this.$apply()
 				}
+				this.isBatch = false
+				this.$apply()
 				this.getTotal(this.tabBarList)
 				this.getCheckList()
 			} else {
@@ -413,7 +420,6 @@ export default class checkResumeList extends wepy.page {
 			this.getTotal(this.tabBarList)
 		},
 		batchHandle () {
-			console.log(this.receiptType)
 			if (this.receiptType != 2) {
 				if (this.viewType==1&&!this.statusObj.view_time&&this.receiptType!=3) {
 					this.isNoticeModal = !this.isNoticeModal
@@ -469,7 +475,8 @@ export default class checkResumeList extends wepy.page {
 			})
 		},
 		setResumeStatus (status) {
-			if (!this.isCheck || !this.id) {
+			console.log(this.id)
+			if (!this.id) {
 				return wxToast('请选择简历')
 			}
 			let parasm = {

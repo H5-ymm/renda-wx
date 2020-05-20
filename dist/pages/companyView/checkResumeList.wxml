@@ -99,12 +99,12 @@
 					</view>
 				</view>
 				<view class="weui-flex between footer-box-item" wx:if="{{isBatch}}">
-					<view class="item-col">
-						<image src="https://a.rsd123.com/image/images/user/radio2.png" wx:if="{{isCheck}}" bindtap="selectResumeAll" alt="" mode="aspectFill" class="radio-icon" data-wpyselectresumeall-a="{{isCheck}}"/>
-						<image src="https://a.rsd123.com/image/images/user/radio1.png" wx:else bindtap="selectResumeAll" mode="aspectFill" class="radio-icon" data-wpyselectresumeall-a="{{isCheck}}"/>
+					<view class="item-col" bindtap="selectResumeAll" data-wpyselectresumeall-a="{{isCheck}}">
+						<image src="https://a.rsd123.com/image/images/user/radio2.png" wx:if="{{isCheck}}" alt="" mode="aspectFill" class="radio-icon"/>
+						<image src="https://a.rsd123.com/image/images/user/radio1.png" wx:else mode="aspectFill" class="radio-icon"/>
 						全选
 					</view>
-					<view class="page_card_status-resume weui-flex center item-col" wx:if="{{!statusObj.invoice_status||viewType==1}}">
+					<view class="page_card_status-resume weui-flex center item-col">
 						<button class="weui-btn_cell  weui-flex__item weui-btn_primary" bindtap="setResumeStatus" data-wpysetresumestatus-a="1">
 							通过
 						</button>
@@ -112,11 +112,11 @@
 							拒绝
 						</button>
 					</view>
-					<view class="page_card_status-resume weui-flex center item-col" wx:else>
+					<!-- <view class="page_card_status-resume weui-flex center item-col" wx:else>
 						<button class="weui-btn_cell  weui-flex__item weui-btn_primary" bindtap="setNotice">
 							设置视频面试通知
 						</button>
-					</view>
+					</view> -->
 				</view>
 			</view>
 			<view wx:if="{{!isCheckBtn&&check}}" class="weui-flex between only-btn">

@@ -13,7 +13,7 @@
 			</scroll-view>
 		</view>
 		<noticeModal :isScaleModal.sync="isModal" :height.sync="modalHeight" @handleClose="handleClose" :title.sync="title" :type.sync="viewType"></noticeModal>
-		<selectModal :isScaleModal.sync="isSelectModal" :menus.sync="menus" @selectOk="selectOk" :title.sync="modalTitle"></selectModal>
+		<selectModal :isScaleModal.sync="isSelectModal" @handleClose.user="handleCloseModal" :menus.sync="menus" @selectOk="selectOk" :title.sync="modalTitle"></selectModal>
 	</view>
 </template>
 <script>
@@ -91,8 +91,6 @@ export default class resumeSiftings extends wepy.page {
 			this.params.jobId = options.jobId
 		}
 		this.receiptType = Number(options.query)
-		console.log(this.receiptType)
-		console.log(this.receiptType + 'dddd')
 		wx.setNavigationBarTitle({
 			title: this.getTitle(this.receiptType)
 		})
@@ -155,6 +153,10 @@ export default class resumeSiftings extends wepy.page {
 		}
 	}
 	methods = {
+		handleCloseModal() {
+			this.isSelectModal = !this.isSelectModal
+			this.$apply()
+		},
 		searchScrollLower () {
 			if (this.count > this.list.length && this.count > this.params.limit) {
 				this.params.limit = this.params.limit + 10

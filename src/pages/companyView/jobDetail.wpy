@@ -245,7 +245,10 @@ export default class jobDetail extends wepy.page {
 		$http('/company/delReceiptShelf', params).then(res => {
 			wxToast('删除成功')
 			wx.setStorageSync('receiptType', 0)
-			wxNavigateTo('/pages/companyView/checkReceipt')
+			// wxNavigateTo('/pages/companyView/checkReceipt')
+			wx.navigateBack({
+				delta: 1 
+			})
 		})
 	}
 	getInvoiceDetail() {
@@ -284,7 +287,10 @@ export default class jobDetail extends wepy.page {
 		$http('/enterpriseinvoice/updateInvoice', params).then(res => {
 			if (res.data) {
 				wx.setStorageSync('receiptType', 0)
-			  wxNavigateTo('/pages/companyView/checkReceipt')
+				wx.navigateBack({
+					delta: 1 
+				})
+			  // wxNavigateTo('/pages/companyView/checkReceipt')
 			} else {
 				wxToast('修改失败')
 			}

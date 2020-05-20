@@ -310,7 +310,8 @@ export default class teamView extends wepy.page {
     areaName: '全国'
   }
   config = {
-    navigationBarTitleText: '首页'
+    navigationBarTitleText: '首页',
+    enablePullDownRefresh: true
   }
   computed = {
     menus () {
@@ -342,6 +343,9 @@ export default class teamView extends wepy.page {
       }
       return arr
     }
+  }
+  onPullDownRefresh() {
+    this.getReceiptList()
   }
   methods = {
     viewInfo (item) {
