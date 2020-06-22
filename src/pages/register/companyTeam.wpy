@@ -135,7 +135,7 @@ export default class companyForm extends wepy.page {
 		uploadFile(tempFilePaths).then(res => {
 			if (res.data && res.data.url) {
 				this.infoImg = getImgUrl(res.data.url)
-				this.form.log = res.data.url
+				this.form.log = this.infoImg
 				this.$apply()
 			} else {
 				wxToast('图片获取失败')

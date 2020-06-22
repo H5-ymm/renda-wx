@@ -245,11 +245,10 @@ export default class checkResumeList extends wepy.page {
 				this.isNoticeModal = !this.isNoticeModal
 				this.$apply()
 			} else {
-				if (!this.statusObj.view_time&&this.receiptType!=3) {
+				if (!this.statusObj.view_time && this.receiptType !=3 && data.status == 1) {
 					this.modalHeight = 930
 					this.isNoticeModal = !this.isNoticeModal
 					this.$apply()
-					return
 				} else {
 					this.auditResumeRecommend(data)
 				}
@@ -475,7 +474,6 @@ export default class checkResumeList extends wepy.page {
 			})
 		},
 		setResumeStatus (status) {
-			console.log(this.id)
 			if (!this.id) {
 				return wxToast('请选择简历')
 			}

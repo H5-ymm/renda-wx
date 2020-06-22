@@ -39,4 +39,7 @@
 		<view class="weui-cell_btn weui-flex between register-btn" wx:if="{{!messageDetail.status}}">
 			<button class="weui-btn_cell weui-flex__item weui-btn_primary" bindtap="videoView">视频面试</button>
 		</view>
+		<view class="weui-cell_btn weui-flex between register-btn" wx:else>
+			<button class="weui-btn_cell weui-flex__item weui-btn_primary" bindtap="delmessage">删除</button>
+		</view>
 	</view>

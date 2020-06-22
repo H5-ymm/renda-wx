@@ -1,7 +1,6 @@
 <import src='./template/1v1/1v1.wxml'/>
 <import src='./template/grid/grid.wxml'/>
 <import src='./template/custom/custom.wxml'/>
-
 <view class="trtc-room-container">
   <block wx:if="{{template === '1v1'}}">
     <template is='1v1' data="{{pusher, streamList, debug}}"></template>

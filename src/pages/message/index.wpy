@@ -52,7 +52,7 @@
 		<view class="page_margin view-content">
 			<scroll-view scroll-y="true" style="height:100%" wx:if="{{list.length}}" @scrolltolower="searchScrollLower">
 				<repeat wx:for="{{list}}" wx:key="index">
-					<view class="weui-flex start message-row" @tap="viewMessage({{item}})">
+					<view class="weui-flex start message-row" @tap="viewMessage({{item}})"  @longpress="onDel({{item}})">
 						<view class="message-col-1">
 							<image mode="scaleToFill" src="https://a.rsd123.com/image/images/user.png" class="message-col-header" wx-if="{{!item.header_img&&usertype==1}}" />
 							<image mode="scaleToFill" src="{{item.header_img}}" class="message-col-header" wx-if="{{item.header_img}}" />
@@ -81,7 +81,7 @@
 <script>
 import wepy from 'wepy'
 import { $http } from '@/http.js'
-import { getImgUrl, wxNavigateTo, getList } from '@/util.js'
+import { getImgUrl, wxNavigateTo, getList, wxShowModal, wxToast } from '@/util.js'
 import tabBarBottom from '@/components/tabBarBottom'
 export default class message extends wepy.page {
 	components = {
@@ -109,6 +109,9 @@ export default class message extends wepy.page {
 		},
 		newList () {
 			return getList(this.list, 'view_time', 'YYYY-MM-DD HH:mm')
+		},
+		delUrl() {
+			return this.usertype == 1 ? '/Personinfo/delmsg_com' : '/Personinfo/delmsg_per'
 		}
 	}
 	onLoad () {
@@ -138,6 +141,13 @@ export default class message extends wepy.page {
 			this.$apply()
 		})
 	}
+	delMsg(params) {
+		$http(this.delUrl, params).then(res => {
+			if (res.data) {
+				this.getMsglist()
+			}
+		})	
+	}
 	methods = {
 		viewMessage (item) {
 			if (this.usertype == 1) {
@@ -145,6 +155,20 @@ export default class message extends wepy.page {
 			} else {
 				wxNavigateTo('/pages/message/personalDialogBox?query=' + item.id)
 			}
+		},
+		onDel(item) {
+			if (!item.status) {
+				return wxToast('面试没有结束，不能删除')
+			}
+			let params = {
+				uid: this.params.uid,
+				id: item.id
+			}
+    	wxShowModal('', `确定删除消息吗?`).then(res => {
+				this.delMsg(params)
+			}).catch(() => {
+				console.log('取消')
+			})
 		},
 		searchScrollLower () {
 			if (this.count > this.list.length && this.count > this.params.limit) {

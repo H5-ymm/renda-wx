@@ -49,8 +49,7 @@ export default class datePicker extends wepy.component {
 				newDate = newDate + ''
 				let date = $moment(newDate).valueOf() + ''
 				if (date - new Date().getTime() < 0) {
-					this.timeValue = $moment(new Date()).format('HH:ss')
-					console.log(this.timeValue)
+					this.timeValue = $moment(new Date()).format('HH:mm')
 					this.$apply()
 					return wxToast('不能选择小于当前的时间')
 				} else {	
@@ -61,22 +60,16 @@ export default class datePicker extends wepy.component {
 		},
 		date(val) {
 			if(val) {
-				console.log(val)
 				this.dateValue = $moment(val).format('YYYY-MM-DD')
-				this.timeValue = $moment(val).format('HH:ss')
+				this.timeValue = $moment(val).format('HH:mm')
 				this.$apply()
 			}
 		}
 	}
 	onLoad () {
 		this.viewType = wx.getStorageSync('rendaViewType')
-		// if (this.viewType == 1) {
-		// 	this.dateValue = $moment().add(1, 'days').format('YYYY-MM-DD')
-		// } else {
-		// 	this.dateValue = $moment().format('YYYY-MM-DD')
-		// }
 		this.dateValue = $moment().format('YYYY-MM-DD')
-		this.timeValue = $moment().format('HH:ss')
+		this.timeValue = $moment().format('HH:mm')
 		this.params.date = this.dateValue
 		this.startValue = this.dateValue
 		this.$apply()
@@ -84,21 +77,6 @@ export default class datePicker extends wepy.component {
 	methods = {
 		bindDateChange (e) {
 			let date = e.detail.value
-			// if (this.viewType == 1 && $moment(date).valueOf() - $moment(this.startValue).valueOf() <= 0) {
-			// 	this.dateValue = this.startValue
-			// 	this.params.date = this.startValue
-			// 	return wxToast('请选择大于当天的时间')
-			// }
-			// if (this.viewType == 2 && $moment(date).valueOf() - $moment(this.startValue).valueOf() < 0) {
-			// 	this.dateValue = this.startValue
-			// 	this.params.date = this.startValue
-			// 	return wxToast('不能选择小于当天的时间')
-			// }
-			console.log($moment(date).valueOf())
-			console.log($moment(this.startValue).valueOf())
-			console.log($moment(date).valueOf() - $moment(this.startValue).valueOf() < 0)
-			console.log($moment(date).valueOf() - $moment(this.startValue).valueOf() < 0)
-			console.log('ccccc')
 			if ($moment(date).valueOf() - $moment(this.startValue).valueOf() < 0) {
 				this.dateValue = this.startValue
 				this.params.date = this.startValue

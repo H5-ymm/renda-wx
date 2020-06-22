@@ -146,6 +146,9 @@
 		<view class="weui-cell_btn weui-flex between register-btn" wx:if="{{!messageDetail.status}}">
 			<button class="weui-btn_cell weui-flex__item weui-btn_primary" @tap="videoView">视频面试</button>
 		</view>
+		<view class="weui-cell_btn weui-flex between register-btn" wx:else>
+			<button class="weui-btn_cell weui-flex__item weui-btn_primary" @tap="delmessage">删除</button>
+		</view>
 	</view>
 </template>
 <script>
@@ -237,6 +240,15 @@ export default class personalDialogBox extends wepy.page {
 			this.$apply()
 		})
 	}
+	delMsg() {
+		$http('/Personinfo/delmsg_per',  this.params).then(res => {
+			if (res.data) {
+				wx.navigateBack({
+					delta: 1
+				})		
+			}
+		})	
+	}
 	methods = {
 		videoView () {
 			if (!this.viewStart) return
@@ -256,6 +268,13 @@ export default class personalDialogBox extends wepy.page {
 		recommend() {
 			wx.navigateTo ({
 				url: '/pages/companyView/viewJob?query=' + this.messageDetail.job_id + '&room_num=' + this.messageDetail.room_num
+			})
+		},
+		delmessage() {
+			wxShowModal('', `确定删除消息吗?`).then(res => {
+				this.delMsg()
+			}).catch(() => {
+				console.log('取消')
 			})
 		},
 		concat() {

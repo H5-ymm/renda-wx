@@ -132,6 +132,9 @@
 		<view class="weui-cell_btn weui-flex between register-btn" wx:if="{{!isView&&!messageDetail.status}}">
 			<button class="weui-btn_cell weui-flex__item weui-btn_primary" @tap="videoView">视频面试</button>
 		</view>
+		<view class="weui-cell_btn weui-flex between register-btn" wx:if="{{messageDetail.status}}">
+			<button class="weui-btn_cell weui-flex__item weui-btn_primary" @tap="delmessage">删除</button>
+		</view>
 	</view>
 </template>
 <script>
@@ -228,6 +231,15 @@ export default class dialogBox extends wepy.page {
 			}
 		})
 	}
+	delMsg() {
+		$http('/Personinfo/delmsg_com', this.params).then(res => {
+			if (res.data) {
+				wx.navigateBack({
+					delta: 1
+				})		
+			}
+		})	
+	}
 	methods = {
 		videoView () {
 			if (this.messageDetail.status) return
@@ -245,6 +257,13 @@ export default class dialogBox extends wepy.page {
 			let text = status == 1 ? '通过' : status == 2 ? '未通过' : '待定'
 			wxShowModal('', `确定面试结果为${text}`).then(res => {
 				this.auditResumeRecommend(status)
+			}).catch(() => {
+				console.log('取消')
+			})
+		},
+		delmessage() {
+			wxShowModal('', `确定删除消息吗?`).then(res => {
+				this.delMsg()
 			}).catch(() => {
 				console.log('取消')
 			})

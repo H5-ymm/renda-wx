@@ -3,7 +3,7 @@
 		<view class="page_margin view-content">
 			<scroll-view scroll-y="true" style="height:100%"  wx:if="{{list.length}}" bindscrolltolower="searchScrollLower">
 				<block wx:for="{{list}}" wx:key="index">
-					<view class="weui-flex start message-row" bindtap="viewMessage" data-wpyviewmessage-a="{{item}}">
+					<view class="weui-flex start message-row" bindtap="viewMessage" bindlongpress="onDel" data-wpyviewmessage-a="{{item}}" data-wpyondel-a="{{item}}">
 						<view class="message-col-1">
 							<image mode="scaleToFill" src="https://a.rsd123.com/image/images/user.png" class="message-col-header" wx-if="{{!item.header_img&&usertype==1}}"/>
 							<image mode="scaleToFill" src="{{item.header_img}}" class="message-col-header" wx-if="{{item.header_img}}"/>
