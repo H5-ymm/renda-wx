@@ -1,6 +1,6 @@
 
   <view class="page-my {{usertype==1?'page-team-home page-cmpany-home':''}} page">
-    <view class="my-view-header"  wx:if="{{usertype==2}}">
+    <view class="my-view-header"  wx:if="{{usertype==2||usertype==3}}">
       <image src="https://a.rsd123.com/image/images/bg.png" class="my-view-header-bg" mode="aspectFill" alt=""/>
       <view class="my-view-userInfo">
         <view class="my-avatar-box">
@@ -11,7 +11,7 @@
         <view class="my-user-mobile">{{userInfo.mobile?userInfo.mobile:''}}</view>
       </view>
     </view>
-    <view class="my-view-header weui-flex start-between"  wx:if="{{usertype==1}}">
+    <view class="my-view-header weui-flex start-between"  wx:else>
       <view class="my-avatar-box">
         <image src="{{head_img}}" wx:if="{{head_img}}" alt="" mode="aspectFill" class="my-avatar"/>
         <image src="https://a.rsd123.com/image/images/header.png" wx:else alt="" mode="aspectFit" class="my-avatar"/>

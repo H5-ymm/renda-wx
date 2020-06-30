@@ -3,7 +3,7 @@
 </style>
 <template>
   <view class="page-my {{usertype==1?'page-team-home page-cmpany-home':''}} page">
-    <view class="my-view-header" wx:if="{{usertype==2}}">
+    <view class="my-view-header" wx:if="{{usertype==2||usertype==3}}">
       <image src="https://a.rsd123.com/image/images/bg.png" class="my-view-header-bg" mode="aspectFill" alt="" />
       <view class="my-view-userInfo">
         <view class="my-avatar-box">
@@ -14,7 +14,7 @@
         <view class="my-user-mobile">{{userInfo.mobile?userInfo.mobile:''}}</view>
       </view>
     </view>
-    <view class="my-view-header weui-flex start-between" wx:if="{{usertype==1}}">
+    <view class="my-view-header weui-flex start-between" wx:else>
       <view class="my-avatar-box">
         <image src="{{head_img}}" wx:if="{{head_img}}" alt="" mode="aspectFill" class="my-avatar" />
         <image src="https://a.rsd123.com/image/images/header.png" wx:else alt="" mode="aspectFit" class="my-avatar" />
@@ -67,7 +67,7 @@ import { getStore, connect } from 'wepy-redux'
 import { getAllUser } from '@/store/actions/user.js'
 import { GETALLUSER } from '@/store/types'
 import { getAllContant } from '@/store/actions/contant.js'
-import {companyMenus, teamMenus} from '@/base/base'
+import {companyMenus, teamMenus, personalMenus} from '@/base/base'
 const store = getStore()
 @connect({
   loginUser: (state) => state.user.loginUser
@@ -221,8 +221,10 @@ export default class my extends wepy.page {
       let arr = []
       if (this.usertype == 2) {
         arr = teamMenus
-      } else {
+      } else if (this.usertype == 1){
         arr = companyMenus
+      } else {
+        arr = personalMenus
       }
       return arr
     }
@@ -239,7 +241,7 @@ export default class my extends wepy.page {
     this.wxInfo = wx.getStorageSync('wxInfo')
     this.usertype = wx.getStorageSync('rendaUserType')
     this.tabBarIndex = this.usertype === 2 ? 2 : this.usertype === 1 ? 3 : 1
-    let title = this.usertype == 2 ? '我的' : '企业中心'
+    let title = this.usertype == 1 ? '企业中心' : '我的'
     wx.setNavigationBarTitle({
       title: title
     })

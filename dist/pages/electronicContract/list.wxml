@@ -1,0 +1,25 @@
+
+  <view class="page">
+    <view class="contract-header weui-flex start">
+      <view class="item">全部</view>
+      <view class="item active">已签订</view>
+      <view class="item">待签订</view>
+    </view>
+    <scroll-view scroll-y="true" bindscrolltolower="searchScrollLower" class="view-content">
+      <block  wx:for="{{list}}" wx:key="index">
+        <view class="weui-flex between contract-row page_bottom">
+          <view class="weui-flex start">
+            <image mode="scaleToFill" src="https://a.rsd123.com/image/images/header.png" class="header"/>
+            <view>
+              <view class="page__title">{{item.name}}（{{item.departName}}）</view>
+              <view class="page__desc">{{item.phone}}</view>
+            </view>
+          </view>
+          <view class="weui-flex between">
+            <view class="status">已签订</view>
+            <image mode="scaleToFill" src="https://a.rsd123.com/image/images/right.png" class="page_down_icon"/>
+          </view>
+        </view>
+      </block>
+    </scroll-view>
+  </view>

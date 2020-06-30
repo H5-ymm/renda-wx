@@ -1,8 +1,9 @@
 import {
   wxToast
 } from '@/util.js'
-// const baseUrl = 'https://a.rsd123.com/';
-const baseUrl = 'http://tiantianxsg.com:39888/'
+console.log(__wxConfig.envVersion)
+const baseUrl = 'https://a.rsd123.com/'
+// const baseUrl = 'http://tiantianxsg.com:39888/'
 const apiUrl = baseUrl + 'wx.php';
 const http = (url, params, method) => {
   return new Promise((resolve, reject) => {

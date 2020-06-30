@@ -75,7 +75,7 @@
 				<view class="page_noData_text">暂无消息！</view>
 		   </view>
 		</view>
-		<tabBarBottom :tabBarIndex.sync="tabBarIndex" :usertype.sync="usertype" wx:if="{{usertype==1}}"></tabBarBottom>
+		<tabBarBottom :tabBarIndex.sync="tabBarIndex" :usertype.sync="usertype" wx:if="{{usertype!=2}}"></tabBarBottom>
 	</view>
 </template>
 <script>
@@ -115,11 +115,13 @@ export default class message extends wepy.page {
 		}
 	}
 	onLoad () {
+		this.params.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
 		this.usertype = wx.getStorageSync('rendaUserType')
 		if (this.usertype == 1) {
 			this.tabBarIndex = 2
-		}	
-		this.params.uid = wx.getStorageSync('rendaUid') || this.$parent.globalData.uid
+		}	else {
+			this.tabBarIndex = 0
+		}
 		this.$apply()
 	}
 	onShow () {

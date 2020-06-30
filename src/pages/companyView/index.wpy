@@ -41,7 +41,7 @@
 import wepy from 'wepy'
 import { $http } from '@/http.js'
 import { wxNavigateTo } from '@/util.js'
-import tabBarBottom from '@/components/tabBarBottom'\
+import tabBarBottom from '@/components/tabBarBottom'
 import { menus } from '@/base/base'
 export default class Index extends wepy.page {
 	components = {

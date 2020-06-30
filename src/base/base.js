@@ -237,6 +237,15 @@ export const moneyTypeList1 = [
       ]
     },
     {
+      child: [
+        {
+          title: '合同中心',
+          icon: 'https://a.rsd123.com/image/images/icon1.png',
+          url: '/pages/electronicContract/index'
+        }
+      ]
+    },
+    {
       child: [{
         title: '切换账号',
         icon: 'https://a.rsd123.com/image/images/icon6.png',
@@ -244,7 +253,17 @@ export const moneyTypeList1 = [
       }]
     }
   ]
-
+  export const personalMenus = [
+    {
+      child: [
+        {
+          title: '合同管理',
+          icon: 'https://a.rsd123.com/image/images/icon1.png',
+          url: '/pages/electronicContract/index'
+        }
+      ]
+    }
+  ]
   export const menus =  [
     {
       title: '审核发单',

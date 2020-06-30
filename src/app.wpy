@@ -62,7 +62,9 @@ export default class extends wepy.app {
       'pages/register/companyForm',
       'pages/register/team',
       'pages/login/rule',
-      'pages/login/login'
+      'pages/login/login',
+      'pages/electronicContract/list',
+      'pages/electronicContract/index'
     ],
     window: {
       navigationBarTextStyle: 'white',

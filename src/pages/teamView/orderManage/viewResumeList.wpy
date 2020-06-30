@@ -89,7 +89,6 @@ export default class viewResumeList extends wepy.page {
 		isSeachWidth: false,
 		isModal: true,
 		modalHeight: 860,
-		title: '面试时间',
 		receiptType: 2,
 		job_id: '',
 		timeInfo: {},
@@ -104,6 +103,9 @@ export default class viewResumeList extends wepy.page {
 		// 获取简历初筛，面试名单，入职名单列表url
 		viewAndEntryNotice () {
 			return this.receiptType === 2 ? '/apply/getViewtime' : '/apply/getOffermsg'
+		},
+		title() {
+			return this.receiptType === 2 ? '面试' : '入职'
 		}
 	}
 	onLoad (options) {
